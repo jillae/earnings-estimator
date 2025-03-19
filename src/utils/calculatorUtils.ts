@@ -43,6 +43,7 @@ export function calculateLeasingRange(
   let baseLeasingDefault: number;
   
   if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
+    // Use the exact values directly from the machine data
     baseLeasingMin = machine.leasingMin;
     baseLeasingMax = machine.leasingMax;
     baseLeasingDefault = (machine.leasingMin + machine.leasingMax) / 2;
@@ -77,8 +78,8 @@ export function calculateLeasingRange(
   }
   
   const result = {
-    min: baseLeasingMin + insuranceCost,
-    max: baseLeasingMax + insuranceCost,
+    min: baseLeasingMin,
+    max: baseLeasingMax,
     default: baseLeasingDefault + insuranceCost
   };
   
@@ -110,9 +111,6 @@ export function calculateLeasingCost(
     console.log(`Calculated leasing cost for ${machine.name} at multiplier ${actualMultiplier}: ${baseLeasingCost}`);
   }
   
-  // Only round for display, not for calculations
-  const calculationBaseLeasingCost = baseLeasingCost;
-  
   // Add insurance if selected
   let insuranceCost = 0;
   if (includeInsurance) {
@@ -130,7 +128,7 @@ export function calculateLeasingCost(
     console.log(`Adding insurance cost: ${insuranceCost}`);
   }
   
-  const finalCost = calculationBaseLeasingCost + insuranceCost;
+  const finalCost = baseLeasingCost + insuranceCost;
   console.log(`Final leasing cost: ${finalCost}`);
   return finalCost;
 }

@@ -25,6 +25,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     adjustmentFactor
   });
 
+  // Use exact min and max costs directly from props without modification
   const exactMinCost = minLeaseCost;
   const exactMaxCost = maxLeaseCost;
 
