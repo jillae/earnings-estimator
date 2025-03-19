@@ -62,6 +62,9 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
       <div className="input-group">
         <label htmlFor="insurance" className="input-label">
           Försäkring
+          <div className="text-xs text-gray-500 mt-1">
+            Försäkring - fullvärdesförsäkring, självrisk 1500 kr
+          </div>
         </label>
         
         <Select value={selectedInsuranceId} onValueChange={onInsuranceChange}>
