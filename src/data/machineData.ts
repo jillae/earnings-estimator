@@ -1,4 +1,3 @@
-
 export interface Machine {
   id: string;
   name: string;
@@ -37,11 +36,11 @@ export const machineData: Machine[] = [
     creditMin: 149,
     creditMax: 299,
     leasingTariffs: {
-      "24": 4.566,
-      "36": 3.189,
-      "48": 2.504,
-      "60": 2.095,
-      "72": 1.825
+      "24": 0.04566,
+      "36": 0.03189,
+      "48": 0.02504,
+      "60": 0.02095,
+      "72": 0.01825
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 3500
@@ -62,11 +61,11 @@ export const machineData: Machine[] = [
     creditMin: 75,
     creditMax: 159,
     leasingTariffs: {
-      "24": 4.566,
-      "36": 3.189,
-      "48": 2.504,
-      "60": 2.095,
-      "72": 1.825
+      "24": 0.04566,
+      "36": 0.03189,
+      "48": 0.02504,
+      "60": 0.02095,
+      "72": 0.01825
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 900
@@ -87,11 +86,11 @@ export const machineData: Machine[] = [
     creditMin: 95,
     creditMax: 199,
     leasingTariffs: {
-      "24": 4.566,
-      "36": 3.189,
-      "48": 2.504,
-      "60": 2.095,
-      "72": 1.825
+      "24": 0.04566,
+      "36": 0.03189,
+      "48": 0.02504,
+      "60": 0.02095,
+      "72": 0.01825
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200
@@ -112,11 +111,11 @@ export const machineData: Machine[] = [
     creditMin: 99,
     creditMax: 199,
     leasingTariffs: {
-      "24": 4.566,
-      "36": 3.189,
-      "48": 2.504,
-      "60": 2.095,
-      "72": 1.825
+      "24": 0.04566,
+      "36": 0.03189,
+      "48": 0.02504,
+      "60": 0.02095,
+      "72": 0.01825
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1800

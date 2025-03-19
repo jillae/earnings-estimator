@@ -24,6 +24,7 @@ export function calculateTariffBasedLeasingMax(
   const factor = getLeasingFactor(leaseDurationMonths);
   
   if (factor !== undefined) {
+    // The factor is now a decimal (e.g., 0.04566 instead of 4.566)
     return Math.round((machinePriceEur + SHIPPING_COST_EUR) * CONSTANT_MULTIPLIER * factor);
   } else {
     console.error(`No factor found for leasing duration ${leaseDurationMonths} months.`);
@@ -43,7 +44,7 @@ export function calculateLeasingRange(
   // Always use tariff-based calculation as specified in the requirements
   // Find the closest leasing period match
   const closestTariff = LEASING_TARIFFS.reduce((prev, curr) => 
-    Math.abs(curr.Faktor - leasingRateNum * 100) < Math.abs(prev.Faktor - leasingRateNum * 100) ? curr : prev
+    Math.abs(curr.Faktor - leasingRateNum) < Math.abs(prev.Faktor - leasingRateNum) ? curr : prev
   );
   
   const baseLeasingMax = calculateTariffBasedLeasingMax(machine.priceEur, closestTariff.Löptid);

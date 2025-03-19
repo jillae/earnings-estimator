@@ -16,11 +16,11 @@ export interface TariffEntry {
 }
 
 export const LEASING_TARIFFS: TariffEntry[] = [
-  { Löptid: 24, Faktor: 4.566 },
-  { Löptid: 36, Faktor: 3.189 },
-  { Löptid: 48, Faktor: 2.504 },
-  { Löptid: 60, Faktor: 2.095 },
-  { Löptid: 72, Faktor: 1.825 }
+  { Löptid: 24, Faktor: 0.04566 },
+  { Löptid: 36, Faktor: 0.03189 },
+  { Löptid: 48, Faktor: 0.02504 },
+  { Löptid: 60, Faktor: 0.02095 },
+  { Löptid: 72, Faktor: 0.01825 }
 ];
 
 export const CONSTANT_MULTIPLIER = 11.49;
