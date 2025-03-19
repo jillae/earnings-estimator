@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { formatCurrency } from '@/utils/calculatorUtils';
 import { Input } from "@/components/ui/input";
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, Info } from 'lucide-react';
 
 interface OperatingCostsProps {
   usesCredits: boolean;
@@ -70,6 +70,17 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
           <div className="flex justify-between items-center">
             <span className="text-sm">Fast månadsavgift</span>
             <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount, false)}</span>
+          </div>
+          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm">
+            <div className="flex items-start gap-3">
+              <Info className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-base text-green-700 mb-1">Flatrate aktiverad</h3>
+                <p className="text-green-800">
+                  Du har nu tillgång till obegränsat antal credits under avtalsperioden.
+                </p>
+              </div>
+            </div>
           </div>
         </>
       ) : (

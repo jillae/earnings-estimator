@@ -72,7 +72,7 @@ export function shouldUseFlatrate(
     return false;
   }
   
-  // Rule 2.1: If leasingCost > 80% of leasingMax AND treatmentsPerDay >= 3, use flatrate
+  // Rule: If leasingCost > 80% of leasingMax AND treatmentsPerDay >= 3, use flatrate
   if (machine.leasingMax) {
     const flatrateThreshold = machine.leasingMax * 0.8;
     console.log(`Flatrate decision: leasingCost ${leasingCost} ${leasingCost > flatrateThreshold ? '>' : '<='} threshold ${flatrateThreshold} (80% of ${machine.leasingMax}) AND treatments ${treatmentsPerDay} ${treatmentsPerDay >= 3 ? '>=' : '<'} 3`);
@@ -96,10 +96,12 @@ export function calculateOperatingCost(
   
   if (machine.usesCredits) {
     if (useFlatrate) {
+      console.log(`Using flatrate amount for ${machine.name}: ${machine.flatrateAmount}`);
       costPerMonth = machine.flatrateAmount;
     } else {
       const creditsPerTreatment = 1;
       costPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH * creditsPerTreatment * creditPrice;
+      console.log(`Calculated credit cost per month for ${machine.name}: ${costPerMonth} (${treatmentsPerDay} treatments/day × ${WORKING_DAYS_PER_MONTH} days/month × ${creditsPerTreatment} credits/treatment × ${creditPrice} SEK/credit)`);
     }
   }
   
