@@ -13,7 +13,7 @@ const CalculatorResults: React.FC = () => {
   } = useCalculator();
 
   return (
-    <div>
+    <div className="h-full flex items-start">
       <ResultsTable 
         dailyRevenueIncVat={revenue.dailyRevenueIncVat}
         weeklyRevenueIncVat={revenue.weeklyRevenueIncVat}

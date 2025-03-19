@@ -8,7 +8,7 @@ const CalculatorLayout: React.FC = () => {
   const { netResults } = useCalculator();
   
   return (
-    <div className="container">
+    <div className="container max-w-7xl mx-auto px-4 sm:px-6">
       <div className="calculator-grid">
         <CalculatorInputs />
         <CalculatorResults />

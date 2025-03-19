@@ -47,7 +47,7 @@ const CalculatorInputs: React.FC = () => {
         onChange={setClinicSize} 
       />
       
-      <div className="glass-card mt-4">
+      <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '200ms' }}>
         <TreatmentSettings 
           treatmentsPerDay={treatmentsPerDay}
           customerPrice={customerPrice}
@@ -56,7 +56,7 @@ const CalculatorInputs: React.FC = () => {
         />
       </div>
       
-      <div className="glass-card mt-6">
+      <div className="glass-card mt-6 animate-slide-in" style={{ animationDelay: '400ms' }}>
         <MachineSelector 
           machines={machineData} 
           selectedMachineId={selectedMachineId} 

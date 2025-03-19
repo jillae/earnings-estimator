@@ -88,17 +88,17 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
       </div>
       
       <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-3">Potentiell intäkt vid olika beläggningsgrad</h3>
-        <div className="calculator-grid">
-          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+        <h3 className="text-lg font-semibold mb-3">Budgeterbar intäkt vid olika beläggningsgrad</h3>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:shadow-md transition-shadow">
             <div className="text-sm text-slate-600 mb-1">Beläggning 50%, år 1 (ink moms)</div>
             <div className="text-xl font-semibold text-emerald-600">{formatCurrency(occupancy50)}</div>
           </div>
-          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:shadow-md transition-shadow">
             <div className="text-sm text-slate-600 mb-1">Beläggning 75%, år 2 (ink moms)</div>
             <div className="text-xl font-semibold text-emerald-600">{formatCurrency(occupancy75)}</div>
           </div>
-          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 col-span-1 md:col-span-2">
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:shadow-md transition-shadow">
             <div className="text-sm text-slate-600 mb-1">Beläggning 100%, år 3 (ink moms)</div>
             <div className="text-xl font-semibold text-emerald-600">{formatCurrency(occupancy100)}</div>
           </div>
