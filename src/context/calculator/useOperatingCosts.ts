@@ -51,6 +51,7 @@ export function useOperatingCosts({
     
     if (selectedMachine) {
       // Check if we need to use flatrate based on leasing cost and treatments per day
+      // The key rule is: treatmentsPerDay >= 3 AND leasingCost > 80% of leasingMax
       const useFlatrateOption = shouldUseFlatrate(
         selectedMachine,
         leasingCost,

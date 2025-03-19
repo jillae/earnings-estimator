@@ -30,9 +30,11 @@ const CalculatorInputs: React.FC = () => {
     setLeaseAdjustmentFactor,
     flatrateThreshold,
     operatingCost,
-    creditPrice,
-    netResults
+    creditPrice
   } = useCalculator();
+
+  // Get current machine
+  const isCreditsEnabledMachine = selectedMachine.usesCredits;
 
   return (
     <div className="w-full">
@@ -67,21 +69,21 @@ const CalculatorInputs: React.FC = () => {
           onInsuranceChange={setSelectedInsuranceId}
         />
         
-        {selectedMachine.usesCredits && (
+        {isCreditsEnabledMachine && (
           <LeaseAdjuster 
             minLeaseCost={leasingRange.min}
             maxLeaseCost={leasingRange.max}
             leaseCost={leasingCost}
             adjustmentFactor={leaseAdjustmentFactor}
             flatrateThreshold={flatrateThreshold}
-            showFlatrateIndicator={selectedMachine.usesCredits}
+            showFlatrateIndicator={isCreditsEnabledMachine}
             onAdjustmentChange={setLeaseAdjustmentFactor}
           />
         )}
         
-        {selectedMachine.usesCredits && (
+        {isCreditsEnabledMachine && (
           <OperatingCosts 
-            usesCredits={selectedMachine.usesCredits}
+            usesCredits={isCreditsEnabledMachine}
             useFlatrate={operatingCost.useFlatrate}
             creditPrice={creditPrice}
             flatrateAmount={selectedMachine.flatrateAmount}

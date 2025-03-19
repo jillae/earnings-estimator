@@ -1,3 +1,4 @@
+
 /**
  * Utility functions for credit price calculations
  */
@@ -89,6 +90,13 @@ export function shouldUseFlatrate(
     return false;
   }
   
+  // Rule 1: Must have at least 3 treatments per day
+  if (treatmentsPerDay < 3) {
+    console.log(`Flatrate denied: Treatments per day (${treatmentsPerDay}) < 3`);
+    return false;
+  }
+  
+  // Rule 2: Leasing cost must be > 80% of leasingMax
   // Get leasingMax (prefer machine's defined value if available)
   let leasingMax: number;
   
@@ -107,11 +115,14 @@ export function shouldUseFlatrate(
     return false;
   }
   
-  // Rule: If leasingCost > 80% of leasingMax AND treatmentsPerDay >= 3, use flatrate
+  // Calculate the threshold at 80% of leasingMax
   const flatrateThreshold = leasingMax * 0.8;
-  console.log(`Flatrate decision: leasingCost ${leasingCost} ${leasingCost > flatrateThreshold ? '>' : '<='} threshold ${flatrateThreshold} (80% of ${leasingMax}) AND treatments ${treatmentsPerDay} ${treatmentsPerDay >= 3 ? '>=' : '<'} 3`);
   
-  return leasingCost > flatrateThreshold && treatmentsPerDay >= 3;
+  // Check if leasingCost is above the 80% threshold
+  const isAboveThreshold = leasingCost > flatrateThreshold;
+  console.log(`Flatrate decision: leasingCost ${leasingCost} ${isAboveThreshold ? '>' : '<='} threshold ${flatrateThreshold} (80% of ${leasingMax}) AND treatments ${treatmentsPerDay} >= 3`);
+  
+  return isAboveThreshold;
 }
 
 export function calculateOperatingCost(
