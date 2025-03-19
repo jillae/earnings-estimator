@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { formatCurrency } from '@/utils/calculatorUtils';
 import { Input } from "@/components/ui/input";
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
 interface OperatingCostsProps {
   usesCredits: boolean;
@@ -36,6 +36,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   const incrementCreditPrice = () => {
     if (onCreditPriceChange) {
       const newValue = creditPrice + 1;
+      console.log("Incrementing credit price to:", newValue);
       onCreditPriceChange(newValue);
     }
   };
@@ -43,6 +44,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   const decrementCreditPrice = () => {
     if (onCreditPriceChange && creditPrice > 1) {
       const newValue = creditPrice - 1;
+      console.log("Decrementing credit price to:", newValue);
       onCreditPriceChange(newValue);
     }
   };
@@ -84,8 +86,6 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
                   value={creditPrice}
                   onChange={handleCreditPriceChange}
                   className="w-full pr-16"
-                  // Force controlled component behavior
-                  key={`credit-price-${creditPrice}`}
                 />
                 <div className="absolute right-0 top-0 h-full flex flex-col">
                   <button 
@@ -93,14 +93,14 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
                     onClick={incrementCreditPrice}
                     className="flex-1 px-2 border-l border-b border-input flex items-center justify-center hover:bg-gray-100"
                   >
-                    <ArrowUp className="h-3 w-3" />
+                    <ChevronUp className="h-4 w-4" />
                   </button>
                   <button 
                     type="button" 
                     onClick={decrementCreditPrice}
                     className="flex-1 px-2 border-l border-input flex items-center justify-center hover:bg-gray-100"
                   >
-                    <ArrowDown className="h-3 w-3" />
+                    <ChevronDown className="h-4 w-4" />
                   </button>
                 </div>
               </div>

@@ -1,3 +1,4 @@
+
 export interface Machine {
   id: string;
   name: string;
@@ -29,7 +30,7 @@ export const machineData: Machine[] = [
     creditPriceMultiplier: 0.00045,
     flatrateAmount: 5996,
     usesCredits: true,
-    leasingMin: 20666,
+    leasingMin: 21703,
     leasingMax: 24114,
     creditMin: 149,
     creditMax: 299
@@ -45,7 +46,7 @@ export const machineData: Machine[] = [
     creditPriceMultiplier: 0.00038,
     flatrateAmount: 3296,
     usesCredits: true,
-    leasingMin: 7872,
+    leasingMin: 8267,
     leasingMax: 9186,
     creditMin: 75,
     creditMax: 159
@@ -61,7 +62,7 @@ export const machineData: Machine[] = [
     creditPriceMultiplier: 0.00038,
     flatrateAmount: 4176,
     usesCredits: true,
-    leasingMin: 9317,
+    leasingMin: 9784,
     leasingMax: 10871,
     creditMin: 95,
     creditMax: 199
@@ -77,7 +78,7 @@ export const machineData: Machine[] = [
     creditPriceMultiplier: 0.00038,
     flatrateAmount: 4356,
     usesCredits: true,
-    leasingMin: 9605,
+    leasingMin: 10087,
     leasingMax: 11208,
     creditMin: 99,
     creditMax: 199

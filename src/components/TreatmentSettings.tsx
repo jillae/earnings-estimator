@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Input } from "@/components/ui/input";
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
 interface TreatmentSettingsProps {
   treatmentsPerDay: number;
@@ -73,14 +73,14 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               onClick={incrementTreatments}
               className="flex-1 px-2 border-l border-b border-input flex items-center justify-center hover:bg-gray-100"
             >
-              <ArrowUp className="h-3 w-3" />
+              <ChevronUp className="h-4 w-4" />
             </button>
             <button 
               type="button" 
               onClick={decrementTreatments}
               className="flex-1 px-2 border-l border-input flex items-center justify-center hover:bg-gray-100"
             >
-              <ArrowDown className="h-3 w-3" />
+              <ChevronDown className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -106,14 +106,14 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               onClick={incrementCustomerPrice}
               className="flex-1 px-2 border-l border-b border-input flex items-center justify-center hover:bg-gray-100"
             >
-              <ArrowUp className="h-3 w-3" />
+              <ChevronUp className="h-4 w-4" />
             </button>
             <button 
               type="button" 
               onClick={decrementCustomerPrice}
               className="flex-1 px-2 border-l border-input flex items-center justify-center hover:bg-gray-100"
             >
-              <ArrowDown className="h-3 w-3" />
+              <ChevronDown className="h-4 w-4" />
             </button>
           </div>
         </div>
