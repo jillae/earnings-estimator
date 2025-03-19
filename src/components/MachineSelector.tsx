@@ -35,7 +35,7 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
           <SelectValue placeholder="Välj maskin" />
         </SelectTrigger>
         
-        <SelectContent position="popper" className="w-full max-h-[400px]">
+        <SelectContent position="item-aligned" className="w-full max-h-[400px]">
           <SelectItem value="select-machine">Välj maskin</SelectItem>
           {machines.map((machine) => (
             <SelectItem key={machine.id} value={machine.id}>

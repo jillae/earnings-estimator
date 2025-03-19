@@ -37,11 +37,13 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   };
 
   return (
-    <div className="md:grid md:grid-cols-2 md:gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 md:gap-6">
       <div className="input-group mb-0">
-        <label htmlFor="treatments-per-day" className="input-label h-14 flex items-center">
-          Antal behandlingar per dag
-        </label>
+        <div className="h-14 flex items-center">
+          <label htmlFor="treatments-per-day" className="input-label">
+            Antal behandlingar per dag
+          </label>
+        </div>
         
         <Select 
           value={treatmentsPerDay.toString()} 
@@ -61,9 +63,11 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
       </div>
       
       <div className="input-group mb-0">
-        <label htmlFor="customer-price" className="input-label h-14 flex items-center">
-          Kundpris per behandling (kr) ink moms
-        </label>
+        <div className="h-14 flex items-center">
+          <label htmlFor="customer-price" className="input-label">
+            Kundpris per behandling (kr) ink moms
+          </label>
+        </div>
         
         <Select 
           value={customerPrice.toString()} 
