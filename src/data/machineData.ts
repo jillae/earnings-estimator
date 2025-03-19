@@ -1,3 +1,4 @@
+
 export interface Machine {
   id: string;
   name: string;
@@ -25,7 +26,9 @@ export const machineData: Machine[] = [
     defaultLeaseMultiplier: 0.025,
     creditPriceMultiplier: 0.00035,
     flatrateAmount: 3250,
-    usesCredits: true
+    usesCredits: true,
+    leasingMin: 5000,
+    leasingMax: 7500
   },
   {
     id: "emerald-m",
@@ -37,7 +40,9 @@ export const machineData: Machine[] = [
     defaultLeaseMultiplier: 0.025,
     creditPriceMultiplier: 0.00035,
     flatrateAmount: 4295,
-    usesCredits: true
+    usesCredits: true,
+    leasingMin: 7000,
+    leasingMax: 10000
   },
   {
     id: "emerald-l",
@@ -49,7 +54,9 @@ export const machineData: Machine[] = [
     defaultLeaseMultiplier: 0.025,
     creditPriceMultiplier: 0.00035,
     flatrateAmount: 5750,
-    usesCredits: true
+    usesCredits: true,
+    leasingMin: 9500,
+    leasingMax: 13500
   },
   {
     id: "emerald-pro",
@@ -61,7 +68,65 @@ export const machineData: Machine[] = [
     defaultLeaseMultiplier: 0.025,
     creditPriceMultiplier: 0.0004,
     flatrateAmount: 7500,
-    usesCredits: true
+    usesCredits: true,
+    leasingMin: 12000,
+    leasingMax: 17000
+  },
+  {
+    id: "ruby-s",
+    name: "Ruby S",
+    description: "Kraftfull maskin för mindre kliniker",
+    priceEur: 29500,
+    minLeaseMultiplier: 0.018,
+    maxLeaseMultiplier: 0.032,
+    defaultLeaseMultiplier: 0.025,
+    creditPriceMultiplier: 0.00038,
+    flatrateAmount: 3950,
+    usesCredits: true,
+    leasingMin: 6000,
+    leasingMax: 8500
+  },
+  {
+    id: "ruby-m",
+    name: "Ruby M",
+    description: "Mångsidig maskin för växande verksamheter",
+    priceEur: 39500,
+    minLeaseMultiplier: 0.018,
+    maxLeaseMultiplier: 0.032,
+    defaultLeaseMultiplier: 0.025,
+    creditPriceMultiplier: 0.00038,
+    flatrateAmount: 4950,
+    usesCredits: true,
+    leasingMin: 8000,
+    leasingMax: 11500
+  },
+  {
+    id: "ruby-l",
+    name: "Ruby L",
+    description: "Premium-lösning för större kliniker",
+    priceEur: 54500,
+    minLeaseMultiplier: 0.018,
+    maxLeaseMultiplier: 0.032,
+    defaultLeaseMultiplier: 0.025,
+    creditPriceMultiplier: 0.00038,
+    flatrateAmount: 6250,
+    usesCredits: true,
+    leasingMin: 10500,
+    leasingMax: 14500
+  },
+  {
+    id: "sapphire-serie",
+    name: "Sapphire Serie",
+    description: "Medicinsk serie för sjukhus och specialistkliniker",
+    priceEur: 79500,
+    minLeaseMultiplier: 0.018,
+    maxLeaseMultiplier: 0.032,
+    defaultLeaseMultiplier: 0.025,
+    creditPriceMultiplier: 0.00045,
+    flatrateAmount: 8500,
+    usesCredits: true,
+    leasingMin: 14000,
+    leasingMax: 19500
   }
 ];
 
