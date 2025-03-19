@@ -17,10 +17,8 @@ interface TreatmentSettingsProps {
 }
 
 const treatmentOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-const priceOptions = [
-  400, 500, 750, 1000, 1250, 1500, 1750, 2000, 
-  2250, 2500, 2750, 3000, 3500, 4000, 4500, 5000
-];
+// Create price options with step of 100 from 400 to 5000
+const priceOptions = Array.from({ length: 47 }, (_, i) => 400 + i * 100);
 
 const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   treatmentsPerDay,

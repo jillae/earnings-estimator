@@ -30,6 +30,7 @@ export function calculateRevenue(customerPrice: number, treatmentsPerDay: number
     Daily revenue (inc VAT): ${dailyRevenueIncVat}
     Monthly revenue (inc VAT): ${monthlyRevenueIncVat}
     Monthly revenue (ex VAT): ${monthlyRevenueExVat}
+    Net calculation per month example: ${monthlyRevenueExVat} - 4500 = ${monthlyRevenueExVat - 4500}
   `);
   
   return {
