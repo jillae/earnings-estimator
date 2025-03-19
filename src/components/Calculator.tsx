@@ -193,10 +193,11 @@ const Calculator: React.FC = () => {
   }, [selectedMachineId, leasingCost, isUpdatingFromCreditPrice]);
 
   const handleCreditPriceChange = (newCreditPrice: number) => {
+    console.log("Credit price manually changed to:", newCreditPrice);
+    
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine && selectedMachine.usesCredits) {
-      console.log("Credit price manually changed to:", newCreditPrice);
       setCreditPrice(newCreditPrice);
       
       let newLeasingCost = 0;
