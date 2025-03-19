@@ -1,4 +1,3 @@
-
 /**
  * Utility functions for credit price calculations
  */
@@ -17,67 +16,9 @@ export function calculateCreditPrice(machine: Machine, leasingCost: number, leas
   
   console.log(`Starting credit price calculation for ${machine.name} with min: ${machine.creditMin}, max: ${machine.creditMax}`);
   
-  const creditMin = machine.creditMin;
-  const creditMax = machine.creditMax;
-  let leasingMin: number;
-  let leasingMax: number;
-  
-  // Prefer to use machine's hardcoded leasingMin/Max values if available
-  if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
-    leasingMin = machine.leasingMin;
-    leasingMax = machine.leasingMax;
-    console.log(`Using hardcoded leasing range for credit calculation: ${leasingMin} - ${leasingMax}`);
-  }
-  // Otherwise calculate dynamic leasing range if we have necessary parameters
-  else if (leasingRate !== undefined && machinePriceSEK !== undefined) {
-    const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRate, false);
-    leasingMin = dynamicRange.min;
-    leasingMax = dynamicRange.max;
-    console.log(`Using dynamically calculated leasing range: ${leasingMin} - ${leasingMax}`);
-  } 
-  // Fallback to inverse formula if no ranges available
-  else {
-    const calculatedCredit = Math.round((1 / leasingCost) * machine.creditPriceMultiplier * 1000000);
-    console.log(`Fallback calculated credit price for ${machine.name}: ${calculatedCredit}`);
-    return calculatedCredit;
-  }
-  
-  const leasingRange = leasingMax - leasingMin;
-  if (leasingRange <= 0) {
-    console.log(`Zero leasing range for ${machine.name}, using credit min: ${creditMin}`);
-    return creditMin;
-  }
-  
-  // Calculate where the leasing cost falls in the leasing range (0-1)
-  // Ensure leasing cost is capped within min-max range
-  const cappedLeasingCost = Math.max(leasingMin, Math.min(leasingMax, leasingCost));
-  const leasingPosition = (cappedLeasingCost - leasingMin) / leasingRange;
-  
-  // Invert the position because:
-  // At minimum leasing cost we want maximum credit price
-  // At maximum leasing cost we want minimum credit price
-  const inversePosition = 1 - leasingPosition;
-  
-  const creditRange = creditMax - creditMin;
-  
-  // Determine credit price based on position in leasing range
-  const calculatedCredit = Math.round(creditMin + inversePosition * creditRange);
-  
-  console.log(`Calculated credit price for ${machine.name}:`, {
-    leasingCost,
-    cappedLeasingCost,
-    leasingMin,
-    leasingMax,
-    leasingRange,
-    leasingPosition,
-    inversePosition,
-    creditMin,
-    creditMax,
-    creditRange,
-    calculatedCredit
-  });
-  
-  return calculatedCredit;
+  // Use the machine's maximum credit price as default
+  // This ensures we always start with the highest credit price value
+  return machine.creditMax;
 }
 
 // Function to determine if flatrate should be used based on the rules

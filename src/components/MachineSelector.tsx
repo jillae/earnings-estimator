@@ -31,15 +31,15 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
       </label>
       
       <Select value={selectedMachineId} onValueChange={handleMachineChange}>
-        <SelectTrigger className="w-full" id="machine-select">
+        <SelectTrigger className="w-full h-auto py-3 min-h-[50px]" id="machine-select">
           <SelectValue placeholder="Välj maskin" />
         </SelectTrigger>
         
-        <SelectContent>
+        <SelectContent position="popper" className="w-full max-h-[400px]">
           <SelectItem value="select-machine">Välj maskin</SelectItem>
           {machines.map((machine) => (
             <SelectItem key={machine.id} value={machine.id}>
-              <div className="flex flex-col">
+              <div className="flex flex-col py-1">
                 <span className="font-medium">{machine.name}</span>
                 <span className="text-xs text-slate-500">{machine.description}</span>
               </div>

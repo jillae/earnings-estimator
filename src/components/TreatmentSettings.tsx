@@ -1,7 +1,13 @@
 
 import React from 'react';
-import { Input } from "@/components/ui/input";
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { formatCurrency } from '@/utils/calculatorUtils';
 
 interface TreatmentSettingsProps {
   treatmentsPerDay: number;
@@ -10,116 +16,70 @@ interface TreatmentSettingsProps {
   onCustomerPriceChange: (value: number) => void;
 }
 
+const treatmentOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const priceOptions = [
+  500, 750, 1000, 1250, 1500, 1750, 2000, 
+  2250, 2500, 2750, 3000, 3500, 4000, 4500, 5000
+];
+
 const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   treatmentsPerDay,
   customerPrice,
   onTreatmentsChange,
   onCustomerPriceChange
 }) => {
-  const handleTreatmentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (!isNaN(value) && value > 0 && value <= 12) {
-      onTreatmentsChange(value);
-    }
+  const handleTreatmentsChange = (value: string) => {
+    onTreatmentsChange(parseInt(value, 10));
   };
-  
-  const incrementTreatments = () => {
-    if (treatmentsPerDay < 12) {
-      onTreatmentsChange(treatmentsPerDay + 1);
-    }
+
+  const handlePriceChange = (value: string) => {
+    onCustomerPriceChange(parseInt(value, 10));
   };
-  
-  const decrementTreatments = () => {
-    if (treatmentsPerDay > 1) {
-      onTreatmentsChange(treatmentsPerDay - 1);
-    }
-  };
-  
-  const handleCustomerPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (!isNaN(value) && value > 0) {
-      // Round to nearest 100
-      const roundedValue = Math.round(value / 100) * 100;
-      onCustomerPriceChange(roundedValue);
-    }
-  };
-  
-  const incrementCustomerPrice = () => {
-    onCustomerPriceChange(customerPrice + 100);
-  };
-  
-  const decrementCustomerPrice = () => {
-    if (customerPrice > 100) {
-      onCustomerPriceChange(customerPrice - 100);
-    }
-  };
-  
+
   return (
-    <div className="calculator-grid animate-slide-in" style={{ animationDelay: '150ms' }}>
-      <div className="input-group">
-        <label htmlFor="treatments-per-day" className="input-label">
+    <div className="md:grid md:grid-cols-2 md:gap-6">
+      <div className="input-group mb-0">
+        <label htmlFor="treatments-per-day" className="input-label h-14 flex items-start">
           Antal behandlingar per dag
         </label>
-        <div className="relative">
-          <Input
-            id="treatments-per-day"
-            type="number"
-            min="1"
-            max="12"
-            value={treatmentsPerDay}
-            onChange={handleTreatmentsChange}
-            className="pr-16"
-          />
-          <div className="absolute right-0 top-0 h-full flex flex-col">
-            <button 
-              type="button" 
-              onClick={incrementTreatments}
-              className="flex-1 px-2 border-l border-b border-input flex items-center justify-center hover:bg-gray-100"
-            >
-              <ChevronUp className="h-4 w-4" />
-            </button>
-            <button 
-              type="button" 
-              onClick={decrementTreatments}
-              className="flex-1 px-2 border-l border-input flex items-center justify-center hover:bg-gray-100"
-            >
-              <ChevronDown className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+        
+        <Select 
+          value={treatmentsPerDay.toString()} 
+          onValueChange={handleTreatmentsChange}
+        >
+          <SelectTrigger className="w-full" id="treatments-per-day">
+            <SelectValue placeholder="Välj antal" />
+          </SelectTrigger>
+          <SelectContent>
+            {treatmentOptions.map((value) => (
+              <SelectItem key={value} value={value.toString()}>
+                {value}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       
-      <div className="input-group">
-        <label htmlFor="customer-price" className="input-label">
+      <div className="input-group mb-0">
+        <label htmlFor="customer-price" className="input-label h-14 flex items-start">
           Kundpris per behandling (kr) ink moms
         </label>
-        <div className="relative">
-          <Input
-            id="customer-price"
-            type="number"
-            min="100"
-            step="100"
-            value={customerPrice}
-            onChange={handleCustomerPriceChange}
-            className="pr-16"
-          />
-          <div className="absolute right-0 top-0 h-full flex flex-col">
-            <button 
-              type="button" 
-              onClick={incrementCustomerPrice}
-              className="flex-1 px-2 border-l border-b border-input flex items-center justify-center hover:bg-gray-100"
-            >
-              <ChevronUp className="h-4 w-4" />
-            </button>
-            <button 
-              type="button" 
-              onClick={decrementCustomerPrice}
-              className="flex-1 px-2 border-l border-input flex items-center justify-center hover:bg-gray-100"
-            >
-              <ChevronDown className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+        
+        <Select 
+          value={customerPrice.toString()} 
+          onValueChange={handlePriceChange}
+        >
+          <SelectTrigger className="w-full" id="customer-price">
+            <SelectValue placeholder="Välj pris" />
+          </SelectTrigger>
+          <SelectContent>
+            {priceOptions.map((value) => (
+              <SelectItem key={value} value={value.toString()}>
+                {formatCurrency(value)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

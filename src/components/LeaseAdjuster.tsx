@@ -70,6 +70,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     console.log(`Flatrate threshold position: ${thresholdPosition}% (${flatrateThreshold} / ${exactMinCost} / ${exactMaxCost})`);
   }
 
+  // Check if we're above the flatrate threshold
+  const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
+
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
       <label className="input-label">
@@ -117,7 +120,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         <span className="text-lg font-semibold text-slate-700">{formattedCost}</span>
       </div>
 
-      {showFlatrateIndicator && (
+      {showFlatrateIndicator && isAboveFlatrateThreshold && (
         <div 
           id="flatrateInfo" 
           className="mt-5 p-4 bg-primary/5 border border-primary/20 rounded-lg text-sm"
