@@ -4,7 +4,6 @@ import { getExchangeRate } from './exchangeRate';
 export function formatCurrency(amount: number, shouldRound: boolean = true): string {
   let displayAmount = amount;
   
-  // Only round if shouldRound is true
   if (shouldRound) {
     displayAmount = Math.round(amount / 500) * 500;
   }
@@ -23,7 +22,7 @@ export async function fetchExchangeRate(): Promise<number> {
     return rate;
   } catch (error) {
     console.error('Error fetching exchange rate:', error);
-    return 11.49260; // Default EUR to SEK rate if API fails
+    return 11.49260;
   }
 }
 
@@ -37,22 +36,19 @@ export function calculateLeasingRange(
   leasingRate: number,
   includeInsurance: boolean
 ): { min: number; max: number; default: number } {
-  // Om leasingMin och leasingMax finns, använd dem direkt utan modifikation
   let baseLeasingMin: number;
   let baseLeasingMax: number;
   let baseLeasingDefault: number;
   
   if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
-    // Use the exact values directly from the machine data
     baseLeasingMin = machine.leasingMin;
     baseLeasingMax = machine.leasingMax;
-    baseLeasingDefault = machine.leasingMax; // Set default to max (high leasing cost = low credit price)
+    baseLeasingDefault = machine.leasingMax;
     console.log(`Using predefined leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
   } else {
-    // Annars beräkna från multiplikatorer
     const minMultiplier = machine.minLeaseMultiplier;
     const maxMultiplier = machine.maxLeaseMultiplier;
-    const defaultMultiplier = machine.maxLeaseMultiplier; // Set default to max
+    const defaultMultiplier = machine.maxLeaseMultiplier;
     
     baseLeasingMin = machinePriceSEK * leasingRate * minMultiplier;
     baseLeasingMax = machinePriceSEK * leasingRate * maxMultiplier;
@@ -60,11 +56,9 @@ export function calculateLeasingRange(
     console.log(`Calculated leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
   }
 
-  // Add insurance if selected
   let insuranceCost = 0;
   if (includeInsurance) {
-    // Determine insurance rate based on machine price
-    let insuranceRate = 0.015; // Default for very expensive machines
+    let insuranceRate = 0.015;
     if (machinePriceSEK <= 10000) {
       insuranceRate = 0.04;
     } else if (machinePriceSEK <= 20000) {
@@ -97,12 +91,10 @@ export function calculateLeasingCost(
   let baseLeasingCost: number;
   
   if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
-    // Om leasingMin och leasingMax finns, interpolera mellan dem exakt
     const leaseRange = machine.leasingMax - machine.leasingMin;
     baseLeasingCost = machine.leasingMin + leaseMultiplier * leaseRange;
     console.log(`Interpolated leasing cost for ${machine.name} at factor ${leaseMultiplier}: ${baseLeasingCost}`);
   } else {
-    // Annars beräkna från multiplikatorer och interpolera
     const actualMultiplier = machine.minLeaseMultiplier + 
       leaseMultiplier * 
       (machine.maxLeaseMultiplier - machine.minLeaseMultiplier);
@@ -111,11 +103,9 @@ export function calculateLeasingCost(
     console.log(`Calculated leasing cost for ${machine.name} at multiplier ${actualMultiplier}: ${baseLeasingCost}`);
   }
   
-  // Add insurance if selected
   let insuranceCost = 0;
   if (includeInsurance) {
-    // Determine insurance rate based on machine price
-    let insuranceRate = 0.015; // Default for very expensive machines
+    let insuranceRate = 0.015;
     if (machinePriceSEK <= 10000) {
       insuranceRate = 0.04;
     } else if (machinePriceSEK <= 20000) {
@@ -134,58 +124,54 @@ export function calculateLeasingCost(
 }
 
 export function calculateCreditPrice(machine: any, leasingCost: number): number {
-  // Calculate the price per credit based on machine and leasing cost
   if (!machine.usesCredits) return 0;
   
-  // If machine has defined credit min/max values, calculate based on leasing min/max
   if (machine.creditMin !== undefined && machine.creditMax !== undefined && 
       machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
     
-    // Calculate where in the leasing range this cost falls (as a percentage)
     const leasingRange = machine.leasingMax - machine.leasingMin;
     if (leasingRange <= 0) {
       console.log(`Zero leasing range for ${machine.name}, using credit min: ${machine.creditMin}`);
       return machine.creditMin;
     }
     
-    // Calculate position in leasing range (0-1)
     const leasingPosition = Math.max(0, Math.min(1, (leasingCost - machine.leasingMin) / leasingRange));
     
-    // INVERSE relationship: high leasing cost = low credit price, low leasing cost = high credit price
-    // Use 1 - position to get the inverse relationship
     const inversePosition = 1 - leasingPosition;
     
-    // Interpolate between credit min and max based on inverse position
     const creditRange = machine.creditMax - machine.creditMin;
     
-    // Calculate the credit price
     let calculatedCredit;
     
-    // At minimum leasing cost (position 0), use maximum credit price
-    if (leasingPosition <= 0) {
+    if (leasingCost <= machine.leasingMin) {
       calculatedCredit = machine.creditMax;
+      console.log(`Using maximum credit price ${machine.creditMax} at minimum leasing cost ${machine.leasingMin}`);
     } 
-    // At maximum leasing cost (position 1), use minimum credit price
-    else if (leasingPosition >= 1) {
+    else if (leasingCost >= machine.leasingMax) {
       calculatedCredit = machine.creditMin;
+      console.log(`Using minimum credit price ${machine.creditMin} at maximum leasing cost ${machine.leasingMax}`);
     } 
-    // Otherwise interpolate
     else {
       calculatedCredit = Math.round(machine.creditMin + inversePosition * creditRange);
+      console.log(`Interpolated credit price: ${calculatedCredit} at leasing position ${leasingPosition}`);
     }
     
-    console.log(`Calculated credit price for ${machine.name} at position ${leasingPosition}:`, {
+    console.log(`Calculated credit price for ${machine.name}:`, {
       leasingCost,
+      leasingMin: machine.leasingMin,
+      leasingMax: machine.leasingMax,
       leasingRange,
-      creditRange,
+      leasingPosition,
       inversePosition,
+      creditMin: machine.creditMin,
+      creditMax: machine.creditMax,
+      creditRange,
       calculatedCredit
     });
     
     return calculatedCredit;
   }
   
-  // Fallback to the multiplier method (inverse)
   const calculatedCredit = Math.round((1 / leasingCost) * machine.creditPriceMultiplier * 1000000);
   console.log(`Fallback calculated credit price for ${machine.name}: ${calculatedCredit}`);
   return calculatedCredit;
@@ -197,20 +183,15 @@ export function calculateOperatingCost(
   creditPrice: number,
   forceUseFlatrate: boolean = false
 ): { costPerMonth: number; useFlatrate: boolean } {
-  // Changed the logic to match requirements:
-  // 1. Only use flatrate if treatments >= 3 AND leasing cost >= flatrate threshold (80%)
-  // 2. Otherwise use per-credit pricing
   const useFlatrate = forceUseFlatrate && machine.usesCredits && treatmentsPerDay >= FLATRATE_THRESHOLD;
   
   let costPerMonth = 0;
   
   if (machine.usesCredits) {
     if (useFlatrate) {
-      // Use flatrate
       costPerMonth = machine.flatrateAmount;
     } else {
-      // Calculate based on per-treatment cost with the provided credit price
-      const creditsPerTreatment = 1; // Assume 1 credit per treatment for simplicity
+      const creditsPerTreatment = 1;
       costPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH * creditsPerTreatment * creditPrice;
     }
   }
@@ -229,7 +210,7 @@ export function calculateRevenue(customerPrice: number, treatmentsPerDay: number
 } {
   const revenuePerTreatmentExVat = customerPrice / (1 + VAT_RATE);
   const dailyRevenueIncVat = customerPrice * treatmentsPerDay;
-  const weeklyRevenueIncVat = dailyRevenueIncVat * 5; // Assume 5 working days per week
+  const weeklyRevenueIncVat = dailyRevenueIncVat * 5;
   const monthlyRevenueIncVat = dailyRevenueIncVat * WORKING_DAYS_PER_MONTH;
   const yearlyRevenueIncVat = monthlyRevenueIncVat * MONTHS_PER_YEAR;
   
