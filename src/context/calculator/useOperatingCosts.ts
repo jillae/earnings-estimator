@@ -30,6 +30,7 @@ export function useOperatingCosts({
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine) {
+      // Here we check if flatrate should be used
       const useFlatrateOption = shouldUseFlatrate(
         selectedMachine,
         leasingCost,

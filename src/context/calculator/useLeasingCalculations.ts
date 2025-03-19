@@ -44,16 +44,6 @@ export function useLeasingCalculations({
       console.log("Leasing range calculated:", range);
       setLeasingRange(range);
       
-      // Update machine object with dynamic leasing range (this is modifying the imported object, may need revision)
-      selectedMachine.leasingMax = range.max;
-      selectedMachine.leasingMin = range.min;
-      console.log(`Updated ${selectedMachine.name} with dynamic leasing range: min=${range.min}, max=${range.max}`);
-      
-      // Reset adjustment factor for non-credit machines
-      if (!selectedMachine.usesCredits) {
-        // This will trigger the leasing cost calculation in the next effect
-      }
-      
       // Calculate flatrate threshold for machines that use credits
       if (selectedMachine.usesCredits) {
         const threshold = range.max * 0.8;
@@ -67,6 +57,7 @@ export function useLeasingCalculations({
   useEffect(() => {
     if (isUpdatingFromCreditPrice) {
       console.log("Skipping leasing cost calculation because update is from credit price change");
+      setIsUpdatingFromCreditPrice(false);
       return;
     }
     
@@ -115,8 +106,7 @@ export function useLeasingCalculations({
   // Calculate credit price from leasing cost
   useEffect(() => {
     if (isUpdatingFromCreditPrice) {
-      console.log("Resetting isUpdatingFromCreditPrice flag");
-      setIsUpdatingFromCreditPrice(false);
+      console.log("Skipping credit price calculation due to isUpdatingFromCreditPrice flag");
       return;
     }
     
@@ -143,6 +133,7 @@ export function useLeasingCalculations({
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine && selectedMachine.usesCredits) {
+      // Set the new credit price
       setCreditPrice(newCreditPrice);
       
       // Mark that we're updating from credit price change to prevent circular updates

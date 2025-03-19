@@ -36,7 +36,7 @@ const CalculatorInputs: React.FC = () => {
   } = useCalculator();
 
   return (
-    <div>
+    <div className="w-full">
       <ClinicSizeSelector 
         clinicSize={clinicSize} 
         netYearlyResult={netResults.netPerYearExVat}
@@ -80,14 +80,16 @@ const CalculatorInputs: React.FC = () => {
           />
         )}
         
-        <OperatingCosts 
-          usesCredits={selectedMachine.usesCredits}
-          useFlatrate={operatingCost.useFlatrate}
-          creditPrice={creditPrice}
-          flatrateAmount={selectedMachine.flatrateAmount}
-          operatingCostPerMonth={operatingCost.costPerMonth}
-          onCreditPriceChange={handleCreditPriceChange}
-        />
+        {selectedMachine.usesCredits && (
+          <OperatingCosts 
+            usesCredits={selectedMachine.usesCredits}
+            useFlatrate={operatingCost.useFlatrate}
+            creditPrice={creditPrice}
+            flatrateAmount={selectedMachine.flatrateAmount}
+            operatingCostPerMonth={operatingCost.costPerMonth}
+            onCreditPriceChange={handleCreditPriceChange}
+          />
+        )}
       </div>
     </div>
   );

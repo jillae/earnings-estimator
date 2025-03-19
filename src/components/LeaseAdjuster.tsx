@@ -63,7 +63,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Calculate flatrate threshold position as percentage if applicable
   let thresholdPosition = null;
   if (showFlatrateIndicator && flatrateThreshold) {
-    // Ensure the threshold is properly positioned relative to min and max
+    // Calculate threshold position as percentage of the slider range
     const normalizedThreshold = Math.max(exactMinCost, Math.min(exactMaxCost, flatrateThreshold));
     thresholdPosition = ((normalizedThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
     console.log(`Flatrate threshold position: ${thresholdPosition}% (${flatrateThreshold} / ${exactMinCost} / ${exactMaxCost})`);
@@ -80,23 +80,22 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         <span className="text-xs text-slate-500">Max: {formattedMaxCost}</span>
       </div>
 
-      <div className="slider-container relative">
-        {showFlatrateIndicator && thresholdPosition !== null && thresholdPosition >= 0 && thresholdPosition <= 100 && (
+      <div className="slider-container relative mb-6">
+        {showFlatrateIndicator && thresholdPosition !== null && (
           <div className="flatrate-indicator">
             <div 
-              className="flatrate-threshold-line absolute h-6 border-l-2 border-primary z-10" 
+              className="absolute h-8 border-l-2 border-primary z-10 top-4" 
               style={{ left: `${thresholdPosition}%` }}
             />
             <div 
-              className="flatrate-threshold-text absolute text-xs text-primary font-medium"
+              className="absolute text-xs text-primary font-medium top-0"
               style={{ 
-                left: `${Math.min(Math.max(thresholdPosition - 25, 0), 70)}%`, 
-                top: '-20px',
-                maxWidth: '30%',
+                left: `${thresholdPosition > 70 ? thresholdPosition - 50 : thresholdPosition}%`, 
+                maxWidth: '50%',
                 whiteSpace: 'nowrap'
               }}
             >
-              Gräns för flatrate
+              80% flatrate gräns
             </div>
           </div>
         )}
@@ -108,7 +107,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           max={1}
           step={sliderStep}
           onValueChange={handleSliderChange}
-          className="my-4"
+          className="mt-8"
         />
       </div>
 

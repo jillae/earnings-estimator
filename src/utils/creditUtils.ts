@@ -98,13 +98,13 @@ export function shouldUseFlatrate(
     return false;
   }
   
+  // Get dynamic leasingMax if possible
+  let leasingMax: number;
+  
   // Ensure leasingRate is a number if provided
   const leasingRateNum = leasingRate !== undefined && typeof leasingRate === 'string' 
     ? parseFloat(leasingRate) 
     : (leasingRate as number | undefined);
-  
-  // Get dynamic leasingMax if possible
-  let leasingMax: number;
   
   if (leasingRateNum !== undefined && machinePriceSEK !== undefined) {
     const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
@@ -133,13 +133,8 @@ export function calculateOperatingCost(
   leasingRate?: string | number,
   machinePriceSEK?: number
 ): { costPerMonth: number; useFlatrate: boolean } {
-  // Ensure leasingRate is a number if provided
-  const leasingRateNum = leasingRate !== undefined && typeof leasingRate === 'string' 
-    ? parseFloat(leasingRate) 
-    : (leasingRate as number | undefined);
-  
   // Determine if flatrate should be used based on rules
-  const useFlatrate = shouldUseFlatrate(machine, leasingCost, treatmentsPerDay, leasingRateNum, machinePriceSEK);
+  const useFlatrate = shouldUseFlatrate(machine, leasingCost, treatmentsPerDay, leasingRate, machinePriceSEK);
   
   let costPerMonth = 0;
   
