@@ -1,3 +1,4 @@
+
 export interface Machine {
   id: string;
   name: string;
@@ -21,7 +22,7 @@ export const machineData: Machine[] = [
   {
     id: "emerald",
     name: "Emerald",
-    description: "Premiumlösning för professionell användning",
+    description: "Unik premiumlösning för fettreduktion",
     priceEur: 99500,
     minLeaseMultiplier: 0.018,
     maxLeaseMultiplier: 0.032,
@@ -67,7 +68,7 @@ export const machineData: Machine[] = [
   {
     id: "fx-405",
     name: "FX 405",
-    description: "Avancerad utrustning för större kliniker",
+    description: "Avancerad behandlingslösning för kliniker",
     priceEur: 44500,
     minLeaseMultiplier: 0.018,
     maxLeaseMultiplier: 0.032,
@@ -90,7 +91,7 @@ export const machineData: Machine[] = [
   {
     id: "zerona",
     name: "Zerona",
-    description: "Specialiserad behandlingsutrustning",
+    description: "Instegsmodell till Emerald - utan medicinskt krav",
     priceEur: 45900,
     minLeaseMultiplier: 0.018,
     maxLeaseMultiplier: 0.032,
@@ -113,7 +114,7 @@ export const machineData: Machine[] = [
   {
     id: "xlr8",
     name: "XLR8",
-    description: "Kompakt lösning för mindre kliniker",
+    description: "Instegsmodell av handhållen behandlingsutrustning",
     priceEur: 9900,
     minLeaseMultiplier: 0.018,
     maxLeaseMultiplier: 0.032,
@@ -137,7 +138,7 @@ export const machineData: Machine[] = [
   {
     id: "gvl",
     name: "GVL",
-    description: "Högeffektiv behandlingsutrustning",
+    description: "Senaste modellen av handhållen behandlingsutrustning",
     priceEur: 19900,
     minLeaseMultiplier: 0.018,
     maxLeaseMultiplier: 0.032,
@@ -149,7 +150,7 @@ export const machineData: Machine[] = [
   {
     id: "base-station",
     name: "Base Station",
-    description: "Basstation för avancerade behandlingar",
+    description: "Set om 3st. handhållna för högpresterande kliniker",
     priceEur: 30900,
     minLeaseMultiplier: 0.018,
     maxLeaseMultiplier: 0.032,
@@ -161,7 +162,7 @@ export const machineData: Machine[] = [
   {
     id: "lunula",
     name: "Lunula",
-    description: "Specialiserad behandlingsutrustning för specifika användningsområden",
+    description: "Specialiserad behandlingsutrustning för medicinsk fotvård.",
     priceEur: 25900,
     minLeaseMultiplier: 0.018,
     maxLeaseMultiplier: 0.032,

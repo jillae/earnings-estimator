@@ -39,7 +39,7 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
           {machines.map((machine) => (
             <SelectItem key={machine.id} value={machine.id}>
               <div className="flex flex-col">
-                <span>{machine.name}</span>
+                <span className="font-medium">{machine.name}</span>
                 <span className="text-xs text-slate-500">{machine.description}</span>
               </div>
             </SelectItem>
