@@ -116,7 +116,13 @@ const Calculator: React.FC = () => {
       console.log("Leasing range calculated:", range);
       setLeasingRange(range);
       
-      setLeaseAdjustmentFactor(1);
+      // For machines without credits, always set to max leasing cost
+      // For machines with credits, allow adjustment
+      if (!selectedMachine.usesCredits) {
+        setLeaseAdjustmentFactor(1); // Always use maximum for non-credit machines
+      } else {
+        setLeaseAdjustmentFactor(1); // Reset to default for credit machines
+      }
       
       if (selectedMachine.usesCredits) {
         const threshold = range.min + (0.8 * (range.max - range.min));
@@ -339,15 +345,18 @@ const Calculator: React.FC = () => {
               onInsuranceChange={setSelectedInsuranceId}
             />
             
-            <LeaseAdjuster 
-              minLeaseCost={leasingRange.min}
-              maxLeaseCost={leasingRange.max}
-              leaseCost={leasingCost}
-              adjustmentFactor={leaseAdjustmentFactor}
-              flatrateThreshold={flatrateThreshold}
-              showFlatrateIndicator={selectedMachine.usesCredits}
-              onAdjustmentChange={setLeaseAdjustmentFactor}
-            />
+            {/* Only show lease adjuster for machines that use credits */}
+            {selectedMachine.usesCredits && (
+              <LeaseAdjuster 
+                minLeaseCost={leasingRange.min}
+                maxLeaseCost={leasingRange.max}
+                leaseCost={leasingCost}
+                adjustmentFactor={leaseAdjustmentFactor}
+                flatrateThreshold={flatrateThreshold}
+                showFlatrateIndicator={selectedMachine.usesCredits}
+                onAdjustmentChange={setLeaseAdjustmentFactor}
+              />
+            )}
             
             <OperatingCosts 
               usesCredits={selectedMachine.usesCredits}
