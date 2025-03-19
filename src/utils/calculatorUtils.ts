@@ -153,22 +153,27 @@ export function calculateCreditPrice(machine: any, leasingCost: number): number 
     const leasingPosition = (leasingCost - machine.leasingMin) / leasingRange;
     const clampedPosition = Math.max(0, Math.min(1, leasingPosition));
     
-    // Interpolate between credit min and max based on that percentage
+    // INVERSE relationship: high leasing cost = low credit price, low leasing cost = high credit price
+    // Use 1 - position to get the inverse relationship
+    const inversePosition = 1 - clampedPosition;
+    
+    // Interpolate between credit min and max based on inverse position
     const creditRange = machine.creditMax - machine.creditMin;
-    const calculatedCredit = Math.round(machine.creditMin + clampedPosition * creditRange);
+    const calculatedCredit = Math.round(machine.creditMin + inversePosition * creditRange);
     
     console.log(`Calculated credit price for ${machine.name} at position ${clampedPosition}:`, {
       leasingCost,
       leasingRange,
       creditRange,
+      inversePosition,
       calculatedCredit
     });
     
     return calculatedCredit;
   }
   
-  // Fallback to the multiplier method
-  const calculatedCredit = Math.round(leasingCost * machine.creditPriceMultiplier);
+  // Fallback to the multiplier method (inverse)
+  const calculatedCredit = Math.round((1 / leasingCost) * machine.creditPriceMultiplier * 1000000);
   console.log(`Fallback calculated credit price for ${machine.name}: ${calculatedCredit}`);
   return calculatedCredit;
 }

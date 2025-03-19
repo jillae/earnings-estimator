@@ -204,21 +204,25 @@ const Calculator: React.FC = () => {
           // Avoid division by zero
           newLeasingCost = selectedMachine.leasingMin;
         } else {
+          // INVERSE relationship: high credit price = low leasing cost, low credit price = high leasing cost
           // Calculate position of newCreditPrice in the credit range (0-1)
           const creditPosition = (newCreditPrice - selectedMachine.creditMin) / creditRange;
           const clampedCreditPosition = Math.max(0, Math.min(1, creditPosition));
           
-          // Use that position to find equivalent leasing cost in the leasing range
+          // Invert the position (1 - position) to get the inverse relationship
+          const inverseCreditPosition = 1 - clampedCreditPosition;
+          
+          // Use inverse position to find equivalent leasing cost in the leasing range
           const leasingRange = selectedMachine.leasingMax - selectedMachine.leasingMin;
-          newLeasingCost = selectedMachine.leasingMin + (clampedCreditPosition * leasingRange);
+          newLeasingCost = selectedMachine.leasingMin + (inverseCreditPosition * leasingRange);
           
           console.log("Calculated new leasing cost from credit price:", 
-            {newCreditPrice, creditPosition, clampedCreditPosition, newLeasingCost});
+            {newCreditPrice, creditPosition, clampedCreditPosition, inverseCreditPosition, newLeasingCost});
         }
       } else {
-        // Fallback to multiplier method
-        newLeasingCost = newCreditPrice / selectedMachine.creditPriceMultiplier;
-        console.log("Calculated leasing cost from credit price using multiplier:", newLeasingCost);
+        // Fallback to multiplier method (inverse relationship)
+        newLeasingCost = 1000000 / (newCreditPrice * selectedMachine.creditPriceMultiplier);
+        console.log("Calculated leasing cost from credit price using inverse multiplier:", newLeasingCost);
       }
       
       // Find what adjustment factor would lead to this leasing cost
