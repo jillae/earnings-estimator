@@ -30,7 +30,7 @@ export function useOperatingCosts({
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine) {
-      // Here we check if flatrate should be used
+      // Check if we need to use flatrate based on leasing cost and treatments per day
       const useFlatrateOption = shouldUseFlatrate(
         selectedMachine,
         leasingCost,
@@ -41,6 +41,7 @@ export function useOperatingCosts({
       
       console.log(`Using flatrate: ${useFlatrateOption} (leasingCost: ${leasingCost}, treatmentsPerDay: ${treatmentsPerDay})`);
       
+      // Calculate operating cost (either credits or flatrate)
       const calculatedOperatingCost = calculateOperatingCost(
         selectedMachine,
         treatmentsPerDay,

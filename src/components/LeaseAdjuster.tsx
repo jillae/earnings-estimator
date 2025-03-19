@@ -66,7 +66,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     // Calculate threshold position as percentage of the slider range
     const normalizedThreshold = Math.max(exactMinCost, Math.min(exactMaxCost, flatrateThreshold));
     thresholdPosition = ((normalizedThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
-    console.log(`Flatrate threshold position: ${thresholdPosition}% (${flatrateThreshold} / ${exactMinCost} / ${exactMaxCost})`);
+    console.log(`Flatrate threshold position: ${thresholdPosition}% (${normalizedThreshold} / ${exactMinCost} / ${exactMaxCost})`);
   }
 
   return (

@@ -1,4 +1,3 @@
-
 /**
  * Utility functions for credit price calculations
  */
@@ -9,30 +8,32 @@ import { calculateLeasingRange } from './leasingUtils';
 export function calculateCreditPrice(machine: Machine, leasingCost: number, leasingRate?: string | number, machinePriceSEK?: number): number {
   if (!machine.usesCredits) return 0;
   
-  // Ensure leasingRate is a number if provided
-  const leasingRateNum = leasingRate !== undefined && typeof leasingRate === 'string' 
-    ? parseFloat(leasingRate) 
-    : (leasingRate as number | undefined);
+  // Ensure we have defined credit min/max values
+  if (machine.creditMin === undefined || machine.creditMax === undefined) {
+    console.error("Machine credit min/max values are undefined");
+    return 0;
+  }
   
-  // If we have dynamic leasingMax calculation available, use it
-  let creditMin = machine.creditMin;
-  let creditMax = machine.creditMax;
+  const creditMin = machine.creditMin;
+  const creditMax = machine.creditMax;
   let leasingMin: number;
   let leasingMax: number;
   
-  // Calculate dynamic leasing range if we have all necessary parameters
-  if (leasingRateNum !== undefined && machinePriceSEK !== undefined) {
-    const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
+  // Prefer to use machine's hardcoded leasingMin/Max values if available
+  if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
+    leasingMin = machine.leasingMin;
+    leasingMax = machine.leasingMax;
+    console.log(`Using hardcoded leasing range for credit calculation: ${leasingMin} - ${leasingMax}`);
+  }
+  // Otherwise calculate dynamic leasing range if we have necessary parameters
+  else if (leasingRate !== undefined && machinePriceSEK !== undefined) {
+    const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRate, false);
     leasingMin = dynamicRange.min;
     leasingMax = dynamicRange.max;
     console.log(`Using dynamically calculated leasing range: ${leasingMin} - ${leasingMax}`);
-  } else if (machine.creditMin !== undefined && machine.creditMax !== undefined) {
-    // Fall back to the hardcoded values as a last resort
-    leasingMin = machine.leasingMin !== undefined ? machine.leasingMin : 0;
-    leasingMax = machine.leasingMax !== undefined ? machine.leasingMax : 0;
-    console.log(`Using fallback leasing range: ${leasingMin} - ${leasingMax}`);
-  } else {
-    // If no ranges are available, use the inverse formula
+  } 
+  // Fallback to inverse formula if no ranges available
+  else {
     const calculatedCredit = Math.round((1 / leasingCost) * machine.creditPriceMultiplier * 1000000);
     console.log(`Fallback calculated credit price for ${machine.name}: ${calculatedCredit}`);
     return calculatedCredit;
@@ -41,21 +42,22 @@ export function calculateCreditPrice(machine: Machine, leasingCost: number, leas
   const leasingRange = leasingMax - leasingMin;
   if (leasingRange <= 0) {
     console.log(`Zero leasing range for ${machine.name}, using credit min: ${creditMin}`);
-    return creditMin !== undefined ? creditMin : 0;
+    return creditMin;
   }
   
+  // Calculate where the leasing cost falls in the leasing range (0-1)
   const leasingPosition = Math.max(0, Math.min(1, (leasingCost - leasingMin) / leasingRange));
   
-  const inversePosition = 1 - leasingPosition;
-  
-  const creditRange = (creditMax !== undefined && creditMin !== undefined) ? 
-                      creditMax - creditMin : 0;
-  
-  let calculatedCredit;
-  
-  // Ensure correct credit price mapping:
+  // Invert the position because:
   // At minimum leasing cost we want maximum credit price
   // At maximum leasing cost we want minimum credit price
+  const inversePosition = 1 - leasingPosition;
+  
+  const creditRange = creditMax - creditMin;
+  
+  // Determine credit price based on position in leasing range
+  let calculatedCredit;
+  
   if (leasingCost <= leasingMin) {
     calculatedCredit = creditMax;
     console.log(`Using maximum credit price ${creditMax} at minimum leasing cost ${leasingMin}`);
@@ -65,8 +67,7 @@ export function calculateCreditPrice(machine: Machine, leasingCost: number, leas
     console.log(`Using minimum credit price ${creditMin} at maximum leasing cost ${leasingMax}`);
   } 
   else {
-    calculatedCredit = Math.round((creditMin !== undefined && creditMax !== undefined) ? 
-                      (creditMin + inversePosition * creditRange) : 0);
+    calculatedCredit = Math.round(creditMin + inversePosition * creditRange);
     console.log(`Interpolated credit price: ${calculatedCredit} at leasing position ${leasingPosition}`);
   }
   
@@ -98,21 +99,19 @@ export function shouldUseFlatrate(
     return false;
   }
   
-  // Get dynamic leasingMax if possible
+  // Get leasingMax (prefer machine's defined value if available)
   let leasingMax: number;
   
-  // Ensure leasingRate is a number if provided
-  const leasingRateNum = leasingRate !== undefined && typeof leasingRate === 'string' 
-    ? parseFloat(leasingRate) 
-    : (leasingRate as number | undefined);
-  
-  if (leasingRateNum !== undefined && machinePriceSEK !== undefined) {
+  if (machine.leasingMax !== undefined) {
+    leasingMax = machine.leasingMax;
+    console.log(`Using hardcoded leasingMax for flatrate decision: ${leasingMax}`);
+  }
+  // Otherwise use dynamic calculation if possible
+  else if (leasingRate !== undefined && machinePriceSEK !== undefined) {
+    const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate;
     const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
     leasingMax = dynamicRange.max;
     console.log(`Using dynamically calculated leasingMax for flatrate decision: ${leasingMax}`);
-  } else if (machine.leasingMax !== undefined) {
-    leasingMax = machine.leasingMax;
-    console.log(`Using hardcoded leasingMax for flatrate decision: ${leasingMax}`);
   } else {
     console.log(`No leasingMax available for flatrate decision for ${machine.name}`);
     return false;

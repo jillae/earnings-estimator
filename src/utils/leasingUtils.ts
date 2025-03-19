@@ -25,7 +25,9 @@ export function calculateTariffBasedLeasingMax(
   
   if (factor !== undefined) {
     // The factor is now a decimal (e.g., 0.04566 instead of 4.566)
-    return Math.round((machinePriceEur + SHIPPING_COST_EUR) * CONSTANT_MULTIPLIER * factor);
+    const calculatedValue = Math.round((machinePriceEur + SHIPPING_COST_EUR) * CONSTANT_MULTIPLIER * factor);
+    console.log(`Tariff calculation: (${machinePriceEur} + ${SHIPPING_COST_EUR}) * ${CONSTANT_MULTIPLIER} * ${factor} = ${calculatedValue}`);
+    return calculatedValue;
   } else {
     console.error(`No factor found for leasing duration ${leaseDurationMonths} months.`);
     return 0;
@@ -47,6 +49,39 @@ export function calculateLeasingRange(
     Math.abs(curr.Faktor - leasingRateNum) < Math.abs(prev.Faktor - leasingRateNum) ? curr : prev
   );
   
+  // If we have specific machine leasingMin/Max values in the data, use those instead
+  if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
+    console.log(`Using pre-defined leasing range for ${machine.name}: ${machine.leasingMin} - ${machine.leasingMax}`);
+    const baseLeasingMin = machine.leasingMin;
+    const baseLeasingMax = machine.leasingMax;
+    const baseLeasingDefault = baseLeasingMax;
+    
+    let insuranceCost = 0;
+    if (includeInsurance) {
+      let insuranceRate = 0.015;
+      if (machinePriceSEK <= 10000) {
+        insuranceRate = 0.04;
+      } else if (machinePriceSEK <= 20000) {
+        insuranceRate = 0.03;
+      } else if (machinePriceSEK <= 50000) {
+        insuranceRate = 0.025;
+      }
+      
+      insuranceCost = machinePriceSEK * insuranceRate / 12;
+      console.log(`Adding insurance cost: ${insuranceCost}`);
+    }
+    
+    const result = {
+      min: baseLeasingMin,
+      max: baseLeasingMax,
+      default: baseLeasingDefault + insuranceCost
+    };
+    
+    console.log("Final leasing range:", result);
+    return result;
+  }
+  
+  // If no pre-defined values, calculate based on tariff
   const baseLeasingMax = calculateTariffBasedLeasingMax(machine.priceEur, closestTariff.Löptid);
   const baseLeasingMin = Math.round(0.90 * baseLeasingMax); // 90% of max as required
   const baseLeasingDefault = baseLeasingMax;
