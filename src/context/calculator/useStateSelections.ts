@@ -1,6 +1,7 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { machineData } from '@/data/machines';
+import { Machine } from '@/data/machines/types';
 
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
@@ -11,10 +12,13 @@ export function useStateSelections() {
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
 
+  // Derive the selected machine from the machine ID
+  const selectedMachine = useMemo(() => {
+    return machineData.find(machine => machine.id === selectedMachineId) || null;
+  }, [selectedMachineId]);
+
   // When machine selection changes, reset certain values to defaults for that machine
   useEffect(() => {
-    const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
-    
     if (selectedMachine) {
       // Set default leasing period from machine if defined
       if (selectedMachine.defaultLeasingPeriod) {
@@ -29,13 +33,14 @@ export function useStateSelections() {
       // Always set leaseAdjustmentFactor to 1 (max) when selecting a new machine
       setLeaseAdjustmentFactor(1);
     }
-  }, [selectedMachineId]);
+  }, [selectedMachine]);
 
   return {
     clinicSize,
     setClinicSize,
     selectedMachineId,
     setSelectedMachineId,
+    selectedMachine,
     selectedLeasingPeriodId,
     setSelectedLeasingPeriodId,
     selectedInsuranceId,
