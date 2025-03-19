@@ -77,40 +77,33 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
           <label className="input-label">
             Credits Styckepris (ex moms per styck)
           </label>
-          {onCreditPriceChange ? (
-            <div className="flex items-center mb-4">
-              <div className="relative flex-grow">
-                <Input
-                  type="number"
-                  min="1"
-                  value={creditPrice}
-                  onChange={handleCreditPriceChange}
-                  className="w-full pr-16"
-                />
-                <div className="absolute right-0 top-0 h-full flex flex-col">
-                  <button 
-                    type="button" 
-                    onClick={incrementCreditPrice}
-                    className="flex-1 px-2 border-l border-b border-input flex items-center justify-center hover:bg-gray-100"
-                  >
-                    <ChevronUp className="h-4 w-4" />
-                  </button>
-                  <button 
-                    type="button" 
-                    onClick={decrementCreditPrice}
-                    className="flex-1 px-2 border-l border-input flex items-center justify-center hover:bg-gray-100"
-                  >
-                    <ChevronDown className="h-4 w-4" />
-                  </button>
-                </div>
+          <div className="flex items-center mb-4">
+            <div className="relative flex-grow">
+              <Input
+                type="number"
+                min="1"
+                value={creditPrice}
+                onChange={handleCreditPriceChange}
+                className="w-full pr-16"
+              />
+              <div className="absolute right-0 top-0 h-full flex flex-col">
+                <button 
+                  type="button" 
+                  onClick={incrementCreditPrice}
+                  className="flex-1 px-2 border-l border-b border-input flex items-center justify-center hover:bg-gray-100 rounded-tr-md"
+                >
+                  <ChevronUp className="h-4 w-4" />
+                </button>
+                <button 
+                  type="button" 
+                  onClick={decrementCreditPrice}
+                  className="flex-1 px-2 border-l border-input flex items-center justify-center hover:bg-gray-100 rounded-br-md"
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </button>
               </div>
             </div>
-          ) : (
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm">Pris per credit</span>
-              <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice, false)}</span>
-            </div>
-          )}
+          </div>
           
           <label className="input-label">
             Credits kostnad per månad (ex moms)

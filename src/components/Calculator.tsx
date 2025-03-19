@@ -344,6 +344,8 @@ const Calculator: React.FC = () => {
               maxLeaseCost={leasingRange.max}
               leaseCost={leasingCost}
               adjustmentFactor={leaseAdjustmentFactor}
+              flatrateThreshold={flatrateThreshold}
+              showFlatrateIndicator={selectedMachine.usesCredits}
               onAdjustmentChange={setLeaseAdjustmentFactor}
             />
             
