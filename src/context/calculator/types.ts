@@ -26,7 +26,6 @@ export interface CalculatorContextType {
   leasingRange: { min: number, max: number, default: number };
   leasingCost: number;
   creditPrice: number;
-  handleCreditPriceChange: (value: number) => void;
   
   // Adjustments
   leaseAdjustmentFactor: number;
