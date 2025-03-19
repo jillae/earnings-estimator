@@ -52,6 +52,8 @@ const Calculator: React.FC = () => {
   const [leasingRange, setLeasingRange] = useState<{ min: number, max: number, default: number }>({ min: 0, max: 0, default: 0 });
   const [leasingCost, setLeasingCost] = useState<number>(0);
   const [creditPrice, setCreditPrice] = useState<number>(0);
+  const [isUpdatingFromCreditPrice, setIsUpdatingFromCreditPrice] = useState<boolean>(false);
+  const [isUpdatingFromLeasingCost, setIsUpdatingFromLeasingCost] = useState<boolean>(false);
   const [operatingCost, setOperatingCost] = useState<{ costPerMonth: number, useFlatrate: boolean }>({ costPerMonth: 0, useFlatrate: false });
   const [revenue, setRevenue] = useState<any>({
     revenuePerTreatmentExVat: 0,
@@ -132,6 +134,8 @@ const Calculator: React.FC = () => {
   
   // Calculate leasing cost when range or adjustment factor changes
   useEffect(() => {
+    if (isUpdatingFromCreditPrice) return; // Skip if update is coming from credit price change
+    
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     const selectedLeasingPeriod = leasingPeriods.find(period => period.id === selectedLeasingPeriodId);
     const includeInsurance = selectedInsuranceId === 'yes';
@@ -153,19 +157,53 @@ const Calculator: React.FC = () => {
       );
       
       console.log("Calculated leasing cost:", calculatedLeasingCost);
+      setIsUpdatingFromLeasingCost(true);
       setLeasingCost(calculatedLeasingCost);
     }
-  }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId, leaseAdjustmentFactor]);
+  }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId, leaseAdjustmentFactor, isUpdatingFromCreditPrice]);
   
   // Calculate credit price when leasing cost changes
   useEffect(() => {
+    if (isUpdatingFromCreditPrice) {
+      setIsUpdatingFromCreditPrice(false);
+      return;
+    }
+    
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
-    if (selectedMachine) {
+    if (selectedMachine && selectedMachine.usesCredits) {
       const calculatedCreditPrice = calculateCreditPrice(selectedMachine, leasingCost);
+      console.log("Calculated credit price from leasing cost:", calculatedCreditPrice);
       setCreditPrice(calculatedCreditPrice);
     }
-  }, [selectedMachineId, leasingCost]);
+    
+    setIsUpdatingFromLeasingCost(false);
+  }, [selectedMachineId, leasingCost, isUpdatingFromCreditPrice]);
+  
+  // Handle direct credit price changes
+  const handleCreditPriceChange = (newCreditPrice: number) => {
+    const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
+    
+    if (selectedMachine && selectedMachine.usesCredits) {
+      setCreditPrice(newCreditPrice);
+      
+      // Calculate what leasing cost would generate this credit price
+      const newLeasingCost = newCreditPrice / selectedMachine.creditPriceMultiplier;
+      console.log("Calculated leasing cost from credit price:", newLeasingCost);
+      
+      // Find what adjustment factor would lead to this leasing cost
+      const leasingDiff = leasingRange.max - leasingRange.min;
+      if (leasingDiff > 0) {
+        const newFactor = (newLeasingCost - leasingRange.min) / leasingDiff;
+        const clampedFactor = Math.max(0, Math.min(1, newFactor));
+        
+        console.log("New adjustment factor from credit price:", clampedFactor);
+        setIsUpdatingFromCreditPrice(true);
+        setLeaseAdjustmentFactor(clampedFactor);
+        setLeasingCost(newLeasingCost);
+      }
+    }
+  };
   
   // Calculate operating cost when treatments per day or credit price changes
   useEffect(() => {
@@ -175,12 +213,12 @@ const Calculator: React.FC = () => {
       const calculatedOperatingCost = calculateOperatingCost(
         selectedMachine,
         treatmentsPerDay,
-        leasingCost
+        creditPrice
       );
       
       setOperatingCost(calculatedOperatingCost);
     }
-  }, [selectedMachineId, treatmentsPerDay, leasingCost]);
+  }, [selectedMachineId, treatmentsPerDay, creditPrice]);
   
   // Calculate revenue when customer price or treatments per day changes
   useEffect(() => {
@@ -258,6 +296,7 @@ const Calculator: React.FC = () => {
               creditPrice={creditPrice}
               flatrateAmount={selectedMachine.flatrateAmount}
               operatingCostPerMonth={operatingCost.costPerMonth}
+              onCreditPriceChange={handleCreditPriceChange}
             />
           </div>
         </div>

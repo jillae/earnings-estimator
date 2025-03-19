@@ -1,3 +1,4 @@
+
 import { VAT_RATE, WORKING_DAYS_PER_MONTH, MONTHS_PER_YEAR, FLATRATE_THRESHOLD, Machine } from '../data/machineData';
 import { getExchangeRate } from './exchangeRate';
 
@@ -122,13 +123,32 @@ export function calculateLeasingCost(
 
 export function calculateCreditPrice(machine: any, leasingCost: number): number {
   // Calculate the price per credit based on machine and leasing cost
-  return leasingCost * machine.creditPriceMultiplier;
+  if (!machine.usesCredits) return 0;
+  
+  // If machine has defined credit min/max values, calculate based on leasing min/max
+  if (machine.creditMin !== undefined && machine.creditMax !== undefined && 
+      machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
+    
+    // Calculate where in the leasing range this cost falls (as a percentage)
+    const leasingRange = machine.leasingMax - machine.leasingMin;
+    if (leasingRange <= 0) return machine.creditMin;
+    
+    const leasingPosition = (leasingCost - machine.leasingMin) / leasingRange;
+    const clampedPosition = Math.max(0, Math.min(1, leasingPosition));
+    
+    // Interpolate between credit min and max based on that percentage
+    const creditRange = machine.creditMax - machine.creditMin;
+    return Math.round(machine.creditMin + clampedPosition * creditRange);
+  }
+  
+  // Fallback to the multiplier method
+  return Math.round(leasingCost * machine.creditPriceMultiplier);
 }
 
 export function calculateOperatingCost(
   machine: any,
   treatmentsPerDay: number,
-  leasingCost: number
+  creditPrice: number
 ): { costPerMonth: number; useFlatrate: boolean } {
   // Determine if we should use flatrate based on number of treatments
   const useFlatrate = treatmentsPerDay >= FLATRATE_THRESHOLD;
@@ -140,9 +160,8 @@ export function calculateOperatingCost(
       // Use flatrate
       costPerMonth = machine.flatrateAmount;
     } else {
-      // Calculate based on per-treatment cost
+      // Calculate based on per-treatment cost with the provided credit price
       const creditsPerTreatment = 1; // Assume 1 credit per treatment for simplicity
-      const creditPrice = calculateCreditPrice(machine, leasingCost);
       costPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH * creditsPerTreatment * creditPrice;
     }
   }

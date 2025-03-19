@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { formatCurrency } from '@/utils/calculatorUtils';
+import { Input } from "@/components/ui/input";
 
 interface OperatingCostsProps {
   usesCredits: boolean;
@@ -8,6 +9,7 @@ interface OperatingCostsProps {
   creditPrice: number;
   flatrateAmount: number;
   operatingCostPerMonth: number;
+  onCreditPriceChange?: (value: number) => void;
 }
 
 const OperatingCosts: React.FC<OperatingCostsProps> = ({
@@ -15,11 +17,19 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   useFlatrate,
   creditPrice,
   flatrateAmount,
-  operatingCostPerMonth
+  operatingCostPerMonth,
+  onCreditPriceChange
 }) => {
   if (!usesCredits) {
     return null;
   }
+  
+  const handleCreditPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value > 0 && onCreditPriceChange) {
+      onCreditPriceChange(value);
+    }
+  };
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
@@ -38,10 +48,20 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
           <label className="input-label">
             Credits Styckepris (ex moms per styck)
           </label>
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm">Pris per credit</span>
-            <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice)}</span>
-          </div>
+          {onCreditPriceChange ? (
+            <Input
+              type="number"
+              min="1"
+              value={creditPrice}
+              onChange={handleCreditPriceChange}
+              className="mb-4"
+            />
+          ) : (
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm">Pris per credit</span>
+              <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice)}</span>
+            </div>
+          )}
           
           <label className="input-label">
             Credits kostnad per månad (ex moms)
