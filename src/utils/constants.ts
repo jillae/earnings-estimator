@@ -32,4 +32,4 @@ export const LEASING_TARIFFS: TariffEntry[] = [
   { Löptid: 60, Faktor: 2.095 }
 ];
 
-// Removed CONSTANT_MULTIPLIER as it's no longer needed with the direct SEK * tariff% formula
+// Removed 72 month tariff as requested

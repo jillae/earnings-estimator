@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { machineData, leasingPeriods } from '@/data/machines';
 import { 
@@ -42,6 +41,7 @@ export function useLeasingCalculations({
       
       // Calculate flatrate threshold for machines that use credits
       if (selectedMachine.usesCredits) {
+        // Set threshold at 80% of the way from min to max
         const threshold = range.min + (range.max - range.min) * 0.8;
         console.log("Flatrate threshold calculated:", threshold);
         setFlatrateThreshold(threshold);

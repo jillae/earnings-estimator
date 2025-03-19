@@ -37,7 +37,7 @@ export function calculateTariffBasedLeasingMax(
     const totalPriceSEK = (machinePriceEur + shippingCost) * exchangeRate;
     
     // Apply tariff percentage directly (factor is already a percentage value)
-    const calculatedValue = Math.round(totalPriceSEK * factor);
+    const calculatedValue = Math.round(totalPriceSEK * factor / 100);
     
     console.log(`Tariff calculation: ${totalPriceSEK} SEK * ${factor}% = ${calculatedValue}`);
     return calculatedValue;
