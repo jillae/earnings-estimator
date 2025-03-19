@@ -7,7 +7,7 @@ import LeaseAdjuster from '../LeaseAdjuster';
 import OperatingCosts from '../OperatingCosts';
 import TreatmentSettings from '../TreatmentSettings';
 import { useCalculator } from '@/context/CalculatorContext';
-import { machineData, leasingPeriods, insuranceOptions } from '../calculator/imports';
+import { machineData, leasingPeriods, insuranceOptions } from './imports';
 
 const CalculatorInputs: React.FC = () => {
   const {

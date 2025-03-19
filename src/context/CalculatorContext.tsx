@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { machineData, leasingPeriods, insuranceOptions, SMALL_CLINIC_TREATMENTS, MEDIUM_CLINIC_TREATMENTS, LARGE_CLINIC_TREATMENTS, DEFAULT_CUSTOMER_PRICE } from '../data/machineData';
+import { machineData, leasingPeriods, insuranceOptions, SMALL_CLINIC_TREATMENTS, MEDIUM_CLINIC_TREATMENTS, LARGE_CLINIC_TREATMENTS, DEFAULT_CUSTOMER_PRICE } from '../data/machines';
 import {
   fetchExchangeRate,
   calculateMachinePriceSEK,

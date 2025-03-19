@@ -7,7 +7,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Machine } from '@/data/machineData';
+import { Machine } from '@/data/machines/types';
 
 interface MachineSelectorProps {
   machines: Machine[];
