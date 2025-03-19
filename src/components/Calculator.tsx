@@ -123,14 +123,18 @@ const Calculator: React.FC = () => {
       console.log("Leasing range calculated:", range);
       setLeasingRange(range);
       
+      selectedMachine.leasingMax = range.max;
+      selectedMachine.leasingMin = range.min;
+      console.log(`Updated ${selectedMachine.name} with dynamic leasing range: min=${range.min}, max=${range.max}`);
+      
       if (!selectedMachine.usesCredits) {
         setLeaseAdjustmentFactor(1);
       } else {
         setLeaseAdjustmentFactor(1);
       }
       
-      if (selectedMachine.usesCredits && selectedMachine.leasingMax) {
-        const threshold = selectedMachine.leasingMax * 0.8;
+      if (selectedMachine.usesCredits) {
+        const threshold = range.max * 0.8;
         console.log("Flatrate threshold calculated:", threshold);
         setFlatrateThreshold(threshold);
       }
@@ -195,13 +199,18 @@ const Calculator: React.FC = () => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine && selectedMachine.usesCredits) {
-      const calculatedCreditPrice = calculateCreditPrice(selectedMachine, leasingCost);
+      const calculatedCreditPrice = calculateCreditPrice(
+        selectedMachine, 
+        leasingCost,
+        selectedLeasingPeriodId,
+        machinePriceSEK
+      );
       console.log("Calculated credit price from leasing cost:", calculatedCreditPrice);
       setCreditPrice(calculatedCreditPrice);
     }
     
     setIsUpdatingFromLeasingCost(false);
-  }, [selectedMachineId, leasingCost, isUpdatingFromCreditPrice]);
+  }, [selectedMachineId, leasingCost, isUpdatingFromCreditPrice, machinePriceSEK, selectedLeasingPeriodId]);
 
   const handleCreditPriceChange = (newCreditPrice: number) => {
     console.log("Credit price manually changed to:", newCreditPrice);
@@ -265,7 +274,9 @@ const Calculator: React.FC = () => {
       const useFlatrateOption = shouldUseFlatrate(
         selectedMachine,
         leasingCost,
-        treatmentsPerDay
+        treatmentsPerDay,
+        selectedLeasingPeriodId,
+        machinePriceSEK
       );
       
       console.log(`Using flatrate: ${useFlatrateOption} (leasingCost: ${leasingCost}, treatmentsPerDay: ${treatmentsPerDay})`);
@@ -274,12 +285,14 @@ const Calculator: React.FC = () => {
         selectedMachine,
         treatmentsPerDay,
         creditPrice,
-        leasingCost
+        leasingCost,
+        selectedLeasingPeriodId,
+        machinePriceSEK
       );
       
       setOperatingCost(calculatedOperatingCost);
     }
-  }, [selectedMachineId, treatmentsPerDay, creditPrice, leasingCost]);
+  }, [selectedMachineId, treatmentsPerDay, creditPrice, leasingCost, machinePriceSEK, selectedLeasingPeriodId]);
 
   useEffect(() => {
     const calculatedRevenue = calculateRevenue(customerPrice, treatmentsPerDay);
@@ -352,7 +365,6 @@ const Calculator: React.FC = () => {
               onInsuranceChange={setSelectedInsuranceId}
             />
             
-            {/* Only show lease adjuster for machines that use credits */}
             {selectedMachine.usesCredits && (
               <LeaseAdjuster 
                 minLeaseCost={leasingRange.min}

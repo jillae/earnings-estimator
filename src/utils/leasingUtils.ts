@@ -15,6 +15,7 @@ export function getLeasingFactor(leaseDurationMonths: number): number | undefine
 
 /**
  * Calculates the maximum leasing cost based on machine price and leasing duration
+ * This is the central function for determining the maximum leasing cost
  */
 export function calculateTariffBasedLeasingMax(
   machinePriceEur: number, 
@@ -40,16 +41,9 @@ export function calculateLeasingRange(
   let baseLeasingMax: number;
   let baseLeasingDefault: number;
   
-  // First check if we can use the predefined leasing range
-  if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
-    baseLeasingMin = machine.leasingMin;
-    baseLeasingMax = machine.leasingMax;
-    baseLeasingDefault = machine.leasingMax; // Use max as default
-    console.log(`Using predefined leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
-  } 
-  // Then check if we should use tariff-based calculation
-  else if (leasingRate && LEASING_TARIFFS.some(t => Math.abs(t.Faktor - leasingRate * 100) < 0.1)) {
-    // Find the closest matching tariff
+  // Always use tariff-based calculation when possible
+  // Find the closest leasing period match
+  if (leasingRate) {
     const closestTariff = LEASING_TARIFFS.reduce((prev, curr) => 
       Math.abs(curr.Faktor - leasingRate * 100) < Math.abs(prev.Faktor - leasingRate * 100) ? curr : prev
     );
@@ -60,7 +54,7 @@ export function calculateLeasingRange(
     
     console.log(`Calculated tariff-based leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
   }
-  // Fall back to the original calculation method
+  // Fall back to the original calculation method if no tariff match found
   else {
     const minMultiplier = machine.minLeaseMultiplier;
     const maxMultiplier = machine.maxLeaseMultiplier;
@@ -104,20 +98,14 @@ export function calculateLeasingCost(
   includeInsurance: boolean,
   leaseMultiplier: number
 ): number {
+  // Get the dynamic leasing range
+  const leasingRange = calculateLeasingRange(machine, machinePriceSEK, leasingRate, false);
   let baseLeasingCost: number;
   
-  if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
-    const leaseRange = machine.leasingMax - machine.leasingMin;
-    baseLeasingCost = machine.leasingMin + leaseMultiplier * leaseRange;
-    console.log(`Interpolated leasing cost for ${machine.name} at factor ${leaseMultiplier}: ${baseLeasingCost}`);
-  } else {
-    const actualMultiplier = machine.minLeaseMultiplier + 
-      leaseMultiplier * 
-      (machine.maxLeaseMultiplier - machine.minLeaseMultiplier);
-    
-    baseLeasingCost = machinePriceSEK * leasingRate * actualMultiplier;
-    console.log(`Calculated leasing cost for ${machine.name} at multiplier ${actualMultiplier}: ${baseLeasingCost}`);
-  }
+  // Use the dynamically calculated leasingMax and leasingMin
+  const leaseRange = leasingRange.max - leasingRange.min;
+  baseLeasingCost = leasingRange.min + leaseMultiplier * leaseRange;
+  console.log(`Interpolated leasing cost for ${machine.name} at factor ${leaseMultiplier}: ${baseLeasingCost}`);
   
   let insuranceCost = 0;
   if (includeInsurance) {
