@@ -3,7 +3,12 @@
  * Utility functions for leasing calculations
  */
 import { Machine } from '../data/machineData';
-import { LEASING_TARIFFS, SHIPPING_COST_EUR, CONSTANT_MULTIPLIER } from './constants';
+import { 
+  LEASING_TARIFFS, 
+  SHIPPING_COST_EUR_CREDITS, 
+  SHIPPING_COST_EUR_NO_CREDITS, 
+  CONSTANT_MULTIPLIER 
+} from './constants';
 
 /**
  * Gets the leasing factor based on leasing duration in months
@@ -19,14 +24,16 @@ export function getLeasingFactor(leaseDurationMonths: number): number | undefine
  */
 export function calculateTariffBasedLeasingMax(
   machinePriceEur: number, 
-  leaseDurationMonths: number
+  leaseDurationMonths: number,
+  usesCredits: boolean
 ): number {
   const factor = getLeasingFactor(leaseDurationMonths);
+  const shippingCost = usesCredits ? SHIPPING_COST_EUR_CREDITS : SHIPPING_COST_EUR_NO_CREDITS;
   
   if (factor !== undefined) {
     // The factor is now a decimal (e.g., 0.04566 instead of 4.566)
-    const calculatedValue = Math.round((machinePriceEur + SHIPPING_COST_EUR) * CONSTANT_MULTIPLIER * factor);
-    console.log(`Tariff calculation: (${machinePriceEur} + ${SHIPPING_COST_EUR}) * ${CONSTANT_MULTIPLIER} * ${factor} = ${calculatedValue}`);
+    const calculatedValue = Math.round((machinePriceEur + shippingCost) * CONSTANT_MULTIPLIER * factor);
+    console.log(`Tariff calculation: (${machinePriceEur} + ${shippingCost}) * ${CONSTANT_MULTIPLIER} * ${factor} = ${calculatedValue}`);
     return calculatedValue;
   } else {
     console.error(`No factor found for leasing duration ${leaseDurationMonths} months.`);
@@ -82,7 +89,7 @@ export function calculateLeasingRange(
   }
   
   // If no pre-defined values, calculate based on tariff
-  const baseLeasingMax = calculateTariffBasedLeasingMax(machine.priceEur, closestTariff.Löptid);
+  const baseLeasingMax = calculateTariffBasedLeasingMax(machine.priceEur, closestTariff.Löptid, machine.usesCredits);
   const baseLeasingMin = Math.round(0.90 * baseLeasingMax); // 90% of max as required
   const baseLeasingDefault = baseLeasingMax;
   

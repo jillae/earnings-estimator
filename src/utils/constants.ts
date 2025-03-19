@@ -8,7 +8,8 @@ export const MONTHS_PER_YEAR = 12;
 export const FLATRATE_THRESHOLD = 3;
 
 // Constants for shipping and tariffs
-export const SHIPPING_COST_EUR = 677;
+export const SHIPPING_COST_EUR_CREDITS = 652;
+export const SHIPPING_COST_EUR_NO_CREDITS = 230;
 
 export interface TariffEntry {
   Löptid: number;

@@ -3,7 +3,9 @@ export const VAT_RATE = 0.25;
 export const WORKING_DAYS_PER_MONTH = 22;
 export const MONTHS_PER_YEAR = 12;
 export const FLATRATE_THRESHOLD = 3;
-export const SHIPPING_COST_EUR = 652;
+
+export const SHIPPING_COST_EUR_CREDITS = 652;
+export const SHIPPING_COST_EUR_NO_CREDITS = 230;
 
 export const DEFAULT_EXCHANGE_RATE = 11.49260;
 
