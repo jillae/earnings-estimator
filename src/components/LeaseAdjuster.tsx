@@ -86,7 +86,12 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
             />
             <div 
               className="flatrate-threshold-text absolute text-xs text-primary font-medium"
-              style={{ left: `${thresholdPosition + 1}%`, top: '-20px' }}
+              style={{ 
+                left: `${Math.min(thresholdPosition + 1, 75)}%`, 
+                top: '-20px',
+                maxWidth: '25%',
+                whiteSpace: 'nowrap'
+              }}
             >
               Gräns för flatrate
             </div>

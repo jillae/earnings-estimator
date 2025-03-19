@@ -1,4 +1,3 @@
-
 import { VAT_RATE, WORKING_DAYS_PER_MONTH, MONTHS_PER_YEAR, FLATRATE_THRESHOLD, Machine } from '../data/machineData';
 import { getExchangeRate } from './exchangeRate';
 
@@ -150,28 +149,32 @@ export function calculateCreditPrice(machine: any, leasingCost: number): number 
     }
     
     // Calculate position in leasing range (0-1)
-    const leasingPosition = (leasingCost - machine.leasingMin) / leasingRange;
-    // Clamp to 0-1 range to prevent calculation errors
-    const clampedPosition = Math.max(0, Math.min(1, leasingPosition));
+    const leasingPosition = Math.max(0, Math.min(1, (leasingCost - machine.leasingMin) / leasingRange));
     
     // INVERSE relationship: high leasing cost = low credit price, low leasing cost = high credit price
     // Use 1 - position to get the inverse relationship
-    const inversePosition = 1 - clampedPosition;
+    const inversePosition = 1 - leasingPosition;
     
     // Interpolate between credit min and max based on inverse position
     const creditRange = machine.creditMax - machine.creditMin;
     
-    // Ensure we get the exact credit values at the extremes
+    // Calculate the credit price
     let calculatedCredit;
-    if (clampedPosition <= 0) {
-      calculatedCredit = machine.creditMax; // At minimum leasing cost, use maximum credit price (299)
-    } else if (clampedPosition >= 1) {
-      calculatedCredit = machine.creditMin; // At maximum leasing cost, use minimum credit price
-    } else {
+    
+    // At minimum leasing cost (position 0), use maximum credit price
+    if (leasingPosition <= 0) {
+      calculatedCredit = machine.creditMax;
+    } 
+    // At maximum leasing cost (position 1), use minimum credit price
+    else if (leasingPosition >= 1) {
+      calculatedCredit = machine.creditMin;
+    } 
+    // Otherwise interpolate
+    else {
       calculatedCredit = Math.round(machine.creditMin + inversePosition * creditRange);
     }
     
-    console.log(`Calculated credit price for ${machine.name} at position ${clampedPosition}:`, {
+    console.log(`Calculated credit price for ${machine.name} at position ${leasingPosition}:`, {
       leasingCost,
       leasingRange,
       creditRange,
