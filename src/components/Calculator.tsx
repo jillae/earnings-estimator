@@ -133,6 +133,13 @@ const Calculator: React.FC = () => {
       
       // Always set adjustment factor to 1 (max) when range changes
       setLeaseAdjustmentFactor(1);
+      
+      // Calculate flatrate threshold (80% of the way from min to max)
+      if (selectedMachine.usesCredits) {
+        const threshold = range.min + (0.8 * (range.max - range.min));
+        console.log("Flatrate threshold calculated:", threshold);
+        setFlatrateThreshold(threshold);
+      }
     }
   }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId]);
   
@@ -255,15 +262,25 @@ const Calculator: React.FC = () => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine) {
+      // Determine if we should use flatrate based on leasing cost and threshold
+      let shouldUseFlatrate = false;
+      
+      if (selectedMachine.usesCredits) {
+        // Use flatrate if leasing cost is >= flatrate threshold (80% of range)
+        shouldUseFlatrate = leasingCost >= flatrateThreshold;
+        console.log(`Flatrate decision: leasingCost ${leasingCost} ${shouldUseFlatrate ? '>=' : '<'} threshold ${flatrateThreshold}`);
+      }
+      
       const calculatedOperatingCost = calculateOperatingCost(
         selectedMachine,
         treatmentsPerDay,
-        creditPrice
+        creditPrice,
+        shouldUseFlatrate  // Pass the flatrate decision to the calculation function
       );
       
       setOperatingCost(calculatedOperatingCost);
     }
-  }, [selectedMachineId, treatmentsPerDay, creditPrice]);
+  }, [selectedMachineId, treatmentsPerDay, creditPrice, leasingCost, flatrateThreshold]);
   
   // Calculate revenue when customer price or treatments per day changes
   useEffect(() => {
