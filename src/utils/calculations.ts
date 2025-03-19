@@ -11,8 +11,8 @@ export async function calculateLeasingCost(
   const currency = 'EUR'; // Maskinpriser är i EUR från machineData
   let exchangeRate = 1;
 
-  // Correctly compare strings with strict equality instead of comparing string literal types
-  if (currency !== 'SEK') {
+  // Använd string-jämförelse istället för literal types
+  if (currency as string !== 'SEK') {
     exchangeRate = await getExchangeRate(currency, 'SEK');
   }
 
