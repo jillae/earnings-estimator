@@ -18,49 +18,44 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   adjustmentFactor,
   onAdjustmentChange
 }) => {
-  // Konvertera minLeaseCost och maxLeaseCost till närmaste 500-tal
-  const roundedMinCost = Math.round(minLeaseCost / 500) * 500;
-  const roundedMaxCost = Math.round(maxLeaseCost / 500) * 500;
+  // Log the actual values we're working with
+  console.log("LeaseAdjuster rendering with:", {
+    minLeaseCost,
+    maxLeaseCost,
+    leaseCost,
+    adjustmentFactor
+  });
   
-  // Beräkna antalet steg om 500 kr mellan min och max
-  const numSteps = (roundedMaxCost - roundedMinCost) / 500;
+  // We'll show the exact values rather than rounding to 500
+  const roundedMinCost = minLeaseCost; 
+  const roundedMaxCost = maxLeaseCost;
   
-  // Beräkna vilket steg det nuvarande leaseCost motsvarar
-  const currentCostStep = Math.round((leaseCost - roundedMinCost) / 500);
-  const currentStepFactor = numSteps > 0 ? currentCostStep / numSteps : 0;
+  // Calculate number of steps between min and max for slider precision
+  const stepSize = 100; // 100kr steps for finer control
+  const numSteps = Math.max(1, Math.floor((roundedMaxCost - roundedMinCost) / stepSize));
   
-  // Funktion för att konvertera adjustmentFactor till närmaste steg
+  // Function to convert adjustmentFactor to a clean step value
   const getStepValue = (factor: number): number => {
     if (numSteps <= 0) return factor;
     
-    // Beräkna vilket steg som är närmast adjustmentFactor
+    // Calculate which step is closest to the adjustmentFactor
     const step = Math.round(factor * numSteps);
     return step / numSteps;
   };
   
   const handleSliderChange = (values: number[]) => {
-    // Konvertera värdet till närmaste steg
+    // Convert value to nearest step
     const steppedValue = getStepValue(values[0]);
     onAdjustmentChange(steppedValue);
   };
   
-  // Beräkna det faktiska leasing-kostnadsvärdet baserat på slider-position
-  const actualLeasingCost = roundedMinCost + Math.round(adjustmentFactor * numSteps) * 500;
+  // Calculate actual leasing cost based on slider position
+  const actualLeasingCost = leaseCost; // Use the value that was calculated
   
-  // Visa formaterat kostnadsvärde
+  // Format cost values for display
+  const formattedMinCost = formatCurrency(roundedMinCost);
+  const formattedMaxCost = formatCurrency(roundedMaxCost);
   const formattedCost = formatCurrency(actualLeasingCost);
-  
-  console.log("Leasing cost values:", { 
-    minLeaseCost, 
-    maxLeaseCost, 
-    leaseCost,
-    actualLeasingCost,
-    roundedMinCost, 
-    roundedMaxCost,
-    numSteps,
-    currentStepFactor,
-    adjustmentFactor
-  });
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
@@ -69,8 +64,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       </label>
       
       <div className="flex justify-between items-center mb-2">
-        <span className="text-xs text-slate-500">Min: {formatCurrency(roundedMinCost)}</span>
-        <span className="text-xs text-slate-500">Max: {formatCurrency(roundedMaxCost)}</span>
+        <span className="text-xs text-slate-500">Min: {formattedMinCost}</span>
+        <span className="text-xs text-slate-500">Max: {formattedMaxCost}</span>
       </div>
       
       <Slider

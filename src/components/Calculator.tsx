@@ -134,7 +134,10 @@ const Calculator: React.FC = () => {
   
   // Calculate leasing cost when range or adjustment factor changes
   useEffect(() => {
-    if (isUpdatingFromCreditPrice) return; // Skip if update is coming from credit price change
+    if (isUpdatingFromCreditPrice) {
+      console.log("Skipping leasing cost calculation because update is from credit price change");
+      return; // Skip if update is coming from credit price change
+    }
     
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     const selectedLeasingPeriod = leasingPeriods.find(period => period.id === selectedLeasingPeriodId);
@@ -165,6 +168,7 @@ const Calculator: React.FC = () => {
   // Calculate credit price when leasing cost changes
   useEffect(() => {
     if (isUpdatingFromCreditPrice) {
+      console.log("Resetting isUpdatingFromCreditPrice flag");
       setIsUpdatingFromCreditPrice(false);
       return;
     }
@@ -185,11 +189,38 @@ const Calculator: React.FC = () => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine && selectedMachine.usesCredits) {
+      console.log("Credit price manually changed to:", newCreditPrice);
       setCreditPrice(newCreditPrice);
       
       // Calculate what leasing cost would generate this credit price
-      const newLeasingCost = newCreditPrice / selectedMachine.creditPriceMultiplier;
-      console.log("Calculated leasing cost from credit price:", newLeasingCost);
+      let newLeasingCost = 0;
+      
+      if (selectedMachine.creditMin !== undefined && 
+          selectedMachine.creditMax !== undefined && 
+          selectedMachine.leasingMin !== undefined && 
+          selectedMachine.leasingMax !== undefined) {
+        
+        const creditRange = selectedMachine.creditMax - selectedMachine.creditMin;
+        if (creditRange <= 0) {
+          // Avoid division by zero
+          newLeasingCost = selectedMachine.leasingMin;
+        } else {
+          // Calculate position of newCreditPrice in the credit range (0-1)
+          const creditPosition = (newCreditPrice - selectedMachine.creditMin) / creditRange;
+          const clampedCreditPosition = Math.max(0, Math.min(1, creditPosition));
+          
+          // Use that position to find equivalent leasing cost in the leasing range
+          const leasingRange = selectedMachine.leasingMax - selectedMachine.leasingMin;
+          newLeasingCost = selectedMachine.leasingMin + (clampedCreditPosition * leasingRange);
+          
+          console.log("Calculated new leasing cost from credit price:", 
+            {newCreditPrice, creditPosition, clampedCreditPosition, newLeasingCost});
+        }
+      } else {
+        // Fallback to multiplier method
+        newLeasingCost = newCreditPrice / selectedMachine.creditPriceMultiplier;
+        console.log("Calculated leasing cost from credit price using multiplier:", newLeasingCost);
+      }
       
       // Find what adjustment factor would lead to this leasing cost
       const leasingDiff = leasingRange.max - leasingRange.min;
@@ -200,6 +231,10 @@ const Calculator: React.FC = () => {
         console.log("New adjustment factor from credit price:", clampedFactor);
         setIsUpdatingFromCreditPrice(true);
         setLeaseAdjustmentFactor(clampedFactor);
+        setLeasingCost(newLeasingCost);
+      } else {
+        // If leasing range is zero, just set the leasing cost directly
+        setIsUpdatingFromCreditPrice(true);
         setLeasingCost(newLeasingCost);
       }
     }

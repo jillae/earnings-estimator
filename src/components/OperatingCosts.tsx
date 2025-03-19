@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { formatCurrency } from '@/utils/calculatorUtils';
 import { Input } from "@/components/ui/input";
 
@@ -27,9 +27,21 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   const handleCreditPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     if (!isNaN(value) && value > 0 && onCreditPriceChange) {
+      console.log("Changing credit price to:", value);
       onCreditPriceChange(value);
     }
   };
+  
+  // Debug logging to understand what's happening
+  useEffect(() => {
+    console.log("OperatingCosts rendering with:", {
+      creditPrice,
+      operatingCostPerMonth,
+      flatrateAmount,
+      useFlatrate,
+      hasChangeHandler: !!onCreditPriceChange
+    });
+  }, [creditPrice, operatingCostPerMonth, flatrateAmount, useFlatrate, onCreditPriceChange]);
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
@@ -67,7 +79,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
             Credits kostnad per månad (ex moms)
           </label>
           <div className="flex justify-between items-center">
-            <span className="text-sm">Månadsavgift</span>
+            <span className="text-sm">Credits kostnad</span>
             <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCostPerMonth)}</span>
           </div>
         </>
