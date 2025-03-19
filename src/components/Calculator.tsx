@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ClinicSizeSelector from './ClinicSizeSelector';
 import MachineSelector from './MachineSelector';
@@ -77,9 +76,14 @@ const Calculator: React.FC = () => {
   // Fetch exchange rate on component mount
   useEffect(() => {
     const getExchangeRate = async () => {
-      const rate = await fetchExchangeRate();
-      console.log("Fetched exchange rate:", rate);
-      setExchangeRate(rate);
+      try {
+        const rate = await fetchExchangeRate();
+        console.log("Fetched exchange rate:", rate);
+        setExchangeRate(rate);
+      } catch (error) {
+        console.error("Failed to fetch exchange rate:", error);
+        // Keep using default rate
+      }
     };
     
     getExchangeRate();
@@ -144,19 +148,14 @@ const Calculator: React.FC = () => {
     const includeInsurance = selectedInsuranceId === 'yes';
     
     if (selectedMachine && selectedLeasingPeriod) {
-      // Map leaseAdjustmentFactor from 0-1 to minLeaseMultiplier-maxLeaseMultiplier
-      const actualMultiplier = selectedMachine.minLeaseMultiplier + 
-        leaseAdjustmentFactor * 
-        (selectedMachine.maxLeaseMultiplier - selectedMachine.minLeaseMultiplier);
-      
-      console.log("Using multiplier for leasing cost:", actualMultiplier);
+      console.log(`Calculating leasing cost with adjustment factor: ${leaseAdjustmentFactor}`);
       
       const calculatedLeasingCost = calculateLeasingCost(
         selectedMachine,
         machinePriceSEK,
         selectedLeasingPeriod.rate,
         includeInsurance,
-        actualMultiplier
+        leaseAdjustmentFactor
       );
       
       console.log("Calculated leasing cost:", calculatedLeasingCost);
@@ -280,6 +279,21 @@ const Calculator: React.FC = () => {
   
   // Get the selected machine
   const selectedMachine = machineData.find(machine => machine.id === selectedMachineId) || machineData[0];
+  
+  // Log values for debugging
+  useEffect(() => {
+    console.log("Leasing cost values:", {
+      minLeaseCost: leasingRange.min,
+      maxLeaseCost: leasingRange.max,
+      leaseCost: leasingCost,
+      actualLeasingCost: leasingCost,
+      roundedMinCost: Math.round(leasingRange.min / 500) * 500,
+      roundedMaxCost: Math.round(leasingRange.max / 500) * 500,
+      numSteps: Math.floor((leasingRange.max - leasingRange.min) / 100),
+      currentStepFactor: 1 / Math.max(1, Math.floor((leasingRange.max - leasingRange.min) / 100)),
+      adjustmentFactor: leaseAdjustmentFactor
+    });
+  }, [leasingRange, leasingCost, leaseAdjustmentFactor]);
   
   return (
     <div className="container">

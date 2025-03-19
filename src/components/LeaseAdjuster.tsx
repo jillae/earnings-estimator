@@ -26,13 +26,13 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     adjustmentFactor
   });
   
-  // We'll show the exact values rather than rounding to 500
-  const roundedMinCost = minLeaseCost; 
-  const roundedMaxCost = maxLeaseCost;
+  // Use exact min/max values without rounding
+  const exactMinCost = minLeaseCost;
+  const exactMaxCost = maxLeaseCost;
   
   // Calculate number of steps between min and max for slider precision
   const stepSize = 100; // 100kr steps for finer control
-  const numSteps = Math.max(1, Math.floor((roundedMaxCost - roundedMinCost) / stepSize));
+  const numSteps = Math.max(1, Math.floor((exactMaxCost - exactMinCost) / stepSize));
   
   // Function to convert adjustmentFactor to a clean step value
   const getStepValue = (factor: number): number => {
@@ -52,10 +52,10 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Calculate actual leasing cost based on slider position
   const actualLeasingCost = leaseCost; // Use the value that was calculated
   
-  // Format cost values for display
-  const formattedMinCost = formatCurrency(roundedMinCost);
-  const formattedMaxCost = formatCurrency(roundedMaxCost);
-  const formattedCost = formatCurrency(actualLeasingCost);
+  // Format cost values for display - show exact values without rounding
+  const formattedMinCost = formatCurrency(exactMinCost, false);
+  const formattedMaxCost = formatCurrency(exactMaxCost, false);
+  const formattedCost = formatCurrency(actualLeasingCost, false);
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>

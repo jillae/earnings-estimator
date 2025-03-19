@@ -52,7 +52,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
           </label>
           <div className="flex justify-between items-center">
             <span className="text-sm">Fast månadsavgift</span>
-            <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount)}</span>
+            <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount, false)}</span>
           </div>
         </>
       ) : (
@@ -71,7 +71,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
           ) : (
             <div className="flex justify-between items-center mb-4">
               <span className="text-sm">Pris per credit</span>
-              <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice)}</span>
+              <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice, false)}</span>
             </div>
           )}
           
@@ -80,7 +80,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
           </label>
           <div className="flex justify-between items-center">
             <span className="text-sm">Credits kostnad</span>
-            <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCostPerMonth)}</span>
+            <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCostPerMonth, false)}</span>
           </div>
         </>
       )}

@@ -1,17 +1,20 @@
-
 import { VAT_RATE, WORKING_DAYS_PER_MONTH, MONTHS_PER_YEAR, FLATRATE_THRESHOLD, Machine } from '../data/machineData';
 import { getExchangeRate } from './exchangeRate';
 
-export function formatCurrency(amount: number): string {
-  // Avrunda till närmaste 500
-  const roundedAmount = Math.round(amount / 500) * 500;
+export function formatCurrency(amount: number, shouldRound: boolean = true): string {
+  let displayAmount = amount;
+  
+  // Only round if shouldRound is true
+  if (shouldRound) {
+    displayAmount = Math.round(amount / 500) * 500;
+  }
   
   return new Intl.NumberFormat('sv-SE', {
     style: 'currency',
     currency: 'SEK',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
-  }).format(roundedAmount);
+  }).format(displayAmount);
 }
 
 export async function fetchExchangeRate(): Promise<number> {
@@ -34,7 +37,7 @@ export function calculateLeasingRange(
   leasingRate: number,
   includeInsurance: boolean
 ): { min: number; max: number; default: number } {
-  // Om leasingMin och leasingMax finns, använd dem
+  // Om leasingMin och leasingMax finns, använd dem direkt utan modifikation
   let baseLeasingMin: number;
   let baseLeasingMax: number;
   let baseLeasingDefault: number;
@@ -43,6 +46,7 @@ export function calculateLeasingRange(
     baseLeasingMin = machine.leasingMin;
     baseLeasingMax = machine.leasingMax;
     baseLeasingDefault = (machine.leasingMin + machine.leasingMax) / 2;
+    console.log(`Using predefined leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
   } else {
     // Annars beräkna från multiplikatorer
     const minMultiplier = machine.minLeaseMultiplier;
@@ -52,6 +56,7 @@ export function calculateLeasingRange(
     baseLeasingMin = machinePriceSEK * leasingRate * minMultiplier;
     baseLeasingMax = machinePriceSEK * leasingRate * maxMultiplier;
     baseLeasingDefault = machinePriceSEK * leasingRate * defaultMultiplier;
+    console.log(`Calculated leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
   }
 
   // Add insurance if selected
@@ -68,13 +73,17 @@ export function calculateLeasingRange(
     }
     
     insuranceCost = machinePriceSEK * insuranceRate / 12;
+    console.log(`Adding insurance cost: ${insuranceCost}`);
   }
   
-  return {
+  const result = {
     min: baseLeasingMin + insuranceCost,
     max: baseLeasingMax + insuranceCost,
     default: baseLeasingDefault + insuranceCost
   };
+  
+  console.log("Final leasing range:", result);
+  return result;
 }
 
 export function calculateLeasingCost(
@@ -87,9 +96,10 @@ export function calculateLeasingCost(
   let baseLeasingCost: number;
   
   if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
-    // Om leasingMin och leasingMax finns, interpolera mellan dem
+    // Om leasingMin och leasingMax finns, interpolera mellan dem exakt
     const leaseRange = machine.leasingMax - machine.leasingMin;
     baseLeasingCost = machine.leasingMin + leaseMultiplier * leaseRange;
+    console.log(`Interpolated leasing cost for ${machine.name} at factor ${leaseMultiplier}: ${baseLeasingCost}`);
   } else {
     // Annars beräkna från multiplikatorer och interpolera
     const actualMultiplier = machine.minLeaseMultiplier + 
@@ -97,10 +107,11 @@ export function calculateLeasingCost(
       (machine.maxLeaseMultiplier - machine.minLeaseMultiplier);
     
     baseLeasingCost = machinePriceSEK * leasingRate * actualMultiplier;
+    console.log(`Calculated leasing cost for ${machine.name} at multiplier ${actualMultiplier}: ${baseLeasingCost}`);
   }
   
-  // Avrunda till närmaste 500
-  baseLeasingCost = Math.round(baseLeasingCost / 500) * 500;
+  // Only round for display, not for calculations
+  const calculationBaseLeasingCost = baseLeasingCost;
   
   // Add insurance if selected
   let insuranceCost = 0;
@@ -116,9 +127,12 @@ export function calculateLeasingCost(
     }
     
     insuranceCost = machinePriceSEK * insuranceRate / 12;
+    console.log(`Adding insurance cost: ${insuranceCost}`);
   }
   
-  return baseLeasingCost + insuranceCost;
+  const finalCost = calculationBaseLeasingCost + insuranceCost;
+  console.log(`Final leasing cost: ${finalCost}`);
+  return finalCost;
 }
 
 export function calculateCreditPrice(machine: any, leasingCost: number): number {
@@ -131,18 +145,32 @@ export function calculateCreditPrice(machine: any, leasingCost: number): number 
     
     // Calculate where in the leasing range this cost falls (as a percentage)
     const leasingRange = machine.leasingMax - machine.leasingMin;
-    if (leasingRange <= 0) return machine.creditMin;
+    if (leasingRange <= 0) {
+      console.log(`Zero leasing range for ${machine.name}, using credit min: ${machine.creditMin}`);
+      return machine.creditMin;
+    }
     
     const leasingPosition = (leasingCost - machine.leasingMin) / leasingRange;
     const clampedPosition = Math.max(0, Math.min(1, leasingPosition));
     
     // Interpolate between credit min and max based on that percentage
     const creditRange = machine.creditMax - machine.creditMin;
-    return Math.round(machine.creditMin + clampedPosition * creditRange);
+    const calculatedCredit = Math.round(machine.creditMin + clampedPosition * creditRange);
+    
+    console.log(`Calculated credit price for ${machine.name} at position ${clampedPosition}:`, {
+      leasingCost,
+      leasingRange,
+      creditRange,
+      calculatedCredit
+    });
+    
+    return calculatedCredit;
   }
   
   // Fallback to the multiplier method
-  return Math.round(leasingCost * machine.creditPriceMultiplier);
+  const calculatedCredit = Math.round(leasingCost * machine.creditPriceMultiplier);
+  console.log(`Fallback calculated credit price for ${machine.name}: ${calculatedCredit}`);
+  return calculatedCredit;
 }
 
 export function calculateOperatingCost(
