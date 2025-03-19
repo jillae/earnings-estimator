@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
 import { 
   calculateOperatingCost,
-  shouldUseFlatrate
+  shouldUseFlatrate,
+  calculateCreditPrice
 } from '@/utils/calculatorUtils';
 
 export function useOperatingCosts({
@@ -25,7 +26,28 @@ export function useOperatingCosts({
     costPerMonth: 0, 
     useFlatrate: false 
   });
+  
+  // Calculate the appropriate credit price based on leasing cost for the current machine
+  const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
+  
+  // First, calculate the credit price based on current leasing cost
+  useEffect(() => {
+    const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
+    
+    if (selectedMachine && selectedMachine.usesCredits) {
+      const newCreditPrice = calculateCreditPrice(
+        selectedMachine, 
+        leasingCost,
+        selectedLeasingPeriodId,
+        machinePriceSEK
+      );
+      
+      setCalculatedCreditPrice(newCreditPrice);
+      console.log(`Recalculated credit price based on leasing cost: ${leasingCost} → ${newCreditPrice}`);
+    }
+  }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK]);
 
+  // Then calculate the operating cost based on the treatments, etc.
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
@@ -45,7 +67,7 @@ export function useOperatingCosts({
       const calculatedOperatingCost = calculateOperatingCost(
         selectedMachine,
         treatmentsPerDay,
-        creditPrice,
+        creditPrice, // Use the passed-in credit price
         leasingCost,
         selectedLeasingPeriodId,
         machinePriceSEK
@@ -55,5 +77,8 @@ export function useOperatingCosts({
     }
   }, [selectedMachineId, treatmentsPerDay, creditPrice, leasingCost, machinePriceSEK, selectedLeasingPeriodId]);
 
-  return { operatingCost };
+  return { 
+    operatingCost,
+    calculatedCreditPrice // Return the calculated credit price so it can be used by the consumer
+  };
 }

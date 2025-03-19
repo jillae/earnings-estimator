@@ -80,25 +80,14 @@ const CalculatorInputs: React.FC = () => {
           />
         )}
         
-        {selectedMachine.usesCredits && !operatingCost.useFlatrate && (
+        {selectedMachine.usesCredits && (
           <OperatingCosts 
             usesCredits={selectedMachine.usesCredits}
             useFlatrate={operatingCost.useFlatrate}
             creditPrice={creditPrice}
             flatrateAmount={selectedMachine.flatrateAmount}
             operatingCostPerMonth={operatingCost.costPerMonth}
-            onCreditPriceChange={handleCreditPriceChange}
-          />
-        )}
-        
-        {selectedMachine.usesCredits && operatingCost.useFlatrate && (
-          <OperatingCosts 
-            usesCredits={selectedMachine.usesCredits}
-            useFlatrate={operatingCost.useFlatrate}
-            creditPrice={creditPrice}
-            flatrateAmount={selectedMachine.flatrateAmount}
-            operatingCostPerMonth={operatingCost.costPerMonth}
-            onCreditPriceChange={undefined} // No credit price change when using flatrate
+            onCreditPriceChange={operatingCost.useFlatrate ? undefined : handleCreditPriceChange}
           />
         )}
       </div>

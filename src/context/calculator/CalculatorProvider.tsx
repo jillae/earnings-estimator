@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CalculatorContext } from './context';
 import { useStateSelections } from './useStateSelections';
 import { useClinicSettings } from './useClinicSettings';
@@ -45,7 +45,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     leasingCost, 
     creditPrice, 
     flatrateThreshold, 
-    handleCreditPriceChange 
+    handleCreditPriceChange,
+    setCreditPrice
   } = useLeasingCalculations({
     selectedMachineId,
     machinePriceSEK,
@@ -62,7 +63,10 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   });
 
   // Get operating costs
-  const { operatingCost } = useOperatingCosts({
+  const { 
+    operatingCost,
+    calculatedCreditPrice
+  } = useOperatingCosts({
     selectedMachineId,
     treatmentsPerDay,
     creditPrice,
@@ -70,6 +74,14 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     selectedLeasingPeriodId,
     machinePriceSEK
   });
+
+  // Update credit price when calculatedCreditPrice changes from operating costs
+  useEffect(() => {
+    if (calculatedCreditPrice && calculatedCreditPrice !== creditPrice) {
+      console.log(`Updating credit price from ${creditPrice} to ${calculatedCreditPrice} based on leasing cost`);
+      setCreditPrice(calculatedCreditPrice);
+    }
+  }, [calculatedCreditPrice, creditPrice, setCreditPrice]);
 
   // Get revenue calculations
   const { revenue, occupancyRevenues, netResults } = useRevenueCalculations({

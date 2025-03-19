@@ -25,7 +25,6 @@ export function useLeasingCalculations({
   const [creditPrice, setCreditPrice] = useState<number>(0);
   const [flatrateThreshold, setFlatrateThreshold] = useState<number>(0);
   const [isUpdatingFromCreditPrice, setIsUpdatingFromCreditPrice] = useState<boolean>(false);
-  const [isUpdatingFromLeasingCost, setIsUpdatingFromLeasingCost] = useState<boolean>(false);
 
   // Calculate leasing range when machine or leasing options change
   useEffect(() => {
@@ -98,33 +97,9 @@ export function useLeasingCalculations({
       }
       
       console.log("Calculated leasing cost:", calculatedLeasingCost, "Final adjusted cost:", finalLeasingCost);
-      setIsUpdatingFromLeasingCost(true);
       setLeasingCost(finalLeasingCost);
     }
   }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId, leaseAdjustmentFactor, isUpdatingFromCreditPrice, leasingRange]);
-
-  // Calculate credit price from leasing cost
-  useEffect(() => {
-    if (isUpdatingFromCreditPrice) {
-      console.log("Skipping credit price calculation due to isUpdatingFromCreditPrice flag");
-      return;
-    }
-    
-    const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
-    
-    if (selectedMachine && selectedMachine.usesCredits) {
-      const calculatedCreditPrice = calculateCreditPrice(
-        selectedMachine, 
-        leasingCost,
-        selectedLeasingPeriodId,
-        machinePriceSEK
-      );
-      console.log("Calculated credit price from leasing cost:", calculatedCreditPrice);
-      setCreditPrice(calculatedCreditPrice);
-    }
-    
-    setIsUpdatingFromLeasingCost(false);
-  }, [selectedMachineId, leasingCost, isUpdatingFromCreditPrice, machinePriceSEK, selectedLeasingPeriodId]);
 
   // Handle manual credit price changes
   const handleCreditPriceChange = (newCreditPrice: number) => {
@@ -181,6 +156,7 @@ export function useLeasingCalculations({
     leasingCost,
     creditPrice,
     flatrateThreshold,
-    handleCreditPriceChange
+    handleCreditPriceChange,
+    setCreditPrice  // Expose setCreditPrice to allow direct updates
   };
 }
