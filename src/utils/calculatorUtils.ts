@@ -7,7 +7,7 @@
 export { formatCurrency } from './formatUtils';
 export { fetchExchangeRate, calculateMachinePriceSEK } from './exchangeRateUtils';
 export { calculateLeasingRange, calculateLeasingCost } from './leasingUtils';
-export { calculateCreditPrice, calculateOperatingCost } from './creditUtils';
+export { calculateCreditPrice, calculateOperatingCost, shouldUseFlatrate } from './creditUtils';
 export { 
   calculateRevenue, 
   calculateOccupancyRevenues,

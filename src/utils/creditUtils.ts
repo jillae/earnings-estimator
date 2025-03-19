@@ -2,7 +2,7 @@
 /**
  * Utility functions for credit price calculations
  */
-import { WORKING_DAYS_PER_MONTH, FLATRATE_THRESHOLD } from './constants';
+import { WORKING_DAYS_PER_MONTH } from './constants';
 import { Machine } from '../data/machineData';
 
 export function calculateCreditPrice(machine: Machine, leasingCost: number): number {
@@ -62,14 +62,35 @@ export function calculateCreditPrice(machine: Machine, leasingCost: number): num
   return calculatedCredit;
 }
 
+// Function to determine if flatrate should be used based on the rules
+export function shouldUseFlatrate(
+  machine: Machine,
+  leasingCost: number,
+  treatmentsPerDay: number
+): boolean {
+  if (!machine.usesCredits) {
+    return false;
+  }
+  
+  // Rule 2.1: If leasingCost > 80% of leasingMax AND treatmentsPerDay >= 3, use flatrate
+  if (machine.leasingMax) {
+    const flatrateThreshold = machine.leasingMax * 0.8;
+    console.log(`Flatrate decision: leasingCost ${leasingCost} ${leasingCost > flatrateThreshold ? '>' : '<='} threshold ${flatrateThreshold} (80% of ${machine.leasingMax}) AND treatments ${treatmentsPerDay} ${treatmentsPerDay >= 3 ? '>=' : '<'} 3`);
+    
+    return leasingCost > flatrateThreshold && treatmentsPerDay >= 3;
+  }
+  
+  return false;
+}
+
 export function calculateOperatingCost(
   machine: Machine,
   treatmentsPerDay: number,
   creditPrice: number,
-  forceUseFlatrate: boolean = false
+  leasingCost: number
 ): { costPerMonth: number; useFlatrate: boolean } {
-  // Use flatrate if machine uses credits, has sufficient treatments and forceUseFlatrate is true
-  const useFlatrate = forceUseFlatrate && machine.usesCredits && treatmentsPerDay >= FLATRATE_THRESHOLD;
+  // Determine if flatrate should be used based on rules
+  const useFlatrate = shouldUseFlatrate(machine, leasingCost, treatmentsPerDay);
   
   let costPerMonth = 0;
   

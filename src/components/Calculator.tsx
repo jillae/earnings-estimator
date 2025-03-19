@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ClinicSizeSelector from './ClinicSizeSelector';
 import MachineSelector from './MachineSelector';
@@ -25,7 +24,8 @@ import {
   calculateOperatingCost,
   calculateRevenue,
   calculateOccupancyRevenues,
-  calculateNetResults
+  calculateNetResults,
+  shouldUseFlatrate
 } from '../utils/calculatorUtils';
 
 const Calculator: React.FC = () => {
@@ -95,10 +95,8 @@ const Calculator: React.FC = () => {
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     if (selectedMachine) {
-      // Set default customer price for the selected machine
       setCustomerPrice(selectedMachine.defaultCustomerPrice || DEFAULT_CUSTOMER_PRICE);
       
-      // Set default leasing period for the selected machine
       if (selectedMachine.defaultLeasingPeriod) {
         setSelectedLeasingPeriodId(selectedMachine.defaultLeasingPeriod);
       }
@@ -125,16 +123,14 @@ const Calculator: React.FC = () => {
       console.log("Leasing range calculated:", range);
       setLeasingRange(range);
       
-      // For machines without credits, always set to max leasing cost
-      // For machines with credits, allow adjustment
       if (!selectedMachine.usesCredits) {
-        setLeaseAdjustmentFactor(1); // Always use maximum for non-credit machines
+        setLeaseAdjustmentFactor(1);
       } else {
-        setLeaseAdjustmentFactor(1); // Reset to default for credit machines
+        setLeaseAdjustmentFactor(1);
       }
       
-      if (selectedMachine.usesCredits) {
-        const threshold = range.min + (0.8 * (range.max - range.min));
+      if (selectedMachine.usesCredits && selectedMachine.leasingMax) {
+        const threshold = selectedMachine.leasingMax * 0.8;
         console.log("Flatrate threshold calculated:", threshold);
         setFlatrateThreshold(threshold);
       }
@@ -266,22 +262,24 @@ const Calculator: React.FC = () => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine) {
-      const shouldUseFlatrate = selectedMachine.usesCredits && 
-                               leasingCost >= flatrateThreshold && 
-                               treatmentsPerDay >= 3;
+      const useFlatrateOption = shouldUseFlatrate(
+        selectedMachine,
+        leasingCost,
+        treatmentsPerDay
+      );
       
-      console.log(`Flatrate decision: leasingCost ${leasingCost} ${leasingCost >= flatrateThreshold ? '>=' : '<'} threshold ${flatrateThreshold} AND treatments ${treatmentsPerDay} ${treatmentsPerDay >= 3 ? '>=' : '<'} 3`);
+      console.log(`Using flatrate: ${useFlatrateOption} (leasingCost: ${leasingCost}, treatmentsPerDay: ${treatmentsPerDay})`);
       
       const calculatedOperatingCost = calculateOperatingCost(
         selectedMachine,
         treatmentsPerDay,
         creditPrice,
-        shouldUseFlatrate
+        leasingCost
       );
       
       setOperatingCost(calculatedOperatingCost);
     }
-  }, [selectedMachineId, treatmentsPerDay, creditPrice, leasingCost, flatrateThreshold]);
+  }, [selectedMachineId, treatmentsPerDay, creditPrice, leasingCost]);
 
   useEffect(() => {
     const calculatedRevenue = calculateRevenue(customerPrice, treatmentsPerDay);
