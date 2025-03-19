@@ -25,6 +25,9 @@ export function calculateCreditPrice(machine: any, leasingCost: number): number 
     
     let calculatedCredit;
     
+    // Flip the logic here to match the business requirements:
+    // At minimum leasing cost we want maximum credit price
+    // At maximum leasing cost we want minimum credit price
     if (leasingCost <= machine.leasingMin) {
       calculatedCredit = machine.creditMax;
       console.log(`Using maximum credit price ${machine.creditMax} at minimum leasing cost ${machine.leasingMin}`);

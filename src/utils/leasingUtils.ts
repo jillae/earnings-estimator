@@ -3,6 +3,32 @@
  * Utility functions for leasing calculations
  */
 import { Machine } from '../data/machineData';
+import { LEASING_TARIFFS, SHIPPING_COST_EUR, CONSTANT_MULTIPLIER } from './constants';
+
+/**
+ * Gets the leasing factor based on leasing duration in months
+ */
+export function getLeasingFactor(leaseDurationMonths: number): number | undefined {
+  const tariffEntry = LEASING_TARIFFS.find(entry => entry.Löptid === leaseDurationMonths);
+  return tariffEntry?.Faktor;
+}
+
+/**
+ * Calculates the maximum leasing cost based on machine price and leasing duration
+ */
+export function calculateTariffBasedLeasingMax(
+  machinePriceEur: number, 
+  leaseDurationMonths: number
+): number {
+  const factor = getLeasingFactor(leaseDurationMonths);
+  
+  if (factor !== undefined) {
+    return (machinePriceEur + SHIPPING_COST_EUR) * CONSTANT_MULTIPLIER * factor;
+  } else {
+    console.error(`No factor found for leasing duration ${leaseDurationMonths} months.`);
+    return 0;
+  }
+}
 
 export function calculateLeasingRange(
   machine: Machine,
@@ -14,12 +40,28 @@ export function calculateLeasingRange(
   let baseLeasingMax: number;
   let baseLeasingDefault: number;
   
+  // First check if we can use the predefined leasing range
   if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
     baseLeasingMin = machine.leasingMin;
     baseLeasingMax = machine.leasingMax;
     baseLeasingDefault = machine.leasingMax;
     console.log(`Using predefined leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
-  } else {
+  } 
+  // Then check if we should use tariff-based calculation
+  else if (leasingRate && LEASING_TARIFFS.some(t => Math.abs(t.Faktor - leasingRate * 100) < 0.1)) {
+    // Find the closest matching tariff
+    const closestTariff = LEASING_TARIFFS.reduce((prev, curr) => 
+      Math.abs(curr.Faktor - leasingRate * 100) < Math.abs(prev.Faktor - leasingRate * 100) ? curr : prev
+    );
+    
+    baseLeasingMax = calculateTariffBasedLeasingMax(machine.priceEur, closestTariff.Löptid);
+    baseLeasingMin = Math.round(0.90 * baseLeasingMax);
+    baseLeasingDefault = baseLeasingMax;
+    
+    console.log(`Calculated tariff-based leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
+  }
+  // Fall back to the original calculation method
+  else {
     const minMultiplier = machine.minLeaseMultiplier;
     const maxMultiplier = machine.maxLeaseMultiplier;
     const defaultMultiplier = machine.maxLeaseMultiplier;

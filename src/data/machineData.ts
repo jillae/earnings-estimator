@@ -1,4 +1,3 @@
-
 export interface Machine {
   id: string;
   name: string;
@@ -33,7 +32,14 @@ export const machineData: Machine[] = [
     leasingMin: 21703,
     leasingMax: 24114,
     creditMin: 149,
-    creditMax: 299
+    creditMax: 299,
+    leasingTariffs: {
+      "24": 4.566,
+      "36": 3.189,
+      "48": 2.504,
+      "60": 2.095,
+      "72": 1.825
+    }
   },
   {
     id: "fx-635",
@@ -49,7 +55,14 @@ export const machineData: Machine[] = [
     leasingMin: 8267,
     leasingMax: 9186,
     creditMin: 75,
-    creditMax: 159
+    creditMax: 159,
+    leasingTariffs: {
+      "24": 4.566,
+      "36": 3.189,
+      "48": 2.504,
+      "60": 2.095,
+      "72": 1.825
+    }
   },
   {
     id: "fx-405",
@@ -146,9 +159,11 @@ export const machineData: Machine[] = [
 ];
 
 export const leasingPeriods = [
+  { id: "24", name: "24 månader", rate: 0.032 },
   { id: "36", name: "36 månader", rate: 0.028 },
   { id: "48", name: "48 månader", rate: 0.025 },
-  { id: "60", name: "60 månader", rate: 0.021 }
+  { id: "60", name: "60 månader", rate: 0.021 },
+  { id: "72", name: "72 månader", rate: 0.018 }
 ];
 
 export const insuranceOptions = [
