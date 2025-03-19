@@ -29,8 +29,7 @@ export const LEASING_TARIFFS: TariffEntry[] = [
   { Löptid: 24, Faktor: 4.566 },
   { Löptid: 36, Faktor: 3.189 },
   { Löptid: 48, Faktor: 2.504 },
-  { Löptid: 60, Faktor: 2.095 },
-  { Löptid: 72, Faktor: 1.825 }
+  { Löptid: 60, Faktor: 2.095 }
 ];
 
 // Removed CONSTANT_MULTIPLIER as it's no longer needed with the direct SEK * tariff% formula

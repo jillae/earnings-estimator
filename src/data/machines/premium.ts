@@ -16,13 +16,12 @@ export const premiumMachines: Machine[] = [
     leasingMin: 21703,
     leasingMax: 24114,
     creditMin: 149,
-    creditMax: 210,
+    creditMax: 299,
     leasingTariffs: {
       "24": 0.04566,
       "36": 0.03189,
       "48": 0.02504,
-      "60": 0.02095,
-      "72": 0.01825
+      "60": 0.02095
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 3500
@@ -46,8 +45,7 @@ export const premiumMachines: Machine[] = [
       "24": 0.04566,
       "36": 0.03189,
       "48": 0.02504,
-      "60": 0.02095,
-      "72": 0.01825
+      "60": 0.02095
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1800

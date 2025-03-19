@@ -5,8 +5,7 @@ export const leasingPeriods: LeasingPeriod[] = [
   { id: "24", name: "24 månader", rate: 0.032 },
   { id: "36", name: "36 månader", rate: 0.028 },
   { id: "48", name: "48 månader", rate: 0.025 },
-  { id: "60", name: "60 månader", rate: 0.021 },
-  { id: "72", name: "72 månader", rate: 0.018 }
+  { id: "60", name: "60 månader", rate: 0.021 }
 ];
 
 export const insuranceOptions: InsuranceOption[] = [

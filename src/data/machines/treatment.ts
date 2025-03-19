@@ -21,8 +21,7 @@ export const treatmentMachines: Machine[] = [
       "24": 0.04566,
       "36": 0.03189,
       "48": 0.02504,
-      "60": 0.02095,
-      "72": 0.01825
+      "60": 0.02095
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 900
@@ -46,8 +45,7 @@ export const treatmentMachines: Machine[] = [
       "24": 0.04566,
       "36": 0.03189,
       "48": 0.02504,
-      "60": 0.02095,
-      "72": 0.01825
+      "60": 0.02095
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200
