@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ClinicSizeSelector from './ClinicSizeSelector';
 import MachineSelector from './MachineSelector';
@@ -34,7 +35,7 @@ const Calculator: React.FC = () => {
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>(insuranceOptions[1].id);
   const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(1);
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(MEDIUM_CLINIC_TREATMENTS);
-  const [customerPrice, setCustomerPrice] = useState<number>(DEFAULT_CUSTOMER_PRICE);
+  const [customerPrice, setCustomerPrice] = useState<number>(machineData[0].defaultCustomerPrice || DEFAULT_CUSTOMER_PRICE);
   const [exchangeRate, setExchangeRate] = useState<number>(11.49260);
   const [machinePriceSEK, setMachinePriceSEK] = useState<number>(0);
   const [leasingRange, setLeasingRange] = useState<{ min: number, max: number, default: number }>({ min: 0, max: 0, default: 0 });
@@ -94,6 +95,14 @@ const Calculator: React.FC = () => {
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     if (selectedMachine) {
+      // Set default customer price for the selected machine
+      setCustomerPrice(selectedMachine.defaultCustomerPrice || DEFAULT_CUSTOMER_PRICE);
+      
+      // Set default leasing period for the selected machine
+      if (selectedMachine.defaultLeasingPeriod) {
+        setSelectedLeasingPeriodId(selectedMachine.defaultLeasingPeriod);
+      }
+      
       const priceSEK = calculateMachinePriceSEK(selectedMachine, exchangeRate);
       console.log("Machine price in SEK:", priceSEK);
       setMachinePriceSEK(priceSEK);

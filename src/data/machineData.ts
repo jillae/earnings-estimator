@@ -16,6 +16,8 @@ export interface Machine {
   creditMin?: number;
   creditMax?: number;
   leasingTariffs?: {[key: string]: number};
+  defaultLeasingPeriod?: string;
+  defaultCustomerPrice?: number;
 }
 
 export const machineData: Machine[] = [
@@ -40,7 +42,9 @@ export const machineData: Machine[] = [
       "48": 2.504,
       "60": 2.095,
       "72": 1.825
-    }
+    },
+    defaultLeasingPeriod: "60",
+    defaultCustomerPrice: 3500
   },
   {
     id: "fx-635",
@@ -63,7 +67,9 @@ export const machineData: Machine[] = [
       "48": 2.504,
       "60": 2.095,
       "72": 1.825
-    }
+    },
+    defaultLeasingPeriod: "60",
+    defaultCustomerPrice: 900
   },
   {
     id: "fx-405",
@@ -86,7 +92,9 @@ export const machineData: Machine[] = [
       "48": 2.504,
       "60": 2.095,
       "72": 1.825
-    }
+    },
+    defaultLeasingPeriod: "60",
+    defaultCustomerPrice: 1200
   },
   {
     id: "zerona",
@@ -109,7 +117,9 @@ export const machineData: Machine[] = [
       "48": 2.504,
       "60": 2.095,
       "72": 1.825
-    }
+    },
+    defaultLeasingPeriod: "60",
+    defaultCustomerPrice: 1800
   },
   {
     id: "xlr8",
@@ -121,7 +131,9 @@ export const machineData: Machine[] = [
     defaultLeaseMultiplier: 0.025,
     creditPriceMultiplier: 0,
     flatrateAmount: 0,
-    usesCredits: false
+    usesCredits: false,
+    defaultLeasingPeriod: "60",
+    defaultCustomerPrice: 500
   },
   {
     id: "evrl",
@@ -133,7 +145,9 @@ export const machineData: Machine[] = [
     defaultLeaseMultiplier: 0.025,
     creditPriceMultiplier: 0,
     flatrateAmount: 0,
-    usesCredits: false
+    usesCredits: false,
+    defaultLeasingPeriod: "60",
+    defaultCustomerPrice: 800
   },
   {
     id: "gvl",
@@ -145,7 +159,9 @@ export const machineData: Machine[] = [
     defaultLeaseMultiplier: 0.025,
     creditPriceMultiplier: 0,
     flatrateAmount: 0,
-    usesCredits: false
+    usesCredits: false,
+    defaultLeasingPeriod: "60",
+    defaultCustomerPrice: 1200
   },
   {
     id: "base-station",
@@ -157,7 +173,9 @@ export const machineData: Machine[] = [
     defaultLeaseMultiplier: 0.025,
     creditPriceMultiplier: 0,
     flatrateAmount: 0,
-    usesCredits: false
+    usesCredits: false,
+    defaultLeasingPeriod: "60",
+    defaultCustomerPrice: 3600
   },
   {
     id: "lunula",
@@ -169,7 +187,9 @@ export const machineData: Machine[] = [
     defaultLeaseMultiplier: 0.025,
     creditPriceMultiplier: 0,
     flatrateAmount: 0,
-    usesCredits: false
+    usesCredits: false,
+    defaultLeasingPeriod: "60",
+    defaultCustomerPrice: 4000
   }
 ];
 
