@@ -30,7 +30,8 @@ const CalculatorInputs: React.FC = () => {
     setLeaseAdjustmentFactor,
     flatrateThreshold,
     operatingCost,
-    creditPrice
+    creditPrice,
+    netResults
   } = useCalculator();
 
   // Get current machine
