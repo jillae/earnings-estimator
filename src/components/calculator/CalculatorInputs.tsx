@@ -36,6 +36,8 @@ const CalculatorInputs: React.FC = () => {
 
   // Get current machine
   const isCreditsEnabledMachine = selectedMachine.usesCredits;
+  // Only show credit-related fields if a real machine is selected (not "select-machine")
+  const showCreditFields = selectedMachineId !== "select-machine" && isCreditsEnabledMachine;
 
   return (
     <div className="w-full">
@@ -70,7 +72,7 @@ const CalculatorInputs: React.FC = () => {
           onInsuranceChange={setSelectedInsuranceId}
         />
         
-        {isCreditsEnabledMachine && (
+        {selectedMachineId !== "select-machine" && (
           <LeaseAdjuster 
             minLeaseCost={leasingRange.min}
             maxLeaseCost={leasingRange.max}
@@ -82,7 +84,7 @@ const CalculatorInputs: React.FC = () => {
           />
         )}
         
-        {isCreditsEnabledMachine && (
+        {showCreditFields && (
           <OperatingCosts 
             usesCredits={isCreditsEnabledMachine}
             useFlatrate={operatingCost.useFlatrate}

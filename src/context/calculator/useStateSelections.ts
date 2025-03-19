@@ -7,7 +7,7 @@ export function useStateSelections() {
   const [selectedMachineId, setSelectedMachineId] = useState<string>("select-machine");
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>("60"); // Always 60 months
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>("yes"); // Always insurance yes
-  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(1);
+  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(0); // Set to 0 for zero leasing cost by default
   const [customerPrice, setCustomerPrice] = useState<number>(machineData[0].defaultCustomerPrice || 2500);
   
   // Get the currently selected machine
