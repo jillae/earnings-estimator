@@ -10,19 +10,15 @@ import {
 export function useOperatingCosts({
   selectedMachineId,
   treatmentsPerDay,
-  creditPrice,
   leasingCost,
   selectedLeasingPeriodId,
-  machinePriceSEK,
-  isUpdatingFromCreditPrice
+  machinePriceSEK
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
-  creditPrice: number;
   leasingCost: number;
   selectedLeasingPeriodId: string;
   machinePriceSEK: number;
-  isUpdatingFromCreditPrice: boolean;
 }) {
   const [operatingCost, setOperatingCost] = useState<{ costPerMonth: number, useFlatrate: boolean }>({ 
     costPerMonth: 0, 
@@ -34,12 +30,6 @@ export function useOperatingCosts({
   
   // First, calculate the credit price based on current leasing cost
   useEffect(() => {
-    // Skip recalculation if the update is from a manual credit price change
-    if (isUpdatingFromCreditPrice) {
-      console.log("Skipping credit price calculation because update is from credit price change");
-      return;
-    }
-    
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine && selectedMachine.usesCredits) {
@@ -51,9 +41,9 @@ export function useOperatingCosts({
       );
       
       setCalculatedCreditPrice(newCreditPrice);
-      console.log(`Recalculated credit price based on leasing cost: ${leasingCost} → ${newCreditPrice}`);
+      console.log(`Calculated credit price based on leasing cost: ${leasingCost} → ${newCreditPrice}`);
     }
-  }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK, isUpdatingFromCreditPrice]);
+  }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK]);
 
   // Then calculate the operating cost based on the treatments, etc.
   useEffect(() => {
@@ -75,7 +65,7 @@ export function useOperatingCosts({
       const calculatedOperatingCost = calculateOperatingCost(
         selectedMachine,
         treatmentsPerDay,
-        creditPrice, // Use the passed-in credit price
+        calculatedCreditPrice, // Use the calculated credit price
         leasingCost,
         selectedLeasingPeriodId,
         machinePriceSEK
@@ -83,10 +73,10 @@ export function useOperatingCosts({
       
       setOperatingCost(calculatedOperatingCost);
     }
-  }, [selectedMachineId, treatmentsPerDay, creditPrice, leasingCost, machinePriceSEK, selectedLeasingPeriodId]);
+  }, [selectedMachineId, treatmentsPerDay, calculatedCreditPrice, leasingCost, machinePriceSEK, selectedLeasingPeriodId]);
 
   return { 
     operatingCost,
-    calculatedCreditPrice // Return the calculated credit price so it can be used by the consumer
+    calculatedCreditPrice // Return the calculated credit price for display purposes
   };
 }

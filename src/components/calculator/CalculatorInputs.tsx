@@ -31,7 +31,6 @@ const CalculatorInputs: React.FC = () => {
     flatrateThreshold,
     operatingCost,
     creditPrice,
-    handleCreditPriceChange,
     netResults
   } = useCalculator();
 
@@ -87,7 +86,6 @@ const CalculatorInputs: React.FC = () => {
             creditPrice={creditPrice}
             flatrateAmount={selectedMachine.flatrateAmount}
             operatingCostPerMonth={operatingCost.costPerMonth}
-            onCreditPriceChange={operatingCost.useFlatrate ? undefined : handleCreditPriceChange}
           />
         )}
       </div>

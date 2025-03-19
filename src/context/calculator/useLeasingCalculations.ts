@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react';
 import { machineData, leasingPeriods } from '@/data/machines';
 import { 
   calculateLeasingRange, 
-  calculateLeasingCost, 
-  calculateCreditPrice 
+  calculateLeasingCost
 } from '@/utils/calculatorUtils';
 
 export function useLeasingCalculations({
@@ -22,7 +21,6 @@ export function useLeasingCalculations({
 }) {
   const [leasingRange, setLeasingRange] = useState<{ min: number, max: number, default: number }>({ min: 0, max: 0, default: 0 });
   const [leasingCost, setLeasingCost] = useState<number>(0);
-  const [creditPrice, setCreditPrice] = useState<number>(0);
   const [flatrateThreshold, setFlatrateThreshold] = useState<number>(0);
 
   // Calculate leasing range when machine or leasing options change
@@ -44,7 +42,7 @@ export function useLeasingCalculations({
       
       // Calculate flatrate threshold for machines that use credits
       if (selectedMachine.usesCredits) {
-        const threshold = range.max * 0.8;
+        const threshold = range.min + (range.max - range.min) * 0.8;
         console.log("Flatrate threshold calculated:", threshold);
         setFlatrateThreshold(threshold);
       }
@@ -94,24 +92,9 @@ export function useLeasingCalculations({
     }
   }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId, leaseAdjustmentFactor, leasingRange]);
 
-  // Handle manual credit price changes
-  const handleCreditPriceChange = (newCreditPrice: number) => {
-    console.log("Credit price manually changed to:", newCreditPrice);
-    
-    const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
-    
-    if (selectedMachine && selectedMachine.usesCredits) {
-      // Set the new credit price
-      setCreditPrice(newCreditPrice);
-    }
-  };
-
   return {
     leasingRange,
     leasingCost,
-    creditPrice,
-    flatrateThreshold,
-    handleCreditPriceChange,
-    setCreditPrice  // Expose setCreditPrice to allow direct updates
+    flatrateThreshold
   };
 }
