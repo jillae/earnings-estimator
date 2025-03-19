@@ -5,7 +5,7 @@
 import { WORKING_DAYS_PER_MONTH, FLATRATE_THRESHOLD } from './constants';
 import { Machine } from '../data/machineData';
 
-export function calculateCreditPrice(machine: any, leasingCost: number): number {
+export function calculateCreditPrice(machine: Machine, leasingCost: number): number {
   if (!machine.usesCredits) return 0;
   
   if (machine.creditMin !== undefined && machine.creditMax !== undefined && 
@@ -25,7 +25,7 @@ export function calculateCreditPrice(machine: any, leasingCost: number): number 
     
     let calculatedCredit;
     
-    // Flip the logic here to match the business requirements:
+    // Ensure correct credit price mapping:
     // At minimum leasing cost we want maximum credit price
     // At maximum leasing cost we want minimum credit price
     if (leasingCost <= machine.leasingMin) {
@@ -63,11 +63,12 @@ export function calculateCreditPrice(machine: any, leasingCost: number): number 
 }
 
 export function calculateOperatingCost(
-  machine: any,
+  machine: Machine,
   treatmentsPerDay: number,
   creditPrice: number,
   forceUseFlatrate: boolean = false
 ): { costPerMonth: number; useFlatrate: boolean } {
+  // Use flatrate if machine uses credits, has sufficient treatments and forceUseFlatrate is true
   const useFlatrate = forceUseFlatrate && machine.usesCredits && treatmentsPerDay >= FLATRATE_THRESHOLD;
   
   let costPerMonth = 0;

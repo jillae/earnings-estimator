@@ -64,6 +64,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   let thresholdPosition = null;
   if (showFlatrateIndicator && flatrateThreshold) {
     thresholdPosition = ((flatrateThreshold - exactMinCost) / (exactMaxCost - exactMinCost)) * 100;
+    console.log(`Flatrate threshold position: ${thresholdPosition}% (${flatrateThreshold} / ${exactMinCost} / ${exactMaxCost})`);
   }
 
   return (

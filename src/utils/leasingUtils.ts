@@ -23,7 +23,7 @@ export function calculateTariffBasedLeasingMax(
   const factor = getLeasingFactor(leaseDurationMonths);
   
   if (factor !== undefined) {
-    return (machinePriceEur + SHIPPING_COST_EUR) * CONSTANT_MULTIPLIER * factor;
+    return Math.round((machinePriceEur + SHIPPING_COST_EUR) * CONSTANT_MULTIPLIER * factor);
   } else {
     console.error(`No factor found for leasing duration ${leaseDurationMonths} months.`);
     return 0;
@@ -44,7 +44,7 @@ export function calculateLeasingRange(
   if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
     baseLeasingMin = machine.leasingMin;
     baseLeasingMax = machine.leasingMax;
-    baseLeasingDefault = machine.leasingMax;
+    baseLeasingDefault = machine.leasingMax; // Use max as default
     console.log(`Using predefined leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
   } 
   // Then check if we should use tariff-based calculation
@@ -64,7 +64,7 @@ export function calculateLeasingRange(
   else {
     const minMultiplier = machine.minLeaseMultiplier;
     const maxMultiplier = machine.maxLeaseMultiplier;
-    const defaultMultiplier = machine.maxLeaseMultiplier;
+    const defaultMultiplier = machine.maxLeaseMultiplier; // Use max as default
     
     baseLeasingMin = machinePriceSEK * leasingRate * minMultiplier;
     baseLeasingMax = machinePriceSEK * leasingRate * maxMultiplier;

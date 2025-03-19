@@ -78,7 +78,14 @@ export const machineData: Machine[] = [
     leasingMin: 9784,
     leasingMax: 10871,
     creditMin: 95,
-    creditMax: 199
+    creditMax: 199,
+    leasingTariffs: {
+      "24": 4.566,
+      "36": 3.189,
+      "48": 2.504,
+      "60": 2.095,
+      "72": 1.825
+    }
   },
   {
     id: "zerona",
@@ -94,7 +101,14 @@ export const machineData: Machine[] = [
     leasingMin: 10087,
     leasingMax: 11208,
     creditMin: 99,
-    creditMax: 199
+    creditMax: 199,
+    leasingTariffs: {
+      "24": 4.566,
+      "36": 3.189,
+      "48": 2.504,
+      "60": 2.095,
+      "72": 1.825
+    }
   },
   {
     id: "xlr8",
