@@ -1,3 +1,4 @@
+
 /**
  * Utility functions for leasing calculations
  */
@@ -20,7 +21,7 @@ export function getLeasingFactor(leaseDurationMonths: number): number | undefine
  * Calculates the maximum leasing cost based on machine price and leasing duration
  * This is the central function for determining the maximum leasing cost
  * 
- * New formula: machinePriceSEK * tariff% = leasingMax
+ * Formula: machinePriceSEK * tariff% = leasingMax
  */
 export function calculateTariffBasedLeasingMax(
   machinePriceEur: number, 
@@ -36,7 +37,7 @@ export function calculateTariffBasedLeasingMax(
     const totalPriceSEK = (machinePriceEur + shippingCost) * exchangeRate;
     
     // Apply tariff percentage directly (factor is already a percentage value)
-    const calculatedValue = Math.round(totalPriceSEK * (factor / 100));
+    const calculatedValue = Math.round(totalPriceSEK * factor);
     
     console.log(`Tariff calculation: ${totalPriceSEK} SEK * ${factor}% = ${calculatedValue}`);
     return calculatedValue;
