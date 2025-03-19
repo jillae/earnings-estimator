@@ -1,4 +1,4 @@
 
-import { machineData, leasingPeriods, insuranceOptions } from '@/data/machineData';
+import { machineData, leasingPeriods, insuranceOptions } from '@/data/machines';
 
 export { machineData, leasingPeriods, insuranceOptions };
