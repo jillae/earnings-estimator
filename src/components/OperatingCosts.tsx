@@ -22,7 +22,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
     return null;
   }
   
-  // Debug logging to understand what's happening
+  // Debug logging to understand what's happening with the credit values
   useEffect(() => {
     console.log("OperatingCosts rendering with:", {
       creditPrice,

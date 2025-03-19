@@ -15,6 +15,8 @@ export function calculateCreditPrice(machine: Machine, leasingCost: number, leas
     return 0;
   }
   
+  console.log(`Starting credit price calculation for ${machine.name} with min: ${machine.creditMin}, max: ${machine.creditMax}`);
+  
   const creditMin = machine.creditMin;
   const creditMax = machine.creditMax;
   let leasingMin: number;
