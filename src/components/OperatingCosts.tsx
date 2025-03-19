@@ -61,13 +61,15 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
             Credits Styckepris (ex moms per styck)
           </label>
           {onCreditPriceChange ? (
-            <Input
-              type="number"
-              min="1"
-              value={creditPrice}
-              onChange={handleCreditPriceChange}
-              className="mb-4"
-            />
+            <div className="mb-4">
+              <Input
+                type="number"
+                min="1"
+                value={creditPrice}
+                onChange={handleCreditPriceChange}
+                className="w-full"
+              />
+            </div>
           ) : (
             <div className="flex justify-between items-center mb-4">
               <span className="text-sm">Pris per credit</span>

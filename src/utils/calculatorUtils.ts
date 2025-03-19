@@ -1,3 +1,4 @@
+
 import { VAT_RATE, WORKING_DAYS_PER_MONTH, MONTHS_PER_YEAR, FLATRATE_THRESHOLD, Machine } from '../data/machineData';
 import { getExchangeRate } from './exchangeRate';
 
@@ -148,7 +149,9 @@ export function calculateCreditPrice(machine: any, leasingCost: number): number 
       return machine.creditMin;
     }
     
+    // Calculate position in leasing range (0-1)
     const leasingPosition = (leasingCost - machine.leasingMin) / leasingRange;
+    // Clamp to 0-1 range to prevent calculation errors
     const clampedPosition = Math.max(0, Math.min(1, leasingPosition));
     
     // INVERSE relationship: high leasing cost = low credit price, low leasing cost = high credit price
@@ -157,7 +160,15 @@ export function calculateCreditPrice(machine: any, leasingCost: number): number 
     
     // Interpolate between credit min and max based on inverse position
     const creditRange = machine.creditMax - machine.creditMin;
-    const calculatedCredit = Math.round(machine.creditMin + inversePosition * creditRange);
+    // Ensure we get the exact credit values at the extremes
+    let calculatedCredit;
+    if (clampedPosition === 0) {
+      calculatedCredit = machine.creditMax; // At minimum leasing cost, use maximum credit price
+    } else if (clampedPosition === 1) {
+      calculatedCredit = machine.creditMin; // At maximum leasing cost, use minimum credit price
+    } else {
+      calculatedCredit = Math.round(machine.creditMin + inversePosition * creditRange);
+    }
     
     console.log(`Calculated credit price for ${machine.name} at position ${clampedPosition}:`, {
       leasingCost,
