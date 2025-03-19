@@ -4,7 +4,7 @@ import { machineData } from '@/data/machines';
 // Initial state values for the calculator
 export const initialState = {
   clinicSize: 2,
-  selectedMachineId: machineData[0].id,
+  selectedMachineId: "select-machine", // Default to "select-machine"
   selectedLeasingPeriodId: "48", // Default to 48 months
   selectedInsuranceId: "yes", // Default to include insurance
   leaseAdjustmentFactor: 1,

@@ -36,6 +36,7 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
         </SelectTrigger>
         
         <SelectContent>
+          <SelectItem value="select-machine">Välj maskin</SelectItem>
           {machines.map((machine) => (
             <SelectItem key={machine.id} value={machine.id}>
               <div className="flex flex-col">
