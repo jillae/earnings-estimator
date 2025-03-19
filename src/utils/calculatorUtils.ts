@@ -1,3 +1,4 @@
+
 import { VAT_RATE, WORKING_DAYS_PER_MONTH, MONTHS_PER_YEAR, FLATRATE_THRESHOLD, Machine } from '../data/machineData';
 import { getExchangeRate } from './exchangeRate';
 
@@ -193,8 +194,10 @@ export function calculateOperatingCost(
   creditPrice: number,
   forceUseFlatrate: boolean = false
 ): { costPerMonth: number; useFlatrate: boolean } {
-  // Determine if we should use flatrate based on the forceUseFlatrate parameter or treatments threshold
-  const useFlatrate = forceUseFlatrate || (machine.usesCredits && treatmentsPerDay >= FLATRATE_THRESHOLD);
+  // Changed the logic to match requirements:
+  // 1. Only use flatrate if treatments >= 3 AND leasing cost >= flatrate threshold (80%)
+  // 2. Otherwise use per-credit pricing
+  const useFlatrate = forceUseFlatrate && machine.usesCredits && treatmentsPerDay >= FLATRATE_THRESHOLD;
   
   let costPerMonth = 0;
   

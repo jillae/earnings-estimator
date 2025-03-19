@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Slider } from "@/components/ui/slider";
 import { formatCurrency } from '@/utils/calculatorUtils';
@@ -38,7 +37,15 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     onAdjustmentChange(values[0]);
   };
 
-  const actualLeasingCost = leaseCost;
+  // Use the exact max/min leasing cost values for calculation
+  // This ensures we don't exceed the defined range (fixing issue #3)
+  let actualLeasingCost = leaseCost;
+  if (leaseCost > exactMaxCost) {
+    // Cap at max
+    actualLeasingCost = exactMaxCost;
+  } else if (leaseCost < exactMinCost) {
+    actualLeasingCost = exactMinCost;
+  }
 
   // Use formatted values without rounding for display consistency
   const formattedMinCost = formatCurrency(exactMinCost, false);

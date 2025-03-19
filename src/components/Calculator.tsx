@@ -73,7 +73,7 @@ const Calculator: React.FC = () => {
     netPerYearExVat: 0
   });
   
-  // Add the missing state for flatrate threshold
+  // Add the state for flatrate threshold
   const [flatrateThreshold, setFlatrateThreshold] = useState<number>(0);
   
   // Fetch exchange rate on component mount
@@ -168,11 +168,39 @@ const Calculator: React.FC = () => {
         leaseAdjustmentFactor
       );
       
-      console.log("Calculated leasing cost:", calculatedLeasingCost);
+      // Make sure the leasing cost doesn't exceed the max value from the range
+      // This fixes issue #3 - the displayed leasing cost should be capped at the predefined max
+      let finalLeasingCost = calculatedLeasingCost;
+      
+      // If not including insurance, cap at the max from range
+      if (!includeInsurance && finalLeasingCost > leasingRange.max) {
+        finalLeasingCost = leasingRange.max;
+      }
+      // If including insurance, cap at max + insurance cost
+      else if (includeInsurance) {
+        // Calculate insurance cost
+        let insuranceRate = 0.015; // Default for very expensive machines
+        if (machinePriceSEK <= 10000) {
+          insuranceRate = 0.04;
+        } else if (machinePriceSEK <= 20000) {
+          insuranceRate = 0.03;
+        } else if (machinePriceSEK <= 50000) {
+          insuranceRate = 0.025;
+        }
+        const insuranceCost = machinePriceSEK * insuranceRate / 12;
+        
+        // If the cost without insurance exceeds max, cap it
+        const costWithoutInsurance = finalLeasingCost - insuranceCost;
+        if (costWithoutInsurance > leasingRange.max) {
+          finalLeasingCost = leasingRange.max + insuranceCost;
+        }
+      }
+      
+      console.log("Calculated leasing cost:", calculatedLeasingCost, "Final adjusted cost:", finalLeasingCost);
       setIsUpdatingFromLeasingCost(true);
-      setLeasingCost(calculatedLeasingCost);
+      setLeasingCost(finalLeasingCost);
     }
-  }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId, leaseAdjustmentFactor, isUpdatingFromCreditPrice]);
+  }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId, leaseAdjustmentFactor, isUpdatingFromCreditPrice, leasingRange]);
   
   // Calculate credit price when leasing cost changes
   useEffect(() => {
@@ -265,14 +293,15 @@ const Calculator: React.FC = () => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine) {
-      // Determine if we should use flatrate based on leasing cost and threshold
-      let shouldUseFlatrate = false;
+      // Determine if we should use flatrate based on leasing cost and threshold AND treatments per day
+      // Only use flatrate if BOTH conditions are met:
+      // 1. Leasing cost is >= flatrate threshold (80% of range)
+      // 2. Treatments per day is >= FLATRATE_THRESHOLD (3)
+      const shouldUseFlatrate = selectedMachine.usesCredits && 
+                               leasingCost >= flatrateThreshold && 
+                               treatmentsPerDay >= 3;
       
-      if (selectedMachine.usesCredits) {
-        // Use flatrate if leasing cost is >= flatrate threshold (80% of range)
-        shouldUseFlatrate = leasingCost >= flatrateThreshold;
-        console.log(`Flatrate decision: leasingCost ${leasingCost} ${shouldUseFlatrate ? '>=' : '<'} threshold ${flatrateThreshold}`);
-      }
+      console.log(`Flatrate decision: leasingCost ${leasingCost} ${leasingCost >= flatrateThreshold ? '>=' : '<'} threshold ${flatrateThreshold} AND treatments ${treatmentsPerDay} ${treatmentsPerDay >= 3 ? '>=' : '<'} 3`);
       
       const calculatedOperatingCost = calculateOperatingCost(
         selectedMachine,
