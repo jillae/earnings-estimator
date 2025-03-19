@@ -36,7 +36,7 @@ export function calculateTariffBasedLeasingMax(
     // Convert EUR to SEK first
     const totalPriceSEK = (machinePriceEur + shippingCost) * exchangeRate;
     
-    // Apply tariff percentage directly (factor is already a percentage value)
+    // Apply tariff percentage (factor is already a percentage value)
     const calculatedValue = Math.round(totalPriceSEK * factor / 100);
     
     console.log(`Tariff calculation: ${totalPriceSEK} SEK * ${factor}% = ${calculatedValue}`);
@@ -59,7 +59,7 @@ export function calculateLeasingRange(
   // Always use tariff-based calculation as specified in the requirements
   // Find the closest leasing period match
   const closestTariff = LEASING_TARIFFS.reduce((prev, curr) => 
-    Math.abs(curr.Faktor - leasingRateNum) < Math.abs(prev.Faktor - leasingRateNum) ? curr : prev
+    Math.abs(curr.Faktor - leasingRateNum * 100) < Math.abs(prev.Faktor - leasingRateNum * 100) ? curr : prev
   );
   
   // If we have specific machine leasingMin/Max values in the data, use those instead

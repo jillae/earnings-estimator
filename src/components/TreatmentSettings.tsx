@@ -18,13 +18,15 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
 }) => {
   const handleTreatmentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (!isNaN(value) && value > 0) {
+    if (!isNaN(value) && value > 0 && value <= 12) {
       onTreatmentsChange(value);
     }
   };
   
   const incrementTreatments = () => {
-    onTreatmentsChange(treatmentsPerDay + 1);
+    if (treatmentsPerDay < 12) {
+      onTreatmentsChange(treatmentsPerDay + 1);
+    }
   };
   
   const decrementTreatments = () => {
@@ -63,6 +65,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             id="treatments-per-day"
             type="number"
             min="1"
+            max="12"
             value={treatmentsPerDay}
             onChange={handleTreatmentsChange}
             className="pr-16"

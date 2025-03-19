@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { machineData, leasingPeriods } from '@/data/machines';
 import { 
