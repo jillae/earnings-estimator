@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CalculatorContext } from './context';
 import { useStateSelections } from './useStateSelections';
 import { useClinicSettings } from './useClinicSettings';
@@ -10,6 +10,9 @@ import { useRevenueCalculations } from './useRevenueCalculations';
 import { useDebugLogging } from './useDebugLogging';
 
 export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Track whether updates are coming from credit price changes
+  const [isUpdatingFromCreditPrice, setIsUpdatingFromCreditPrice] = useState<boolean>(false);
+
   // Get state selections
   const {
     selectedMachineId,
@@ -72,16 +75,26 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     creditPrice,
     leasingCost,
     selectedLeasingPeriodId,
-    machinePriceSEK
+    machinePriceSEK,
+    isUpdatingFromCreditPrice
   });
+
+  // Handle credit price changes from the user
+  const handleCreditPriceChangeWithFlag = (newPrice: number) => {
+    setIsUpdatingFromCreditPrice(true);
+    handleCreditPriceChange(newPrice);
+  };
 
   // Update credit price when calculatedCreditPrice changes from operating costs
   useEffect(() => {
-    if (calculatedCreditPrice && calculatedCreditPrice !== creditPrice) {
+    if (!isUpdatingFromCreditPrice && calculatedCreditPrice && calculatedCreditPrice !== creditPrice) {
       console.log(`Updating credit price from ${creditPrice} to ${calculatedCreditPrice} based on leasing cost`);
       setCreditPrice(calculatedCreditPrice);
+    } else if (isUpdatingFromCreditPrice) {
+      // Reset the flag after the update
+      setIsUpdatingFromCreditPrice(false);
     }
-  }, [calculatedCreditPrice, creditPrice, setCreditPrice]);
+  }, [calculatedCreditPrice, creditPrice, setCreditPrice, isUpdatingFromCreditPrice]);
 
   // Get revenue calculations
   const { revenue, occupancyRevenues, netResults } = useRevenueCalculations({
@@ -111,7 +124,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     leasingRange,
     leasingCost,
     creditPrice,
-    handleCreditPriceChange,
+    handleCreditPriceChange: handleCreditPriceChangeWithFlag,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     flatrateThreshold,

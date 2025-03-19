@@ -13,7 +13,8 @@ export function useOperatingCosts({
   creditPrice,
   leasingCost,
   selectedLeasingPeriodId,
-  machinePriceSEK
+  machinePriceSEK,
+  isUpdatingFromCreditPrice
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
@@ -21,6 +22,7 @@ export function useOperatingCosts({
   leasingCost: number;
   selectedLeasingPeriodId: string;
   machinePriceSEK: number;
+  isUpdatingFromCreditPrice: boolean;
 }) {
   const [operatingCost, setOperatingCost] = useState<{ costPerMonth: number, useFlatrate: boolean }>({ 
     costPerMonth: 0, 
@@ -32,6 +34,12 @@ export function useOperatingCosts({
   
   // First, calculate the credit price based on current leasing cost
   useEffect(() => {
+    // Skip recalculation if the update is from a manual credit price change
+    if (isUpdatingFromCreditPrice) {
+      console.log("Skipping credit price calculation because update is from credit price change");
+      return;
+    }
+    
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine && selectedMachine.usesCredits) {
@@ -45,7 +53,7 @@ export function useOperatingCosts({
       setCalculatedCreditPrice(newCreditPrice);
       console.log(`Recalculated credit price based on leasing cost: ${leasingCost} → ${newCreditPrice}`);
     }
-  }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK]);
+  }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK, isUpdatingFromCreditPrice]);
 
   // Then calculate the operating cost based on the treatments, etc.
   useEffect(() => {
