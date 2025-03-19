@@ -25,12 +25,14 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   const handleCustomerPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     if (!isNaN(value) && value > 0) {
-      onCustomerPriceChange(value);
+      // Round to nearest 100
+      const roundedValue = Math.round(value / 100) * 100;
+      onCustomerPriceChange(roundedValue);
     }
   };
   
   return (
-    <div className="calculator-grid animate-slide-in" style={{ animationDelay: '500ms' }}>
+    <div className="calculator-grid animate-slide-in" style={{ animationDelay: '150ms' }}>
       <div className="input-group">
         <label htmlFor="treatments-per-day" className="input-label">
           Antal behandlingar per dag
@@ -51,7 +53,8 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
         <Input
           id="customer-price"
           type="number"
-          min="1"
+          min="100"
+          step="100"
           value={customerPrice}
           onChange={handleCustomerPriceChange}
         />

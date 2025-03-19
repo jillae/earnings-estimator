@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ClinicSizeSelector from './ClinicSizeSelector';
 import MachineSelector from './MachineSelector';
@@ -34,9 +35,9 @@ const Calculator: React.FC = () => {
   // State for machine selection
   const [selectedMachineId, setSelectedMachineId] = useState<string>(machineData[0].id);
   
-  // State for leasing options
-  const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>(leasingPeriods[0].id);
-  const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>(insuranceOptions[0].id);
+  // State for leasing options - updated defaults
+  const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>(leasingPeriods[2].id); // Default to 60 months
+  const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>(insuranceOptions[1].id); // Default to "yes"
   
   // State for lease adjustment
   const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(0.5);
@@ -217,6 +218,16 @@ const Calculator: React.FC = () => {
             onChange={setClinicSize} 
           />
           
+          {/* Move TreatmentSettings here - after clinic size and before machine selection */}
+          <div className="glass-card mt-4">
+            <TreatmentSettings 
+              treatmentsPerDay={treatmentsPerDay}
+              customerPrice={customerPrice}
+              onTreatmentsChange={setTreatmentsPerDay}
+              onCustomerPriceChange={setCustomerPrice}
+            />
+          </div>
+          
           <div className="glass-card mt-6">
             <MachineSelector 
               machines={machineData} 
@@ -247,13 +258,6 @@ const Calculator: React.FC = () => {
               creditPrice={creditPrice}
               flatrateAmount={selectedMachine.flatrateAmount}
               operatingCostPerMonth={operatingCost.costPerMonth}
-            />
-            
-            <TreatmentSettings 
-              treatmentsPerDay={treatmentsPerDay}
-              customerPrice={customerPrice}
-              onTreatmentsChange={setTreatmentsPerDay}
-              onCustomerPriceChange={setCustomerPrice}
             />
           </div>
         </div>

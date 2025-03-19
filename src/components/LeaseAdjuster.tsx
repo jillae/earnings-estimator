@@ -44,13 +44,17 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     onAdjustmentChange(steppedValue);
   };
   
+  // Beräkna det faktiska leasing-kostnadsvärdet baserat på slider-position
+  const actualLeasingCost = roundedMinCost + Math.round(adjustmentFactor * numSteps) * 500;
+  
   // Visa formaterat kostnadsvärde
-  const formattedCost = formatCurrency(leaseCost);
+  const formattedCost = formatCurrency(actualLeasingCost);
   
   console.log("Leasing cost values:", { 
     minLeaseCost, 
     maxLeaseCost, 
-    leaseCost, 
+    leaseCost,
+    actualLeasingCost,
     roundedMinCost, 
     roundedMaxCost,
     numSteps,
