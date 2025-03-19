@@ -1,4 +1,3 @@
-
 export interface Machine {
   id: string;
   name: string;
@@ -10,6 +9,9 @@ export interface Machine {
   creditPriceMultiplier: number;
   flatrateAmount: number;
   usesCredits: boolean;
+  leasingMin?: number;
+  leasingMax?: number;
+  leasingTariffs?: {[key: string]: number};
 }
 
 export const machineData: Machine[] = [

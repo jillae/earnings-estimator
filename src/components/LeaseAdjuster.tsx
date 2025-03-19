@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { formatCurrency } from '@/utils/calculatorUtils';
 
@@ -18,11 +18,45 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   adjustmentFactor,
   onAdjustmentChange
 }) => {
-  const handleSliderChange = (values: number[]) => {
-    onAdjustmentChange(values[0]);
+  // Konvertera minLeaseCost och maxLeaseCost till närmaste 500-tal
+  const roundedMinCost = Math.round(minLeaseCost / 500) * 500;
+  const roundedMaxCost = Math.round(maxLeaseCost / 500) * 500;
+  
+  // Beräkna antalet steg om 500 kr mellan min och max
+  const numSteps = (roundedMaxCost - roundedMinCost) / 500;
+  
+  // Beräkna vilket steg det nuvarande leaseCost motsvarar
+  const currentCostStep = Math.round((leaseCost - roundedMinCost) / 500);
+  const currentStepFactor = numSteps > 0 ? currentCostStep / numSteps : 0;
+  
+  // Funktion för att konvertera adjustmentFactor till närmaste steg
+  const getStepValue = (factor: number): number => {
+    if (numSteps <= 0) return factor;
+    
+    // Beräkna vilket steg som är närmast adjustmentFactor
+    const step = Math.round(factor * numSteps);
+    return step / numSteps;
   };
   
-  console.log("Leasing cost values:", { minLeaseCost, maxLeaseCost, leaseCost, adjustmentFactor });
+  const handleSliderChange = (values: number[]) => {
+    // Konvertera värdet till närmaste steg
+    const steppedValue = getStepValue(values[0]);
+    onAdjustmentChange(steppedValue);
+  };
+  
+  // Visa formaterat kostnadsvärde
+  const formattedCost = formatCurrency(leaseCost);
+  
+  console.log("Leasing cost values:", { 
+    minLeaseCost, 
+    maxLeaseCost, 
+    leaseCost, 
+    roundedMinCost, 
+    roundedMaxCost,
+    numSteps,
+    currentStepFactor,
+    adjustmentFactor
+  });
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
@@ -31,22 +65,22 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       </label>
       
       <div className="flex justify-between items-center mb-2">
-        <span className="text-xs text-slate-500">Min: {formatCurrency(minLeaseCost)}</span>
-        <span className="text-xs text-slate-500">Max: {formatCurrency(maxLeaseCost)}</span>
+        <span className="text-xs text-slate-500">Min: {formatCurrency(roundedMinCost)}</span>
+        <span className="text-xs text-slate-500">Max: {formatCurrency(roundedMaxCost)}</span>
       </div>
       
       <Slider
         value={[adjustmentFactor]}
         min={0}
         max={1}
-        step={0.01}
+        step={numSteps > 0 ? 1 / numSteps : 0.01}
         onValueChange={handleSliderChange}
         className="my-4"
       />
       
       <div className="flex justify-between items-center">
         <span className="text-sm font-medium">Leasingkostnad per månad (ex moms)</span>
-        <span className="text-lg font-semibold text-slate-700">{formatCurrency(leaseCost)}</span>
+        <span className="text-lg font-semibold text-slate-700">{formattedCost}</span>
       </div>
     </div>
   );

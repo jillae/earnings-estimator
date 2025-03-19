@@ -17,15 +17,26 @@ export async function calculateLeasingCost(
 
   const machinePriceSek = machinePrice * exchangeRate;
 
-  // Använd standardtaxa om maskinen inte har specifika tariffsatser
-  let tariff = 0.04; // Standardtaxa
+  // Beräkna leasingkostnad
+  let baseLeasingCost: number;
   
-  // Säkerställ att vi endast försöker komma åt leasingTariffs om det finns
-  if (machine.leasingTariffs && machine.leasingTariffs[leasingPeriod] !== undefined) {
-    tariff = machine.leasingTariffs[leasingPeriod];
-  }
+  if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
+    // Om leasingMin och leasingMax finns, använd leasingMin som default
+    baseLeasingCost = machine.leasingMin;
+  } else {
+    // Använd standardtaxa om maskinen inte har specifika tariffsatser
+    let tariff = 0.04; // Standardtaxa
     
-  let leasingCost = (machinePriceSek * tariff) / 12;
+    // Säkerställ att vi endast försöker komma åt leasingTariffs om det finns
+    if (machine.leasingTariffs && machine.leasingTariffs[leasingPeriod] !== undefined) {
+      tariff = machine.leasingTariffs[leasingPeriod];
+    }
+      
+    baseLeasingCost = (machinePriceSek * tariff) / 12;
+  }
+
+  // Avrunda till närmaste 500
+  baseLeasingCost = Math.round(baseLeasingCost / 500) * 500;
 
   let insuranceCost = 0;
   if (includeInsurance) {
@@ -41,7 +52,7 @@ export async function calculateLeasingCost(
     insuranceCost = machinePriceSek * insuranceRate / 12;
   }
 
-  leasingCost += insuranceCost;
+  let leasingCost = baseLeasingCost + insuranceCost;
 
   return leasingCost;
 }
