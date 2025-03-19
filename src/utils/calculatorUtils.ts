@@ -47,13 +47,13 @@ export function calculateLeasingRange(
     // Use the exact values directly from the machine data
     baseLeasingMin = machine.leasingMin;
     baseLeasingMax = machine.leasingMax;
-    baseLeasingDefault = (machine.leasingMin + machine.leasingMax) / 2;
+    baseLeasingDefault = machine.leasingMax; // Set default to max (high leasing cost = low credit price)
     console.log(`Using predefined leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
   } else {
     // Annars beräkna från multiplikatorer
     const minMultiplier = machine.minLeaseMultiplier;
     const maxMultiplier = machine.maxLeaseMultiplier;
-    const defaultMultiplier = machine.defaultLeaseMultiplier;
+    const defaultMultiplier = machine.maxLeaseMultiplier; // Set default to max
     
     baseLeasingMin = machinePriceSEK * leasingRate * minMultiplier;
     baseLeasingMax = machinePriceSEK * leasingRate * maxMultiplier;
@@ -164,7 +164,7 @@ export function calculateCreditPrice(machine: any, leasingCost: number): number 
     // Ensure we get the exact credit values at the extremes
     let calculatedCredit;
     if (clampedPosition <= 0) {
-      calculatedCredit = machine.creditMax; // At minimum leasing cost, use maximum credit price
+      calculatedCredit = machine.creditMax; // At minimum leasing cost, use maximum credit price (299)
     } else if (clampedPosition >= 1) {
       calculatedCredit = machine.creditMin; // At maximum leasing cost, use minimum credit price
     } else {

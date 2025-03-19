@@ -38,8 +38,8 @@ const Calculator: React.FC = () => {
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>(leasingPeriods[2].id); // Default to 60 months
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>(insuranceOptions[1].id); // Default to "yes"
   
-  // State for lease adjustment
-  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(0.5);
+  // State for lease adjustment - start with factor 1 = max
+  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(1);
   
   // State for treatment settings
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(MEDIUM_CLINIC_TREATMENTS);
@@ -131,8 +131,8 @@ const Calculator: React.FC = () => {
       console.log("Leasing range calculated:", range);
       setLeasingRange(range);
       
-      // Reset adjustment factor to middle when range changes
-      setLeaseAdjustmentFactor(0.5);
+      // Always set adjustment factor to 1 (max) when range changes
+      setLeaseAdjustmentFactor(1);
     }
   }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId]);
   
@@ -218,6 +218,13 @@ const Calculator: React.FC = () => {
           
           console.log("Calculated new leasing cost from credit price:", 
             {newCreditPrice, creditPosition, clampedCreditPosition, inverseCreditPosition, newLeasingCost});
+          
+          // Handle exact boundaries to ensure we get exact values
+          if (newCreditPrice >= selectedMachine.creditMax) {
+            newLeasingCost = selectedMachine.leasingMin; // Min leasing for max credit
+          } else if (newCreditPrice <= selectedMachine.creditMin) {
+            newLeasingCost = selectedMachine.leasingMax; // Max leasing for min credit
+          }
         }
       } else {
         // Fallback to multiplier method (inverse relationship)
@@ -309,7 +316,6 @@ const Calculator: React.FC = () => {
             onChange={setClinicSize} 
           />
           
-          {/* Move TreatmentSettings here - after clinic size and before machine selection */}
           <div className="glass-card mt-4">
             <TreatmentSettings 
               treatmentsPerDay={treatmentsPerDay}

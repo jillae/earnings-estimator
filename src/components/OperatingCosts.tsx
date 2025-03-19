@@ -68,6 +68,8 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
                 value={creditPrice}
                 onChange={handleCreditPriceChange}
                 className="w-full"
+                // Force controlled component behavior
+                key={`credit-price-${creditPrice}`}
               />
             </div>
           ) : (

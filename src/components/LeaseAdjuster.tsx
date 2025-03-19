@@ -40,6 +40,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 
   const actualLeasingCost = leaseCost;
 
+  // Use formatted values without rounding for display consistency
   const formattedMinCost = formatCurrency(exactMinCost, false);
   const formattedMaxCost = formatCurrency(exactMaxCost, false);
   const formattedCost = formatCurrency(actualLeasingCost, false);
