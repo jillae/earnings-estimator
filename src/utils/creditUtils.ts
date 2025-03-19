@@ -6,13 +6,13 @@ import { WORKING_DAYS_PER_MONTH } from './constants';
 import { Machine } from '../data/machineData';
 import { calculateLeasingRange } from './leasingUtils';
 
-export function calculateCreditPrice(machine: Machine, leasingCost: number, leasingRate?: number | string, machinePriceSEK?: number): number {
+export function calculateCreditPrice(machine: Machine, leasingCost: number, leasingRate?: string | number, machinePriceSEK?: number): number {
   if (!machine.usesCredits) return 0;
   
   // Ensure leasingRate is a number if provided
   const leasingRateNum = leasingRate !== undefined && typeof leasingRate === 'string' 
     ? parseFloat(leasingRate) 
-    : leasingRate;
+    : (leasingRate as number | undefined);
   
   // If we have dynamic leasingMax calculation available, use it
   let creditMin = machine.creditMin;
@@ -91,7 +91,7 @@ export function shouldUseFlatrate(
   machine: Machine,
   leasingCost: number,
   treatmentsPerDay: number,
-  leasingRate?: number | string, 
+  leasingRate?: string | number, 
   machinePriceSEK?: number
 ): boolean {
   if (!machine.usesCredits) {
@@ -101,7 +101,7 @@ export function shouldUseFlatrate(
   // Ensure leasingRate is a number if provided
   const leasingRateNum = leasingRate !== undefined && typeof leasingRate === 'string' 
     ? parseFloat(leasingRate) 
-    : leasingRate;
+    : (leasingRate as number | undefined);
   
   // Get dynamic leasingMax if possible
   let leasingMax: number;
@@ -130,13 +130,13 @@ export function calculateOperatingCost(
   treatmentsPerDay: number,
   creditPrice: number,
   leasingCost: number,
-  leasingRate?: number | string,
+  leasingRate?: string | number,
   machinePriceSEK?: number
 ): { costPerMonth: number; useFlatrate: boolean } {
   // Ensure leasingRate is a number if provided
   const leasingRateNum = leasingRate !== undefined && typeof leasingRate === 'string' 
     ? parseFloat(leasingRate) 
-    : leasingRate;
+    : (leasingRate as number | undefined);
   
   // Determine if flatrate should be used based on rules
   const useFlatrate = shouldUseFlatrate(machine, leasingCost, treatmentsPerDay, leasingRateNum, machinePriceSEK);

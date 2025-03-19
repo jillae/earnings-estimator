@@ -38,36 +38,19 @@ export function calculateLeasingRange(
   includeInsurance: boolean
 ): { min: number; max: number; default: number } {
   // Ensure leasingRate is a number
-  const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate;
+  const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate || 0;
   
-  let baseLeasingMin: number;
-  let baseLeasingMax: number;
-  let baseLeasingDefault: number;
-  
-  // Always use tariff-based calculation when possible
+  // Always use tariff-based calculation as specified in the requirements
   // Find the closest leasing period match
-  if (leasingRateNum) {
-    const closestTariff = LEASING_TARIFFS.reduce((prev, curr) => 
-      Math.abs(curr.Faktor - leasingRateNum * 100) < Math.abs(prev.Faktor - leasingRateNum * 100) ? curr : prev
-    );
-    
-    baseLeasingMax = calculateTariffBasedLeasingMax(machine.priceEur, closestTariff.Löptid);
-    baseLeasingMin = Math.round(0.90 * baseLeasingMax);
-    baseLeasingDefault = baseLeasingMax;
-    
-    console.log(`Calculated tariff-based leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
-  }
-  // Fall back to the original calculation method if no tariff match found
-  else {
-    const minMultiplier = machine.minLeaseMultiplier;
-    const maxMultiplier = machine.maxLeaseMultiplier;
-    const defaultMultiplier = machine.maxLeaseMultiplier; // Use max as default
-    
-    baseLeasingMin = machinePriceSEK * leasingRateNum * minMultiplier;
-    baseLeasingMax = machinePriceSEK * leasingRateNum * maxMultiplier;
-    baseLeasingDefault = machinePriceSEK * leasingRateNum * defaultMultiplier;
-    console.log(`Calculated leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
-  }
+  const closestTariff = LEASING_TARIFFS.reduce((prev, curr) => 
+    Math.abs(curr.Faktor - leasingRateNum * 100) < Math.abs(prev.Faktor - leasingRateNum * 100) ? curr : prev
+  );
+  
+  const baseLeasingMax = calculateTariffBasedLeasingMax(machine.priceEur, closestTariff.Löptid);
+  const baseLeasingMin = Math.round(0.90 * baseLeasingMax); // 90% of max as required
+  const baseLeasingDefault = baseLeasingMax;
+  
+  console.log(`Calculated tariff-based leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
 
   let insuranceCost = 0;
   if (includeInsurance) {
@@ -102,7 +85,7 @@ export function calculateLeasingCost(
   leaseMultiplier: number
 ): number {
   // Ensure leasingRate is a number
-  const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate;
+  const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate || 0;
   
   // Get the dynamic leasing range
   const leasingRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);

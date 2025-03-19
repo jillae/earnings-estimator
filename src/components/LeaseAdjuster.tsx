@@ -63,7 +63,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Calculate flatrate threshold position as percentage if applicable
   let thresholdPosition = null;
   if (showFlatrateIndicator && flatrateThreshold) {
-    thresholdPosition = ((flatrateThreshold - exactMinCost) / (exactMaxCost - exactMinCost)) * 100;
+    // Ensure the threshold is properly positioned relative to min and max
+    const normalizedThreshold = Math.max(exactMinCost, Math.min(exactMaxCost, flatrateThreshold));
+    thresholdPosition = ((normalizedThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
     console.log(`Flatrate threshold position: ${thresholdPosition}% (${flatrateThreshold} / ${exactMinCost} / ${exactMaxCost})`);
   }
 
@@ -79,7 +81,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       </div>
 
       <div className="slider-container relative">
-        {showFlatrateIndicator && thresholdPosition !== null && (
+        {showFlatrateIndicator && thresholdPosition !== null && thresholdPosition >= 0 && thresholdPosition <= 100 && (
           <div className="flatrate-indicator">
             <div 
               className="flatrate-threshold-line absolute h-6 border-l-2 border-primary z-10" 
