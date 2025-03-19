@@ -16,9 +16,9 @@ interface TreatmentSettingsProps {
   onCustomerPriceChange: (value: number) => void;
 }
 
-const treatmentOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const treatmentOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const priceOptions = [
-  500, 750, 1000, 1250, 1500, 1750, 2000, 
+  400, 500, 750, 1000, 1250, 1500, 1750, 2000, 
   2250, 2500, 2750, 3000, 3500, 4000, 4500, 5000
 ];
 
@@ -39,7 +39,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   return (
     <div className="md:grid md:grid-cols-2 md:gap-6">
       <div className="input-group mb-0">
-        <label htmlFor="treatments-per-day" className="input-label h-14 flex items-start">
+        <label htmlFor="treatments-per-day" className="input-label h-14 flex items-center">
           Antal behandlingar per dag
         </label>
         
@@ -61,7 +61,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
       </div>
       
       <div className="input-group mb-0">
-        <label htmlFor="customer-price" className="input-label h-14 flex items-start">
+        <label htmlFor="customer-price" className="input-label h-14 flex items-center">
           Kundpris per behandling (kr) ink moms
         </label>
         

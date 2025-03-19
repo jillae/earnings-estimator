@@ -13,14 +13,24 @@ export function calculateRevenue(customerPrice: number, treatmentsPerDay: number
   monthlyRevenueExVat: number;
   yearlyRevenueExVat: number;
 } {
+  // Calculate revenue with VAT included
   const revenuePerTreatmentExVat = customerPrice / (1 + VAT_RATE);
   const dailyRevenueIncVat = customerPrice * treatmentsPerDay;
-  const weeklyRevenueIncVat = dailyRevenueIncVat * 5;
+  const weeklyRevenueIncVat = dailyRevenueIncVat * 5; // 5 working days per week
   const monthlyRevenueIncVat = dailyRevenueIncVat * WORKING_DAYS_PER_MONTH;
   const yearlyRevenueIncVat = monthlyRevenueIncVat * MONTHS_PER_YEAR;
   
+  // Calculate revenue excluding VAT
   const monthlyRevenueExVat = monthlyRevenueIncVat / (1 + VAT_RATE);
   const yearlyRevenueExVat = yearlyRevenueIncVat / (1 + VAT_RATE);
+  
+  console.log(`Revenue calculation:
+    Customer price: ${customerPrice}
+    Treatments per day: ${treatmentsPerDay}
+    Daily revenue (inc VAT): ${dailyRevenueIncVat}
+    Monthly revenue (inc VAT): ${monthlyRevenueIncVat}
+    Monthly revenue (ex VAT): ${monthlyRevenueExVat}
+  `);
   
   return {
     revenuePerTreatmentExVat,
@@ -55,6 +65,13 @@ export function calculateNetResults(
 } {
   const netPerMonthExVat = monthlyRevenueExVat - totalMonthlyCostExVat;
   const netPerYearExVat = yearlyRevenueExVat - (totalMonthlyCostExVat * MONTHS_PER_YEAR);
+  
+  console.log(`Net result calculation:
+    Monthly revenue (ex VAT): ${monthlyRevenueExVat}
+    Total monthly cost (ex VAT): ${totalMonthlyCostExVat}
+    Net per month (ex VAT): ${netPerMonthExVat}
+    Net per year (ex VAT): ${netPerYearExVat}
+  `);
   
   return {
     netPerMonthExVat,
