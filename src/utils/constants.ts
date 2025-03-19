@@ -16,7 +16,7 @@ export const SMALL_CLINIC_TREATMENTS = 2;
 export const MEDIUM_CLINIC_TREATMENTS = 4;
 export const LARGE_CLINIC_TREATMENTS = 6;
 
-export const DEFAULT_CUSTOMER_PRICE = 1990;
+export const DEFAULT_CUSTOMER_PRICE = 2500;
 export const DEFAULT_EXCHANGE_RATE = 11.49260;
 
 // Tariff entries with original percentage values (not divided by 100)

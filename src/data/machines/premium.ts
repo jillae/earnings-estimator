@@ -16,7 +16,7 @@ export const premiumMachines: Machine[] = [
     leasingMin: 21703,
     leasingMax: 24114,
     creditMin: 149,
-    creditMax: 299,
+    creditMax: 210,
     leasingTariffs: {
       "24": 0.04566,
       "36": 0.03189,
