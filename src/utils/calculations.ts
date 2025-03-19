@@ -1,5 +1,6 @@
+
 import { getExchangeRate } from './exchangeRate';
-import { Machine } from '../data/machineData'; // Import the Machine type
+import { Machine } from '../data/machineData'; // Importera Machine-typen
 
 export async function calculateLeasingCost(
   machine: Machine,
@@ -7,7 +8,7 @@ export async function calculateLeasingCost(
   includeInsurance: boolean
 ): Promise<number> {
   const machinePrice = machine.priceEur;
-  const currency = 'EUR'; // Machine prices are in EUR from the machineData
+  const currency = 'EUR'; // Maskinpriser är i EUR från machineData
   let exchangeRate = 1;
 
   if (currency !== 'SEK') {
@@ -16,9 +17,13 @@ export async function calculateLeasingCost(
 
   const machinePriceSek = machinePrice * exchangeRate;
 
-  const tariff = machine.leasingTariffs && machine.leasingTariffs[leasingPeriod] 
-    ? machine.leasingTariffs[leasingPeriod] 
-    : 0.04;
+  // Använd standardtaxa om maskinen inte har specifika tariffsatser
+  let tariff = 0.04; // Standardtaxa
+  
+  // Säkerställ att vi endast försöker komma åt leasingTariffs om det finns
+  if (machine.leasingTariffs && machine.leasingTariffs[leasingPeriod] !== undefined) {
+    tariff = machine.leasingTariffs[leasingPeriod];
+  }
     
   let leasingCost = (machinePriceSek * tariff) / 12;
 
