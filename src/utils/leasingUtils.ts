@@ -1,4 +1,3 @@
-
 /**
  * Utility functions for leasing calculations
  */
@@ -6,8 +5,7 @@ import { Machine } from '../data/machineData';
 import { 
   LEASING_TARIFFS, 
   SHIPPING_COST_EUR_CREDITS, 
-  SHIPPING_COST_EUR_NO_CREDITS, 
-  CONSTANT_MULTIPLIER 
+  SHIPPING_COST_EUR_NO_CREDITS
 } from './constants';
 
 /**
@@ -21,19 +19,26 @@ export function getLeasingFactor(leaseDurationMonths: number): number | undefine
 /**
  * Calculates the maximum leasing cost based on machine price and leasing duration
  * This is the central function for determining the maximum leasing cost
+ * 
+ * New formula: machinePriceSEK * tariff% = leasingMax
  */
 export function calculateTariffBasedLeasingMax(
   machinePriceEur: number, 
   leaseDurationMonths: number,
-  usesCredits: boolean
+  usesCredits: boolean,
+  exchangeRate: number = 11.49260
 ): number {
   const factor = getLeasingFactor(leaseDurationMonths);
   const shippingCost = usesCredits ? SHIPPING_COST_EUR_CREDITS : SHIPPING_COST_EUR_NO_CREDITS;
   
   if (factor !== undefined) {
-    // The factor is now a decimal (e.g., 0.04566 instead of 4.566)
-    const calculatedValue = Math.round((machinePriceEur + shippingCost) * CONSTANT_MULTIPLIER * factor);
-    console.log(`Tariff calculation: (${machinePriceEur} + ${shippingCost}) * ${CONSTANT_MULTIPLIER} * ${factor} = ${calculatedValue}`);
+    // Convert EUR to SEK first
+    const totalPriceSEK = (machinePriceEur + shippingCost) * exchangeRate;
+    
+    // Apply tariff percentage directly (factor is already a percentage value)
+    const calculatedValue = Math.round(totalPriceSEK * (factor / 100));
+    
+    console.log(`Tariff calculation: ${totalPriceSEK} SEK * ${factor}% = ${calculatedValue}`);
     return calculatedValue;
   } else {
     console.error(`No factor found for leasing duration ${leaseDurationMonths} months.`);
@@ -88,8 +93,16 @@ export function calculateLeasingRange(
     return result;
   }
   
+  // Calculate exchange rate to convert EUR to SEK
+  const exchangeRate = machinePriceSEK / machine.priceEur;
+  
   // If no pre-defined values, calculate based on tariff
-  const baseLeasingMax = calculateTariffBasedLeasingMax(machine.priceEur, closestTariff.Löptid, machine.usesCredits);
+  const baseLeasingMax = calculateTariffBasedLeasingMax(
+    machine.priceEur, 
+    closestTariff.Löptid, 
+    machine.usesCredits,
+    exchangeRate
+  );
   const baseLeasingMin = Math.round(0.90 * baseLeasingMax); // 90% of max as required
   const baseLeasingDefault = baseLeasingMax;
   

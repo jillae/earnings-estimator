@@ -1,16 +1,16 @@
 
-export const VAT_RATE = 0.25;
-export const WORKING_DAYS_PER_MONTH = 22;
-export const MONTHS_PER_YEAR = 12;
-export const FLATRATE_THRESHOLD = 3;
-
-export const SHIPPING_COST_EUR_CREDITS = 652;
-export const SHIPPING_COST_EUR_NO_CREDITS = 230;
-
-export const DEFAULT_EXCHANGE_RATE = 11.49260;
-
-export const SMALL_CLINIC_TREATMENTS = 2;
-export const MEDIUM_CLINIC_TREATMENTS = 4;
-export const LARGE_CLINIC_TREATMENTS = 6;
-
-export const DEFAULT_CUSTOMER_PRICE = 1990;
+// This file re-exports constants from the central constants file
+// to maintain backward compatibility
+export { 
+  VAT_RATE,
+  WORKING_DAYS_PER_MONTH,
+  MONTHS_PER_YEAR,
+  FLATRATE_THRESHOLD,
+  SHIPPING_COST_EUR_CREDITS,
+  SHIPPING_COST_EUR_NO_CREDITS,
+  DEFAULT_EXCHANGE_RATE,
+  SMALL_CLINIC_TREATMENTS,
+  MEDIUM_CLINIC_TREATMENTS,
+  LARGE_CLINIC_TREATMENTS,
+  DEFAULT_CUSTOMER_PRICE
+} from '../../utils/constants';

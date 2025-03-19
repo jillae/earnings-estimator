@@ -5,7 +5,7 @@ import { treatmentMachines } from './treatment';
 import { handheldMachines } from './handheld';
 import { specialMachines } from './special';
 import { leasingPeriods, insuranceOptions, insuranceRates } from './leasingOptions';
-import * as constants from './constants';
+import * as constants from '../../utils/constants';
 
 // Combine all machines into one array
 export const machineData: Machine[] = [
@@ -29,7 +29,7 @@ export {
   MEDIUM_CLINIC_TREATMENTS,
   LARGE_CLINIC_TREATMENTS,
   DEFAULT_CUSTOMER_PRICE
-} from './constants';
+} from '../../utils/constants';
 export type { Machine, LeasingPeriod, InsuranceOption, InsuranceRates } from './types';
 
 // Export machine categories for filtered views if needed
