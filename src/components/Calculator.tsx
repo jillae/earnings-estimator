@@ -73,6 +73,9 @@ const Calculator: React.FC = () => {
     netPerYearExVat: 0
   });
   
+  // Add the missing state for flatrate threshold
+  const [flatrateThreshold, setFlatrateThreshold] = useState<number>(0);
+  
   // Fetch exchange rate on component mount
   useEffect(() => {
     const getExchangeRate = async () => {
