@@ -28,24 +28,13 @@ import {
 } from '../utils/calculatorUtils';
 
 const Calculator: React.FC = () => {
-  // State for clinic size
-  const [clinicSize, setClinicSize] = useState<number>(2); // Default to medium
-  
-  // State for machine selection
+  const [clinicSize, setClinicSize] = useState<number>(2);
   const [selectedMachineId, setSelectedMachineId] = useState<string>(machineData[0].id);
-  
-  // State for leasing options - updated defaults
-  const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>(leasingPeriods[2].id); // Default to 60 months
-  const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>(insuranceOptions[1].id); // Default to "yes"
-  
-  // State for lease adjustment - start with factor 1 = max
+  const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>(leasingPeriods[2].id);
+  const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>(insuranceOptions[1].id);
   const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(1);
-  
-  // State for treatment settings
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(MEDIUM_CLINIC_TREATMENTS);
   const [customerPrice, setCustomerPrice] = useState<number>(DEFAULT_CUSTOMER_PRICE);
-  
-  // State for calculations
   const [exchangeRate, setExchangeRate] = useState<number>(11.49260);
   const [machinePriceSEK, setMachinePriceSEK] = useState<number>(0);
   const [leasingRange, setLeasingRange] = useState<{ min: number, max: number, default: number }>({ min: 0, max: 0, default: 0 });
@@ -72,11 +61,8 @@ const Calculator: React.FC = () => {
     netPerMonthExVat: 0,
     netPerYearExVat: 0
   });
-  
-  // Add the state for flatrate threshold
   const [flatrateThreshold, setFlatrateThreshold] = useState<number>(0);
-  
-  // Fetch exchange rate on component mount
+
   useEffect(() => {
     const getExchangeRate = async () => {
       try {
@@ -85,14 +71,12 @@ const Calculator: React.FC = () => {
         setExchangeRate(rate);
       } catch (error) {
         console.error("Failed to fetch exchange rate:", error);
-        // Keep using default rate
       }
     };
     
     getExchangeRate();
   }, []);
-  
-  // Update treatments per day when clinic size changes
+
   useEffect(() => {
     switch (clinicSize) {
       case 1:
@@ -106,8 +90,7 @@ const Calculator: React.FC = () => {
         break;
     }
   }, [clinicSize]);
-  
-  // Calculate machine price when machine or exchange rate changes
+
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     if (selectedMachine) {
@@ -116,8 +99,7 @@ const Calculator: React.FC = () => {
       setMachinePriceSEK(priceSEK);
     }
   }, [selectedMachineId, exchangeRate]);
-  
-  // Calculate leasing range when machine price, leasing period, or insurance changes
+
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     const selectedLeasingPeriod = leasingPeriods.find(period => period.id === selectedLeasingPeriodId);
@@ -134,10 +116,8 @@ const Calculator: React.FC = () => {
       console.log("Leasing range calculated:", range);
       setLeasingRange(range);
       
-      // Always set adjustment factor to 1 (max) when range changes
       setLeaseAdjustmentFactor(1);
       
-      // Calculate flatrate threshold (80% of the way from min to max)
       if (selectedMachine.usesCredits) {
         const threshold = range.min + (0.8 * (range.max - range.min));
         console.log("Flatrate threshold calculated:", threshold);
@@ -145,12 +125,11 @@ const Calculator: React.FC = () => {
       }
     }
   }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId]);
-  
-  // Calculate leasing cost when range or adjustment factor changes
+
   useEffect(() => {
     if (isUpdatingFromCreditPrice) {
       console.log("Skipping leasing cost calculation because update is from credit price change");
-      return; // Skip if update is coming from credit price change
+      return;
     }
     
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
@@ -168,18 +147,12 @@ const Calculator: React.FC = () => {
         leaseAdjustmentFactor
       );
       
-      // Make sure the leasing cost doesn't exceed the max value from the range
-      // This fixes issue #3 - the displayed leasing cost should be capped at the predefined max
       let finalLeasingCost = calculatedLeasingCost;
       
-      // If not including insurance, cap at the max from range
       if (!includeInsurance && finalLeasingCost > leasingRange.max) {
         finalLeasingCost = leasingRange.max;
-      }
-      // If including insurance, cap at max + insurance cost
-      else if (includeInsurance) {
-        // Calculate insurance cost
-        let insuranceRate = 0.015; // Default for very expensive machines
+      } else if (includeInsurance) {
+        let insuranceRate = 0.015;
         if (machinePriceSEK <= 10000) {
           insuranceRate = 0.04;
         } else if (machinePriceSEK <= 20000) {
@@ -189,7 +162,6 @@ const Calculator: React.FC = () => {
         }
         const insuranceCost = machinePriceSEK * insuranceRate / 12;
         
-        // If the cost without insurance exceeds max, cap it
         const costWithoutInsurance = finalLeasingCost - insuranceCost;
         if (costWithoutInsurance > leasingRange.max) {
           finalLeasingCost = leasingRange.max + insuranceCost;
@@ -201,8 +173,7 @@ const Calculator: React.FC = () => {
       setLeasingCost(finalLeasingCost);
     }
   }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId, leaseAdjustmentFactor, isUpdatingFromCreditPrice, leasingRange]);
-  
-  // Calculate credit price when leasing cost changes
+
   useEffect(() => {
     if (isUpdatingFromCreditPrice) {
       console.log("Resetting isUpdatingFromCreditPrice flag");
@@ -220,8 +191,7 @@ const Calculator: React.FC = () => {
     
     setIsUpdatingFromLeasingCost(false);
   }, [selectedMachineId, leasingCost, isUpdatingFromCreditPrice]);
-  
-  // Handle direct credit price changes
+
   const handleCreditPriceChange = (newCreditPrice: number) => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
@@ -229,7 +199,6 @@ const Calculator: React.FC = () => {
       console.log("Credit price manually changed to:", newCreditPrice);
       setCreditPrice(newCreditPrice);
       
-      // Calculate what leasing cost would generate this credit price
       let newLeasingCost = 0;
       
       if (selectedMachine.creditMin !== undefined && 
@@ -239,38 +208,28 @@ const Calculator: React.FC = () => {
         
         const creditRange = selectedMachine.creditMax - selectedMachine.creditMin;
         if (creditRange <= 0) {
-          // Avoid division by zero
           newLeasingCost = selectedMachine.leasingMin;
         } else {
-          // INVERSE relationship: high credit price = low leasing cost, low credit price = high leasing cost
-          // Calculate position of newCreditPrice in the credit range (0-1)
           const creditPosition = (newCreditPrice - selectedMachine.creditMin) / creditRange;
           const clampedCreditPosition = Math.max(0, Math.min(1, creditPosition));
-          
-          // Invert the position (1 - position) to get the inverse relationship
           const inverseCreditPosition = 1 - clampedCreditPosition;
-          
-          // Use inverse position to find equivalent leasing cost in the leasing range
           const leasingRange = selectedMachine.leasingMax - selectedMachine.leasingMin;
           newLeasingCost = selectedMachine.leasingMin + (inverseCreditPosition * leasingRange);
           
           console.log("Calculated new leasing cost from credit price:", 
             {newCreditPrice, creditPosition, clampedCreditPosition, inverseCreditPosition, newLeasingCost});
           
-          // Handle exact boundaries to ensure we get exact values
           if (newCreditPrice >= selectedMachine.creditMax) {
-            newLeasingCost = selectedMachine.leasingMin; // Min leasing for max credit
+            newLeasingCost = selectedMachine.leasingMin;
           } else if (newCreditPrice <= selectedMachine.creditMin) {
-            newLeasingCost = selectedMachine.leasingMax; // Max leasing for min credit
+            newLeasingCost = selectedMachine.leasingMax;
           }
         }
       } else {
-        // Fallback to multiplier method (inverse relationship)
         newLeasingCost = 1000000 / (newCreditPrice * selectedMachine.creditPriceMultiplier);
         console.log("Calculated leasing cost from credit price using inverse multiplier:", newLeasingCost);
       }
       
-      // Find what adjustment factor would lead to this leasing cost
       const leasingDiff = leasingRange.max - leasingRange.min;
       if (leasingDiff > 0) {
         const newFactor = (newLeasingCost - leasingRange.min) / leasingDiff;
@@ -281,22 +240,16 @@ const Calculator: React.FC = () => {
         setLeaseAdjustmentFactor(clampedFactor);
         setLeasingCost(newLeasingCost);
       } else {
-        // If leasing range is zero, just set the leasing cost directly
         setIsUpdatingFromCreditPrice(true);
         setLeasingCost(newLeasingCost);
       }
     }
   };
-  
-  // Calculate operating cost when treatments per day or credit price changes
+
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine) {
-      // Determine if we should use flatrate based on leasing cost and threshold AND treatments per day
-      // Only use flatrate if BOTH conditions are met:
-      // 1. Leasing cost is >= flatrate threshold (80% of range)
-      // 2. Treatments per day is >= FLATRATE_THRESHOLD (3)
       const shouldUseFlatrate = selectedMachine.usesCredits && 
                                leasingCost >= flatrateThreshold && 
                                treatmentsPerDay >= 3;
@@ -307,24 +260,21 @@ const Calculator: React.FC = () => {
         selectedMachine,
         treatmentsPerDay,
         creditPrice,
-        shouldUseFlatrate  // Pass the flatrate decision to the calculation function
+        shouldUseFlatrate
       );
       
       setOperatingCost(calculatedOperatingCost);
     }
   }, [selectedMachineId, treatmentsPerDay, creditPrice, leasingCost, flatrateThreshold]);
-  
-  // Calculate revenue when customer price or treatments per day changes
+
   useEffect(() => {
     const calculatedRevenue = calculateRevenue(customerPrice, treatmentsPerDay);
     setRevenue(calculatedRevenue);
     
-    // Also update occupancy revenues
     const calculatedOccupancyRevenues = calculateOccupancyRevenues(calculatedRevenue.yearlyRevenueIncVat);
     setOccupancyRevenues(calculatedOccupancyRevenues);
   }, [customerPrice, treatmentsPerDay]);
-  
-  // Calculate net results when revenue and costs change
+
   useEffect(() => {
     const totalMonthlyCostExVat = leasingCost + operatingCost.costPerMonth;
     
@@ -336,11 +286,9 @@ const Calculator: React.FC = () => {
     
     setNetResults(calculatedNetResults);
   }, [revenue, leasingCost, operatingCost]);
-  
-  // Get the selected machine
+
   const selectedMachine = machineData.find(machine => machine.id === selectedMachineId) || machineData[0];
-  
-  // Log values for debugging
+
   useEffect(() => {
     console.log("Leasing cost values:", {
       minLeaseCost: leasingRange.min,
@@ -354,7 +302,7 @@ const Calculator: React.FC = () => {
       adjustmentFactor: leaseAdjustmentFactor
     });
   }, [leasingRange, leasingCost, leaseAdjustmentFactor]);
-  
+
   return (
     <div className="container">
       <div className="calculator-grid">
