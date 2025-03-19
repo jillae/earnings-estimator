@@ -22,6 +22,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     onAdjustmentChange(values[0]);
   };
   
+  console.log("Leasing cost values:", { minLeaseCost, maxLeaseCost, leaseCost, adjustmentFactor });
+  
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
       <label className="input-label">

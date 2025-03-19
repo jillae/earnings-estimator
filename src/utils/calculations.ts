@@ -1,12 +1,13 @@
-import { getExchangeRate } from './exchangeRate'; // Import the function
+import { getExchangeRate } from './exchangeRate';
+import { Machine } from '../data/machineData'; // Import the Machine type
 
 export async function calculateLeasingCost(
   machine: Machine,
   leasingPeriod: number,
   includeInsurance: boolean
 ): Promise<number> {
-  const machinePrice = machine.price;
-  const currency = machine.currency;
+  const machinePrice = machine.priceEur;
+  const currency = 'EUR'; // Machine prices are in EUR from the machineData
   let exchangeRate = 1;
 
   if (currency !== 'SEK') {
@@ -15,11 +16,27 @@ export async function calculateLeasingCost(
 
   const machinePriceSek = machinePrice * exchangeRate;
 
-  const tariff = machine.leasingTariffs[leasingPeriod] || 0.04;
+  const tariff = machine.leasingTariffs && machine.leasingTariffs[leasingPeriod] 
+    ? machine.leasingTariffs[leasingPeriod] 
+    : 0.04;
+    
   let leasingCost = (machinePriceSek * tariff) / 12;
 
-  // ... rest of the leasing cost calculation logic
-  // ... including insurance and adjustments
+  let insuranceCost = 0;
+  if (includeInsurance) {
+    let insuranceRate = 0.015;
+    if (machinePriceSek <= 10000) {
+      insuranceRate = 0.04;
+    } else if (machinePriceSek <= 20000) {
+      insuranceRate = 0.03;
+    } else if (machinePriceSek <= 50000) {
+      insuranceRate = 0.025;
+    }
+
+    insuranceCost = machinePriceSek * insuranceRate / 12;
+  }
+
+  leasingCost += insuranceCost;
 
   return leasingCost;
 }

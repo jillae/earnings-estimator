@@ -2,6 +2,15 @@
 import { VAT_RATE, WORKING_DAYS_PER_MONTH, MONTHS_PER_YEAR, FLATRATE_THRESHOLD } from '../data/machineData';
 import { getExchangeRate } from './exchangeRate';
 
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('sv-SE', {
+    style: 'currency',
+    currency: 'SEK',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(amount);
+}
+
 export async function fetchExchangeRate(): Promise<number> {
   try {
     const rate = await getExchangeRate('EUR', 'SEK');

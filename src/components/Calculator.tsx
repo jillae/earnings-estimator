@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ClinicSizeSelector from './ClinicSizeSelector';
 import MachineSelector from './MachineSelector';
@@ -76,6 +75,7 @@ const Calculator: React.FC = () => {
   useEffect(() => {
     const getExchangeRate = async () => {
       const rate = await fetchExchangeRate();
+      console.log("Fetched exchange rate:", rate);
       setExchangeRate(rate);
     };
     
@@ -102,6 +102,7 @@ const Calculator: React.FC = () => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     if (selectedMachine) {
       const priceSEK = calculateMachinePriceSEK(selectedMachine, exchangeRate);
+      console.log("Machine price in SEK:", priceSEK);
       setMachinePriceSEK(priceSEK);
     }
   }, [selectedMachineId, exchangeRate]);
@@ -120,6 +121,7 @@ const Calculator: React.FC = () => {
         includeInsurance
       );
       
+      console.log("Leasing range calculated:", range);
       setLeasingRange(range);
       
       // Reset adjustment factor to middle when range changes
@@ -134,20 +136,25 @@ const Calculator: React.FC = () => {
     const includeInsurance = selectedInsuranceId === 'yes';
     
     if (selectedMachine && selectedLeasingPeriod) {
+      // Map leaseAdjustmentFactor from 0-1 to minLeaseMultiplier-maxLeaseMultiplier
+      const actualMultiplier = selectedMachine.minLeaseMultiplier + 
+        leaseAdjustmentFactor * 
+        (selectedMachine.maxLeaseMultiplier - selectedMachine.minLeaseMultiplier);
+      
+      console.log("Using multiplier for leasing cost:", actualMultiplier);
+      
       const calculatedLeasingCost = calculateLeasingCost(
         selectedMachine,
         machinePriceSEK,
         selectedLeasingPeriod.rate,
         includeInsurance,
-        // Map leaseAdjustmentFactor from 0-1 to minLeaseMultiplier-maxLeaseMultiplier
-        selectedMachine.minLeaseMultiplier + 
-          leaseAdjustmentFactor * 
-          (selectedMachine.maxLeaseMultiplier - selectedMachine.minLeaseMultiplier)
+        actualMultiplier
       );
       
+      console.log("Calculated leasing cost:", calculatedLeasingCost);
       setLeasingCost(calculatedLeasingCost);
     }
-  }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId, leaseAdjustmentFactor, leasingRange]);
+  }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId, leaseAdjustmentFactor]);
   
   // Calculate credit price when leasing cost changes
   useEffect(() => {
