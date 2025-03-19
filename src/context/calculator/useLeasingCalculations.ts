@@ -145,8 +145,10 @@ export function useLeasingCalculations({
     if (selectedMachine && selectedMachine.usesCredits) {
       setCreditPrice(newCreditPrice);
       
-      let newLeasingCost = 0;
+      // Mark that we're updating from credit price change to prevent circular updates
+      setIsUpdatingFromCreditPrice(true);
       
+      // Determine the leasing cost based on credit price
       if (selectedMachine.creditMin !== undefined && 
           selectedMachine.creditMax !== undefined && 
           selectedMachine.leasingMin !== undefined && 
@@ -154,38 +156,30 @@ export function useLeasingCalculations({
         
         const creditRange = selectedMachine.creditMax - selectedMachine.creditMin;
         if (creditRange <= 0) {
-          newLeasingCost = selectedMachine.leasingMin;
+          // If there's no credit range, use leasing min
+          setLeasingCost(selectedMachine.leasingMin);
         } else {
+          // Calculate position in the credit range (0-1)
           const creditPosition = (newCreditPrice - selectedMachine.creditMin) / creditRange;
+          // Clamp the position between 0 and 1
           const clampedCreditPosition = Math.max(0, Math.min(1, creditPosition));
+          // Invert the position because higher credit price = lower leasing cost
           const inverseCreditPosition = 1 - clampedCreditPosition;
+          
+          // Calculate the corresponding leasing cost
           const leasingRange = selectedMachine.leasingMax - selectedMachine.leasingMin;
-          newLeasingCost = selectedMachine.leasingMin + (inverseCreditPosition * leasingRange);
+          const newLeasingCost = selectedMachine.leasingMin + (inverseCreditPosition * leasingRange);
           
           console.log("Calculated new leasing cost from credit price:", 
             {newCreditPrice, creditPosition, clampedCreditPosition, inverseCreditPosition, newLeasingCost});
           
-          if (newCreditPrice >= selectedMachine.creditMax) {
-            newLeasingCost = selectedMachine.leasingMin;
-          } else if (newCreditPrice <= selectedMachine.creditMin) {
-            newLeasingCost = selectedMachine.leasingMax;
-          }
+          // Set the new leasing cost
+          setLeasingCost(newLeasingCost);
         }
       } else {
-        newLeasingCost = 1000000 / (newCreditPrice * selectedMachine.creditPriceMultiplier);
+        // Fallback calculation if credit ranges aren't defined
+        const newLeasingCost = 1000000 / (newCreditPrice * selectedMachine.creditPriceMultiplier);
         console.log("Calculated leasing cost from credit price using inverse multiplier:", newLeasingCost);
-      }
-      
-      const leasingDiff = leasingRange.max - leasingRange.min;
-      if (leasingDiff > 0) {
-        const newFactor = (newLeasingCost - leasingRange.min) / leasingDiff;
-        const clampedFactor = Math.max(0, Math.min(1, newFactor));
-        
-        console.log("New adjustment factor from credit price:", clampedFactor);
-        setIsUpdatingFromCreditPrice(true);
-        setLeasingCost(newLeasingCost);
-      } else {
-        setIsUpdatingFromCreditPrice(true);
         setLeasingCost(newLeasingCost);
       }
     }
