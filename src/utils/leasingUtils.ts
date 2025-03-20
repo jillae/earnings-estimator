@@ -1,4 +1,3 @@
-
 /**
  * Utility functions for leasing calculations
  */
@@ -16,6 +15,16 @@ import {
 export function getLeasingFactor(leaseDurationMonths: number): number | undefined {
   const tariffEntry = LEASING_TARIFFS.find(entry => entry.Löptid === leaseDurationMonths);
   return tariffEntry?.Faktor;
+}
+
+/**
+ * Interface för returvärdet från calculateLeasingRange
+ */
+interface LeasingRange {
+  min: number;
+  max: number;
+  default: number;
+  flatrateThreshold?: number; // Lägg till denna egenskap som optional
 }
 
 /**
@@ -53,7 +62,7 @@ export function calculateLeasingRange(
   machinePriceSEK: number,
   leasingRate: number | string,
   includeInsurance: boolean
-): { min: number; max: number; default: number; flatrateThreshold?: number } {
+): LeasingRange {
   // Ensure leasingRate is a number
   const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate || 0;
   
@@ -85,19 +94,19 @@ export function calculateLeasingRange(
       console.log(`Adding insurance cost: ${insuranceCost}`);
     }
     
-    // Calculate flatrate threshold if the machine uses credits
-    let result = {
+    // Skapa resultatobjektet
+    let result: LeasingRange = {
       min: baseLeasingMin,
       max: baseLeasingMax,
       default: baseLeasingDefault + insuranceCost
     };
     
-    // Add flatrateThreshold property for machines that use credits
+    // Lägg till flatrateThreshold för maskiner som använder credits
     if (machine.usesCredits) {
-      // Set threshold at 80% of the way from min to max
+      // Sätt tröskeln vid 80% av vägen från min till max
       const threshold = baseLeasingMin + (baseLeasingMax - baseLeasingMin) * FLATRATE_THRESHOLD_PERCENTAGE;
       console.log(`Flatrate threshold calculated: ${threshold}`);
-      result = { ...result, flatrateThreshold: threshold };
+      result.flatrateThreshold = threshold;
     }
     
     console.log("Final leasing range:", result);
@@ -134,19 +143,19 @@ export function calculateLeasingRange(
     console.log(`Adding insurance cost: ${insuranceCost}`);
   }
   
-  // Create the result object
-  let result = {
+  // Skapa resultatobjektet
+  let result: LeasingRange = {
     min: baseLeasingMin,
     max: baseLeasingMax,
     default: baseLeasingDefault + insuranceCost
   };
   
-  // Add flatrateThreshold property for machines that use credits
+  // Lägg till flatrateThreshold för maskiner som använder credits
   if (machine.usesCredits) {
-    // Set threshold at 80% of the way from min to max
+    // Sätt tröskeln vid 80% av vägen från min till max
     const threshold = baseLeasingMin + (baseLeasingMax - baseLeasingMin) * FLATRATE_THRESHOLD_PERCENTAGE;
     console.log(`Flatrate threshold calculated: ${threshold}`);
-    result = { ...result, flatrateThreshold: threshold };
+    result.flatrateThreshold = threshold;
   }
   
   console.log("Final leasing range:", result);
