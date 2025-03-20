@@ -12,11 +12,11 @@ const MachineGalleryContainer: React.FC = () => {
 
   // Debug för att se om Context värden fungerar
   useEffect(() => {
-    console.log("Current selected machine ID:", selectedMachineId);
+    console.log("MachineGalleryContainer: Nuvarande vald maskin ID:", selectedMachineId);
   }, [selectedMachineId]);
 
   const handleMachineSelection = (machineId: string) => {
-    console.log(`Setting selected machine to: ${machineId}`);
+    console.log(`MachineGalleryContainer: Sätter vald maskin till: ${machineId}`);
     setSelectedMachineId(machineId);
   };
 
