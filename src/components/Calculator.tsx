@@ -1,14 +1,10 @@
 
 import React from 'react';
-import { CalculatorProvider } from '@/context/calculator/CalculatorProvider';
 import CalculatorLayout from './calculator/CalculatorLayout';
 
+// Använd inte CalculatorProvider här - det hanteras i Index.tsx
 const Calculator: React.FC = () => {
-  return (
-    <CalculatorProvider>
-      <CalculatorLayout />
-    </CalculatorProvider>
-  );
+  return <CalculatorLayout />;
 };
 
 export default Calculator;

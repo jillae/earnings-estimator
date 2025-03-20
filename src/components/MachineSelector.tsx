@@ -39,7 +39,15 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
       
       {/* Traditionell dropdown för maskinval som backup/alternativ */}
       <div>
-        <Select value={selectedMachineId} onValueChange={handleMachineChange}>
+        <Select 
+          value={selectedMachineId} 
+          onValueChange={handleMachineChange}
+          onOpenChange={(open) => {
+            if (open) {
+              console.log("MachineSelector: Dropdown öppnades");
+            }
+          }}
+        >
           <SelectTrigger className="w-full h-auto py-3 min-h-[50px]" id="machine-select">
             <SelectValue placeholder="Välj maskin" />
           </SelectTrigger>
