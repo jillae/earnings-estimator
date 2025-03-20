@@ -32,35 +32,37 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     showFlatrateIndicator
   });
 
-  // Använd de exakta min- och max-värdena direkt från props utan modifiering
+  // Använd de exakta min- och max-värdena direkt från props
   const exactMinCost = minLeaseCost;
   const exactMaxCost = maxLeaseCost;
+  const costRange = exactMaxCost - exactMinCost;
 
   // Beräkna stegstorlek baserat på ett rimligt antal steg över hela intervallet
   const totalSteps = 100; // Vi vill ha 100 steg från min till max
-  const costRange = exactMaxCost - exactMinCost;
   const sliderStep = 1 / totalSteps; // Fast steg på 1/100 av sliderns skala
 
+  // Beräkna exakt leasingkostnad för den aktuella faktorn
+  const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
+  
   const handleSliderChange = (values: number[]) => {
     onAdjustmentChange(values[0]);
   };
 
-  // Logga slider-information för diagnostik
+  // Omfattande diagnostikloggning för att felsöka sliderbeteendet
   useEffect(() => {
     console.log(`Slider diagnostik: 
       - Faktor: ${adjustmentFactor}
       - Min: ${exactMinCost}
       - Max: ${exactMaxCost}
       - Range: ${costRange}
-      - Beräknad kostnad vid faktor 0.5: ${exactMinCost + (0.5 * costRange)}
+      - Beräknad kostnad vid faktor ${adjustmentFactor}: ${calculatedLeasingCost}
       - Aktuell kostnad: ${leaseCost}
     `);
-  }, [adjustmentFactor, exactMinCost, exactMaxCost, costRange, leaseCost]);
+  }, [adjustmentFactor, exactMinCost, exactMaxCost, costRange, leaseCost, calculatedLeasingCost]);
 
-  // Använd exakta max/min leasingkostnadsvärden för beräkning
+  // Säkerställ att leasingCost är inom intervallet
   let actualLeasingCost = leaseCost;
   if (leaseCost > exactMaxCost) {
-    // Cap at max
     actualLeasingCost = exactMaxCost;
   } else if (leaseCost < exactMinCost) {
     actualLeasingCost = exactMinCost;

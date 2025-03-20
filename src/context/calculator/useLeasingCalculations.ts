@@ -44,7 +44,7 @@ export function useLeasingCalculations({
       // Calculate flatrate threshold for machines that use credits
       if (selectedMachine.usesCredits) {
         // Set threshold at 80% of the way from min to max
-        const threshold = range.min + (range.max - range.min) * 0.8;
+        const threshold = range.flatrateThreshold || (range.min + (range.max - range.min) * 0.8);
         console.log("Flatrate threshold calculated:", threshold);
         setFlatrateThreshold(threshold);
         
@@ -56,48 +56,25 @@ export function useLeasingCalculations({
     }
   }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId]);
 
-  // Calculate leasing cost when adjustment factor changes
+  // Calculate leasing cost whenever adjustment factor changes
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
-    const selectedLeasingPeriod = leasingPeriods.find(period => period.id === selectedLeasingPeriodId);
-    const includeInsurance = selectedInsuranceId === 'yes';
     
-    if (selectedMachine && selectedLeasingPeriod) {
-      console.log(`Calculating leasing cost with adjustment factor: ${leaseAdjustmentFactor}`);
+    if (selectedMachine && leasingRange.min !== undefined && leasingRange.max !== undefined) {
+      // Direkt linjär interpolation mellan min och max baserat på justeringsfaktorn
+      const newLeasingCost = leasingRange.min + (leaseAdjustmentFactor * (leasingRange.max - leasingRange.min));
       
-      const calculatedLeasingCost = calculateLeasingCost(
-        selectedMachine,
-        machinePriceSEK,
-        selectedLeasingPeriod.rate,
-        includeInsurance,
-        leaseAdjustmentFactor
-      );
+      console.log(`Beräknar leasingkostnad med justeringsfaktor ${leaseAdjustmentFactor}:
+        Min: ${leasingRange.min}
+        Max: ${leasingRange.max}
+        Range: ${leasingRange.max - leasingRange.min}
+        Beräknad kostnad: ${newLeasingCost}
+      `);
       
-      let finalLeasingCost = calculatedLeasingCost;
-      
-      if (!includeInsurance && finalLeasingCost > leasingRange.max) {
-        finalLeasingCost = leasingRange.max;
-      } else if (includeInsurance) {
-        let insuranceRate = 0.015;
-        if (machinePriceSEK <= 10000) {
-          insuranceRate = 0.04;
-        } else if (machinePriceSEK <= 20000) {
-          insuranceRate = 0.03;
-        } else if (machinePriceSEK <= 50000) {
-          insuranceRate = 0.025;
-        }
-        const insuranceCost = machinePriceSEK * insuranceRate / 12;
-        
-        const costWithoutInsurance = finalLeasingCost - insuranceCost;
-        if (costWithoutInsurance > leasingRange.max) {
-          finalLeasingCost = leasingRange.max + insuranceCost;
-        }
-      }
-      
-      console.log("Calculated leasing cost:", calculatedLeasingCost, "Final adjusted cost:", finalLeasingCost);
-      setLeasingCost(finalLeasingCost);
+      // Uppdatera leasingkostnaden baserat på den linjära interpoleringen
+      setLeasingCost(newLeasingCost);
     }
-  }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId, leaseAdjustmentFactor, leasingRange]);
+  }, [leaseAdjustmentFactor, leasingRange, selectedMachineId]);
 
   return {
     leasingRange,
