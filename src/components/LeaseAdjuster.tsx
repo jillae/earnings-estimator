@@ -48,6 +48,10 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Beräkna exakt leasingkostnad för den aktuella faktorn
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
+  // Avrunda leasingkostnaden till närmaste 500 SEK
+  const stepSize = 500;
+  const roundedLeasingCost = Math.round(calculatedLeasingCost / stepSize) * stepSize;
+  
   // Beräkna flatrate-faktorn (position) om vi har ett tröskelvärde
   let flatratePosition = null;
   if (flatrateThreshold) {
@@ -63,7 +67,19 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       newValue = flatratePosition / 100;
     }
     
-    onAdjustmentChange(newValue);
+    // Beräkna exakt kostnad baserat på positionen
+    const exactCost = exactMinCost + (newValue * costRange);
+    
+    // Avrunda till närmaste 500 SEK
+    const roundedCost = Math.round(exactCost / stepSize) * stepSize;
+    
+    // Konvertera tillbaka till en faktor mellan 0 och 1
+    const newFactor = (roundedCost - exactMinCost) / Math.max(0.001, costRange);
+    
+    // Begränsa faktorn till mellan 0 och 1
+    const clampedFactor = Math.max(0, Math.min(1, newFactor));
+    
+    onAdjustmentChange(clampedFactor);
   };
 
   // Omfattande diagnostikloggning för att felsöka sliderbeteendet
@@ -74,11 +90,13 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       - Max: ${exactMaxCost}
       - Range: ${costRange}
       - Beräknad kostnad vid faktor ${adjustmentFactor}: ${calculatedLeasingCost}
+      - Avrundad kostnad: ${roundedLeasingCost}
       - Aktuell kostnad: ${leaseCost}
       - Flatrate position: ${flatratePosition}
       - Allow below flatrate: ${allowBelowFlatrate}
+      - Steg storlek: ${stepSize}
     `);
-  }, [adjustmentFactor, exactMinCost, exactMaxCost, costRange, leaseCost, calculatedLeasingCost, flatratePosition, allowBelowFlatrate]);
+  }, [adjustmentFactor, exactMinCost, exactMaxCost, costRange, leaseCost, calculatedLeasingCost, flatratePosition, allowBelowFlatrate, roundedLeasingCost]);
 
   // Säkerställ att leasingCost är inom intervallet
   let actualLeasingCost = leaseCost;

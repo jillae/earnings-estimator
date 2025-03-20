@@ -18,7 +18,10 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   showFlatrateIndicator,
   allowBelowFlatrate
 }) => {
-  const sliderStep = 1 / 100; // 100 steg från min till max
+  // Ändrar från procentbaserat steg till 500 SEK-steg
+  // Vi använder fortfarande 0-1 för själva slidern, men i LeaseAdjuster kommer detta
+  // översättas till faktiska kostnadssteg om 500 SEK
+  const sliderStep = 0.01; // Eftersom vi använder 0-1 range, blir detta cirka 1% av range
 
   return (
     <div className="slider-container relative mb-6">
