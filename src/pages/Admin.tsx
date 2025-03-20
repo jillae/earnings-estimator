@@ -381,11 +381,11 @@ const Admin = () => {
                 name="insurance_rate_above_50k"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>> 50 000 SEK (procent)</FormLabel>
+                    <FormLabel>{`> 50 000 SEK (procent)`}</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
                     </FormControl>
-                    <FormDescription>Försäkringssats för maskiner > 50 000 SEK (t.ex. 0.015 för 1.5%)</FormDescription>
+                    <FormDescription>Försäkringssats för maskiner {`> 50 000 SEK (t.ex. 0.015 för 1.5%)`}</FormDescription>
                   </FormItem>
                 )}
               />
@@ -444,7 +444,7 @@ const Admin = () => {
                     />
                   </FormControl>
                   <FormDescription>
-                    Formatera som: [{"Löptid": 24, "Faktor": 4.566}, ...]
+                    Formatera som: [{'"Löptid"': 24, '"Faktor"': 4.566}, ...]
                   </FormDescription>
                 </FormItem>
               )}
