@@ -1,15 +1,18 @@
 
 import React from 'react';
-import { useCalculator } from '@/context/calculator/context';
-import { machineData, leasingPeriods, insuranceOptions } from '@/data/machines';
+import ClinicSizeSelector from '../ClinicSizeSelector';
 import MachineSelector from '../MachineSelector';
 import LeasingOptions from '../LeasingOptions';
 import LeaseAdjuster from '../LeaseAdjuster';
 import OperatingCosts from '../OperatingCosts';
 import TreatmentSettings from '../TreatmentSettings';
+import { useCalculator } from '@/context/CalculatorContext';
+import { machineData, leasingPeriods, insuranceOptions } from './imports';
 
 const CalculatorInputs: React.FC = () => {
   const {
+    clinicSize,
+    setClinicSize,
     selectedMachineId,
     setSelectedMachineId,
     selectedMachine,
@@ -17,65 +20,82 @@ const CalculatorInputs: React.FC = () => {
     setSelectedLeasingPeriodId,
     selectedInsuranceId,
     setSelectedInsuranceId,
-    leaseAdjustmentFactor,
-    setLeaseAdjustmentFactor,
-    leasingRange,
-    leasingCost,
     treatmentsPerDay,
     setTreatmentsPerDay,
     customerPrice,
     setCustomerPrice,
+    leasingRange,
+    leasingCost,
+    leaseAdjustmentFactor,
+    setLeaseAdjustmentFactor,
+    flatrateThreshold,
     operatingCost,
     creditPrice,
-    flatrateThreshold,
+    netResults
   } = useCalculator();
 
+  // Säkerställ att selectedMachine inte är null innan vi använder dess egenskaper
+  // Om null, använd ett defaultvärde där usesCredits är false
+  const isCreditsEnabledMachine = selectedMachine?.usesCredits || false;
+  
+  // Endast visa kreditsrelaterade fält om en riktig maskin är vald (inte "select-machine")
+  const showCreditFields = selectedMachineId !== "select-machine" && isCreditsEnabledMachine;
+
   return (
-    <div className="calculator-inputs">
-      <MachineSelector
-        machines={machineData}
-        selectedMachineId={selectedMachineId}
-        onChange={setSelectedMachineId}
+    <div className="w-full">
+      <ClinicSizeSelector 
+        clinicSize={clinicSize} 
+        netYearlyResult={netResults.netPerYearExVat}
+        onChange={setClinicSize} 
       />
       
-      {selectedMachine.id !== 'null-machine' && (
-        <>
-          <LeasingOptions
-            leasingPeriods={leasingPeriods}
-            insuranceOptions={insuranceOptions}
-            selectedLeasingPeriodId={selectedLeasingPeriodId}
-            selectedInsuranceId={selectedInsuranceId}
-            onLeasingPeriodChange={setSelectedLeasingPeriodId}
-            onInsuranceChange={setSelectedInsuranceId}
-          />
-          
-          <LeaseAdjuster
+      <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '200ms' }}>
+        <TreatmentSettings 
+          treatmentsPerDay={treatmentsPerDay}
+          customerPrice={customerPrice}
+          onTreatmentsChange={setTreatmentsPerDay}
+          onCustomerPriceChange={setCustomerPrice}
+        />
+      </div>
+      
+      <div className="glass-card mt-6 animate-slide-in" style={{ animationDelay: '400ms' }}>
+        <MachineSelector 
+          machines={machineData} 
+          selectedMachineId={selectedMachineId} 
+          onChange={setSelectedMachineId} 
+        />
+        
+        <LeasingOptions 
+          leasingPeriods={leasingPeriods}
+          insuranceOptions={insuranceOptions}
+          selectedLeasingPeriodId={selectedLeasingPeriodId}
+          selectedInsuranceId={selectedInsuranceId}
+          onLeasingPeriodChange={setSelectedLeasingPeriodId}
+          onInsuranceChange={setSelectedInsuranceId}
+        />
+        
+        {selectedMachineId !== "select-machine" && (
+          <LeaseAdjuster 
             minLeaseCost={leasingRange.min}
             maxLeaseCost={leasingRange.max}
             leaseCost={leasingCost}
             adjustmentFactor={leaseAdjustmentFactor}
             flatrateThreshold={flatrateThreshold}
-            showFlatrateIndicator={selectedMachine.usesCredits}
+            showFlatrateIndicator={isCreditsEnabledMachine}
             onAdjustmentChange={setLeaseAdjustmentFactor}
           />
-          
-          <OperatingCosts
-            usesCredits={selectedMachine.usesCredits}
+        )}
+        
+        {showCreditFields && (
+          <OperatingCosts 
+            usesCredits={isCreditsEnabledMachine}
             useFlatrate={operatingCost.useFlatrate}
             creditPrice={creditPrice}
-            flatrateAmount={selectedMachine.flatrateAmount}
+            flatrateAmount={selectedMachine?.flatrateAmount || 0}
             operatingCostPerMonth={operatingCost.costPerMonth}
-            treatmentsPerDay={treatmentsPerDay}
           />
-          
-          <TreatmentSettings
-            treatmentsPerDay={treatmentsPerDay}
-            customerPrice={customerPrice}
-            onTreatmentsChange={setTreatmentsPerDay}
-            onCustomerPriceChange={setCustomerPrice}
-          />
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 };

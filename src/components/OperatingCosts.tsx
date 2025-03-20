@@ -9,7 +9,6 @@ interface OperatingCostsProps {
   creditPrice: number;
   flatrateAmount: number;
   operatingCostPerMonth: number;
-  treatmentsPerDay: number;
 }
 
 const OperatingCosts: React.FC<OperatingCostsProps> = ({
@@ -17,8 +16,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   useFlatrate,
   creditPrice,
   flatrateAmount,
-  operatingCostPerMonth,
-  treatmentsPerDay
+  operatingCostPerMonth
 }) => {
   if (!usesCredits) {
     return null;
@@ -30,10 +28,9 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
       creditPrice,
       operatingCostPerMonth,
       flatrateAmount,
-      useFlatrate,
-      treatmentsPerDay
+      useFlatrate
     });
-  }, [creditPrice, operatingCostPerMonth, flatrateAmount, useFlatrate, treatmentsPerDay]);
+  }, [creditPrice, operatingCostPerMonth, flatrateAmount, useFlatrate]);
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>

@@ -2,104 +2,82 @@
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
 import { 
-  calculateCreditPrice, 
-  calculateOperatingCost, 
-  shouldUseFlatrate 
+  calculateOperatingCost,
+  shouldUseFlatrate,
+  calculateCreditPrice
 } from '@/utils/calculatorUtils';
-import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 
 export function useOperatingCosts({
   selectedMachineId,
   treatmentsPerDay,
   leasingCost,
   selectedLeasingPeriodId,
-  machinePriceSEK,
-  flatrateThreshold
+  machinePriceSEK
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
   leasingCost: number;
   selectedLeasingPeriodId: string;
   machinePriceSEK: number;
-  flatrateThreshold?: number;
 }) {
-  const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
-  const [useFlatrate, setUseFlatrate] = useState<boolean>(false);
-  const [operatingCost, setOperatingCost] = useState<{
-    costPerTreatment: number;
-    creditsPerMonth: number;
-    costPerMonth: number;
-    flatrateAmount: number;
-    useFlatrate: boolean;
-  }>({
-    costPerTreatment: 0,
-    creditsPerMonth: 0,
-    costPerMonth: 0,
-    flatrateAmount: 0,
-    useFlatrate: false
+  const [operatingCost, setOperatingCost] = useState<{ costPerMonth: number, useFlatrate: boolean }>({ 
+    costPerMonth: 0, 
+    useFlatrate: false 
   });
-
+  
+  // Calculate the appropriate credit price based on leasing cost for the current machine
+  const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
+  
+  // First, calculate the credit price based on current leasing cost
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
-    if (!selectedMachine) return;
-
-    const usesCredits = selectedMachine.usesCredits;
     
-    if (!usesCredits) {
-      setOperatingCost({
-        costPerTreatment: 0,
-        creditsPerMonth: 0,
-        costPerMonth: 0,
-        flatrateAmount: 0,
-        useFlatrate: false
-      });
-      return;
+    if (selectedMachine && selectedMachine.usesCredits) {
+      const newCreditPrice = calculateCreditPrice(
+        selectedMachine, 
+        leasingCost,
+        selectedLeasingPeriodId,
+        machinePriceSEK
+      );
+      
+      setCalculatedCreditPrice(newCreditPrice);
+      console.log(`Calculated credit price based on leasing cost: ${leasingCost} → ${newCreditPrice}`);
     }
+  }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK]);
 
-    // Calculate credit price
-    const creditPrice = calculateCreditPrice(machinePriceSEK, selectedMachine.creditPriceMultiplier);
-    setCalculatedCreditPrice(creditPrice);
+  // Then calculate the operating cost based on the treatments, etc.
+  useEffect(() => {
+    const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
-    // Determine if we should use flatrate based on leasing cost and treatments per day
-    const threshold = flatrateThreshold || machinePriceSEK * 0.8 * (selectedMachine.maxLeaseMultiplier || 0);
-    const shouldUseFlat = shouldUseFlatrate(leasingCost, threshold, treatmentsPerDay);
-    setUseFlatrate(shouldUseFlat);
-    
-    // Calculate credits per treatment and per month
-    const creditsPerTreatment = 1;
-    const creditsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH * creditsPerTreatment;
-    
-    // Calculate monthly operating cost
-    const monthlyCost = calculateOperatingCost(
-      treatmentsPerDay,
-      WORKING_DAYS_PER_MONTH,
-      creditPrice,
-      selectedMachine.flatrateAmount,
-      shouldUseFlat
-    );
-    
-    setOperatingCost({
-      costPerTreatment: creditPrice,
-      creditsPerMonth,
-      costPerMonth: monthlyCost,
-      flatrateAmount: selectedMachine.flatrateAmount,
-      useFlatrate: shouldUseFlat
-    });
+    if (selectedMachine) {
+      // Check if we need to use flatrate based on leasing cost and treatments per day
+      // The key rule is: treatmentsPerDay >= 3 AND leasingCost > 80% of leasingMax
+      const useFlatrateOption = shouldUseFlatrate(
+        selectedMachine,
+        leasingCost,
+        treatmentsPerDay,
+        selectedLeasingPeriodId,
+        machinePriceSEK
+      );
+      
+      console.log(`Using flatrate: ${useFlatrateOption} (leasingCost: ${leasingCost}, treatmentsPerDay: ${treatmentsPerDay})`);
+      
+      // Calculate operating cost (either credits or flatrate)
+      const calculatedOperatingCost = calculateOperatingCost(
+        selectedMachine,
+        treatmentsPerDay,
+        calculatedCreditPrice, // Use the calculated credit price
+        leasingCost,
+        selectedLeasingPeriodId,
+        machinePriceSEK
+      );
+      
+      setOperatingCost(calculatedOperatingCost);
+    }
+  }, [selectedMachineId, treatmentsPerDay, calculatedCreditPrice, leasingCost, machinePriceSEK, selectedLeasingPeriodId]);
 
-    console.log("Operating costs updated:", {
-      creditPrice,
-      treatmentsPerDay,
-      monthlyCost,
-      shouldUseFlat,
-      flatrateThreshold: threshold,
-      leasingCost
-    });
-    
-  }, [selectedMachineId, treatmentsPerDay, leasingCost, selectedLeasingPeriodId, machinePriceSEK, flatrateThreshold]);
-
-  return {
+  return { 
     operatingCost,
-    calculatedCreditPrice,
-    useFlatrate
+    calculatedCreditPrice // Return the calculated credit price for display purposes
   };
 }
