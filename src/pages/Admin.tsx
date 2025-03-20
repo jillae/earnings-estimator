@@ -444,7 +444,7 @@ const Admin = () => {
                     />
                   </FormControl>
                   <FormDescription>
-                    Formatera som: [{'"Löptid"': 24, '"Faktor"': 4.566}, ...]
+                    Formatera som: {'[{"Löptid": 24, "Faktor": 4.566}, ...]'}
                   </FormDescription>
                 </FormItem>
               )}
