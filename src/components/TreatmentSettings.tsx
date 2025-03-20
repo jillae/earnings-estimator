@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { formatCurrency } from '@/utils/calculatorUtils';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -7,8 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formatCurrency } from '@/utils/calculatorUtils';
-import { ChevronUp, ChevronDown } from 'lucide-react';
 
 interface TreatmentSettingsProps {
   treatmentsPerDay: number;
