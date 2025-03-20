@@ -18,7 +18,7 @@ export function calculateCreditPrice(
 ): number {
   if (!machine.usesCredits) return 0;
   
-  // Använd maskinens fördefinierade creditMin värde istället för att beräkna
+  // Använd maskinens fördefinierade creditMin värde alltid om det finns, oavsett slider
   if (machine.creditMin !== undefined) {
     console.log(`Använder fördefinierat creditMin för ${machine.name}: ${machine.creditMin}`);
     return machine.creditMin;

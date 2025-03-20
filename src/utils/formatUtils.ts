@@ -25,6 +25,12 @@ export function formatCurrency(amount: number | undefined, addVAT: boolean = fal
     if (lastDigit !== 6) {
       roundedAmount = roundedAmount - lastDigit + 6;
     }
+  } else {
+    // Annars, se till att kundpriser slutar med 0
+    const lastDigit = roundedAmount % 10;
+    if (lastDigit !== 0) {
+      roundedAmount = roundedAmount - lastDigit;
+    }
   }
   
   // Formatera med tusentalsavgränsare

@@ -1,8 +1,10 @@
 
 import React, { useEffect } from 'react';
-import { formatCurrency } from '@/utils/calculatorUtils';
+import { formatCurrency } from '@/utils/formatUtils';
 import { Info, Lock, Unlock } from 'lucide-react';
 import { calculateFlatrateBreakEven } from '@/utils/creditUtils';
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface OperatingCostsProps {
   usesCredits: boolean;
@@ -59,6 +61,27 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
       <label className="input-label mb-4">
         Credits - Kostnader
       </label>
+      
+      {/* Endast visa en FlatrateToggle här */}
+      <div className="mt-4 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <Switch 
+            id="flatrate-switch" 
+            checked={useFlatrateOption === 'flatrate'}
+            onCheckedChange={(checked) => onFlatrateOptionChange?.(checked ? 'flatrate' : 'perCredit')}
+            disabled={!isFlatrateUnlocked}
+          />
+          <Label 
+            htmlFor="flatrate-switch"
+            className="text-sm cursor-pointer"
+          >
+            Aktivera flatrate för credits
+          </Label>
+        </div>
+        <span className={`text-xs ${useFlatrateOption === 'perCredit' ? 'text-yellow-600' : 'text-green-600'} font-medium`}>
+          {useFlatrateOption === 'perCredit' ? 'Styckepris' : 'Flatrate aktiverat'}
+        </span>
+      </div>
       
       {!isFlatrateUnlocked && (
         <div className="flex justify-between items-center mb-4">
