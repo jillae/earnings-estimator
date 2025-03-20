@@ -19,16 +19,17 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
 
   // Förbättrad hantering av placeholder-bilder baserat på maskin-ID
   const getPlaceholderImageForMachine = (machineId: string) => {
+    // Använd bilderna från imgur länken
     const placeholders: {[key: string]: string} = {
-      "emerald": "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=200&q=80",
-      "zerona": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=300&h=200&q=80",
-      "fx-635": "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=300&h=200&q=80",
-      "fx-405": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=300&h=200&q=80",
-      "xlr8": "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=300&h=200&q=80",
-      "evrl": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=300&h=200&q=80",
-      "gvl": "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=300&h=200&q=80",
-      "base-station": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=300&h=200&q=80",
-      "lunula": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=300&h=200&q=80"
+      "emerald": "https://i.imgur.com/PdFIJxl.png",
+      "zerona": "https://i.imgur.com/5GELRUf.png",
+      "fx-635": "https://i.imgur.com/u3WGXhO.png",
+      "fx-405": "https://i.imgur.com/kIFJq1n.png",
+      "xlr8": "https://i.imgur.com/MFvpKrF.png",
+      "evrl": "https://i.imgur.com/T5pLQoJ.png",
+      "gvl": "https://i.imgur.com/DGbmYP4.png",
+      "base-station": "https://i.imgur.com/pNkHV5A.png",
+      "lunula": "https://i.imgur.com/W4GvUyU.png"
     };
 
     return placeholders[machineId] || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=200&q=80";
@@ -55,7 +56,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
           <img 
             src={getPlaceholderImageForMachine(machine.id)} 
             alt={machine.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
             loading="lazy"
             onError={() => setImageError(true)}
           />
