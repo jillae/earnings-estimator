@@ -20,7 +20,13 @@ export function useStateSelections() {
       name: 'No Machine',
       usesCredits: false,
       flatrateAmount: 0,
-      defaultCustomerPrice: 0
+      defaultCustomerPrice: 0,
+      defaultLeasingPeriod: '60',
+      minLeaseMultiplier: 0,
+      maxLeaseMultiplier: 0,
+      defaultLeaseMultiplier: 0,
+      creditPriceMultiplier: 0,
+      description: ''
     };
   }, [selectedMachineId]);
 
