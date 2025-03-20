@@ -33,9 +33,9 @@ export interface CalculatorContextType {
   allowBelowFlatrate: boolean;
   setAllowBelowFlatrate: (value: boolean) => void;
   flatrateThreshold: number;
-  leasingCostPercentage: number; // Ny typ för procentandel av max
+  leasingCostPercentage: number; // Procentandel av max
   
-  // Flatrate option
+  // Flatrate option - använder boolean istället för string-enum
   useFlatrateOption: boolean;
   setUseFlatrateOption: (value: boolean) => void;
   

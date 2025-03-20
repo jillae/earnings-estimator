@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface FlatrateToggleProps {
   showFlatrateIndicator: boolean;
@@ -28,12 +29,12 @@ const FlatrateToggle: React.FC<FlatrateToggleProps> = ({
           onCheckedChange={onToggleFlatrate}
           className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-gray-300"
         />
-        <label 
+        <Label 
           htmlFor="allow-below-flatrate"
           className="text-sm cursor-pointer"
         >
           Aktivera flatrate för credits
-        </label>
+        </Label>
       </div>
       <span className={`text-xs ${allowBelowFlatrate ? 'text-yellow-600' : 'text-green-600'} font-medium`}>
         {allowBelowFlatrate ? 'Flatrate inaktiverat' : 'Flatrate aktiverat'}
