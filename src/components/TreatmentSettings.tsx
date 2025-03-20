@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { formatCurrency } from '@/utils/calculatorUtils';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
 interface TreatmentSettingsProps {
   treatmentsPerDay: number;
@@ -19,7 +19,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   // Funktion för att uppdatera antal behandlingar
   const handleTreatmentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (!isNaN(value) && value >= 0) {
+    if (!isNaN(value) && value >= 0 && value <= 12) {
       onTreatmentsChange(value);
     }
   };
@@ -51,7 +51,8 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             <input
               id="treatments-per-day"
               type="number"
-              min="0"
+              min="1"
+              max="12"
               step="1"
               value={treatmentsPerDay}
               onChange={handleTreatmentsChange}
@@ -61,8 +62,8 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               <span className="text-gray-500">st</span>
             </div>
             <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col">
-              <ArrowUp className="h-4 w-4 text-gray-600" />
-              <ArrowDown className="h-4 w-4 text-gray-600" />
+              <ChevronUp className="h-4 w-4 text-gray-600" />
+              <ChevronDown className="h-4 w-4 text-gray-600" />
             </div>
           </div>
           <p className="mt-1 text-xs text-gray-500">Använd pilarna på tangentbordet för att justera värdet</p>
@@ -87,11 +88,11 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               <span className="text-gray-500">kr</span>
             </div>
             <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col">
-              <ArrowUp className="h-4 w-4 text-gray-600" />
-              <ArrowDown className="h-4 w-4 text-gray-600" />
+              <ChevronUp className="h-4 w-4 text-gray-600" />
+              <ChevronDown className="h-4 w-4 text-gray-600" />
             </div>
           </div>
-          <p className="mt-1 text-xs text-gray-500">Använd pilarna på tangentbordet för att justera värdet i steg om 100 kr</p>
+          <p className="mt-1 text-xs text-gray-500">Använd pilarna på tangentbordet för att justera värdet</p>
         </div>
       </div>
     </div>

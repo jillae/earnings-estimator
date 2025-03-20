@@ -18,16 +18,16 @@ export function calculateCreditPrice(
 ): number {
   if (!machine.usesCredits) return 0;
   
-  // Använd maskinens fördefinierade creditMin värde alltid om det finns, oavsett slider
+  // Använd maskinens fördefinierade creditMin värde om det finns
   if (machine.creditMin !== undefined) {
-    console.log(`Använder fördefinierat creditMin för ${machine.name}: ${machine.creditMin}`);
+    console.log(`Använder fördefinierat credit-värde för ${machine.name}: ${machine.creditMin}`);
     return machine.creditMin;
   }
   
   // Om ingen creditMin, beräkna baserat på leasingkostnad och prismultiplikator
   if (machine.creditPriceMultiplier && leasingCost > 0) {
     const calculatedPrice = Math.round(leasingCost * machine.creditPriceMultiplier);
-    console.log(`Beräknat kredippris baserat på multiplikator (${machine.creditPriceMultiplier}): ${calculatedPrice}`);
+    console.log(`Beräknat kredippris baserat på multiplikator (${machine.creditPriceMultiplier}) och leasingkostnad (${leasingCost}): ${calculatedPrice}`);
     return calculatedPrice;
   }
   
@@ -70,11 +70,14 @@ export function calculateOperatingCost(
   // Om flatrate används, använd det fasta beloppet
   if (useFlatrate) {
     costPerMonth = machine.flatrateAmount || 0;
+    console.log(`Flatrate används för ${machine.name}: ${costPerMonth} kr/månad`);
   } else {
     // Annars beräkna baserat på krediter
     const creditsPerTreatment = machine.creditsPerTreatment || 1;
     const treatmentsPerMonth = calculateTreatmentsPerMonth(treatmentsPerDay);
     costPerMonth = creditsPerTreatment * treatmentsPerMonth * creditPrice;
+    console.log(`Per-credit modell används för ${machine.name}: 
+      ${creditsPerTreatment} credits/beh * ${treatmentsPerMonth} beh/mån * ${creditPrice} kr/credit = ${costPerMonth} kr/mån`);
   }
   
   console.log(`Beräknad driftkostnad:

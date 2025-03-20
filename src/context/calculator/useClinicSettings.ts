@@ -30,8 +30,8 @@ export function useClinicSettings() {
 
   // Create a wrapped setter function that enforces the maximum limit
   const setTreatmentsPerDayWithLimit = (value: number) => {
-    // Ensure value is within limits (0 to MAX_TREATMENTS_PER_DAY)
-    const limitedValue = Math.max(0, Math.min(MAX_TREATMENTS_PER_DAY, value));
+    // Ensure value is within limits (1 to MAX_TREATMENTS_PER_DAY)
+    const limitedValue = Math.max(1, Math.min(MAX_TREATMENTS_PER_DAY, value));
     setTreatmentsPerDay(limitedValue);
   };
 

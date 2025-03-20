@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Slider } from "@/components/ui/slider";
-import { SMALL_CLINIC_TREATMENTS, MEDIUM_CLINIC_TREATMENTS, LARGE_CLINIC_TREATMENTS } from '@/data/machineData';
+import { SMALL_CLINIC_TREATMENTS, MEDIUM_CLINIC_TREATMENTS, LARGE_CLINIC_TREATMENTS } from '@/data/machines';
 import { formatCurrency } from '@/utils/calculatorUtils';
 
 interface ClinicSizeSelectorProps {

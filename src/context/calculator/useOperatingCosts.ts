@@ -32,11 +32,11 @@ export function useOperatingCosts({
   // Calculate the appropriate credit price based on leasing cost for the current machine
   const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
   
-  // First, calculate the credit price based on current leasing cost
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine && selectedMachine.usesCredits) {
+      // Uppdatera kreditpriset på en gång när leasingkostnaden ändras
       const newCreditPrice = calculateCreditPrice(
         selectedMachine, 
         leasingCost,
@@ -54,7 +54,7 @@ export function useOperatingCosts({
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine) {
-      // Uppdatera kreditpriset först för att säkerställa att vi har rätt värde
+      // Hämta aktuellt beräknat kreditpris igen för att säkerställa att vi har senaste värdet
       const currentCreditPrice = calculateCreditPrice(
         selectedMachine, 
         leasingCost,
@@ -62,6 +62,7 @@ export function useOperatingCosts({
         machinePriceSEK
       );
       
+      // Uppdatera state för att visa rätt värde i UI
       setCalculatedCreditPrice(currentCreditPrice);
       
       // Kolla om flatrate skulle användas baserat på regler
@@ -97,7 +98,7 @@ export function useOperatingCosts({
         machinePriceSEK
       );
       
-      console.log(`Beräknad driftkostnad per månad: ${calculatedOperatingCost.costPerMonth} kr`);
+      console.log(`Beräknad driftkostnad per månad: ${calculatedOperatingCost.costPerMonth} kr (med kreditpris: ${currentCreditPrice})`);
       
       setOperatingCost({
         costPerMonth: calculatedOperatingCost.costPerMonth,
@@ -108,6 +109,6 @@ export function useOperatingCosts({
 
   return { 
     operatingCost,
-    calculatedCreditPrice // Return the calculated credit price for display purposes
+    calculatedCreditPrice
   };
 }
