@@ -16,6 +16,7 @@ const Manual = () => {
           <ol className="list-decimal pl-5 space-y-2">
             <li>Välj laserutrustning från gallerivy eller rullgardinsmenyn</li>
             <li>Ange antalet behandlingar per dag</li>
+            <li>Justera kundpris för varje behandling</li>
             <li>Justera leasingkostnaden med reglaget</li>
             <li>Se resultatet i realtid i resultatvyn</li>
           </ol>
