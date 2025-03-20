@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, Settings, Phone, FileText, HelpCircle } from 'lucide-react';
+import { Home, Settings, Phone, FileText, HelpCircle, ExternalLink } from 'lucide-react';
 
 const Header = () => {
   return (
@@ -22,10 +22,16 @@ const Header = () => {
               <FileText className="h-4 w-4 mr-1" />
               <span className="text-sm">Manual</span>
             </Link>
-            <Link to="/help" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+            <a 
+              href="https://bit.ly/EENHelpdesk" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex items-center hover:text-primary-foreground/80 transition-colors bg-sky-600 rounded px-2 py-1"
+            >
               <HelpCircle className="h-4 w-4 mr-1" />
               <span className="text-sm">Hjälp</span>
-            </Link>
+              <ExternalLink className="h-3 w-3 ml-1" />
+            </a>
           </div>
           <Link to="/admin-login">
             <Button variant="ghost" size="sm" className="text-white hover:text-primary-foreground/80 hover:bg-primary-foreground/10">
