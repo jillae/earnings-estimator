@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Calculator from '@/components/Calculator';
 import Footer from '@/components/Footer';
 import MachineGalleryContainer from '@/components/MachineGalleryContainer';
+import WhitePaperLibrary from '@/components/WhitePaperLibrary';
 import { CalculatorProvider } from '@/context/CalculatorContext';
 
 const Index = () => {
@@ -15,6 +16,7 @@ const Index = () => {
         <main className="flex-grow py-6">
           <Calculator />
         </main>
+        <WhitePaperLibrary />
       </CalculatorProvider>
       <Footer />
     </div>
