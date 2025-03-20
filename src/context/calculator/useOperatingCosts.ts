@@ -13,7 +13,8 @@ export function useOperatingCosts({
   leasingCost,
   selectedLeasingPeriodId,
   machinePriceSEK,
-  allowBelowFlatrate
+  allowBelowFlatrate,
+  useFlatrateOption = false
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
@@ -21,6 +22,7 @@ export function useOperatingCosts({
   selectedLeasingPeriodId: string;
   machinePriceSEK: number;
   allowBelowFlatrate: boolean;
+  useFlatrateOption?: boolean;
 }) {
   const [operatingCost, setOperatingCost] = useState<{ costPerMonth: number, useFlatrate: boolean }>({ 
     costPerMonth: 0, 
@@ -52,9 +54,8 @@ export function useOperatingCosts({
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine) {
-      // Check if we need to use flatrate based on leasing cost and treatments per day
-      // The key rule is: treatmentsPerDay >= 3 AND leasingCost > 80% of leasingMax AND !allowBelowFlatrate
-      const useFlatrateOption = shouldUseFlatrate(
+      // Kolla om flatrate skulle användas baserat på regler
+      const shouldUseFlatrateOption = shouldUseFlatrate(
         selectedMachine,
         leasingCost,
         treatmentsPerDay,
@@ -63,22 +64,34 @@ export function useOperatingCosts({
         machinePriceSEK
       );
       
-      console.log(`Using flatrate: ${useFlatrateOption} (leasingCost: ${leasingCost}, treatmentsPerDay: ${treatmentsPerDay}, allowBelowFlatrate: ${allowBelowFlatrate})`);
+      // Använd explicit flatrate-val från användaren om det är tillgängligt
+      // Flatrate kan bara väljas om villkoren uppfylls (leasingCost >= 80% och treatmentsPerDay >= 3)
+      const isFlatrateUnlocked = leasingCost >= (selectedMachine.leasingMax * 0.8) && treatmentsPerDay >= 3;
+      const useFlatrateForCalculation = useFlatrateOption && isFlatrateUnlocked;
       
-      // Calculate operating cost (either credits or flatrate)
+      console.log(`Operating cost calculation:
+        useFlatrateOption (user choice): ${useFlatrateOption}
+        isFlatrateUnlocked: ${isFlatrateUnlocked}
+        Final useFlatrateForCalculation: ${useFlatrateForCalculation}
+      `);
+      
+      // Beräkna driftkostnad (antingen credits eller flatrate)
       const calculatedOperatingCost = calculateOperatingCost(
         selectedMachine,
         treatmentsPerDay,
-        calculatedCreditPrice, // Use the calculated credit price
+        calculatedCreditPrice,
         leasingCost,
-        allowBelowFlatrate,
+        !useFlatrateForCalculation, // Invertera för att följa tidigare logik
         selectedLeasingPeriodId,
         machinePriceSEK
       );
       
-      setOperatingCost(calculatedOperatingCost);
+      setOperatingCost({
+        ...calculatedOperatingCost,
+        useFlatrate: useFlatrateForCalculation // Använd användarens explicita val
+      });
     }
-  }, [selectedMachineId, treatmentsPerDay, calculatedCreditPrice, leasingCost, machinePriceSEK, selectedLeasingPeriodId, allowBelowFlatrate]);
+  }, [selectedMachineId, treatmentsPerDay, calculatedCreditPrice, leasingCost, machinePriceSEK, selectedLeasingPeriodId, allowBelowFlatrate, useFlatrateOption]);
 
   return { 
     operatingCost,

@@ -1,7 +1,9 @@
 
 import React, { useEffect } from 'react';
 import { formatCurrency } from '@/utils/calculatorUtils';
-import { Info } from 'lucide-react';
+import { Info, Lock, Unlock } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { calculateFlatrateBreakEven } from '@/utils/creditUtils';
 
 interface OperatingCostsProps {
   usesCredits: boolean;
@@ -10,6 +12,9 @@ interface OperatingCostsProps {
   flatrateAmount: number;
   operatingCostPerMonth: number;
   allowBelowFlatrate: boolean;
+  leasingCostPercentage?: number;
+  treatmentsPerDay: number;
+  onFlatrateOptionChange?: (useFlatrate: boolean) => void;
 }
 
 const OperatingCosts: React.FC<OperatingCostsProps> = ({
@@ -18,73 +23,165 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   creditPrice,
   flatrateAmount,
   operatingCostPerMonth,
-  allowBelowFlatrate
+  allowBelowFlatrate,
+  leasingCostPercentage = 0,
+  treatmentsPerDay,
+  onFlatrateOptionChange
 }) => {
   if (!usesCredits) {
     return null;
   }
   
-  // Debug logging to understand what's happening with the credit values
+  // Det omvända villkoret för flatrate är aktiverat (baserat på slider position och behandlingar)
+  const isFlatrateUnlocked = leasingCostPercentage >= 80 && treatmentsPerDay >= 3;
+  
+  // Beräkna brytpunkten för när flatrate blir mer kostnadseffektivt
+  const breakEvenTreatments = calculateFlatrateBreakEven(flatrateAmount, creditPrice);
+  
+  // Hantera byte av prismodell
+  const handleFlatrateOptionChange = (value: string) => {
+    if (onFlatrateOptionChange) {
+      onFlatrateOptionChange(value === 'flatrate');
+    }
+  };
+  
+  // Debug-loggning
   useEffect(() => {
     console.log("OperatingCosts rendering with:", {
+      isFlatrateUnlocked,
+      leasingCostPercentage,
+      treatmentsPerDay,
       creditPrice,
-      operatingCostPerMonth,
       flatrateAmount,
-      useFlatrate,
-      allowBelowFlatrate
+      breakEvenTreatments
     });
-  }, [creditPrice, operatingCostPerMonth, flatrateAmount, useFlatrate, allowBelowFlatrate]);
-  
-  // Visa olika innehåll baserat på om flatrate är aktiverat eller inte
-  // Flatrate är aktiverat om allowBelowFlatrate är false och useFlatrate är true
-  const flatrateEnabled = !allowBelowFlatrate && useFlatrate;
+  }, [isFlatrateUnlocked, leasingCostPercentage, treatmentsPerDay, creditPrice, flatrateAmount, breakEvenTreatments]);
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
-      {flatrateEnabled ? (
-        <>
-          <label className="input-label">
-            Credits Flatrate - credits efter behov (ex moms per månad)
-          </label>
-          <div className="flex justify-between items-center">
-            <span className="text-sm">Fast månadsavgift</span>
-            <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount, false)}</span>
-          </div>
-          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm">
-            <div className="flex items-start gap-3">
-              <Info className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h3 className="font-medium text-base text-green-700 mb-2">Flatrate aktiverad</h3>
-                <p className="text-green-800 mb-3">
-                  Du har nu tillgång till obegränsat antal credits under avtalsperioden.
-                </p>
-                <p className="text-green-800 mb-2">
-                  Vid en leasingkostnad som motsvarar minst 80% av den ordinarie 
-                  investeringskostnaden erbjuds <strong>Flatrate för credits</strong>.
-                </p>
-                <p className="text-green-800">
-                  Detta baseras på en förväntad minimibeläggning om 2 kunder per veckodag.
-                </p>
-              </div>
+      <label className="input-label mb-4">
+        Credits - Kostnader
+      </label>
+      
+      {isFlatrateUnlocked && (
+        <div className="mb-4">
+          <RadioGroup 
+            value={useFlatrate ? 'flatrate' : 'styckepris'} 
+            onValueChange={handleFlatrateOptionChange}
+            className="flex flex-col space-y-1"
+          >
+            <div className="flex items-center space-x-2 py-2">
+              <RadioGroupItem value="styckepris" id="styckepris" />
+              <label htmlFor="styckepris" className="text-sm font-medium cursor-pointer">
+                Credits styckepris
+              </label>
             </div>
-          </div>
+            <div className="flex items-center space-x-2 py-2">
+              <RadioGroupItem value="flatrate" id="flatrate" />
+              <label htmlFor="flatrate" className="text-sm font-medium cursor-pointer">
+                Credits flatrate (obegränsade credits)
+              </label>
+            </div>
+          </RadioGroup>
+        </div>
+      )}
+      
+      {isFlatrateUnlocked ? (
+        <>
+          {useFlatrate ? (
+            <>
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm">Flatrate månadskostnad</span>
+                <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount, false)}</span>
+              </div>
+              
+              <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm">
+                <div className="flex items-start gap-3">
+                  <Info className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="font-medium text-base text-emerald-700 mb-2">🎉 Grattis! Flatrate är aktiverat</h3>
+                    <p className="text-emerald-800 mb-3">
+                      Du har nu tillgång till obegränsat antal credits under avtalsperioden för en fast månadsavgift.
+                    </p>
+                    {breakEvenTreatments > 0 && (
+                      <p className="text-emerald-800 text-xs mt-2">
+                        Vid {breakEvenTreatments} eller fler behandlingar per dag är flatrate mer kostnadseffektivt än styckepris.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm">Pris per credit</span>
+                <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice, false)}</span>
+              </div>
+              
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm">Credits kostnad per månad</span>
+                <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCostPerMonth, false)}</span>
+              </div>
+              
+              <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm">
+                <div className="flex items-start gap-3">
+                  <Unlock className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="font-medium text-base text-emerald-700 mb-2">Supererbjudande Upplåst!</h3>
+                    <p className="text-emerald-800 mb-2">
+                      Du kvalificerar dig för vårt flatrate-erbjudande med obegränsade credits.
+                    </p>
+                    <p className="text-emerald-800 mb-2">
+                      Välj flatrate ovan för att aktivera obegränsade credits till fast pris: {formatCurrency(flatrateAmount, false)}/månad.
+                    </p>
+                    {breakEvenTreatments > 0 && (
+                      <p className="text-emerald-800 text-xs mt-2">
+                        Vid {breakEvenTreatments} eller fler behandlingar per dag är flatrate mer kostnadseffektivt än styckepris.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </>
       ) : (
         <>
-          <label className="input-label">
-            Credits Styckepris (ex moms per styck)
-          </label>
           <div className="flex justify-between items-center mb-4">
             <span className="text-sm">Pris per credit</span>
             <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice, false)}</span>
           </div>
           
-          <label className="input-label">
-            Credits kostnad per månad (ex moms)
-          </label>
-          <div className="flex justify-between items-center">
-            <span className="text-sm">Credits kostnad</span>
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-sm">Credits kostnad per månad</span>
             <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCostPerMonth, false)}</span>
+          </div>
+          
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+            <div className="flex items-start gap-3">
+              <Lock className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-base text-blue-700 mb-2">🔓 Lås upp vårt Supererbjudande!</h3>
+                <p className="text-blue-800 mb-3">
+                  Obegränsat med credits till en fast månadskostnad.
+                </p>
+                <ul className="list-none space-y-2">
+                  <li className="flex items-center">
+                    <span className={`inline-block w-5 h-5 rounded-full mr-2 flex items-center justify-center ${leasingCostPercentage >= 80 ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                      {leasingCostPercentage >= 80 ? '✓' : '○'}
+                    </span>
+                    <span>Justera leasingkostnaden till 80% eller mer</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className={`inline-block w-5 h-5 rounded-full mr-2 flex items-center justify-center ${treatmentsPerDay >= 3 ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                      {treatmentsPerDay >= 3 ? '✓' : '○'}
+                    </span>
+                    <span>Ange 3 eller fler behandlingar per dag</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </>
       )}

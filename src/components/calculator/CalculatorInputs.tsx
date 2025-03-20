@@ -26,6 +26,7 @@ const CalculatorInputs: React.FC = () => {
     setCustomerPrice,
     leasingRange,
     leasingCost,
+    leasingCostPercentage,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     allowBelowFlatrate,
@@ -33,7 +34,9 @@ const CalculatorInputs: React.FC = () => {
     flatrateThreshold,
     operatingCost,
     creditPrice,
-    netResults
+    netResults,
+    useFlatrateOption,
+    setUseFlatrateOption
   } = useCalculator();
 
   // Säkerställ att selectedMachine inte är null innan vi använder dess egenskaper
@@ -94,11 +97,14 @@ const CalculatorInputs: React.FC = () => {
         {showCreditFields && (
           <OperatingCosts 
             usesCredits={isCreditsEnabledMachine}
-            useFlatrate={operatingCost.useFlatrate}
+            useFlatrate={useFlatrateOption}
             creditPrice={creditPrice}
             flatrateAmount={selectedMachine?.flatrateAmount || 0}
             operatingCostPerMonth={operatingCost.costPerMonth}
             allowBelowFlatrate={allowBelowFlatrate}
+            leasingCostPercentage={leasingCostPercentage}
+            treatmentsPerDay={treatmentsPerDay}
+            onFlatrateOptionChange={setUseFlatrateOption}
           />
         )}
       </div>

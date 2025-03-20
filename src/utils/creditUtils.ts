@@ -1,4 +1,3 @@
-
 /**
  * Utility functions for credit price calculations
  */
@@ -58,6 +57,25 @@ export function calculateCreditPrice(
   
   // Return the calculated credit price, ensuring it's within the valid range
   return Math.max(machine.creditMin, Math.min(machine.creditMax, creditPrice));
+}
+
+// Beräkna vid vilket antal behandlingar per dag som flatrate blir mer kostnadseffektivt än styckepris
+export function calculateFlatrateBreakEven(
+  flatrateAmount: number,
+  creditPrice: number
+): number {
+  if (flatrateAmount <= 0 || creditPrice <= 0) {
+    return 0; // Undvik division med noll
+  }
+  
+  // Beräkna hur många credits som behövs per månad för att flatrate ska bli mer kostnadseffektivt
+  const breakevenCredits = flatrateAmount / creditPrice;
+  
+  // Beräkna motsvarande antal behandlingar per dag (en behandling = 1 credit)
+  const breakEvenTreatmentsPerDay = breakevenCredits / WORKING_DAYS_PER_MONTH;
+  
+  // Avrunda uppåt till närmaste heltal
+  return Math.ceil(breakEvenTreatmentsPerDay);
 }
 
 // Function to determine if flatrate should be used based on the rules
