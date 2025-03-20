@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Select, 
   SelectContent, 
@@ -20,8 +20,20 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
   selectedMachineId, 
   onChange 
 }) => {
-  const handleMachineChange = (value: string) => {
-    onChange(value);
+  // Om vi har en vald maskin, uppdatera den lokala värdet
+  const [value, setValue] = useState(selectedMachineId);
+  
+  // När selectedMachineId uppdateras från andra delar av appen (som t.ex. MachineGallery)
+  // behöver vi uppdatera vårt lokala state
+  useEffect(() => {
+    setValue(selectedMachineId);
+    console.log(`MachineSelector: Extern uppdatering av vald maskin: ${selectedMachineId}`);
+  }, [selectedMachineId]);
+
+  const handleMachineChange = (newValue: string) => {
+    console.log(`MachineSelector: Användaren valde maskin: ${newValue}`);
+    setValue(newValue);
+    onChange(newValue);
   };
 
   return (
@@ -32,12 +44,12 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
       
       {/* Traditionell dropdown för maskinval som backup/alternativ */}
       <div>
-        <Select value={selectedMachineId} onValueChange={handleMachineChange}>
+        <Select value={value} onValueChange={handleMachineChange}>
           <SelectTrigger className="w-full h-auto py-3 min-h-[50px]" id="machine-select">
             <SelectValue placeholder="Välj maskin" />
           </SelectTrigger>
           
-          <SelectContent position="item-aligned" className="w-full max-h-[400px]">
+          <SelectContent position="item-aligned" className="w-full max-h-[400px] bg-white">
             <SelectItem value="select-machine">Välj maskin</SelectItem>
             {machines.map((machine) => (
               <SelectItem key={machine.id} value={machine.id}>

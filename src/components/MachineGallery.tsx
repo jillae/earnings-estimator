@@ -23,9 +23,9 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
 }) => {
   const handleMachineClick = (machineId: string) => {
     console.log(`MachineGallery: Klickade på maskin med ID: ${machineId}`);
-    if (machineId !== selectedMachineId) {
-      onChange(machineId);
-    }
+    // Även om samma maskin väljs igen, skicka vidare händelsen
+    // Detta säkerställer att dropdown-menyn alltid uppdateras
+    onChange(machineId);
   };
 
   return (
