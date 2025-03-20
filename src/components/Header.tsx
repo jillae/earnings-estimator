@@ -34,8 +34,8 @@ const Header = () => {
       </div>
       <header className="py-4 px-4 border-b flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-bold">Kalkylator för laserutrustning</h1>
-          <p className="text-sm text-muted-foreground">Beräkna kostnader och intäkter för din klinik</p>
+          <h1 className="text-xl font-bold">Intäktsberäkning</h1>
+          <p className="text-sm text-muted-foreground">Erchonia Nordic - säljverktyg för klinikägare</p>
         </div>
         <Link to="/admin-login">
           <Button variant="outline" size="sm">Admin</Button>
