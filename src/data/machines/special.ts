@@ -18,7 +18,7 @@ export const specialMachines: Machine[] = [
     usesCredits: false,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 3600,
-    imageUrl: "/lovable-uploads/a2cbbb39-639e-4041-bac6-ca7ef5c1c329.png#xywh=498,0,83,341"
+    imageUrl: "https://erchonia.com/wp-content/uploads/2020/07/LunaBaseStation-2.jpg"
   },
   {
     id: "lunula",
@@ -36,6 +36,6 @@ export const specialMachines: Machine[] = [
     usesCredits: false,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 4000,
-    imageUrl: "/lovable-uploads/a2cbbb39-639e-4041-bac6-ca7ef5c1c329.png#xywh=581,0,83,341"
+    imageUrl: "https://erchonia.com/wp-content/uploads/2023/06/Lunula-Laser-Device.jpg"
   }
 ];

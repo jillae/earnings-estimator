@@ -28,7 +28,7 @@ export const treatmentMachines: Machine[] = [
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 900,
-    imageUrl: "/lovable-uploads/a2cbbb39-639e-4041-bac6-ca7ef5c1c329.png#xywh=0,0,83,341"
+    imageUrl: "https://erchonia.com/wp-content/uploads/2020/09/FX-635-web-optimized-scaled.jpg"
   },
   {
     id: "fx-405",
@@ -56,6 +56,6 @@ export const treatmentMachines: Machine[] = [
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200,
-    imageUrl: "/lovable-uploads/a2cbbb39-639e-4041-bac6-ca7ef5c1c329.png#xywh=166,0,83,341"
+    imageUrl: "https://erchonia.com/wp-content/uploads/2023/11/FX-405.jpg"
   }
 ];
