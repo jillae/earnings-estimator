@@ -5,7 +5,12 @@ import { WORKING_DAYS_PER_MONTH } from './constants';
 import { Machine } from '../data/machineData';
 import { calculateLeasingRange } from './leasingUtils';
 
-export function calculateCreditPrice(machine: Machine, leasingCost: number, leasingRate?: string | number, machinePriceSEK?: number): number {
+export function calculateCreditPrice(
+  machine: Machine, 
+  leasingCost: number,
+  leasingRate?: string | number, 
+  machinePriceSEK?: number
+): number {
   if (!machine.usesCredits) return 0;
   
   // Ensure we have defined credit min/max values
@@ -16,9 +21,42 @@ export function calculateCreditPrice(machine: Machine, leasingCost: number, leas
   
   console.log(`Starting credit price calculation for ${machine.name} with min: ${machine.creditMin}, max: ${machine.creditMax}`);
   
-  // Use the machine's maximum credit price as default
-  // This ensures we always start with the highest credit price value
-  return machine.creditMax;
+  // Get the leasing range to calculate the position within the range
+  let leasingMin: number, leasingMax: number;
+  
+  if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
+    leasingMin = machine.leasingMin;
+    leasingMax = machine.leasingMax;
+  } else if (leasingRate !== undefined && machinePriceSEK !== undefined) {
+    const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate;
+    const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
+    leasingMin = dynamicRange.min;
+    leasingMax = dynamicRange.max;
+  } else {
+    console.error("Unable to determine leasing range for credit price calculation");
+    return machine.creditMax; // Return maximum credit price as fallback
+  }
+  
+  // Calculate normalized position within the leasing range
+  const leasingPosition = Math.max(0, Math.min(1, (leasingCost - leasingMin) / (leasingMax - leasingMin)));
+  
+  // Inverse mapping: when leasing cost is high, credit price should be lower
+  const inverseLeasingPosition = 1 - leasingPosition;
+  
+  // Calculate credit price based on position (linear interpolation)
+  const creditPrice = machine.creditMin + inverseLeasingPosition * (machine.creditMax - machine.creditMin);
+  
+  console.log(`Credit price calculation: 
+    Leasing cost: ${leasingCost} 
+    Leasing range: ${leasingMin} - ${leasingMax}
+    Leasing position: ${leasingPosition}
+    Inverse position: ${inverseLeasingPosition}
+    Credit range: ${machine.creditMin} - ${machine.creditMax}
+    Calculated credit price: ${creditPrice}
+  `);
+  
+  // Return the calculated credit price, ensuring it's within the valid range
+  return Math.max(machine.creditMin, Math.min(machine.creditMax, creditPrice));
 }
 
 // Function to determine if flatrate should be used based on the rules
