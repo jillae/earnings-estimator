@@ -39,21 +39,6 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   // Beräkna brytpunkten för när flatrate blir mer kostnadseffektivt
   const breakEvenTreatments = calculateFlatrateBreakEven(flatrateAmount, creditPrice);
   
-  // Debug-loggning
-  useEffect(() => {
-    console.log("OperatingCosts rendering with:", {
-      isFlatrateUnlocked,
-      leasingCostPercentage,
-      treatmentsPerDay,
-      creditPrice,
-      flatrateAmount,
-      breakEvenTreatments,
-      useFlatrate,
-      useFlatrateOption,
-      allowBelowFlatrate
-    });
-  }, [isFlatrateUnlocked, leasingCostPercentage, treatmentsPerDay, creditPrice, flatrateAmount, breakEvenTreatments, useFlatrate, useFlatrateOption, allowBelowFlatrate]);
-  
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
       <label className="input-label mb-4">

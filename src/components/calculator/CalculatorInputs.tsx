@@ -97,7 +97,7 @@ const CalculatorInputs: React.FC = () => {
         {showCreditFields && (
           <OperatingCosts 
             usesCredits={isCreditsEnabledMachine}
-            useFlatrate={useFlatrateOption === 'flatrate'} 
+            useFlatrate={operatingCost.useFlatrate} 
             creditPrice={creditPrice}
             flatrateAmount={selectedMachine?.flatrateAmount || 0}
             operatingCostPerMonth={operatingCost.costPerMonth}

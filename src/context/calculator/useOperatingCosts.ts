@@ -14,7 +14,7 @@ export function useOperatingCosts({
   selectedLeasingPeriodId,
   machinePriceSEK,
   allowBelowFlatrate,
-  useFlatrateOption = false
+  useFlatrateOption = 'perCredit'
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
@@ -22,7 +22,7 @@ export function useOperatingCosts({
   selectedLeasingPeriodId: string;
   machinePriceSEK: number;
   allowBelowFlatrate: boolean;
-  useFlatrateOption?: boolean;
+  useFlatrateOption?: 'perCredit' | 'flatrate';
 }) {
   const [operatingCost, setOperatingCost] = useState<{ costPerMonth: number, useFlatrate: boolean }>({ 
     costPerMonth: 0, 
@@ -50,7 +50,7 @@ export function useOperatingCosts({
       
       // Beräkna om operating cost direkt för att undvika fördröjning
       const isFlatrateUnlocked = leasingCost >= (selectedMachine.leasingMax * 0.8) && treatmentsPerDay >= 3;
-      const useFlatrateForCalculation = useFlatrateOption && isFlatrateUnlocked;
+      const useFlatrateForCalculation = useFlatrateOption === 'flatrate' && isFlatrateUnlocked;
       
       // Beräkna driftkostnad med nytt kreditpris
       const calculatedOperatingCost = calculateOperatingCost(
@@ -58,7 +58,7 @@ export function useOperatingCosts({
         treatmentsPerDay,
         newCreditPrice,
         leasingCost,
-        !useFlatrateForCalculation,
+        useFlatrateOption === 'perCredit',
         selectedLeasingPeriodId,
         machinePriceSEK
       );
@@ -77,7 +77,7 @@ export function useOperatingCosts({
     if (selectedMachine && calculatedCreditPrice > 0) {
       // Kolla om flatrate skulle användas baserat på regler
       const isFlatrateUnlocked = leasingCost >= (selectedMachine.leasingMax * 0.8) && treatmentsPerDay >= 3;
-      const useFlatrateForCalculation = useFlatrateOption && isFlatrateUnlocked;
+      const useFlatrateForCalculation = useFlatrateOption === 'flatrate' && isFlatrateUnlocked;
       
       console.log(`Operating cost beräkning:
         useFlatrateOption (användarval): ${useFlatrateOption}
@@ -92,7 +92,7 @@ export function useOperatingCosts({
         treatmentsPerDay,
         calculatedCreditPrice,
         leasingCost,
-        !useFlatrateForCalculation,
+        useFlatrateOption === 'perCredit',
         selectedLeasingPeriodId,
         machinePriceSEK
       );

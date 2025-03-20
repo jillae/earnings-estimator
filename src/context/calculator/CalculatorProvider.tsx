@@ -77,7 +77,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     selectedLeasingPeriodId,
     machinePriceSEK,
     allowBelowFlatrate,
-    useFlatrateOption: useFlatrateOption === 'flatrate'
+    useFlatrateOption: useFlatrateOption
   });
 
   // Get revenue calculations

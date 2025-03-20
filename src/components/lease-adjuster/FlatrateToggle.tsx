@@ -43,8 +43,8 @@ const FlatrateToggle: React.FC<FlatrateToggleProps> = ({
             Aktivera flatrate för credits
           </Label>
         </div>
-        <span className={`text-xs ${useFlatrateOption === 'perCredit' ? 'text-yellow-600' : 'text-green-600'} font-medium`}>
-          {useFlatrateOption === 'perCredit' ? 'Styckepris' : 'Flatrate aktiverat'}
+        <span className={`text-xs ${useFlatrateOption === 'flatrate' ? 'text-green-600' : 'text-yellow-600'} font-medium`}>
+          {useFlatrateOption === 'flatrate' ? 'Flatrate aktiverat' : 'Styckepris'}
         </span>
       </div>
 
