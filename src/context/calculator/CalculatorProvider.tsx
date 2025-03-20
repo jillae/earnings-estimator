@@ -12,6 +12,8 @@ import { useDebugLogging } from './useDebugLogging';
 export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Get state selections
   const {
+    clinicSize,
+    setClinicSize,
     selectedMachineId,
     setSelectedMachineId,
     selectedMachine,
@@ -26,16 +28,10 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     customerPrice,
     setCustomerPrice,
     useFlatrateOption,
-    setUseFlatrateOption
+    setUseFlatrateOption,
+    treatmentsPerDay,
+    setTreatmentsPerDay
   } = useStateSelections();
-
-  // Get clinic settings
-  const { 
-    clinicSize, 
-    setClinicSize, 
-    treatmentsPerDay, 
-    setTreatmentsPerDay 
-  } = useClinicSettings();
 
   // Get machine pricing
   const { exchangeRate, machinePriceSEK } = useMachinePricing({
@@ -81,7 +77,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     selectedLeasingPeriodId,
     machinePriceSEK,
     allowBelowFlatrate,
-    useFlatrateOption: useFlatrateOption === 'flatrate' // Konvertera från string-enum till boolean
+    useFlatrateOption: useFlatrateOption === 'flatrate'
   });
 
   // Get revenue calculations

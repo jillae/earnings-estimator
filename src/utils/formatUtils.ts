@@ -1,35 +1,32 @@
 
-/**
- * Utility functions for formatting values
- */
-export function formatCurrency(amount: number, shouldRound: boolean = true): string {
-  let displayAmount = amount;
-  
-  if (shouldRound) {
-    // Använd hjälpfunktionen för att avrunda till närmaste 100-tal och säkerställa att det slutar på 6
-    displayAmount = roundToHundredEndingSix(amount);
-  }
-  
-  return new Intl.NumberFormat('sv-SE', {
-    style: 'currency',
-    currency: 'SEK',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(displayAmount);
-}
+import { VAT_RATE } from './constants';
 
 /**
- * Avrundar ett belopp till närmaste 100-tal och säkerställer att det slutar på 6
+ * Formaterar ett numeriskt värde till en valutasträng med tusentalsavgränsare
+ * och två decimaler. Om addVAT är true, läggs moms till.
+ * 
+ * @param amount - Beloppet som ska formateras
+ * @param addVAT - Om moms ska läggas till (default: false)
+ * @param endWith6 - Om beloppet ska avrundas till att sluta med 6 (default: false)
+ * @returns Formaterad valutasträng
  */
-export function roundToHundredEndingSix(amount: number): number {
-  // Avrunda till närmaste 100
-  let rounded = Math.round(amount / 100) * 100;
+export function formatCurrency(amount: number | undefined, addVAT: boolean = false, endWith6: boolean = false): string {
+  if (amount === undefined) return '0 kr';
   
-  // Justera sista siffran till 6
-  const lastDigit = rounded % 10;
-  if (lastDigit !== 6) {
-    rounded = rounded - lastDigit + 6;
+  // Lägg till moms om det behövs
+  const finalAmount = addVAT ? amount * (1 + VAT_RATE) : amount;
+  
+  // Avrunda till heltal
+  let roundedAmount = Math.round(finalAmount);
+  
+  // Om endWith6 är aktiverat, se till att beloppet slutar med 6
+  if (endWith6) {
+    const lastDigit = roundedAmount % 10;
+    if (lastDigit !== 6) {
+      roundedAmount = roundedAmount - lastDigit + 6;
+    }
   }
   
-  return rounded;
+  // Formatera med tusentalsavgränsare
+  return roundedAmount.toLocaleString('sv-SE') + ' kr';
 }
