@@ -52,7 +52,7 @@ export function calculateLeasingRange(
   machinePriceSEK: number,
   leasingRate: number | string,
   includeInsurance: boolean
-): { min: number; max: number; default: number } {
+): { min: number; max: number; default: number; flatrateThreshold?: number } {
   // Ensure leasingRate is a number
   const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate || 0;
   
