@@ -30,7 +30,7 @@ const FlatrateIndicator: React.FC<FlatrateIndicatorProps> = ({
           whiteSpace: 'nowrap'
         }}
       >
-        {!allowBelowFlatrate ? 'Flatrate-gräns' : '80%'}
+        {!allowBelowFlatrate ? 'Flatrate-gräns' : '80% av maximalt'}
       </div>
     </div>
   );

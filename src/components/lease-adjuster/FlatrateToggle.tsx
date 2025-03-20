@@ -26,6 +26,7 @@ const FlatrateToggle: React.FC<FlatrateToggleProps> = ({
           id="allow-below-flatrate" 
           checked={!allowBelowFlatrate}
           onCheckedChange={onToggleFlatrate}
+          className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-gray-300"
         />
         <label 
           htmlFor="allow-below-flatrate"
@@ -34,7 +35,7 @@ const FlatrateToggle: React.FC<FlatrateToggleProps> = ({
           Aktivera flatrate för credits
         </label>
       </div>
-      <span className={`text-xs ${allowBelowFlatrate ? 'text-yellow-600' : 'text-green-600'}`}>
+      <span className={`text-xs ${allowBelowFlatrate ? 'text-yellow-600' : 'text-green-600'} font-medium`}>
         {allowBelowFlatrate ? 'Flatrate inaktiverat' : 'Flatrate aktiverat'}
       </span>
     </div>
