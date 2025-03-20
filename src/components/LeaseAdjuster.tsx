@@ -48,8 +48,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Beräkna exakt leasingkostnad för den aktuella faktorn
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
-  // Avrunda leasingkostnaden till närmaste 500 SEK
-  const stepSize = 500;
+  // Avrunda leasingkostnaden till närmaste 100 SEK
+  const stepSize = 100;
   const roundedLeasingCost = Math.round(calculatedLeasingCost / stepSize) * stepSize;
   
   // Beräkna flatrate-faktorn (position) om vi har ett tröskelvärde
@@ -70,7 +70,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     // Beräkna exakt kostnad baserat på positionen
     const exactCost = exactMinCost + (newValue * costRange);
     
-    // Avrunda till närmaste 500 SEK
+    // Avrunda till närmaste 100 SEK
     const roundedCost = Math.round(exactCost / stepSize) * stepSize;
     
     // Konvertera tillbaka till en faktor mellan 0 och 1
@@ -163,12 +163,14 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         leaseCost={actualLeasingCost}
       />
 
-      <FlatrateToggle 
-        showFlatrateIndicator={showFlatrateIndicator}
-        flatrateThreshold={flatrateThreshold}
-        allowBelowFlatrate={allowBelowFlatrate}
-        onToggleFlatrate={handleToggleFlatrate}
-      />
+      {showFlatrateIndicator && flatrateThreshold && (
+        <FlatrateToggle 
+          showFlatrateIndicator={showFlatrateIndicator}
+          flatrateThreshold={flatrateThreshold}
+          allowBelowFlatrate={allowBelowFlatrate}
+          onToggleFlatrate={handleToggleFlatrate}
+        />
+      )}
     </div>
   );
 };

@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import { formatCurrency } from '@/utils/calculatorUtils';
 import { Info, Lock, Unlock } from 'lucide-react';
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { calculateFlatrateBreakEven } from '@/utils/creditUtils';
 
 interface OperatingCostsProps {
@@ -57,32 +56,76 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
     });
   }, [isFlatrateUnlocked, leasingCostPercentage, treatmentsPerDay, creditPrice, flatrateAmount, breakEvenTreatments]);
   
+  // Om switch-reglaget för flatrate redan är aktiverat (allowBelowFlatrate är false),
+  // visa ingen radioknapp för flatrate-val
+  if (!allowBelowFlatrate && isFlatrateUnlocked) {
+    return (
+      <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
+        <label className="input-label mb-4">
+          Credits - Kostnader
+        </label>
+        
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-sm">Flatrate månadskostnad</span>
+          <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount, false)}</span>
+        </div>
+        
+        <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm">
+          <div className="flex items-start gap-3">
+            <Info className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-medium text-base text-emerald-700 mb-2">🎉 Grattis! Flatrate är aktiverat</h3>
+              <p className="text-emerald-800 mb-3">
+                Du har nu tillgång till obegränsat antal credits under avtalsperioden för en fast månadsavgift.
+              </p>
+              {breakEvenTreatments > 0 && (
+                <p className="text-emerald-800 text-xs mt-2">
+                  Vid {breakEvenTreatments} eller fler behandlingar per dag är flatrate mer kostnadseffektivt än styckepris.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
       <label className="input-label mb-4">
         Credits - Kostnader
       </label>
       
-      {isFlatrateUnlocked && (
+      {allowBelowFlatrate && isFlatrateUnlocked && (
         <div className="mb-4">
-          <RadioGroup 
-            value={useFlatrate ? 'flatrate' : 'styckepris'} 
-            onValueChange={handleFlatrateOptionChange}
-            className="flex flex-col space-y-1"
-          >
-            <div className="flex items-center space-x-2 py-2">
-              <RadioGroupItem value="styckepris" id="styckepris" />
-              <label htmlFor="styckepris" className="text-sm font-medium cursor-pointer">
-                Credits styckepris
-              </label>
-            </div>
-            <div className="flex items-center space-x-2 py-2">
-              <RadioGroupItem value="flatrate" id="flatrate" />
-              <label htmlFor="flatrate" className="text-sm font-medium cursor-pointer">
-                Credits flatrate (obegränsade credits)
-              </label>
-            </div>
-          </RadioGroup>
+          <div className="flex items-center space-x-2 py-2">
+            <input 
+              type="radio" 
+              id="styckepris" 
+              name="priceModel" 
+              value="styckepris" 
+              checked={!useFlatrate} 
+              onChange={() => onFlatrateOptionChange?.(false)}
+              className="h-4 w-4 text-primary"
+            />
+            <label htmlFor="styckepris" className="text-sm font-medium cursor-pointer">
+              Credits styckepris
+            </label>
+          </div>
+          <div className="flex items-center space-x-2 py-2">
+            <input 
+              type="radio" 
+              id="flatrate" 
+              name="priceModel" 
+              value="flatrate" 
+              checked={useFlatrate} 
+              onChange={() => onFlatrateOptionChange?.(true)}
+              className="h-4 w-4 text-primary"
+            />
+            <label htmlFor="flatrate" className="text-sm font-medium cursor-pointer">
+              Credits flatrate (obegränsade credits)
+            </label>
+          </div>
         </div>
       )}
       
