@@ -14,7 +14,7 @@ const MachineGalleryContainer: React.FC = () => {
 
   // Debug för att se om Context värden fungerar
   useEffect(() => {
-    console.log("MachineGalleryContainer: Nuvarande vald maskin ID:", selectedMachineId);
+    console.log("MachineGalleryContainer: Nuvarande vald maskin ID från context:", selectedMachineId);
     
     // Visa toast endast när maskin-ID faktiskt ändras (inte vid initial rendering)
     if (previousMachineIdRef.current !== selectedMachineId && 
@@ -30,7 +30,8 @@ const MachineGalleryContainer: React.FC = () => {
   }, [selectedMachineId]);
 
   const handleMachineSelection = (machineId: string) => {
-    console.log(`MachineGalleryContainer: Sätter vald maskin till: ${machineId}`);
+    console.log(`MachineGalleryContainer: Användaren valde maskin: ${machineId}`);
+    // Uppdatera den globala staten direkt, även om samma maskin väljs igen
     setSelectedMachineId(machineId);
   };
 

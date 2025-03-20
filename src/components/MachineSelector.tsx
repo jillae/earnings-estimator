@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { 
   Select, 
   SelectContent, 
@@ -20,20 +20,16 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
   selectedMachineId, 
   onChange 
 }) => {
-  // Förenkla genom att helt använda selectedMachineId som källa för sanningen
-  // istället för att försöka hantera ett eget state
-  
-  const handleMachineChange = (newValue: string) => {
-    console.log(`MachineSelector: Användaren valde maskin: ${newValue}`);
-    if (newValue !== selectedMachineId) {
-      onChange(newValue);
-    }
-  };
-
-  // Debug loggning
+  // Debug-loggning för att se vilken maskin som är vald
   useEffect(() => {
     console.log(`MachineSelector: Rendering med machineId: ${selectedMachineId}`);
   }, [selectedMachineId]);
+
+  const handleMachineChange = (newMachineId: string) => {
+    console.log(`MachineSelector: Användaren valde maskin i dropdown: ${newMachineId}`);
+    // Alltid trigga onChange för att säkerställa konsekvent uppdatering
+    onChange(newMachineId);
+  };
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '100ms' }}>

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { 
   Carousel, 
   CarouselContent, 
@@ -21,18 +21,17 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
   selectedMachineId,
   onChange
 }) => {
-  const previousSelectedId = useRef<string>(selectedMachineId);
-  
-  const handleMachineClick = (machineId: string) => {
-    console.log(`MachineGallery: Klickade på maskin med ID: ${machineId}`);
-    onChange(machineId);
-  };
-
   // Loggning för att verifiera att val av maskin fungerar korrekt
   useEffect(() => {
-    console.log(`MachineGallery: Aktuellt vald maskin: ${selectedMachineId}`);
-    previousSelectedId.current = selectedMachineId;
+    console.log(`MachineGallery: Aktuell vald maskin i carousel: ${selectedMachineId}`);
   }, [selectedMachineId]);
+
+  const handleMachineClick = (machineId: string) => {
+    console.log(`MachineGallery: Klickade på maskin med ID: ${machineId}`);
+    // Alltid trigga onChange, även om samma maskin väljs igen
+    // Detta är viktigt för att säkerställa att hela UI uppdateras
+    onChange(machineId);
+  };
 
   return (
     <div className="w-full py-4">
