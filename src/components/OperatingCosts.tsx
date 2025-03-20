@@ -15,7 +15,7 @@ interface OperatingCostsProps {
   operatingCostPerMonth: number;
   leasingCostPercentage?: number;
   treatmentsPerDay: number;
-  allowBelowFlatrate?: boolean; // Lägg till denna prop för att matcha props i CalculatorInputs
+  allowBelowFlatrate?: boolean; // Lägg till denna prop för TypeScript kompatibilitet
   onFlatrateOptionChange?: (option: 'perCredit' | 'flatrate') => void;
   useFlatrateOption?: 'perCredit' | 'flatrate';
 }
