@@ -33,7 +33,10 @@ const Header = () => {
         </div>
       </div>
       <header className="py-4 px-4 border-b flex justify-between items-center">
-        <h1 className="text-xl font-bold">Kalkylator för laserutrustning</h1>
+        <div>
+          <h1 className="text-xl font-bold">Kalkylator för laserutrustning</h1>
+          <p className="text-sm text-muted-foreground">Beräkna kostnader och intäkter för din klinik</p>
+        </div>
         <Link to="/admin-login">
           <Button variant="outline" size="sm">Admin</Button>
         </Link>
