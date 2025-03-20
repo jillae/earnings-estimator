@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import MachineGallery from './MachineGallery';
 import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
@@ -10,6 +10,16 @@ const MachineGalleryContainer: React.FC = () => {
   // Se till att vi inte visar "select-machine" i galleriet
   const filteredMachines = machineData.filter(machine => machine.id !== "select-machine");
 
+  // Debug för att se om Context värden fungerar
+  useEffect(() => {
+    console.log("Current selected machine ID:", selectedMachineId);
+  }, [selectedMachineId]);
+
+  const handleMachineSelection = (machineId: string) => {
+    console.log(`Setting selected machine to: ${machineId}`);
+    setSelectedMachineId(machineId);
+  };
+
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 mt-4 mb-2">
       <div className="glass-card animate-slide-in" style={{ animationDelay: '200ms' }}>
@@ -17,7 +27,7 @@ const MachineGalleryContainer: React.FC = () => {
         <MachineGallery
           machines={filteredMachines}
           selectedMachineId={selectedMachineId}
-          onChange={setSelectedMachineId}
+          onChange={handleMachineSelection}
         />
       </div>
     </div>

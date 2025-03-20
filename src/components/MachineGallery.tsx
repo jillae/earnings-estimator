@@ -26,16 +26,19 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
       <Carousel className="mx-auto w-full">
         <CarouselContent className="-ml-2">
           {machines.map((machine) => (
-            <CarouselItem key={machine.id} className="pl-2 md:basis-1/3 lg:basis-1/4">
+            <CarouselItem key={machine.id} className="pl-2 sm:basis-1/2 md:basis-1/4 lg:basis-1/5">
               <MachineThumbnail 
                 machine={machine} 
                 isSelected={selectedMachineId === machine.id}
-                onClick={() => onChange(machine.id)}
+                onClick={() => {
+                  console.log(`Clicking on machine: ${machine.id}, current selected: ${selectedMachineId}`);
+                  onChange(machine.id);
+                }}
               />
             </CarouselItem>
           ))}
         </CarouselContent>
-        <div className="flex justify-center gap-2 mt-4">
+        <div className="flex justify-center gap-4 mt-4">
           <CarouselPrevious className="relative static transform-none" />
           <CarouselNext className="relative static transform-none" />
         </div>
