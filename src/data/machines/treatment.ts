@@ -24,7 +24,8 @@ export const treatmentMachines: Machine[] = [
       "60": 0.02095
     },
     defaultLeasingPeriod: "60",
-    defaultCustomerPrice: 900
+    defaultCustomerPrice: 900,
+    imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&h=200&fit=crop"
   },
   {
     id: "fx-405",
@@ -48,6 +49,7 @@ export const treatmentMachines: Machine[] = [
       "60": 0.02095
     },
     defaultLeasingPeriod: "60",
-    defaultCustomerPrice: 1200
+    defaultCustomerPrice: 1200,
+    imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=300&h=200&fit=crop"
   }
 ];

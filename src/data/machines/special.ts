@@ -14,7 +14,8 @@ export const specialMachines: Machine[] = [
     flatrateAmount: 0,
     usesCredits: false,
     defaultLeasingPeriod: "60",
-    defaultCustomerPrice: 3600
+    defaultCustomerPrice: 3600,
+    imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=300&h=200&fit=crop"
   },
   {
     id: "lunula",
@@ -28,6 +29,7 @@ export const specialMachines: Machine[] = [
     flatrateAmount: 0,
     usesCredits: false,
     defaultLeasingPeriod: "60",
-    defaultCustomerPrice: 4000
+    defaultCustomerPrice: 4000,
+    imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&h=200&fit=crop"
   }
 ];

@@ -18,6 +18,7 @@ export interface Machine {
   leasingTariffs?: {[key: string]: number};
   defaultLeasingPeriod?: string;
   defaultCustomerPrice?: number;
+  imageUrl?: string;
 }
 
 export interface LeasingPeriod {

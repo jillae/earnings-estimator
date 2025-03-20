@@ -24,7 +24,8 @@ export const premiumMachines: Machine[] = [
       "60": 0.02095
     },
     defaultLeasingPeriod: "60",
-    defaultCustomerPrice: 3500
+    defaultCustomerPrice: 3500,
+    imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&h=200&fit=crop"
   },
   {
     id: "zerona",
@@ -48,6 +49,7 @@ export const premiumMachines: Machine[] = [
       "60": 0.02095
     },
     defaultLeasingPeriod: "60",
-    defaultCustomerPrice: 1800
+    defaultCustomerPrice: 1800,
+    imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=300&h=200&fit=crop"
   }
 ];

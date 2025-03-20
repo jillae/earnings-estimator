@@ -14,7 +14,8 @@ export const handheldMachines: Machine[] = [
     flatrateAmount: 0,
     usesCredits: false,
     defaultLeasingPeriod: "60",
-    defaultCustomerPrice: 500
+    defaultCustomerPrice: 500,
+    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=300&h=200&fit=crop"
   },
   {
     id: "evrl",
@@ -28,7 +29,8 @@ export const handheldMachines: Machine[] = [
     flatrateAmount: 0,
     usesCredits: false,
     defaultLeasingPeriod: "60",
-    defaultCustomerPrice: 800
+    defaultCustomerPrice: 800,
+    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=300&h=200&fit=crop"
   },
   {
     id: "gvl",
@@ -42,6 +44,7 @@ export const handheldMachines: Machine[] = [
     flatrateAmount: 0,
     usesCredits: false,
     defaultLeasingPeriod: "60",
-    defaultCustomerPrice: 1200
+    defaultCustomerPrice: 1200,
+    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=300&h=200&fit=crop"
   }
 ];
