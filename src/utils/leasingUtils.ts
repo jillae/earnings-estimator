@@ -95,7 +95,7 @@ export function calculateLeasingRange(
     // Add flatrateThreshold property for machines that use credits
     if (machine.usesCredits) {
       // Set threshold at 80% of the way from min to max
-      const threshold = baseLeasingMin + (baseLeasingMax - baseLeasingMin) * 0.8;
+      const threshold = baseLeasingMin + (baseLeasingMax - baseLeasingMin) * FLATRATE_THRESHOLD_PERCENTAGE;
       console.log(`Flatrate threshold calculated: ${threshold}`);
       result = { ...result, flatrateThreshold: threshold };
     }
@@ -144,7 +144,7 @@ export function calculateLeasingRange(
   // Add flatrateThreshold property for machines that use credits
   if (machine.usesCredits) {
     // Set threshold at 80% of the way from min to max
-    const threshold = baseLeasingMin + (baseLeasingMax - baseLeasingMin) * 0.8;
+    const threshold = baseLeasingMin + (baseLeasingMax - baseLeasingMin) * FLATRATE_THRESHOLD_PERCENTAGE;
     console.log(`Flatrate threshold calculated: ${threshold}`);
     result = { ...result, flatrateThreshold: threshold };
   }
