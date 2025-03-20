@@ -14,7 +14,13 @@ export function calculateCreditPrice(
 ): number {
   if (!machine.usesCredits) return 0;
   
-  // Beräkna kreditpris baserat på maskinpris (om sådant finns)
+  // Använd maskinens fördefinierade creditMin värde istället för att beräkna
+  if (machine.creditMin !== undefined) {
+    console.log(`Använder fördefinierat creditMin för ${machine.name}: ${machine.creditMin}`);
+    return machine.creditMin;
+  }
+  
+  // Beräkna kreditpris baserat på maskinpris (om sådant finns) som fallback
   if (machinePriceSEK) {
     // En konstant multiplikator för alla maskiner
     // Detta är ett standardvärde som kan justeras

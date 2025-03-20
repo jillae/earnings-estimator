@@ -3,9 +3,6 @@ import React, { useEffect } from 'react';
 import { formatCurrency } from '@/utils/calculatorUtils';
 import { Info, Lock, Unlock } from 'lucide-react';
 import { calculateFlatrateBreakEven } from '@/utils/creditUtils';
-import { useCalculator } from '@/context/CalculatorContext';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 
 interface OperatingCostsProps {
   usesCredits: boolean;
@@ -15,7 +12,7 @@ interface OperatingCostsProps {
   operatingCostPerMonth: number;
   leasingCostPercentage?: number;
   treatmentsPerDay: number;
-  allowBelowFlatrate?: boolean; // Lägg till denna prop för TypeScript kompatibilitet
+  allowBelowFlatrate?: boolean;
   onFlatrateOptionChange?: (option: 'perCredit' | 'flatrate') => void;
   useFlatrateOption?: 'perCredit' | 'flatrate';
 }
@@ -42,13 +39,6 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   // Beräkna brytpunkten för när flatrate blir mer kostnadseffektivt
   const breakEvenTreatments = calculateFlatrateBreakEven(flatrateAmount, creditPrice);
   
-  // Hantera byte av prismodell med Switch
-  const handleFlatrateSwitch = (checked: boolean) => {
-    if (onFlatrateOptionChange) {
-      onFlatrateOptionChange(checked ? 'flatrate' : 'perCredit');
-    }
-  };
-  
   // Debug-loggning
   useEffect(() => {
     console.log("OperatingCosts rendering with:", {
@@ -69,22 +59,6 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
       <label className="input-label mb-4">
         Credits - Kostnader
       </label>
-      
-      {/* EN tydlig switch för flatrate */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="flatrate-switch"
-            checked={useFlatrateOption === 'flatrate'}
-            onCheckedChange={handleFlatrateSwitch}
-            disabled={!isFlatrateUnlocked}
-          />
-          <Label htmlFor="flatrate-switch" className="text-sm">Flatrate för Credits</Label>
-        </div>
-        <span className={`text-xs ${useFlatrateOption === 'flatrate' ? 'text-green-600' : 'text-gray-600'}`}>
-          {useFlatrateOption === 'flatrate' ? 'Obegränsade credits' : 'Styckepris'}
-        </span>
-      </div>
       
       {!isFlatrateUnlocked && (
         <div className="flex justify-between items-center mb-4">
