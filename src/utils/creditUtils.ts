@@ -1,4 +1,3 @@
-
 /**
  * Utility functions for credit price calculations
  */
@@ -15,12 +14,9 @@ export function calculateCreditPrice(
   if (!machine.usesCredits) return 0;
   
   // Använd direkt de konstanta värdena från Admin-sidan
-  // Välj rätt multiplikator baserat på maskintyp genom att kontrollera ID
-  // Premium maskiner är: emerald och zerona
-  const isPremiumMachine = ['emerald', 'zerona'].includes(machine.id);
-  const multiplier = isPremiumMachine 
-    ? CREDIT_PRICE_MULTIPLIERS.PREMIUM 
-    : CREDIT_PRICE_MULTIPLIERS.STANDARD;
+  // Använda multiplikatorn som finns definerad i maskindata
+  // eller använd standardvärdet från konstanter om det saknas
+  const multiplier = CREDIT_PRICE_MULTIPLIERS.STANDARD;
     
   // Beräkna kreditpris baserat på maskinpris och konstant multiplikator
   if (machinePriceSEK) {
