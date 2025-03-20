@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { formatCurrency } from '@/utils/calculatorUtils';
 import { Info } from 'lucide-react';
@@ -32,11 +31,11 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     showFlatrateIndicator
   });
 
-  // Use exact min and max costs directly from props without modification
+  // Använd de exakta min- och max-värdena direkt från props utan modifiering
   const exactMinCost = minLeaseCost;
   const exactMaxCost = maxLeaseCost;
 
-  // Calculate the step size for the slider based on 500 SEK
+  // Beräkna stegstorlek för slidern baserat på 500 SEK
   const stepSizeSek = 500;
   const costRange = exactMaxCost - exactMinCost;
   const sliderStep = costRange > 0 ? stepSizeSek / costRange : 0.01; // Fallback if range is zero
@@ -45,8 +44,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     onAdjustmentChange(values[0]);
   };
 
-  // Use the exact max/min leasing cost values for calculation
-  // This ensures we don't exceed the defined range
+  // Använd exakta max/min leasingkostnadsvärden för beräkning
   let actualLeasingCost = leaseCost;
   if (leaseCost > exactMaxCost) {
     // Cap at max
@@ -55,23 +53,27 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     actualLeasingCost = exactMinCost;
   }
 
-  // Use formatted values without rounding for display consistency
+  // Använd formaterade värden utan avrundning för konsekvent visning
   const formattedMinCost = formatCurrency(exactMinCost, false);
   const formattedMaxCost = formatCurrency(exactMaxCost, false);
   const formattedCost = formatCurrency(actualLeasingCost, false);
 
-  // Calculate flatrate threshold position as percentage if applicable
+  // Beräkna flatrate-tröskelpositionen som procent om relevant
   let thresholdPosition = null;
   if (showFlatrateIndicator && flatrateThreshold) {
-    // Calculate threshold position as percentage of the slider range
-    thresholdPosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, costRange)) * 100;
-    // Ensure the position is clamped between 0 and 100
+    // Beräkna tröskelpositionen som procent av slidersträckan
+    thresholdPosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
+    // Säkerställ att positionen är begränsad mellan 0 och 100
     thresholdPosition = Math.max(0, Math.min(100, thresholdPosition));
     console.log(`Flatrate threshold position: ${thresholdPosition}% (${flatrateThreshold} / ${exactMinCost} / ${exactMaxCost})`);
   }
 
-  // Check if we're above the flatrate threshold
+  // FELSÖKNING: Kontrollera och logga om vi är över flatrate-tröskeln
   const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
+  
+  useEffect(() => {
+    console.log(`FLATRATE INFO SYNLIGHET: Leasingkostnad (${leaseCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold}), Visar info: ${showFlatrateIndicator && isAboveFlatrateThreshold}`);
+  }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator]);
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
@@ -120,6 +122,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         <span className="text-lg font-semibold text-slate-700">{formattedCost}</span>
       </div>
 
+      {/* Visa flatrate-informationsrutan endast om BÅDE showFlatrateIndicator är true OCH leasingkostnaden är över tröskeln */}
       {showFlatrateIndicator && isAboveFlatrateThreshold && (
         <div 
           id="flatrateInfo" 

@@ -72,40 +72,52 @@ export function shouldUseFlatrate(
     return false;
   }
   
-  // VIKTIG ÄNDRING: Kontrollera BÅDE behandlingar per dag OCH leasingkostnad
-  // Regel 1: Måste ha minst 3 behandlingar per dag
+  // VIKTIG FELSÖKNING: Logga alla ingående värden för att förstå när flatrate ska visas
+  console.log(`shouldUseFlatrate kontroll för ${machine.name}:`, {
+    leasingCost,
+    treatmentsPerDay,
+    leasingRate,
+    machinePriceSEK,
+    usesCredits: machine.usesCredits
+  });
+  
+  // REGEL 1: Måste ha minst 3 behandlingar per dag
   if (treatmentsPerDay < 3) {
     console.log(`Flatrate nekad: Antal behandlingar per dag (${treatmentsPerDay}) < 3`);
     return false;
   }
   
-  // Regel 2: Leasingkostnad måste vara > 80% av leasingMax
-  // Hämta leasingMax (föredra maskinens definierade värde om tillgängligt)
-  let leasingMax: number;
+  // REGEL 2: Leasingkostnad måste vara > 80% av leasingMax (eller flatrateThreshold om det finns)
+  let flatrateThreshold: number;
   
-  if (machine.leasingMax !== undefined) {
-    leasingMax = machine.leasingMax;
-    console.log(`Använder hårdkodad leasingMax för flatrate-beslut: ${leasingMax}`);
-  }
-  // Annars använd dynamisk beräkning om möjligt
-  else if (leasingRate !== undefined && machinePriceSEK !== undefined) {
+  // Hämta dynamiskt beräknad flatrateThreshold om möjligt
+  if (leasingRate !== undefined && machinePriceSEK !== undefined) {
     const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate;
     const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
-    leasingMax = dynamicRange.max;
-    console.log(`Använder dynamiskt beräknad leasingMax för flatrate-beslut: ${leasingMax}`);
+    
+    if (dynamicRange.flatrateThreshold !== undefined) {
+      flatrateThreshold = dynamicRange.flatrateThreshold;
+      console.log(`Använder dynamiskt beräknad flatrateThreshold: ${flatrateThreshold}`);
+    } else {
+      // Om flatrateThreshold saknas, beräkna det som 80% av vägen från min till max
+      flatrateThreshold = dynamicRange.min + (dynamicRange.max - dynamicRange.min) * 0.8;
+      console.log(`Beräknad flatrateThreshold: ${flatrateThreshold} (80% mellan ${dynamicRange.min} och ${dynamicRange.max})`);
+    }
+  } 
+  // Fallback: om vi inte kan beräkna dynamiskt, använd leasingMax * 0.8
+  else if (machine.leasingMax !== undefined) {
+    flatrateThreshold = machine.leasingMax * 0.8;
+    console.log(`Använder 80% av leasingMax för flatrate-beslut: ${flatrateThreshold}`);
   } else {
-    console.log(`Ingen leasingMax tillgänglig för flatrate-beslut för ${machine.name}`);
+    console.log(`Ingen flatrateThreshold tillgänglig för flatrate-beslut för ${machine.name}`);
     return false;
   }
   
-  // Beräkna tröskelvärdet vid 80% av leasingMax
-  const flatrateThreshold = leasingMax * 0.8;
-  
-  // Kontrollera om leasingCost är över 80%-tröskeln
+  // Kontrollera om leasingCost är över tröskeln
   const isAboveThreshold = leasingCost >= flatrateThreshold;
-  console.log(`Flatrate-beslut: leasingCost ${leasingCost} ${isAboveThreshold ? '>=' : '<'} tröskelvärde ${flatrateThreshold} (80% av ${leasingMax}) OCH behandlingar ${treatmentsPerDay} >= 3`);
+  console.log(`Flatrate-beslut: leasingCost ${leasingCost} ${isAboveThreshold ? '>=' : '<'} tröskelvärde ${flatrateThreshold} OCH behandlingar ${treatmentsPerDay} >= 3`);
   
-  // VIKTIG ÄNDRING: Returnera bara true om BÅDA villkoren uppfylls
+  // Returnera true bara om BÅDA villkoren uppfylls
   return isAboveThreshold;
 }
 
