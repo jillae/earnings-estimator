@@ -24,16 +24,24 @@ export function calculateCreditPrice(
     return machine.creditMin;
   }
   
+  // Om ingen creditMin, beräkna baserat på leasingkostnad och prismultiplikator
+  if (machine.creditPriceMultiplier && leasingCost > 0) {
+    const calculatedPrice = Math.round(leasingCost * machine.creditPriceMultiplier);
+    console.log(`Beräknat kredippris baserat på multiplikator (${machine.creditPriceMultiplier}): ${calculatedPrice}`);
+    return calculatedPrice;
+  }
+  
   // Beräkna kreditpris baserat på maskinpris (om sådant finns) som fallback
   if (machinePriceSEK) {
     // En konstant multiplikator för alla maskiner
-    // Detta är ett standardvärde som kan justeras
     const baseCreditFactor = 0.002;
-    return Math.round(machinePriceSEK * baseCreditFactor);
+    const calculatedPrice = Math.round(machinePriceSEK * baseCreditFactor);
+    console.log(`Beräknat kreditpris baserat på maskinpris (${machinePriceSEK}): ${calculatedPrice}`);
+    return calculatedPrice;
   }
   
   // Fallback om ingen av ovanstående fungerar
-  return machine.creditPriceMultiplier || 0;
+  return 100; // Standardvärde
 }
 
 /**
@@ -68,6 +76,14 @@ export function calculateOperatingCost(
     const treatmentsPerMonth = calculateTreatmentsPerMonth(treatmentsPerDay);
     costPerMonth = creditsPerTreatment * treatmentsPerMonth * creditPrice;
   }
+  
+  console.log(`Beräknad driftkostnad:
+    Maskin: ${machine.name}
+    Behandlingar/dag: ${treatmentsPerDay}
+    Kreditpris: ${creditPrice}
+    Använder flatrate: ${useFlatrate}
+    Kostnad/månad: ${costPerMonth}
+  `);
   
   return { costPerMonth, useFlatrate };
 }
