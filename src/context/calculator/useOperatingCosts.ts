@@ -46,6 +46,36 @@ export function useOperatingCosts({
       
       setCalculatedCreditPrice(newCreditPrice);
       console.log(`Beräknat credit-pris baserat på leasingkostnad ${leasingCost} → ${newCreditPrice}`);
+      
+      // Recalculate operating cost immediately
+      const shouldUseFlatrateOption = shouldUseFlatrate(
+        selectedMachine,
+        leasingCost,
+        treatmentsPerDay,
+        allowBelowFlatrate,
+        selectedLeasingPeriodId,
+        machinePriceSEK
+      );
+      
+      // Använd explicit flatrate-val från användaren om det är tillgängligt
+      const isFlatrateUnlocked = leasingCost >= (selectedMachine.leasingMax * 0.8) && treatmentsPerDay >= 3;
+      const useFlatrateForCalculation = useFlatrateOption && isFlatrateUnlocked;
+      
+      // Beräkna driftkostnad med nytt kreditpris
+      const calculatedOperatingCost = calculateOperatingCost(
+        selectedMachine,
+        treatmentsPerDay,
+        newCreditPrice,
+        leasingCost,
+        !useFlatrateForCalculation,
+        selectedLeasingPeriodId,
+        machinePriceSEK
+      );
+      
+      setOperatingCost({
+        costPerMonth: calculatedOperatingCost.costPerMonth,
+        useFlatrate: useFlatrateForCalculation
+      });
     }
   }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK]);
 
@@ -54,16 +84,15 @@ export function useOperatingCosts({
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine) {
-      // Hämta aktuellt beräknat kreditpris igen för att säkerställa att vi har senaste värdet
-      const currentCreditPrice = calculateCreditPrice(
-        selectedMachine, 
-        leasingCost,
-        selectedLeasingPeriodId,
-        machinePriceSEK
-      );
-      
-      // Uppdatera state för att visa rätt värde i UI
-      setCalculatedCreditPrice(currentCreditPrice);
+      // Get current calculated credit price
+      const currentCreditPrice = calculatedCreditPrice > 0 ? 
+        calculatedCreditPrice : 
+        calculateCreditPrice(
+          selectedMachine, 
+          leasingCost,
+          selectedLeasingPeriodId,
+          machinePriceSEK
+        );
       
       // Kolla om flatrate skulle användas baserat på regler
       const shouldUseFlatrateOption = shouldUseFlatrate(
@@ -105,7 +134,7 @@ export function useOperatingCosts({
         useFlatrate: useFlatrateForCalculation // Använd användarens explicita val
       });
     }
-  }, [selectedMachineId, treatmentsPerDay, leasingCost, machinePriceSEK, selectedLeasingPeriodId, allowBelowFlatrate, useFlatrateOption]);
+  }, [selectedMachineId, treatmentsPerDay, leasingCost, machinePriceSEK, selectedLeasingPeriodId, allowBelowFlatrate, useFlatrateOption, calculatedCreditPrice]);
 
   return { 
     operatingCost,

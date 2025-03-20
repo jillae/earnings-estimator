@@ -67,17 +67,10 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
         </div>
       ) : (
         <>
-          {isFlatrateUnlocked ? (
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm">Pris per credit</span>
-              <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice, false)}</span>
-            </div>
-          ) : 
           <div className="flex justify-between items-center mb-4">
             <span className="text-sm">Pris per credit</span>
             <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice, false)}</span>
           </div>
-          }
           <div className="flex justify-between items-center mb-4">
             <span className="text-sm">Credits kostnad per månad</span>
             <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCostPerMonth, false)}</span>
