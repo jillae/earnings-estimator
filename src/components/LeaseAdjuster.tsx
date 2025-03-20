@@ -147,23 +147,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         <span className="text-lg font-semibold text-slate-700">{formattedCost}</span>
       </div>
 
-      {/* Visa flatrate-informationsrutan när vi är över tröskeln */}
-      {shouldShowFlatrateInfo && (
-        <div 
-          id="flatrateInfo" 
-          className="mt-5 p-4 bg-primary/5 border border-primary/20 rounded-lg text-sm"
-        >
-          <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-            <div>
-              <h3 className="font-medium text-base mb-2">Information om Flatrate</h3>
-              <p className="mb-2">Vid en leasingkostnad som motsvarar minst 80% av den ordinarie investeringskostnaden (vårt maximala leasingpris) erbjuds <strong>Flatrate för credits</strong>.</p>
-              <p className="mb-2">Med Flatrate kan kliniken beställa ett obegränsat antal credits under avtalsperioden.</p>
-              <p>Detta baseras på en förväntad minimibeläggning om 2 kunder per veckodag.</p>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Vi visar inte längre flatrate-informationen här eftersom det nu visas i OperatingCosts */}
     </div>
   );
 };
