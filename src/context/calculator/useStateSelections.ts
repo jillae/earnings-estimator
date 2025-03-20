@@ -8,29 +8,36 @@ export function useStateSelections() {
   const [selectedMachineId, setSelectedMachineId] = useState<string>('select-machine');
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60');
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
-  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(1); // Start at max (1) instead of min (0)
+  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(1); // Börja med max (1) istället för min (0)
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
 
-  // Derive the selected machine from the machine ID
+  // Härled den valda maskinen från maskin-ID
   const selectedMachine = useMemo(() => {
-    return machineData.find(machine => machine.id === selectedMachineId) || null;
+    const machine = machineData.find(machine => machine.id === selectedMachineId);
+    return machine || { 
+      id: 'null-machine',
+      name: 'No Machine',
+      usesCredits: false,
+      flatrateAmount: 0,
+      defaultCustomerPrice: 0
+    };
   }, [selectedMachineId]);
 
-  // When machine selection changes, reset certain values to defaults for that machine
+  // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen
   useEffect(() => {
-    if (selectedMachine) {
-      // Set default leasing period from machine if defined
+    if (selectedMachine && selectedMachine.id !== 'null-machine') {
+      // Sätt standard-leasingperiod från maskinen om den är definierad
       if (selectedMachine.defaultLeasingPeriod) {
         setSelectedLeasingPeriodId(selectedMachine.defaultLeasingPeriod);
       }
       
-      // Set default customer price from machine if defined
+      // Sätt standard-kundpris från maskinen om det är definierat
       if (selectedMachine.defaultCustomerPrice) {
         setCustomerPrice(selectedMachine.defaultCustomerPrice);
       }
       
-      // Always set leaseAdjustmentFactor to 1 (max) when selecting a new machine
+      // Sätt alltid leaseAdjustmentFactor till 1 (max) när en ny maskin väljs
       setLeaseAdjustmentFactor(1);
     }
   }, [selectedMachine]);

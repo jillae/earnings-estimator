@@ -34,9 +34,11 @@ const CalculatorInputs: React.FC = () => {
     netResults
   } = useCalculator();
 
-  // Get current machine
-  const isCreditsEnabledMachine = selectedMachine.usesCredits;
-  // Only show credit-related fields if a real machine is selected (not "select-machine")
+  // Säkerställ att selectedMachine inte är null innan vi använder dess egenskaper
+  // Om null, använd ett defaultvärde där usesCredits är false
+  const isCreditsEnabledMachine = selectedMachine?.usesCredits || false;
+  
+  // Endast visa kreditsrelaterade fält om en riktig maskin är vald (inte "select-machine")
   const showCreditFields = selectedMachineId !== "select-machine" && isCreditsEnabledMachine;
 
   return (
@@ -89,7 +91,7 @@ const CalculatorInputs: React.FC = () => {
             usesCredits={isCreditsEnabledMachine}
             useFlatrate={operatingCost.useFlatrate}
             creditPrice={creditPrice}
-            flatrateAmount={selectedMachine.flatrateAmount}
+            flatrateAmount={selectedMachine?.flatrateAmount || 0}
             operatingCostPerMonth={operatingCost.costPerMonth}
           />
         )}
