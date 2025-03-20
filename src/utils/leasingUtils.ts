@@ -6,7 +6,8 @@ import { Machine } from '../data/machineData';
 import { 
   LEASING_TARIFFS, 
   SHIPPING_COST_EUR_CREDITS, 
-  SHIPPING_COST_EUR_NO_CREDITS
+  SHIPPING_COST_EUR_NO_CREDITS,
+  FLATRATE_THRESHOLD_PERCENTAGE
 } from './constants';
 
 /**
@@ -84,11 +85,20 @@ export function calculateLeasingRange(
       console.log(`Adding insurance cost: ${insuranceCost}`);
     }
     
-    const result = {
+    // Calculate flatrate threshold if the machine uses credits
+    let result = {
       min: baseLeasingMin,
       max: baseLeasingMax,
       default: baseLeasingDefault + insuranceCost
     };
+    
+    // Add flatrateThreshold property for machines that use credits
+    if (machine.usesCredits) {
+      // Set threshold at 80% of the way from min to max
+      const threshold = baseLeasingMin + (baseLeasingMax - baseLeasingMin) * 0.8;
+      console.log(`Flatrate threshold calculated: ${threshold}`);
+      result = { ...result, flatrateThreshold: threshold };
+    }
     
     console.log("Final leasing range:", result);
     return result;
@@ -124,11 +134,20 @@ export function calculateLeasingRange(
     console.log(`Adding insurance cost: ${insuranceCost}`);
   }
   
-  const result = {
+  // Create the result object
+  let result = {
     min: baseLeasingMin,
     max: baseLeasingMax,
     default: baseLeasingDefault + insuranceCost
   };
+  
+  // Add flatrateThreshold property for machines that use credits
+  if (machine.usesCredits) {
+    // Set threshold at 80% of the way from min to max
+    const threshold = baseLeasingMin + (baseLeasingMax - baseLeasingMin) * 0.8;
+    console.log(`Flatrate threshold calculated: ${threshold}`);
+    result = { ...result, flatrateThreshold: threshold };
+  }
   
   console.log("Final leasing range:", result);
   return result;
