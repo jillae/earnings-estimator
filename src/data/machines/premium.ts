@@ -16,8 +16,8 @@ export const premiumMachines: Machine[] = [
     creditPriceMultiplier: 0.00045,
     flatrateAmount: 5996,
     usesCredits: true,
-    leasingMin: 21716, // Justerat till värde som slutar på 6 (21703 -> 21716)
-    leasingMax: 24116, // Justerat till värde som slutar på 6 (24114 -> 24116)
+    leasingMin: 21716,
+    leasingMax: 24116,
     creditMin: 149,
     creditMax: 299,
     leasingTariffs: {

@@ -37,16 +37,11 @@ export function useOperatingCosts({
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine && selectedMachine.usesCredits) {
-      // Beräkna ett nytt kreditpris baserat på den aktuella leasingkostnaden
-      const newCreditPrice = calculateCreditPrice(
-        selectedMachine, 
-        leasingCost,
-        selectedLeasingPeriodId,
-        machinePriceSEK
-      );
-      
+      // Använd korrekt credit-min värde från maskin-objektet
+      const newCreditPrice = selectedMachine.creditMin || 0;
       setCalculatedCreditPrice(newCreditPrice);
-      console.log(`Beräknat credit-pris baserat på leasingkostnad ${leasingCost} → ${newCreditPrice}`);
+      
+      console.log(`Använder fördefinierat credit-värde för ${selectedMachine.name}: ${newCreditPrice}`);
       
       // Beräkna om operating cost direkt för att undvika fördröjning
       const isFlatrateUnlocked = leasingCost >= (selectedMachine.leasingMax * 0.8) && treatmentsPerDay >= 3;
