@@ -1,3 +1,4 @@
+
 /**
  * Utility functions for leasing calculations
  */
@@ -176,10 +177,19 @@ export function calculateLeasingCost(
   const leasingRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
   let baseLeasingCost: number;
   
-  // Use the dynamically calculated leasingMax and leasingMin
+  // Använd linjär interpolation mellan min och max baserat på leaseMultiplier
+  // leaseMultiplier ska vara mellan 0 och 1, där:
+  // - 0 representerar leasingRange.min
+  // - 1 representerar leasingRange.max
   const leaseRange = leasingRange.max - leasingRange.min;
-  baseLeasingCost = leasingRange.min + leaseMultiplier * leaseRange;
-  console.log(`Interpolated leasing cost for ${machine.name} at factor ${leaseMultiplier}: ${baseLeasingCost}`);
+  baseLeasingCost = leasingRange.min + (leaseMultiplier * leaseRange);
+  
+  console.log(`Interpolated leasing cost for ${machine.name} at factor ${leaseMultiplier}: 
+    Min: ${leasingRange.min}, 
+    Max: ${leasingRange.max}, 
+    Range: ${leaseRange}, 
+    Calculated: ${baseLeasingCost}
+  `);
   
   let insuranceCost = 0;
   if (includeInsurance) {

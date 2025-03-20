@@ -36,14 +36,26 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMinCost = minLeaseCost;
   const exactMaxCost = maxLeaseCost;
 
-  // Beräkna stegstorlek för slidern baserat på 500 SEK
-  const stepSizeSek = 500;
+  // Beräkna stegstorlek baserat på ett rimligt antal steg över hela intervallet
+  const totalSteps = 100; // Vi vill ha 100 steg från min till max
   const costRange = exactMaxCost - exactMinCost;
-  const sliderStep = costRange > 0 ? stepSizeSek / costRange : 0.01; // Fallback if range is zero
+  const sliderStep = 1 / totalSteps; // Fast steg på 1/100 av sliderns skala
 
   const handleSliderChange = (values: number[]) => {
     onAdjustmentChange(values[0]);
   };
+
+  // Logga slider-information för diagnostik
+  useEffect(() => {
+    console.log(`Slider diagnostik: 
+      - Faktor: ${adjustmentFactor}
+      - Min: ${exactMinCost}
+      - Max: ${exactMaxCost}
+      - Range: ${costRange}
+      - Beräknad kostnad vid faktor 0.5: ${exactMinCost + (0.5 * costRange)}
+      - Aktuell kostnad: ${leaseCost}
+    `);
+  }, [adjustmentFactor, exactMinCost, exactMaxCost, costRange, leaseCost]);
 
   // Använd exakta max/min leasingkostnadsvärden för beräkning
   let actualLeasingCost = leaseCost;
