@@ -11,6 +11,7 @@ interface LeaseAdjusterProps {
   adjustmentFactor: number;
   flatrateThreshold?: number;
   showFlatrateIndicator?: boolean;
+  treatmentsPerDay?: number;
   onAdjustmentChange: (value: number) => void;
 }
 
@@ -21,6 +22,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   adjustmentFactor,
   flatrateThreshold,
   showFlatrateIndicator = false,
+  treatmentsPerDay = 0,
   onAdjustmentChange
 }) => {
   console.log("LeaseAdjuster rendering with:", {
@@ -29,7 +31,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     leaseCost,
     adjustmentFactor,
     flatrateThreshold,
-    showFlatrateIndicator
+    showFlatrateIndicator,
+    treatmentsPerDay
   });
 
   // Använd de exakta min- och max-värdena direkt från props
@@ -86,9 +89,19 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Kontrollera och logga om vi är över flatrate-tröskeln
   const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
   
+  // Kontrollera om vi har tillräckligt antal behandlingar för flatrate
+  const hasEnoughTreatments = treatmentsPerDay !== undefined && treatmentsPerDay >= 3;
+  
+  // Visa flatrate-info endast om bägge villkor är uppfyllda: över tröskeln OCH tillräckligt med behandlingar
+  const shouldShowFlatrateInfo = showFlatrateIndicator && isAboveFlatrateThreshold && hasEnoughTreatments;
+  
   useEffect(() => {
-    console.log(`FLATRATE INFO SYNLIGHET: Leasingkostnad (${leaseCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold}), Visar info: ${showFlatrateIndicator && isAboveFlatrateThreshold}`);
-  }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator]);
+    console.log(`FLATRATE INFO SYNLIGHET: 
+      Leasingkostnad (${leaseCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold})
+      Antal behandlingar per dag: ${treatmentsPerDay} ${hasEnoughTreatments ? '>= 3' : '< 3'}
+      Visar info: ${shouldShowFlatrateInfo}
+    `);
+  }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, hasEnoughTreatments, shouldShowFlatrateInfo]);
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
@@ -137,8 +150,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         <span className="text-lg font-semibold text-slate-700">{formattedCost}</span>
       </div>
 
-      {/* Visa flatrate-informationsrutan endast om BÅDE showFlatrateIndicator är true OCH leasingkostnaden är över tröskeln */}
-      {showFlatrateIndicator && isAboveFlatrateThreshold && (
+      {/* Visa flatrate-informationsrutan endast om BÅDE showFlatrateIndicator är true OCH leasingkostnaden är över tröskeln OCH tillräckligt antal behandlingar */}
+      {shouldShowFlatrateInfo && (
         <div 
           id="flatrateInfo" 
           className="mt-5 p-4 bg-primary/5 border border-primary/20 rounded-lg text-sm"

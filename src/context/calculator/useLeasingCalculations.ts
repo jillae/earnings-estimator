@@ -11,13 +11,15 @@ export function useLeasingCalculations({
   machinePriceSEK,
   selectedLeasingPeriodId,
   selectedInsuranceId,
-  leaseAdjustmentFactor
+  leaseAdjustmentFactor,
+  treatmentsPerDay = 0
 }: {
   selectedMachineId: string;
   machinePriceSEK: number;
   selectedLeasingPeriodId: string;
   selectedInsuranceId: string;
   leaseAdjustmentFactor: number;
+  treatmentsPerDay?: number;
 }) {
   const [leasingRange, setLeasingRange] = useState<{ min: number, max: number, default: number, flatrateThreshold?: number }>({ 
     min: 0, max: 0, default: 0 
@@ -79,6 +81,7 @@ export function useLeasingCalculations({
   return {
     leasingRange,
     leasingCost,
-    flatrateThreshold
+    flatrateThreshold,
+    treatmentsPerDay
   };
 }
