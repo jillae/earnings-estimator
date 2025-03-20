@@ -47,13 +47,16 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
             <div className="flex items-start gap-3">
               <Info className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-medium text-base text-green-700 mb-1">Flatrate aktiverad</h3>
-                <p className="text-green-800 mb-2">
+                <h3 className="font-medium text-base text-green-700 mb-2">Flatrate aktiverad</h3>
+                <p className="text-green-800 mb-3">
                   Du har nu tillgång till obegränsat antal credits under avtalsperioden.
                 </p>
+                <p className="text-green-800 mb-2">
+                  Vid en leasingkostnad som motsvarar minst 80% av den ordinarie 
+                  investeringskostnaden erbjuds <strong>Flatrate för credits</strong>.
+                </p>
                 <p className="text-green-800">
-                  Vid en leasingkostnad som motsvarar minst 80% av den ordinarie investeringskostnaden
-                  erbjuds <strong>Flatrate för credits</strong>. Detta baseras på en förväntad minimibeläggning om 2 kunder per veckodag.
+                  Detta baseras på en förväntad minimibeläggning om 2 kunder per veckodag.
                 </p>
               </div>
             </div>

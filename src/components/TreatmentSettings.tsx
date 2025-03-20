@@ -1,12 +1,6 @@
 
 import React from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { formatCurrency } from '@/utils/calculatorUtils';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 
@@ -26,8 +20,22 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   onTreatmentsChange,
   onCustomerPriceChange
 }) => {
-  const handlePriceChange = (value: string) => {
-    onCustomerPriceChange(parseInt(value, 10));
+  // Min och max värden för kundpris
+  const MIN_PRICE = 400;
+  const MAX_PRICE = 5000;
+  const PRICE_STEP = 100;
+
+  // Hanterare för öka/minska-knappar för kundpris
+  const increasePrice = () => {
+    if (customerPrice < MAX_PRICE) {
+      onCustomerPriceChange(customerPrice + PRICE_STEP);
+    }
+  };
+
+  const decreasePrice = () => {
+    if (customerPrice > MIN_PRICE) {
+      onCustomerPriceChange(customerPrice - PRICE_STEP);
+    }
   };
 
   // Min och max värden för behandlingar per dag
@@ -55,6 +63,9 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
       onTreatmentsChange(clampedValue);
     }
   };
+
+  // Formatera kundpriset för visning
+  const formattedCustomerPrice = formatCurrency(customerPrice);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 md:gap-6">
@@ -104,21 +115,34 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
           </label>
         </div>
         
-        <Select 
-          value={customerPrice.toString()} 
-          onValueChange={handlePriceChange}
-        >
-          <SelectTrigger className="w-full" id="customer-price">
-            <SelectValue placeholder="Välj pris" />
-          </SelectTrigger>
-          <SelectContent>
-            {priceOptions.map((value) => (
-              <SelectItem key={value} value={value.toString()}>
-                {formatCurrency(value)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex h-10 items-center rounded-md border border-input">
+          <Input
+            id="customer-price"
+            type="text"
+            readOnly
+            value={formattedCustomerPrice}
+            className="w-full rounded-l-md px-3 py-2 text-sm bg-transparent"
+          />
+          <div className="flex flex-col h-full border-l">
+            <button 
+              className="flex-1 px-2 hover:bg-muted flex items-center justify-center"
+              onClick={increasePrice}
+              type="button"
+              aria-label="Öka kundpris"
+            >
+              <ChevronUp className="h-4 w-4" />
+            </button>
+            <div className="border-t w-full"></div>
+            <button 
+              className="flex-1 px-2 hover:bg-muted flex items-center justify-center"
+              onClick={decreasePrice}
+              type="button"
+              aria-label="Minska kundpris"
+            >
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
