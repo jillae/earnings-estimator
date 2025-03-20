@@ -22,16 +22,18 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
   onChange
 }) => {
   const handleMachineClick = (machineId: string) => {
-    console.log(`Klickade på maskin: ${machineId}, nuvarande vald: ${selectedMachineId}`);
-    onChange(machineId);
+    console.log(`MachineGallery: Klickade på maskin med ID: ${machineId}`);
+    if (machineId !== selectedMachineId) {
+      onChange(machineId);
+    }
   };
 
   return (
-    <div className="w-full py-2">
+    <div className="w-full py-4">
       <Carousel className="mx-auto w-full">
-        <CarouselContent className="-ml-2">
+        <CarouselContent className="-ml-2 md:-ml-4">
           {machines.map((machine) => (
-            <CarouselItem key={machine.id} className="pl-2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+            <CarouselItem key={machine.id} className="pl-2 md:pl-4 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
               <MachineThumbnail 
                 machine={machine} 
                 isSelected={selectedMachineId === machine.id}
@@ -40,7 +42,7 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <div className="flex justify-center gap-4 mt-4">
+        <div className="flex justify-center gap-4 mt-6">
           <CarouselPrevious className="relative static transform-none" />
           <CarouselNext className="relative static transform-none" />
         </div>
