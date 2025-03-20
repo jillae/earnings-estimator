@@ -68,7 +68,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     treatmentsPerDay,
     leasingCost,
     selectedLeasingPeriodId,
-    machinePriceSEK
+    machinePriceSEK,
+    flatrateThreshold
   });
 
   // Get revenue calculations

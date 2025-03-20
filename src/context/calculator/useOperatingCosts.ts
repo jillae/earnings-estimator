@@ -13,13 +13,15 @@ export function useOperatingCosts({
   treatmentsPerDay,
   leasingCost,
   selectedLeasingPeriodId,
-  machinePriceSEK
+  machinePriceSEK,
+  flatrateThreshold
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
   leasingCost: number;
   selectedLeasingPeriodId: string;
   machinePriceSEK: number;
+  flatrateThreshold?: number;
 }) {
   const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
   const [useFlatrate, setUseFlatrate] = useState<boolean>(false);
@@ -58,11 +60,9 @@ export function useOperatingCosts({
     const creditPrice = calculateCreditPrice(machinePriceSEK, selectedMachine.creditPriceMultiplier);
     setCalculatedCreditPrice(creditPrice);
     
-    // Calculate flatrate threshold (80% of max leasing)
-    const flatrateThreshold = machinePriceSEK * 0.8 * (selectedMachine.maxLeaseMultiplier || 0);
-    
     // Determine if we should use flatrate based on leasing cost and treatments per day
-    const shouldUseFlat = shouldUseFlatrate(leasingCost, flatrateThreshold, treatmentsPerDay);
+    const threshold = flatrateThreshold || machinePriceSEK * 0.8 * (selectedMachine.maxLeaseMultiplier || 0);
+    const shouldUseFlat = shouldUseFlatrate(leasingCost, threshold, treatmentsPerDay);
     setUseFlatrate(shouldUseFlat);
     
     // Calculate credits per treatment and per month
@@ -91,11 +91,11 @@ export function useOperatingCosts({
       treatmentsPerDay,
       monthlyCost,
       shouldUseFlat,
-      flatrateThreshold,
+      flatrateThreshold: threshold,
       leasingCost
     });
     
-  }, [selectedMachineId, treatmentsPerDay, leasingCost, selectedLeasingPeriodId, machinePriceSEK]);
+  }, [selectedMachineId, treatmentsPerDay, leasingCost, selectedLeasingPeriodId, machinePriceSEK, flatrateThreshold]);
 
   return {
     operatingCost,

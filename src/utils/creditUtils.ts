@@ -42,6 +42,6 @@ export function shouldUseFlatrate(
   flatrateThreshold: number,
   treatmentsPerDay: number
 ): boolean {
-  // Only offer flatrate if leasing cost is above the threshold AND treatments per day is at least 3
+  // Only offer flatrate if leasing cost is at or above the threshold AND treatments per day is at least 3
   return leasingCost >= flatrateThreshold && treatmentsPerDay >= 3;
 }

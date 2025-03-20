@@ -23,7 +23,7 @@ export interface CalculatorContextType {
   // Calculations
   exchangeRate: number;
   machinePriceSEK: number;
-  leasingRange: { min: number, max: number, default: number };
+  leasingRange: { min: number, max: number, default: number, flatrateThreshold?: number };
   leasingCost: number;
   creditPrice: number;
   
@@ -33,7 +33,11 @@ export interface CalculatorContextType {
   flatrateThreshold: number;
   
   // Operating costs
-  operatingCost: { costPerMonth: number, useFlatrate: boolean };
+  operatingCost: { 
+    costPerMonth: number, 
+    useFlatrate: boolean,
+    flatrateAmount?: number 
+  };
   
   // Results
   revenue: any;

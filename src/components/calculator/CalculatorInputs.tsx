@@ -27,6 +27,7 @@ const CalculatorInputs: React.FC = () => {
     setCustomerPrice,
     operatingCost,
     creditPrice,
+    flatrateThreshold,
   } = useCalculator();
 
   return (
@@ -53,7 +54,7 @@ const CalculatorInputs: React.FC = () => {
             maxLeaseCost={leasingRange.max}
             leaseCost={leasingCost}
             adjustmentFactor={leaseAdjustmentFactor}
-            flatrateThreshold={leasingRange.flatrateThreshold}
+            flatrateThreshold={flatrateThreshold}
             showFlatrateIndicator={selectedMachine.usesCredits}
             onAdjustmentChange={setLeaseAdjustmentFactor}
           />
@@ -62,7 +63,7 @@ const CalculatorInputs: React.FC = () => {
             usesCredits={selectedMachine.usesCredits}
             useFlatrate={operatingCost.useFlatrate}
             creditPrice={creditPrice}
-            flatrateAmount={operatingCost.flatrateAmount}
+            flatrateAmount={selectedMachine.flatrateAmount}
             operatingCostPerMonth={operatingCost.costPerMonth}
             treatmentsPerDay={treatmentsPerDay}
           />
