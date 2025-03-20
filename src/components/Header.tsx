@@ -26,11 +26,14 @@ const Header = () => {
               href="https://bit.ly/EENHelpdesk" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="flex items-center hover:text-primary-foreground/80 transition-colors bg-sky-600 rounded px-2 py-1"
+              className="group flex items-center"
             >
-              <HelpCircle className="h-4 w-4 mr-1" />
-              <span className="text-sm">Hjälp</span>
-              <ExternalLink className="h-3 w-3 ml-1" />
+              <div className="flex items-center space-x-1">
+                <div className="bg-green-500 rounded-full p-1.5 mr-1 text-white">
+                  <HelpCircle className="h-3.5 w-3.5" />
+                </div>
+                <span className="text-sm group-hover:text-primary-foreground/80 transition-colors">Hjälp</span>
+              </div>
             </a>
           </div>
           <Link to="/admin-login">
