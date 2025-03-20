@@ -42,14 +42,7 @@ export const LEASING_TARIFFS: TariffEntry[] = [
   { Löptid: 60, Faktor: 2.095 }
 ];
 
-// === Credit och Flatrate ===
-// Multiplikatorer för att beräkna credit-priser baserat på maskinpris
-export const CREDIT_PRICE_MULTIPLIERS = {
-  PREMIUM: 0.00045,  // För premium-maskiner
-  STANDARD: 0.00038  // För standard-maskiner
-};
-
-// Flatrate-belopp för olika maskintyper
+// === Flatrate-belopp för olika maskintyper ===
 export const FLATRATE_AMOUNTS = {
   EMERALD: 5996,
   ZERONA: 4356,

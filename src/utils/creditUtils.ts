@@ -1,7 +1,8 @@
+
 /**
  * Utility functions for credit price calculations
  */
-import { WORKING_DAYS_PER_MONTH, CREDIT_PRICE_MULTIPLIERS } from './constants';
+import { WORKING_DAYS_PER_MONTH } from './constants';
 import { Machine } from '../data/machineData';
 import { calculateLeasingRange } from './leasingUtils';
 
@@ -13,16 +14,15 @@ export function calculateCreditPrice(
 ): number {
   if (!machine.usesCredits) return 0;
   
-  // Använd direkt de konstanta värdena från Admin-sidan
-  // Använda multiplikatorn som finns definerad i maskindata
-  // eller använd standardvärdet från konstanter om det saknas
-  const multiplier = CREDIT_PRICE_MULTIPLIERS.STANDARD;
-    
-  // Beräkna kreditpris baserat på maskinpris och konstant multiplikator
+  // Beräkna kreditpris baserat på maskinpris (om sådant finns)
   if (machinePriceSEK) {
+    // En konstant multiplikator för alla maskiner
+    // Detta är ett standardvärde som kan justeras
+    const multiplier = 0.00038;
+    
     const creditPrice = machinePriceSEK * multiplier;
     
-    console.log(`Credit price calculation (using fixed multiplier): 
+    console.log(`Credit price calculation: 
       Machine Price SEK: ${machinePriceSEK}
       Multiplier: ${multiplier}
       Calculated credit price: ${creditPrice}

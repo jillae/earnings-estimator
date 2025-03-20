@@ -32,7 +32,6 @@ import {
   DEFAULT_CUSTOMER_PRICE,
   INSURANCE_RATES,
   LEASING_TARIFFS,
-  CREDIT_PRICE_MULTIPLIERS,
   FLATRATE_AMOUNTS
 } from '@/utils/constants';
 
@@ -64,11 +63,10 @@ const Admin = () => {
       insurance_rate_above_50k: INSURANCE_RATES.RATE_ABOVE_50K,
       
       // Leasing tariff värden
-      leasing_tariffs: JSON.stringify(LEASING_TARIFFS, null, 2),
-      
-      // Credit och Flatrate
-      credit_price_multiplier_premium: CREDIT_PRICE_MULTIPLIERS.PREMIUM,
-      credit_price_multiplier_standard: CREDIT_PRICE_MULTIPLIERS.STANDARD,
+      leasing_tariff_24: LEASING_TARIFFS.find(t => t.Löptid === 24)?.Faktor || 4.566,
+      leasing_tariff_36: LEASING_TARIFFS.find(t => t.Löptid === 36)?.Faktor || 3.189,
+      leasing_tariff_48: LEASING_TARIFFS.find(t => t.Löptid === 48)?.Faktor || 2.504,
+      leasing_tariff_60: LEASING_TARIFFS.find(t => t.Löptid === 60)?.Faktor || 2.095,
       
       // Flatrate-belopp för olika maskintyper
       flatrate_amount_emerald: FLATRATE_AMOUNTS.EMERALD,
@@ -392,63 +390,64 @@ const Admin = () => {
             </div>
             
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold border-b pb-2">Creditpriser (multiplier)</h2>
+              <h2 className="text-xl font-semibold border-b pb-2">Leasing Tariff Värden</h2>
               
               <FormField
                 control={form.control}
-                name="credit_price_multiplier_premium"
+                name="leasing_tariff_24"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Premium-maskiner</FormLabel>
+                    <FormLabel>24 månader (faktor %)</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.00001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                      <Input type="number" step="0.001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
                     </FormControl>
-                    <FormDescription>Multiplier för premium-maskiner (t.ex. 0.00045)</FormDescription>
+                    <FormDescription>Faktor för 24 månaders period (t.ex. 4.566)</FormDescription>
                   </FormItem>
                 )}
               />
               
               <FormField
                 control={form.control}
-                name="credit_price_multiplier_standard"
+                name="leasing_tariff_36"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Standard-maskiner</FormLabel>
+                    <FormLabel>36 månader (faktor %)</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.00001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                      <Input type="number" step="0.001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
                     </FormControl>
-                    <FormDescription>Multiplier för standard-maskiner (t.ex. 0.00038)</FormDescription>
+                    <FormDescription>Faktor för 36 månaders period (t.ex. 3.189)</FormDescription>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="leasing_tariff_48"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>48 månader (faktor %)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                    </FormControl>
+                    <FormDescription>Faktor för 48 månaders period (t.ex. 2.504)</FormDescription>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="leasing_tariff_60"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>60 månader (faktor %)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                    </FormControl>
+                    <FormDescription>Faktor för 60 månaders period (t.ex. 2.095)</FormDescription>
                   </FormItem>
                 )}
               />
             </div>
-          </div>
-          
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold border-b pb-2">Leasing Tariff Värden</h2>
-            <p className="text-sm text-muted-foreground mb-2">
-              JSON-format: Löptid i månader och Faktor i procent (redan multiplicerad med 100)
-            </p>
-            
-            <FormField
-              control={form.control}
-              name="leasing_tariffs"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tariffvärden (JSON)</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      rows={10} 
-                      {...field} 
-                      className="font-mono text-sm"
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Formatera som: {'[{"Löptid": 24, "Faktor": 4.566}, ...]'}
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
           </div>
           
           <div className="flex justify-end">
