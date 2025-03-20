@@ -2,6 +2,7 @@
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { HelpCircle } from 'lucide-react';
 
 const Contact = () => {
   return (
@@ -59,12 +60,19 @@ const Contact = () => {
             </div>
             
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
-                <span>❓</span>
+              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white">
+                <HelpCircle className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="text-lg font-medium">Hjälp</h3>
-                <p><a href="https://bit.ly/EENHelpdesk" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">https://bit.ly/EENHelpdesk</a></p>
+                <a 
+                  href="https://bit.ly/EENHelpdesk" 
+                  className="text-green-600 hover:text-green-700 hover:underline flex items-center transition-colors" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  Supportcenter
+                </a>
               </div>
             </div>
           </div>
