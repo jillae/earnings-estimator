@@ -30,6 +30,8 @@ export interface CalculatorContextType {
   // Adjustments
   leaseAdjustmentFactor: number;
   setLeaseAdjustmentFactor: (value: number) => void;
+  allowBelowFlatrate: boolean;
+  setAllowBelowFlatrate: (value: boolean) => void;
   flatrateThreshold: number;
   
   // Operating costs

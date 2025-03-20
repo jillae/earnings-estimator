@@ -28,6 +28,8 @@ const CalculatorInputs: React.FC = () => {
     leasingCost,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
+    allowBelowFlatrate,
+    setAllowBelowFlatrate,
     flatrateThreshold,
     operatingCost,
     creditPrice,
@@ -84,6 +86,8 @@ const CalculatorInputs: React.FC = () => {
             showFlatrateIndicator={isCreditsEnabledMachine}
             treatmentsPerDay={treatmentsPerDay}
             onAdjustmentChange={setLeaseAdjustmentFactor}
+            allowBelowFlatrate={allowBelowFlatrate}
+            onAllowBelowFlatrateChange={setAllowBelowFlatrate}
           />
         )}
         

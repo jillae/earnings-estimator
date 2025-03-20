@@ -21,6 +21,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setSelectedInsuranceId,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
+    allowBelowFlatrate,
+    setAllowBelowFlatrate,
     customerPrice,
     setCustomerPrice
   } = useStateSelections();
@@ -56,7 +58,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   useDebugLogging({
     leasingRange,
     leasingCost,
-    leaseAdjustmentFactor
+    leaseAdjustmentFactor,
+    allowBelowFlatrate
   });
 
   // Get operating costs
@@ -101,6 +104,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     creditPrice: calculatedCreditPrice,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
+    allowBelowFlatrate,
+    setAllowBelowFlatrate,
     flatrateThreshold,
     operatingCost,
     revenue,

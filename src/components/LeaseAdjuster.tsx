@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { formatCurrency } from '@/utils/calculatorUtils';
 import { Info } from 'lucide-react';
+import { Switch } from "@/components/ui/switch";
 
 interface LeaseAdjusterProps {
   minLeaseCost: number;
@@ -13,6 +14,8 @@ interface LeaseAdjusterProps {
   showFlatrateIndicator?: boolean;
   treatmentsPerDay?: number;
   onAdjustmentChange: (value: number) => void;
+  allowBelowFlatrate?: boolean;
+  onAllowBelowFlatrateChange?: (allow: boolean) => void;
 }
 
 const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
@@ -23,7 +26,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   flatrateThreshold,
   showFlatrateIndicator = false,
   treatmentsPerDay = 0,
-  onAdjustmentChange
+  onAdjustmentChange,
+  allowBelowFlatrate = false,
+  onAllowBelowFlatrateChange
 }) => {
   console.log("LeaseAdjuster rendering with:", {
     minLeaseCost,
@@ -32,7 +37,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     adjustmentFactor,
     flatrateThreshold,
     showFlatrateIndicator,
-    treatmentsPerDay
+    treatmentsPerDay,
+    allowBelowFlatrate
   });
 
   // Använd de exakta min- och max-värdena direkt från props
@@ -47,8 +53,22 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Beräkna exakt leasingkostnad för den aktuella faktorn
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
+  // Beräkna flatrate-faktorn (position) om vi har ett tröskelvärde
+  let flatratePosition = 0;
+  if (flatrateThreshold) {
+    flatratePosition = (flatrateThreshold - exactMinCost) / Math.max(0.001, costRange);
+    flatratePosition = Math.max(0, Math.min(1, flatratePosition));
+  }
+  
   const handleSliderChange = (values: number[]) => {
-    onAdjustmentChange(values[0]);
+    // Om under-80%-läge inte är tillåtet, begränsa slider till flatratePosition
+    let newValue = values[0];
+    
+    if (!allowBelowFlatrate && flatrateThreshold && newValue < flatratePosition) {
+      newValue = flatratePosition;
+    }
+    
+    onAdjustmentChange(newValue);
   };
 
   // Omfattande diagnostikloggning för att felsöka sliderbeteendet
@@ -60,8 +80,10 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       - Range: ${costRange}
       - Beräknad kostnad vid faktor ${adjustmentFactor}: ${calculatedLeasingCost}
       - Aktuell kostnad: ${leaseCost}
+      - Flatrate position: ${flatratePosition}
+      - Allow below flatrate: ${allowBelowFlatrate}
     `);
-  }, [adjustmentFactor, exactMinCost, exactMaxCost, costRange, leaseCost, calculatedLeasingCost]);
+  }, [adjustmentFactor, exactMinCost, exactMaxCost, costRange, leaseCost, calculatedLeasingCost, flatratePosition, allowBelowFlatrate]);
 
   // Säkerställ att leasingCost är inom intervallet
   let actualLeasingCost = leaseCost;
@@ -99,6 +121,22 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       Visar info: ${shouldShowFlatrateInfo}
     `);
   }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, shouldShowFlatrateInfo]);
+
+  // Hantera växling av under-80%-läge
+  const handleToggleBelowFlatrate = () => {
+    if (onAllowBelowFlatrateChange) {
+      const newValue = !allowBelowFlatrate;
+      console.log(`Ändrar allowBelowFlatrate till: ${newValue}`);
+      
+      // Om vi stänger av under-80%-läget och nuvarande faktorn är under flatratePosition,
+      // uppdatera faktorn till flatratePosition
+      if (!newValue && adjustmentFactor < flatratePosition) {
+        onAdjustmentChange(flatratePosition);
+      }
+      
+      onAllowBelowFlatrateChange(newValue);
+    }
+  };
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
@@ -147,7 +185,26 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         <span className="text-lg font-semibold text-slate-700">{formattedCost}</span>
       </div>
 
-      {/* Vi visar inte längre flatrate-informationen här eftersom det nu visas i OperatingCosts */}
+      {showFlatrateIndicator && flatrateThreshold && (
+        <div className="mt-4 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Switch 
+              id="allow-below-flatrate" 
+              checked={allowBelowFlatrate}
+              onCheckedChange={handleToggleBelowFlatrate}
+            />
+            <label 
+              htmlFor="allow-below-flatrate"
+              className="text-sm cursor-pointer"
+            >
+              Tillåt justering under 80% (utan flatrate)
+            </label>
+          </div>
+          <span className={`text-xs ${allowBelowFlatrate ? 'text-yellow-600' : 'text-green-600'}`}>
+            {allowBelowFlatrate ? 'Flatrate inaktiverat' : 'Flatrate aktiverat'}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

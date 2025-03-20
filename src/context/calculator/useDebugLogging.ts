@@ -4,24 +4,23 @@ import { useEffect } from 'react';
 export function useDebugLogging({
   leasingRange,
   leasingCost,
-  leaseAdjustmentFactor
+  leaseAdjustmentFactor,
+  allowBelowFlatrate
 }: {
-  leasingRange: { min: number, max: number, default: number };
+  leasingRange: { min: number, max: number, default: number, flatrateThreshold?: number };
   leasingCost: number;
   leaseAdjustmentFactor: number;
+  allowBelowFlatrate?: boolean;
 }) {
-  // Debug logs for leasing settings
+  // Utökad loggning för att se beräkningarna och inställningarna
   useEffect(() => {
-    console.log("Leasing cost values:", {
-      minLeaseCost: leasingRange.min,
-      maxLeaseCost: leasingRange.max,
-      leaseCost: leasingCost,
-      actualLeasingCost: leasingCost,
-      roundedMinCost: Math.round(leasingRange.min / 500) * 500,
-      roundedMaxCost: Math.round(leasingRange.max / 500) * 500,
-      numSteps: Math.floor((leasingRange.max - leasingRange.min) / 100),
-      currentStepFactor: 1 / Math.max(1, Math.floor((leasingRange.max - leasingRange.min) / 100)),
-      adjustmentFactor: leaseAdjustmentFactor
-    });
-  }, [leasingRange, leasingCost, leaseAdjustmentFactor]);
+    console.log(`
+      ----- LEASING CALCULATIONS DIAGNOSTICS -----
+      Range: ${leasingRange.min} - ${leasingRange.max} (default: ${leasingRange.default})
+      Current: ${leasingCost} (factor: ${leaseAdjustmentFactor})
+      Flatrate threshold: ${leasingRange.flatrateThreshold || "N/A"}
+      Allow below flatrate: ${allowBelowFlatrate}
+      ---------------------------------------
+    `);
+  }, [leasingRange, leasingCost, leaseAdjustmentFactor, allowBelowFlatrate]);
 }
