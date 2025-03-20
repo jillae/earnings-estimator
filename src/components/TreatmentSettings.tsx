@@ -27,15 +27,15 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   const handleCustomerPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     if (!isNaN(value) && value >= 0) {
-      // Avrunda till närmaste 10-tal
-      const roundedValue = Math.round(value / 10) * 10;
+      // Avrunda till närmaste 100-tal
+      const roundedValue = Math.round(value / 100) * 100;
       onCustomerPriceChange(roundedValue);
     }
   };
   
-  // När fältet förlorar fokus, avrunda till närmaste 10-tal
+  // När fältet förlorar fokus, avrunda till närmaste 100-tal
   const handleCustomerPriceBlur = () => {
-    const roundedValue = Math.round(customerPrice / 10) * 10;
+    const roundedValue = Math.round(customerPrice / 100) * 100;
     onCustomerPriceChange(roundedValue);
   };
 
@@ -71,7 +71,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               id="customer-price"
               type="number"
               min="0"
-              step="10"
+              step="100"
               value={customerPrice}
               onChange={handleCustomerPriceChange}
               onBlur={handleCustomerPriceBlur}

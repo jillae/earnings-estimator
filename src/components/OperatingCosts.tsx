@@ -3,8 +3,6 @@ import React, { useEffect } from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Info, Lock, Unlock } from 'lucide-react';
 import { calculateFlatrateBreakEven } from '@/utils/creditUtils';
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 
 interface OperatingCostsProps {
   usesCredits: boolean;
@@ -62,34 +60,6 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
         Credits - Kostnader
       </label>
       
-      {/* Endast visa en FlatrateToggle här */}
-      <div className="mt-4 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Switch 
-            id="flatrate-switch" 
-            checked={useFlatrateOption === 'flatrate'}
-            onCheckedChange={(checked) => onFlatrateOptionChange?.(checked ? 'flatrate' : 'perCredit')}
-            disabled={!isFlatrateUnlocked}
-          />
-          <Label 
-            htmlFor="flatrate-switch"
-            className="text-sm cursor-pointer"
-          >
-            Aktivera flatrate för credits
-          </Label>
-        </div>
-        <span className={`text-xs ${useFlatrateOption === 'perCredit' ? 'text-yellow-600' : 'text-green-600'} font-medium`}>
-          {useFlatrateOption === 'perCredit' ? 'Styckepris' : 'Flatrate aktiverat'}
-        </span>
-      </div>
-      
-      {!isFlatrateUnlocked && (
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-sm">Pris per credit</span>
-          <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice, false)}</span>
-        </div>
-      )}
-      
       {useFlatrateOption === 'flatrate' ? (
         <div className="flex justify-between items-center mb-4">
           <span className="text-sm">Flatrate månadskostnad</span>
@@ -102,7 +72,12 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
               <span className="text-sm">Pris per credit</span>
               <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice, false)}</span>
             </div>
-          ) : null}
+          ) : 
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-sm">Pris per credit</span>
+            <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice, false)}</span>
+          </div>
+          }
           <div className="flex justify-between items-center mb-4">
             <span className="text-sm">Credits kostnad per månad</span>
             <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCostPerMonth, false)}</span>
@@ -138,7 +113,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
                 Du kvalificerar dig för vårt flatrate-erbjudande med obegränsade credits.
               </p>
               <p className="text-emerald-800 mb-2">
-                Aktivera reglaget ovan för obegränsade credits till fast pris: {formatCurrency(flatrateAmount, false)}/månad.
+                Använd reglaget i leasingjusteraren för obegränsade credits till fast pris: {formatCurrency(flatrateAmount, false)}/månad.
               </p>
               {breakEvenTreatments > 0 && (
                 <p className="text-emerald-800 text-xs mt-2">
