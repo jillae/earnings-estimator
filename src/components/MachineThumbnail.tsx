@@ -15,6 +15,22 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
   isSelected, 
   onClick 
 }) => {
+  // Konvertera Google Drive URL till direkt bild-URL om det behövs
+  const getImageUrl = (url?: string) => {
+    if (!url) return '';
+    
+    // Om det är en Google Drive URL, konvertera till direkt länk
+    if (url.includes('drive.google.com/file/d/')) {
+      const fileId = url.match(/\/d\/([^\/]+)/)?.[1];
+      if (fileId) {
+        return `https://drive.google.com/uc?export=view&id=${fileId}`;
+      }
+    }
+    return url;
+  };
+  
+  const imageUrl = getImageUrl(machine.imageUrl);
+  
   return (
     <div 
       className={cn(
@@ -23,19 +39,21 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
         !isSelected && "border border-slate-200"
       )}
       onClick={onClick}
+      data-machine-id={machine.id}
     >
-      <div className="relative w-full h-20 mb-2 rounded overflow-hidden bg-slate-100 flex items-center justify-center">
-        {machine.imageUrl ? (
+      <div className="relative w-full h-16 mb-2 rounded overflow-hidden bg-slate-100 flex items-center justify-center">
+        {imageUrl ? (
           <img 
-            src={machine.imageUrl} 
+            src={imageUrl} 
             alt={machine.name}
             className="w-full h-full object-contain p-1"
             onError={(e) => {
-              console.log(`Bild kunde inte laddas: ${machine.imageUrl}`);
+              console.log(`Bild kunde inte laddas: ${imageUrl} (ursprunglig: ${machine.imageUrl})`);
               // Om bilden inte kan laddas, visa fallback-ikon
               e.currentTarget.style.display = 'none';
               const parent = e.currentTarget.parentElement;
               if (parent) {
+                parent.classList.add('flex', 'items-center', 'justify-center');
                 const icon = document.createElement('div');
                 icon.className = 'flex items-center justify-center h-full w-full';
                 icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-slate-400"><rect width="14" height="8" x="5" y="2" rx="2"></rect><rect width="20" height="8" x="2" y="14" rx="2"></rect><path d="M6 18h2"></path><path d="M12 18h6"></path></svg>';
