@@ -17,19 +17,19 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
 
-  // Förbättrad hantering av placeholder-bilder baserat på maskin-ID
+  // Uppdaterade bildlänkar för maskiner baserat på maskin-ID
   const getPlaceholderImageForMachine = (machineId: string) => {
-    // Använd bilderna från imgur länken
+    // Använd de uppdaterade bilderna från imgur
     const placeholders: {[key: string]: string} = {
-      "emerald": "https://i.imgur.com/PdFIJxl.png",
-      "zerona": "https://i.imgur.com/5GELRUf.png",
-      "fx-635": "https://i.imgur.com/u3WGXhO.png",
-      "fx-405": "https://i.imgur.com/kIFJq1n.png",
-      "xlr8": "https://i.imgur.com/MFvpKrF.png",
-      "evrl": "https://i.imgur.com/T5pLQoJ.png",
-      "gvl": "https://i.imgur.com/DGbmYP4.png",
-      "base-station": "https://i.imgur.com/pNkHV5A.png",
-      "lunula": "https://i.imgur.com/W4GvUyU.png"
+      "emerald": "https://i.imgur.com/IRED95Z.png",
+      "zerona": "https://i.imgur.com/2LGOVPB.png", 
+      "fx-635": "https://i.imgur.com/TQK3vZ3.png",
+      "fx-405": "https://i.imgur.com/pYqFUUT.png",
+      "xlr8": "https://i.imgur.com/RZIgGZY.png",
+      "evrl": "https://i.imgur.com/cuTXUCb.png",
+      "gvl": "https://i.imgur.com/8G0fOsI.png",
+      "base-station": "https://i.imgur.com/lnCem77.png",
+      "lunula": "https://i.imgur.com/QHbeZpX.jpg"
     };
 
     return placeholders[machineId] || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=200&q=80";
