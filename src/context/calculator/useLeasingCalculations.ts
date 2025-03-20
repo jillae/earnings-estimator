@@ -19,7 +19,9 @@ export function useLeasingCalculations({
   selectedInsuranceId: string;
   leaseAdjustmentFactor: number;
 }) {
-  const [leasingRange, setLeasingRange] = useState<{ min: number, max: number, default: number }>({ min: 0, max: 0, default: 0 });
+  const [leasingRange, setLeasingRange] = useState<{ min: number, max: number, default: number, flatrateThreshold?: number }>({ 
+    min: 0, max: 0, default: 0 
+  });
   const [leasingCost, setLeasingCost] = useState<number>(0);
   const [flatrateThreshold, setFlatrateThreshold] = useState<number>(0);
 
@@ -38,7 +40,6 @@ export function useLeasingCalculations({
       );
       
       console.log("Leasing range calculated:", range);
-      setLeasingRange(range);
       
       // Calculate flatrate threshold for machines that use credits
       if (selectedMachine.usesCredits) {
@@ -46,7 +47,12 @@ export function useLeasingCalculations({
         const threshold = range.min + (range.max - range.min) * 0.8;
         console.log("Flatrate threshold calculated:", threshold);
         setFlatrateThreshold(threshold);
+        
+        // Include flatrateThreshold in the range object
+        range.flatrateThreshold = threshold;
       }
+      
+      setLeasingRange(range);
     }
   }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId]);
 
