@@ -29,7 +29,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
           <img 
             src={machine.imageUrl} 
             alt={machine.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         ) : (
           <div className="flex items-center justify-center h-full w-full bg-slate-200">
@@ -39,7 +39,10 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
       </div>
       <div className="text-center">
         <h3 className="font-medium text-sm">{machine.name}</h3>
-        <p className="text-xs text-slate-500 line-clamp-2 h-8">{machine.description}</p>
+        {machine.modelCode && (
+          <p className="text-xs text-slate-500">({machine.modelCode})</p>
+        )}
+        <p className="text-xs text-slate-500 line-clamp-2 h-8 mt-1">{machine.description}</p>
       </div>
     </div>
   );

@@ -5,6 +5,9 @@ export const premiumMachines: Machine[] = [
   {
     id: "emerald",
     name: "Emerald",
+    fullName: "Emerald Laser System",
+    shortName: "Emerald",
+    modelCode: "SHL",
     description: "Unik premiumlösning för fettreduktion",
     priceEur: 99500,
     minLeaseMultiplier: 0.018,
@@ -25,11 +28,14 @@ export const premiumMachines: Machine[] = [
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 3500,
-    imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&h=200&fit=crop"
+    imageUrl: "/lovable-uploads/a2cbbb39-639e-4041-bac6-ca7ef5c1c329.png#xywh=1079,0,83,341"
   },
   {
     id: "zerona",
     name: "Zerona",
+    fullName: "Z6 Laser System",
+    shortName: "Z6",
+    modelCode: "SHR",
     description: "Instegsmodell till Emerald - utan medicinskt krav",
     priceEur: 45900,
     minLeaseMultiplier: 0.018,
@@ -50,6 +56,6 @@ export const premiumMachines: Machine[] = [
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1800,
-    imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=300&h=200&fit=crop"
+    imageUrl: "/lovable-uploads/a2cbbb39-639e-4041-bac6-ca7ef5c1c329.png#xywh=996,0,83,341"
   }
 ];

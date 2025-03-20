@@ -19,6 +19,9 @@ export interface Machine {
   defaultLeasingPeriod?: string;
   defaultCustomerPrice?: number;
   imageUrl?: string;
+  fullName?: string;
+  shortName?: string;
+  modelCode?: string;
 }
 
 export interface LeasingPeriod {

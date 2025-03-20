@@ -26,7 +26,7 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
       <Carousel className="mx-auto w-full">
         <CarouselContent className="-ml-2">
           {machines.map((machine) => (
-            <CarouselItem key={machine.id} className="pl-2 md:basis-1/2 lg:basis-1/3">
+            <CarouselItem key={machine.id} className="pl-2 md:basis-1/3 lg:basis-1/4">
               <MachineThumbnail 
                 machine={machine} 
                 isSelected={selectedMachineId === machine.id}

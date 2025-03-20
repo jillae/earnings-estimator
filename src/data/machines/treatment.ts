@@ -5,6 +5,9 @@ export const treatmentMachines: Machine[] = [
   {
     id: "fx-635",
     name: "FX 635",
+    fullName: "FX 635 Laser",
+    shortName: "FX635",
+    modelCode: "HPS",
     description: "Effektiv behandlingslösning för kliniker",
     priceEur: 37500,
     minLeaseMultiplier: 0.018,
@@ -25,11 +28,14 @@ export const treatmentMachines: Machine[] = [
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 900,
-    imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&h=200&fit=crop"
+    imageUrl: "/lovable-uploads/a2cbbb39-639e-4041-bac6-ca7ef5c1c329.png#xywh=0,0,83,341"
   },
   {
     id: "fx-405",
     name: "FX 405",
+    fullName: "FX 405 Laser",
+    shortName: "FX405",
+    modelCode: "MLS-AC",
     description: "Avancerad behandlingslösning för kliniker",
     priceEur: 44500,
     minLeaseMultiplier: 0.018,
@@ -50,6 +56,6 @@ export const treatmentMachines: Machine[] = [
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200,
-    imageUrl: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=300&h=200&fit=crop"
+    imageUrl: "/lovable-uploads/a2cbbb39-639e-4041-bac6-ca7ef5c1c329.png#xywh=166,0,83,341"
   }
 ];
