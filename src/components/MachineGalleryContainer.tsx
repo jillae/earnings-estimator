@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import MachineGallery from './MachineGallery';
 import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 const MachineGalleryContainer: React.FC = () => {
   const { selectedMachineId, setSelectedMachineId } = useCalculator();
+  const previousMachineIdRef = useRef<string>(selectedMachineId);
   
   // Se till att vi inte visar "select-machine" i galleriet
   const filteredMachines = machineData.filter(machine => machine.id !== "select-machine");
@@ -14,23 +15,23 @@ const MachineGalleryContainer: React.FC = () => {
   // Debug för att se om Context värden fungerar
   useEffect(() => {
     console.log("MachineGalleryContainer: Nuvarande vald maskin ID:", selectedMachineId);
+    
+    // Visa toast endast när maskin-ID faktiskt ändras (inte vid initial rendering)
+    if (previousMachineIdRef.current !== selectedMachineId && 
+        selectedMachineId !== "select-machine" && 
+        previousMachineIdRef.current !== undefined) {
+      const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
+      if (selectedMachine) {
+        toast.success(`Du har valt ${selectedMachine.name}`);
+      }
+    }
+    
+    previousMachineIdRef.current = selectedMachineId;
   }, [selectedMachineId]);
 
   const handleMachineSelection = (machineId: string) => {
     console.log(`MachineGalleryContainer: Sätter vald maskin till: ${machineId}`);
-    
-    if (selectedMachineId !== machineId) {
-      // Uppdatera vald maskin i context
-      setSelectedMachineId(machineId);
-      
-      // Visa bekräftelse med toast
-      const selectedMachine = machineData.find(machine => machine.id === machineId);
-      if (selectedMachine) {
-        toast.success(`Du har valt ${selectedMachine.name}`);
-      }
-    } else {
-      console.log("Samma maskin valdes igen, ingen ändring behövs");
-    }
+    setSelectedMachineId(machineId);
   };
 
   return (

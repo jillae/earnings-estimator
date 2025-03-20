@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { 
   Carousel, 
   CarouselContent, 
@@ -21,16 +21,17 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
   selectedMachineId,
   onChange
 }) => {
+  const previousSelectedId = useRef<string>(selectedMachineId);
+  
   const handleMachineClick = (machineId: string) => {
     console.log(`MachineGallery: Klickade på maskin med ID: ${machineId}`);
-    // Även om samma maskin väljs igen, skicka vidare händelsen
-    // Detta säkerställer att dropdown-menyn alltid uppdateras
     onChange(machineId);
   };
 
   // Loggning för att verifiera att val av maskin fungerar korrekt
   useEffect(() => {
     console.log(`MachineGallery: Aktuellt vald maskin: ${selectedMachineId}`);
+    previousSelectedId.current = selectedMachineId;
   }, [selectedMachineId]);
 
   return (

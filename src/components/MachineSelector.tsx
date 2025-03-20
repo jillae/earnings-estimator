@@ -20,23 +20,20 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
   selectedMachineId, 
   onChange 
 }) => {
-  // Om vi har en vald maskin, uppdatera den lokala värdet
-  const [value, setValue] = useState(selectedMachineId);
+  // Förenkla genom att helt använda selectedMachineId som källa för sanningen
+  // istället för att försöka hantera ett eget state
   
-  // När selectedMachineId uppdateras från andra delar av appen (som t.ex. MachineGallery)
-  // behöver vi uppdatera vårt lokala state
-  useEffect(() => {
-    if (value !== selectedMachineId) {
-      setValue(selectedMachineId);
-      console.log(`MachineSelector: Extern uppdatering av vald maskin: ${selectedMachineId}`);
-    }
-  }, [selectedMachineId, value]);
-
   const handleMachineChange = (newValue: string) => {
     console.log(`MachineSelector: Användaren valde maskin: ${newValue}`);
-    setValue(newValue);
-    onChange(newValue);
+    if (newValue !== selectedMachineId) {
+      onChange(newValue);
+    }
   };
+
+  // Debug loggning
+  useEffect(() => {
+    console.log(`MachineSelector: Rendering med machineId: ${selectedMachineId}`);
+  }, [selectedMachineId]);
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '100ms' }}>
@@ -46,7 +43,7 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
       
       {/* Traditionell dropdown för maskinval som backup/alternativ */}
       <div>
-        <Select value={value} onValueChange={handleMachineChange}>
+        <Select value={selectedMachineId} onValueChange={handleMachineChange}>
           <SelectTrigger className="w-full h-auto py-3 min-h-[50px]" id="machine-select">
             <SelectValue placeholder="Välj maskin" />
           </SelectTrigger>
