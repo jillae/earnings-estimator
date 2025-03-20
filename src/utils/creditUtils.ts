@@ -1,7 +1,8 @@
+
 /**
  * Utility functions for credit price calculations
  */
-import { WORKING_DAYS_PER_MONTH } from './constants';
+import { WORKING_DAYS_PER_MONTH, CREDIT_PRICE_MULTIPLIERS } from './constants';
 import { Machine } from '../data/machineData';
 import { calculateLeasingRange } from './leasingUtils';
 
@@ -13,50 +14,28 @@ export function calculateCreditPrice(
 ): number {
   if (!machine.usesCredits) return 0;
   
-  // Ensure we have defined credit min/max values
-  if (machine.creditMin === undefined || machine.creditMax === undefined) {
-    console.error("Machine credit min/max values are undefined");
-    return 0;
+  // Använd direkt de konstanta värdena från Admin-sidan
+  // Välj rätt multiplikator beroende på maskintyp
+  const multiplier = machine.isPremium 
+    ? CREDIT_PRICE_MULTIPLIERS.PREMIUM 
+    : CREDIT_PRICE_MULTIPLIERS.STANDARD;
+    
+  // Beräkna kreditpris baserat på maskinpris och konstant multiplikator
+  if (machinePriceSEK) {
+    const creditPrice = machinePriceSEK * multiplier;
+    
+    console.log(`Credit price calculation (using fixed multiplier): 
+      Machine Price SEK: ${machinePriceSEK}
+      Multiplier: ${multiplier}
+      Calculated credit price: ${creditPrice}
+    `);
+    
+    return creditPrice;
   }
   
-  console.log(`Starting credit price calculation for ${machine.name} with min: ${machine.creditMin}, max: ${machine.creditMax}`);
-  
-  // Get the leasing range to calculate the position within the range
-  let leasingMin: number, leasingMax: number;
-  
-  if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
-    leasingMin = machine.leasingMin;
-    leasingMax = machine.leasingMax;
-  } else if (leasingRate !== undefined && machinePriceSEK !== undefined) {
-    const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate;
-    const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
-    leasingMin = dynamicRange.min;
-    leasingMax = dynamicRange.max;
-  } else {
-    console.error("Unable to determine leasing range for credit price calculation");
-    return machine.creditMax; // Return maximum credit price as fallback
-  }
-  
-  // Calculate normalized position within the leasing range
-  const leasingPosition = Math.max(0, Math.min(1, (leasingCost - leasingMin) / (leasingMax - leasingMin)));
-  
-  // Inverse mapping: when leasing cost is high, credit price should be lower
-  const inverseLeasingPosition = 1 - leasingPosition;
-  
-  // Calculate credit price based on position (linear interpolation)
-  const creditPrice = machine.creditMin + inverseLeasingPosition * (machine.creditMax - machine.creditMin);
-  
-  console.log(`Credit price calculation: 
-    Leasing cost: ${leasingCost} 
-    Leasing range: ${leasingMin} - ${leasingMax}
-    Leasing position: ${leasingPosition}
-    Inverse position: ${inverseLeasingPosition}
-    Credit range: ${machine.creditMin} - ${machine.creditMax}
-    Calculated credit price: ${creditPrice}
-  `);
-  
-  // Return the calculated credit price, ensuring it's within the valid range
-  return Math.max(machine.creditMin, Math.min(machine.creditMax, creditPrice));
+  // Om maskinpris saknas, returna 0
+  console.error("Machine price in SEK is required for credit price calculation");
+  return 0;
 }
 
 // Beräkna vid vilket antal behandlingar per dag som flatrate blir mer kostnadseffektivt än styckepris
