@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { formatCurrency } from '@/utils/calculatorUtils';
@@ -68,7 +69,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     console.log(`Flatrate threshold position: ${thresholdPosition}% (${flatrateThreshold} / ${exactMinCost} / ${exactMaxCost})`);
   }
 
-  // FELSÖKNING: Kontrollera och logga om vi är över flatrate-tröskeln
+  // Kontrollera och logga om vi är över flatrate-tröskeln
   const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
   
   useEffect(() => {
