@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Globe } from 'lucide-react';
 
 const Contact = () => {
   return (
@@ -15,7 +15,7 @@ const Contact = () => {
           
           <div className="mt-8 space-y-4">
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
                 <span>🏢</span>
               </div>
               <div>
@@ -30,7 +30,7 @@ const Contact = () => {
             </div>
             
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
                 <span>📞</span>
               </div>
               <div>
@@ -40,7 +40,7 @@ const Contact = () => {
             </div>
             
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
                 <span>✉️</span>
               </div>
               <div>
@@ -50,8 +50,8 @@ const Contact = () => {
             </div>
             
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
-                <span>🌐</span>
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                <Globe className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="text-lg font-medium">Information</h3>
@@ -67,11 +67,11 @@ const Contact = () => {
                 <h3 className="text-lg font-medium">Hjälp</h3>
                 <a 
                   href="https://bit.ly/EENHelpdesk" 
-                  className="text-green-600 hover:text-green-700 hover:underline flex items-center transition-colors" 
+                  className="text-green-600 hover:text-green-700 transition-colors flex items-center"
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  Supportcenter
+                  <span>Supportcenter</span>
                 </a>
               </div>
             </div>
