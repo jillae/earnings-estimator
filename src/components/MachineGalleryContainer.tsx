@@ -19,13 +19,17 @@ const MachineGalleryContainer: React.FC = () => {
   const handleMachineSelection = (machineId: string) => {
     console.log(`MachineGalleryContainer: Sätter vald maskin till: ${machineId}`);
     
-    // Uppdatera vald maskin i context
-    setSelectedMachineId(machineId);
-    
-    // Visa bekräftelse med toast
-    const selectedMachine = machineData.find(machine => machine.id === machineId);
-    if (selectedMachine) {
-      toast.success(`Du har valt ${selectedMachine.name}`);
+    if (selectedMachineId !== machineId) {
+      // Uppdatera vald maskin i context
+      setSelectedMachineId(machineId);
+      
+      // Visa bekräftelse med toast
+      const selectedMachine = machineData.find(machine => machine.id === machineId);
+      if (selectedMachine) {
+        toast.success(`Du har valt ${selectedMachine.name}`);
+      }
+    } else {
+      console.log("Samma maskin valdes igen, ingen ändring behövs");
     }
   };
 

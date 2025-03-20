@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
   Carousel, 
   CarouselContent, 
@@ -27,6 +27,11 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
     // Detta säkerställer att dropdown-menyn alltid uppdateras
     onChange(machineId);
   };
+
+  // Loggning för att verifiera att val av maskin fungerar korrekt
+  useEffect(() => {
+    console.log(`MachineGallery: Aktuellt vald maskin: ${selectedMachineId}`);
+  }, [selectedMachineId]);
 
   return (
     <div className="w-full py-4">

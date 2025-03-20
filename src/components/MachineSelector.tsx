@@ -26,9 +26,11 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
   // När selectedMachineId uppdateras från andra delar av appen (som t.ex. MachineGallery)
   // behöver vi uppdatera vårt lokala state
   useEffect(() => {
-    setValue(selectedMachineId);
-    console.log(`MachineSelector: Extern uppdatering av vald maskin: ${selectedMachineId}`);
-  }, [selectedMachineId]);
+    if (value !== selectedMachineId) {
+      setValue(selectedMachineId);
+      console.log(`MachineSelector: Extern uppdatering av vald maskin: ${selectedMachineId}`);
+    }
+  }, [selectedMachineId, value]);
 
   const handleMachineChange = (newValue: string) => {
     console.log(`MachineSelector: Användaren valde maskin: ${newValue}`);
