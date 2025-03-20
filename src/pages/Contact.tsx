@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { HelpCircle, Globe, Phone } from 'lucide-react';
+import { HelpCircle, Globe, Mail, Phone, Building } from 'lucide-react';
 
 const Contact = () => {
   return (
@@ -16,7 +16,7 @@ const Contact = () => {
           <div className="mt-8 space-y-4">
             <div className="flex items-start space-x-3">
               <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
-                <span>🏢</span>
+                <Building className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="text-lg font-medium">Besöksadress</h3>
@@ -31,7 +31,7 @@ const Contact = () => {
             
             <div className="flex items-start space-x-3">
               <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
-                <span>📞</span>
+                <Phone className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="text-lg font-medium">Telefon</h3>
@@ -51,7 +51,7 @@ const Contact = () => {
             
             <div className="flex items-start space-x-3">
               <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
-                <span>✉️</span>
+                <Mail className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="text-lg font-medium">E-post</h3>
@@ -70,14 +70,14 @@ const Contact = () => {
             </div>
             
             <div className="flex items-start space-x-3">
-              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white">
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
                 <HelpCircle className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="text-lg font-medium">Hjälp</h3>
                 <a 
                   href="https://bit.ly/EENHelpdesk" 
-                  className="text-green-600 hover:text-green-700 transition-colors flex items-center"
+                  className="text-primary hover:text-primary/80 transition-colors flex items-center"
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
