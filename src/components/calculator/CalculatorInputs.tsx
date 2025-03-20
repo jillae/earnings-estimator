@@ -97,7 +97,7 @@ const CalculatorInputs: React.FC = () => {
         {showCreditFields && (
           <OperatingCosts 
             usesCredits={isCreditsEnabledMachine}
-            useFlatrate={useFlatrateOption}
+            useFlatrate={useFlatrateOption === 'flatrate'} // Konvertera från string-enum till boolean
             creditPrice={creditPrice}
             flatrateAmount={selectedMachine?.flatrateAmount || 0}
             operatingCostPerMonth={operatingCost.costPerMonth}

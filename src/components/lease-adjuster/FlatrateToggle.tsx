@@ -9,6 +9,7 @@ interface FlatrateToggleProps {
   useFlatrateOption: 'perCredit' | 'flatrate';
   onToggleFlatrate: (value: 'perCredit' | 'flatrate') => void;
   leasingCostPercentage: number;
+  allowBelowFlatrate?: boolean; // Lägger till denna egenskap för att matcha props i LeaseAdjuster
 }
 
 const FlatrateToggle: React.FC<FlatrateToggleProps> = ({
@@ -16,7 +17,8 @@ const FlatrateToggle: React.FC<FlatrateToggleProps> = ({
   flatrateThreshold,
   useFlatrateOption,
   onToggleFlatrate,
-  leasingCostPercentage
+  leasingCostPercentage,
+  allowBelowFlatrate
 }) => {
   if (!showFlatrateIndicator || !flatrateThreshold) {
     return null;

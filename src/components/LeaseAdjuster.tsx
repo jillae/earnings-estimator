@@ -133,18 +133,20 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, shouldShowFlatrateInfo, allowBelowFlatrate]);
 
   // Hantera växling av flatrate-läge
-  const handleToggleFlatrate = () => {
+  const handleToggleFlatrate = (newOption: 'perCredit' | 'flatrate') => {
     if (onAllowBelowFlatrateChange) {
-      const newValue = !allowBelowFlatrate;
-      console.log(`Ändrar allowBelowFlatrate till: ${newValue}`);
+      // Om vi byter till flatrate, sätt allowBelowFlatrate till false
+      // Om vi byter till perCredit, sätt allowBelowFlatrate till true
+      const newAllowBelowFlatrate = newOption === 'perCredit';
+      console.log(`Ändrar allowBelowFlatrate till: ${newAllowBelowFlatrate}`);
       
-      // Om vi aktiverar flatrate-läget (allowBelowFlatrate = false) och nuvarande faktorn är under flatratePosition,
+      // Om vi aktiverar flatrate-läget och nuvarande faktorn är under flatratePosition,
       // uppdatera faktorn till flatratePosition
-      if (!newValue && flatratePosition !== null && adjustmentFactor < flatratePosition / 100) {
+      if (!newAllowBelowFlatrate && flatratePosition !== null && adjustmentFactor < flatratePosition / 100) {
         onAdjustmentChange(flatratePosition / 100);
       }
       
-      onAllowBelowFlatrateChange(newValue);
+      onAllowBelowFlatrateChange(newAllowBelowFlatrate);
     }
   };
 
@@ -178,8 +180,10 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         <FlatrateToggle 
           showFlatrateIndicator={showFlatrateIndicator}
           flatrateThreshold={flatrateThreshold}
-          allowBelowFlatrate={allowBelowFlatrate}
+          useFlatrateOption={allowBelowFlatrate ? 'perCredit' : 'flatrate'}
           onToggleFlatrate={handleToggleFlatrate}
+          leasingCostPercentage={Math.round(((actualLeasingCost - exactMinCost) / (exactMaxCost - exactMinCost)) * 100)}
+          allowBelowFlatrate={allowBelowFlatrate}
         />
       )}
     </div>
