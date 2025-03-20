@@ -27,17 +27,15 @@ const Header = () => {
               <span className="text-sm">Hjälp</span>
             </Link>
           </div>
-          <div>
-            <span className="text-sm font-medium">Laser Calculator Pro</span>
-          </div>
+          {/* Tar bort texten "Laser Calculator Pro" som tidigare var här */}
         </div>
       </div>
-      <header className="py-4 px-4 border-b flex justify-between items-center">
+      <header className="py-4 px-4 border-b flex flex-col items-center text-center">
         <div>
           <h1 className="text-xl font-bold">Intäktsberäkning</h1>
           <p className="text-sm text-muted-foreground">Beräkna potentiella intäkter och kostnader baserat på din klinikstorlek och maskin från Erchonia Nordic - Sweden</p>
         </div>
-        <Link to="/admin-login">
+        <Link to="/admin-login" className="mt-2">
           <Button variant="outline" size="sm">Admin</Button>
         </Link>
       </header>
