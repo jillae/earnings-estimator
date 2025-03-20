@@ -1,6 +1,9 @@
 
 import { useEffect } from 'react';
 
+// Konstant för versionsnummer
+const VERSION = "bas1";
+
 export function useDebugLogging({
   leasingRange,
   leasingCost,
@@ -16,6 +19,7 @@ export function useDebugLogging({
   useEffect(() => {
     console.log(`
       ----- LEASING CALCULATIONS DIAGNOSTICS -----
+      Version: ${VERSION}
       Range: ${leasingRange.min} - ${leasingRange.max} (default: ${leasingRange.default})
       Current: ${leasingCost} (factor: ${leaseAdjustmentFactor})
       Flatrate threshold: ${leasingRange.flatrateThreshold || "N/A"}
