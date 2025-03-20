@@ -2,8 +2,7 @@
 import React from 'react';
 import MachineGallery from './MachineGallery';
 import { useCalculator } from '@/context/CalculatorContext';
-import { machineData } from '@/data/machineData';
-import { specialMachines } from '@/data/machines/special';
+import { machineData, specialMachines } from '@/data/machines';
 
 const MachineGalleryContainer: React.FC = () => {
   const { selectedMachineId, setSelectedMachineId } = useCalculator();

@@ -4,15 +4,18 @@ import Header from '@/components/Header';
 import Calculator from '@/components/Calculator';
 import Footer from '@/components/Footer';
 import MachineGalleryContainer from '@/components/MachineGalleryContainer';
+import { CalculatorProvider } from '@/context/CalculatorContext';
 
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <MachineGalleryContainer />
-      <main className="flex-grow py-6">
-        <Calculator />
-      </main>
+      <CalculatorProvider>
+        <MachineGalleryContainer />
+        <main className="flex-grow py-6">
+          <Calculator />
+        </main>
+      </CalculatorProvider>
       <Footer />
     </div>
   );
