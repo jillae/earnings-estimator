@@ -19,7 +19,7 @@ export function useDebugLogging({
       Range: ${leasingRange.min} - ${leasingRange.max} (default: ${leasingRange.default})
       Current: ${leasingCost} (factor: ${leaseAdjustmentFactor})
       Flatrate threshold: ${leasingRange.flatrateThreshold || "N/A"}
-      Allow below flatrate: ${allowBelowFlatrate}
+      Allow below flatrate: ${allowBelowFlatrate} (Flatrate ${allowBelowFlatrate ? 'INAKTIVERAD' : 'AKTIVERAD'})
       ---------------------------------------
     `);
   }, [leasingRange, leasingCost, leaseAdjustmentFactor, allowBelowFlatrate]);

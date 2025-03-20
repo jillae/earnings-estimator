@@ -9,7 +9,7 @@ export function useStateSelections() {
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60');
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
   const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(1); // Börja med max (1) istället för min (0)
-  const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(false); // Som standard tillåter vi inte under 80%
+  const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true); // Som standard tillåter vi under 80% och inaktiverar flatrate
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
 
@@ -47,8 +47,8 @@ export function useStateSelections() {
       // Sätt alltid leaseAdjustmentFactor till 1 (max) när en ny maskin väljs
       setLeaseAdjustmentFactor(1);
       
-      // Återställ allowBelowFlatrate till false när en ny maskin väljs
-      setAllowBelowFlatrate(false);
+      // Återställ allowBelowFlatrate till true när en ny maskin väljs (flatrate inaktiverat)
+      setAllowBelowFlatrate(true);
     }
   }, [selectedMachine]);
 

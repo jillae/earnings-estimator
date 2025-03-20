@@ -12,13 +12,15 @@ export function useOperatingCosts({
   treatmentsPerDay,
   leasingCost,
   selectedLeasingPeriodId,
-  machinePriceSEK
+  machinePriceSEK,
+  allowBelowFlatrate
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
   leasingCost: number;
   selectedLeasingPeriodId: string;
   machinePriceSEK: number;
+  allowBelowFlatrate: boolean;
 }) {
   const [operatingCost, setOperatingCost] = useState<{ costPerMonth: number, useFlatrate: boolean }>({ 
     costPerMonth: 0, 
@@ -51,16 +53,17 @@ export function useOperatingCosts({
     
     if (selectedMachine) {
       // Check if we need to use flatrate based on leasing cost and treatments per day
-      // The key rule is: treatmentsPerDay >= 3 AND leasingCost > 80% of leasingMax
+      // The key rule is: treatmentsPerDay >= 3 AND leasingCost > 80% of leasingMax AND !allowBelowFlatrate
       const useFlatrateOption = shouldUseFlatrate(
         selectedMachine,
         leasingCost,
         treatmentsPerDay,
+        allowBelowFlatrate,
         selectedLeasingPeriodId,
         machinePriceSEK
       );
       
-      console.log(`Using flatrate: ${useFlatrateOption} (leasingCost: ${leasingCost}, treatmentsPerDay: ${treatmentsPerDay})`);
+      console.log(`Using flatrate: ${useFlatrateOption} (leasingCost: ${leasingCost}, treatmentsPerDay: ${treatmentsPerDay}, allowBelowFlatrate: ${allowBelowFlatrate})`);
       
       // Calculate operating cost (either credits or flatrate)
       const calculatedOperatingCost = calculateOperatingCost(
@@ -68,13 +71,14 @@ export function useOperatingCosts({
         treatmentsPerDay,
         calculatedCreditPrice, // Use the calculated credit price
         leasingCost,
+        allowBelowFlatrate,
         selectedLeasingPeriodId,
         machinePriceSEK
       );
       
       setOperatingCost(calculatedOperatingCost);
     }
-  }, [selectedMachineId, treatmentsPerDay, calculatedCreditPrice, leasingCost, machinePriceSEK, selectedLeasingPeriodId]);
+  }, [selectedMachineId, treatmentsPerDay, calculatedCreditPrice, leasingCost, machinePriceSEK, selectedLeasingPeriodId, allowBelowFlatrate]);
 
   return { 
     operatingCost,

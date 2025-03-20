@@ -65,10 +65,17 @@ export function shouldUseFlatrate(
   machine: Machine,
   leasingCost: number,
   treatmentsPerDay: number,
+  allowBelowFlatrate: boolean = true,
   leasingRate?: string | number, 
   machinePriceSEK?: number
 ): boolean {
   if (!machine.usesCredits) {
+    return false;
+  }
+  
+  // Om användaren har valt att inte aktivera flatrate, returnera false direkt
+  if (allowBelowFlatrate) {
+    console.log(`Flatrate nekad: Användaren har inaktiverat flatrate (allowBelowFlatrate: ${allowBelowFlatrate})`);
     return false;
   }
   
@@ -78,7 +85,8 @@ export function shouldUseFlatrate(
     treatmentsPerDay,
     leasingRate,
     machinePriceSEK,
-    usesCredits: machine.usesCredits
+    usesCredits: machine.usesCredits,
+    allowBelowFlatrate
   });
   
   // REGEL 1: Måste ha minst 3 behandlingar per dag
@@ -126,11 +134,12 @@ export function calculateOperatingCost(
   treatmentsPerDay: number,
   creditPrice: number,
   leasingCost: number,
+  allowBelowFlatrate: boolean = true,
   leasingRate?: string | number,
   machinePriceSEK?: number
 ): { costPerMonth: number; useFlatrate: boolean } {
   // Avgör om flatrate ska användas baserat på reglerna
-  const useFlatrate = shouldUseFlatrate(machine, leasingCost, treatmentsPerDay, leasingRate, machinePriceSEK);
+  const useFlatrate = shouldUseFlatrate(machine, leasingCost, treatmentsPerDay, allowBelowFlatrate, leasingRate, machinePriceSEK);
   
   let costPerMonth = 0;
   

@@ -51,7 +51,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     machinePriceSEK,
     selectedLeasingPeriodId,
     selectedInsuranceId,
-    leaseAdjustmentFactor
+    leaseAdjustmentFactor,
+    treatmentsPerDay
   });
 
   // Set up debug logging
@@ -71,7 +72,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     treatmentsPerDay,
     leasingCost,
     selectedLeasingPeriodId,
-    machinePriceSEK
+    machinePriceSEK,
+    allowBelowFlatrate
   });
 
   // Get revenue calculations

@@ -98,6 +98,7 @@ const CalculatorInputs: React.FC = () => {
             creditPrice={creditPrice}
             flatrateAmount={selectedMachine?.flatrateAmount || 0}
             operatingCostPerMonth={operatingCost.costPerMonth}
+            allowBelowFlatrate={allowBelowFlatrate}
           />
         )}
       </div>

@@ -100,7 +100,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 
   // Beräkna flatrate-tröskelpositionen som procent om relevant
   let thresholdPosition = null;
-  if (showFlatrateIndicator && flatrateThreshold) {
+  if (showFlatrateIndicator && flatrateThreshold && !allowBelowFlatrate) {
     // Beräkna tröskelpositionen som procent av slidersträckan
     thresholdPosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
     // Säkerställ att positionen är begränsad mellan 0 och 100
@@ -111,24 +111,25 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Kontrollera och logga om vi är över flatrate-tröskeln
   const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
   
-  // Visa flatrate-info om vi är över tröskeln och visar flatrate-indikatorn
-  const shouldShowFlatrateInfo = showFlatrateIndicator && isAboveFlatrateThreshold;
+  // Visa flatrate-info om vi är över tröskeln, visar flatrate-indikatorn, och allowBelowFlatrate är false (alltså flatrate är aktiverat)
+  const shouldShowFlatrateInfo = showFlatrateIndicator && isAboveFlatrateThreshold && !allowBelowFlatrate;
   
   useEffect(() => {
     console.log(`FLATRATE INFO SYNLIGHET: 
       Leasingkostnad (${leaseCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold})
       Antal behandlingar per dag: ${treatmentsPerDay}
       Visar info: ${shouldShowFlatrateInfo}
+      AllowBelowFlatrate: ${allowBelowFlatrate}
     `);
-  }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, shouldShowFlatrateInfo]);
+  }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, shouldShowFlatrateInfo, allowBelowFlatrate]);
 
-  // Hantera växling av under-80%-läge
-  const handleToggleBelowFlatrate = () => {
+  // Hantera växling av flatrate-läge
+  const handleToggleFlatrate = () => {
     if (onAllowBelowFlatrateChange) {
       const newValue = !allowBelowFlatrate;
       console.log(`Ändrar allowBelowFlatrate till: ${newValue}`);
       
-      // Om vi stänger av under-80%-läget och nuvarande faktorn är under flatratePosition,
+      // Om vi aktiverar flatrate-läget (allowBelowFlatrate = false) och nuvarande faktorn är under flatratePosition,
       // uppdatera faktorn till flatratePosition
       if (!newValue && adjustmentFactor < flatratePosition) {
         onAdjustmentChange(flatratePosition);
@@ -164,7 +165,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
                 whiteSpace: 'nowrap'
               }}
             >
-              80% flatrate gräns
+              {!allowBelowFlatrate ? '80% flatrate gräns' : '80%'}
             </div>
           </div>
         )}
@@ -190,14 +191,14 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           <div className="flex items-center space-x-2">
             <Switch 
               id="allow-below-flatrate" 
-              checked={allowBelowFlatrate}
-              onCheckedChange={handleToggleBelowFlatrate}
+              checked={!allowBelowFlatrate}
+              onCheckedChange={handleToggleFlatrate}
             />
             <label 
               htmlFor="allow-below-flatrate"
               className="text-sm cursor-pointer"
             >
-              Tillåt justering under 80% (utan flatrate)
+              Aktivera flatrate för credits
             </label>
           </div>
           <span className={`text-xs ${allowBelowFlatrate ? 'text-yellow-600' : 'text-green-600'}`}>

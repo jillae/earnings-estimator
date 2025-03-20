@@ -9,6 +9,7 @@ interface OperatingCostsProps {
   creditPrice: number;
   flatrateAmount: number;
   operatingCostPerMonth: number;
+  allowBelowFlatrate: boolean;
 }
 
 const OperatingCosts: React.FC<OperatingCostsProps> = ({
@@ -16,7 +17,8 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   useFlatrate,
   creditPrice,
   flatrateAmount,
-  operatingCostPerMonth
+  operatingCostPerMonth,
+  allowBelowFlatrate
 }) => {
   if (!usesCredits) {
     return null;
@@ -28,13 +30,18 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
       creditPrice,
       operatingCostPerMonth,
       flatrateAmount,
-      useFlatrate
+      useFlatrate,
+      allowBelowFlatrate
     });
-  }, [creditPrice, operatingCostPerMonth, flatrateAmount, useFlatrate]);
+  }, [creditPrice, operatingCostPerMonth, flatrateAmount, useFlatrate, allowBelowFlatrate]);
+  
+  // Visa olika innehåll baserat på om flatrate är aktiverat eller inte
+  // Flatrate är aktiverat om allowBelowFlatrate är false och useFlatrate är true
+  const flatrateEnabled = !allowBelowFlatrate && useFlatrate;
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
-      {useFlatrate ? (
+      {flatrateEnabled ? (
         <>
           <label className="input-label">
             Credits Flatrate - credits efter behov (ex moms per månad)
