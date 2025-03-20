@@ -82,6 +82,7 @@ const CalculatorInputs: React.FC = () => {
             adjustmentFactor={leaseAdjustmentFactor}
             flatrateThreshold={flatrateThreshold}
             showFlatrateIndicator={isCreditsEnabledMachine}
+            treatmentsPerDay={treatmentsPerDay}
             onAdjustmentChange={setLeaseAdjustmentFactor}
           />
         )}
