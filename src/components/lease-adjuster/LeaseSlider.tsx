@@ -18,7 +18,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   showFlatrateIndicator,
   allowBelowFlatrate
 }) => {
-  // Steg i SEK om 100 kr
+  // Steg i procentenheter för att stödja 100 SEK ökningar
   const sliderStep = 0.005; // För att stödja 100 SEK ökningar
 
   return (

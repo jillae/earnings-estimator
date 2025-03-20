@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
@@ -47,9 +48,16 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Beräkna exakt leasingkostnad för den aktuella faktorn
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
-  // Avrunda leasingkostnaden till närmaste 100 SEK
+  // Avrunda leasingkostnaden till närmaste 100 SEK och se till att den slutar på 6
   const stepSize = 100;
-  const roundedLeasingCost = Math.round(calculatedLeasingCost / stepSize) * stepSize;
+  let roundedLeasingCost = Math.round(calculatedLeasingCost / stepSize) * stepSize;
+  
+  // För att säkerställa att kostnaden slutar på 6, justera värdet
+  const lastDigit = roundedLeasingCost % 10;
+  if (lastDigit !== 6) {
+    // Lägg till skillnaden för att få 6 som sista siffra
+    roundedLeasingCost = roundedLeasingCost - lastDigit + 6;
+  }
   
   // Beräkna flatrate-faktorn (position) om vi har ett tröskelvärde
   let flatratePosition = null;
@@ -69,8 +77,12 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     // Beräkna exakt kostnad baserat på positionen
     const exactCost = exactMinCost + (newValue * costRange);
     
-    // Avrunda till närmaste 100 SEK
-    const roundedCost = Math.round(exactCost / stepSize) * stepSize;
+    // Avrunda till närmaste 100 SEK och se till att det slutar på 6
+    let roundedCost = Math.round(exactCost / stepSize) * stepSize;
+    const lastDigit = roundedCost % 10;
+    if (lastDigit !== 6) {
+      roundedCost = roundedCost - lastDigit + 6;
+    }
     
     // Konvertera tillbaka till en faktor mellan 0 och 1
     const newFactor = (roundedCost - exactMinCost) / Math.max(0.001, costRange);
@@ -89,7 +101,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       - Max: ${exactMaxCost}
       - Range: ${costRange}
       - Beräknad kostnad vid faktor ${adjustmentFactor}: ${calculatedLeasingCost}
-      - Avrundad kostnad: ${roundedLeasingCost}
+      - Avrundad kostnad med 6 i slutet: ${roundedLeasingCost}
       - Aktuell kostnad: ${leaseCost}
       - Flatrate position: ${flatratePosition}
       - Allow below flatrate: ${allowBelowFlatrate}

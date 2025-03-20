@@ -6,7 +6,14 @@ export function formatCurrency(amount: number, shouldRound: boolean = true): str
   let displayAmount = amount;
   
   if (shouldRound) {
-    displayAmount = Math.round(amount / 500) * 500;
+    // Avrunda till närmaste 100
+    displayAmount = Math.round(amount / 100) * 100;
+    
+    // Justera sista siffran till 6
+    const lastDigit = displayAmount % 10;
+    if (lastDigit !== 6) {
+      displayAmount = displayAmount - lastDigit + 6;
+    }
   }
   
   return new Intl.NumberFormat('sv-SE', {
