@@ -3,6 +3,7 @@
  * Utility functions for handling leasing tariffs
  */
 import { LEASING_TARIFFS, SHIPPING_COST_EUR_CREDITS, SHIPPING_COST_EUR_NO_CREDITS } from './constants';
+import { roundToHundredEndingSix } from './formatUtils';
 
 /**
  * Gets the leasing factor based on leasing duration in months
@@ -35,7 +36,7 @@ export function calculateTariffBasedLeasingMax(
     const calculatedValue = Math.round(totalPriceSEK * factor / 100);
     
     console.log(`Tariff calculation: ${totalPriceSEK} SEK * ${factor}% = ${calculatedValue}`);
-    return calculatedValue;
+    return roundToHundredEndingSix(calculatedValue);
   } else {
     console.error(`No factor found for leasing duration ${leaseDurationMonths} months.`);
     return 0;

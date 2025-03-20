@@ -3,8 +3,9 @@
  * Utility functions for calculating leasing ranges
  */
 import { Machine } from '../data/machineData';
-import { FLATRATE_THRESHOLD_PERCENTAGE } from './constants';
+import { FLATRATE_THRESHOLD_PERCENTAGE, LEASING_TARIFFS, INSURANCE_RATES } from './constants';
 import { calculateTariffBasedLeasingMax } from './leasingTariffUtils';
+import { roundToHundredEndingSix } from './formatUtils';
 
 /**
  * Interface for the return value from calculateLeasingRange
@@ -44,10 +45,13 @@ export function calculateLeasingRange(
     machine.usesCredits,
     exchangeRate
   );
-  const baseLeasingMin = Math.round(0.90 * baseLeasingMax); // 90% of max as required
-  const baseLeasingDefault = baseLeasingMax;
   
-  console.log(`Calculated tariff-based leasing range for ${machine.name}: ${baseLeasingMin} - ${baseLeasingMax}`);
+  // Avrunda till närmaste 100-tal som slutar på 6
+  const roundedLeasingMax = roundToHundredEndingSix(baseLeasingMax);
+  const roundedLeasingMin = roundToHundredEndingSix(Math.round(0.90 * roundedLeasingMax)); // 90% av max som krav
+  const roundedLeasingDefault = roundedLeasingMax;
+  
+  console.log(`Calculated tariff-based leasing range for ${machine.name}: ${roundedLeasingMin} - ${roundedLeasingMax}`);
 
   let insuranceCost = 0;
   if (includeInsurance) {
@@ -57,17 +61,17 @@ export function calculateLeasingRange(
   
   // Skapa resultatobjektet
   let result: LeasingRange = {
-    min: baseLeasingMin,
-    max: baseLeasingMax,
-    default: baseLeasingDefault + insuranceCost
+    min: roundedLeasingMin,
+    max: roundedLeasingMax,
+    default: roundedLeasingDefault + insuranceCost
   };
   
   // Lägg till flatrateThreshold för maskiner som använder credits
   if (machine.usesCredits) {
     // Sätt tröskeln vid 80% av vägen från min till max
-    const threshold = baseLeasingMin + (baseLeasingMax - baseLeasingMin) * FLATRATE_THRESHOLD_PERCENTAGE;
+    const threshold = roundedLeasingMin + (roundedLeasingMax - roundedLeasingMin) * FLATRATE_THRESHOLD_PERCENTAGE;
     console.log(`Flatrate threshold calculated: ${threshold}`);
-    result.flatrateThreshold = threshold;
+    result.flatrateThreshold = roundToHundredEndingSix(threshold);
   }
   
   console.log("Final leasing range:", result);
@@ -78,17 +82,15 @@ export function calculateLeasingRange(
  * Helper function to calculate insurance cost
  */
 function calculateInsuranceCost(machinePriceSEK: number): number {
-  let insuranceRate = 0.015;
+  let insuranceRate = INSURANCE_RATES.RATE_ABOVE_50K;
+  
   if (machinePriceSEK <= 10000) {
-    insuranceRate = 0.04;
+    insuranceRate = INSURANCE_RATES.RATE_10K_OR_LESS;
   } else if (machinePriceSEK <= 20000) {
-    insuranceRate = 0.03;
+    insuranceRate = INSURANCE_RATES.RATE_20K_OR_LESS;
   } else if (machinePriceSEK <= 50000) {
-    insuranceRate = 0.025;
+    insuranceRate = INSURANCE_RATES.RATE_50K_OR_LESS;
   }
   
   return machinePriceSEK * insuranceRate / 12;
 }
-
-// Import needed for the closestTariff calculation
-import { LEASING_TARIFFS } from './constants';

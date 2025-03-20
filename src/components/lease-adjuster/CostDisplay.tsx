@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { formatCurrency } from '@/utils/formatUtils';
+import { formatCurrency, roundToHundredEndingSix } from '@/utils/formatUtils';
 
 interface CostDisplayProps {
   minLeaseCost: number;
@@ -13,9 +13,9 @@ const CostDisplay: React.FC<CostDisplayProps> = ({
   maxLeaseCost,
   leaseCost
 }) => {
-  const formattedMinCost = formatCurrency(minLeaseCost, false);
-  const formattedMaxCost = formatCurrency(maxLeaseCost, false);
-  const formattedLeaseCost = formatCurrency(leaseCost, false);
+  const formattedMinCost = formatCurrency(minLeaseCost, true);
+  const formattedMaxCost = formatCurrency(maxLeaseCost, true);
+  const formattedLeaseCost = formatCurrency(leaseCost, true);
 
   return (
     <>

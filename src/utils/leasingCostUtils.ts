@@ -4,6 +4,8 @@
  */
 import { Machine } from '../data/machineData';
 import { calculateLeasingRange } from './leasingRangeUtils';
+import { INSURANCE_RATES } from './constants';
+import { roundToHundredEndingSix } from './formatUtils';
 
 /**
  * Calculates the leasing cost based on machine, price, leasing rate, etc.
@@ -29,6 +31,9 @@ export function calculateLeasingCost(
   const leaseRange = leasingRange.max - leasingRange.min;
   baseLeasingCost = leasingRange.min + (leaseMultiplier * leaseRange);
   
+  // Avrunda till närmaste 100-tal slutande på 6
+  baseLeasingCost = roundToHundredEndingSix(baseLeasingCost);
+  
   console.log(`Interpolated leasing cost for ${machine.name} at factor ${leaseMultiplier}: 
     Min: ${leasingRange.min}, 
     Max: ${leasingRange.max}, 
@@ -51,13 +56,14 @@ export function calculateLeasingCost(
  * Helper function to calculate insurance cost
  */
 function calculateInsuranceCost(machinePriceSEK: number): number {
-  let insuranceRate = 0.015;
+  let insuranceRate = INSURANCE_RATES.RATE_ABOVE_50K;
+  
   if (machinePriceSEK <= 10000) {
-    insuranceRate = 0.04;
+    insuranceRate = INSURANCE_RATES.RATE_10K_OR_LESS;
   } else if (machinePriceSEK <= 20000) {
-    insuranceRate = 0.03;
+    insuranceRate = INSURANCE_RATES.RATE_20K_OR_LESS;
   } else if (machinePriceSEK <= 50000) {
-    insuranceRate = 0.025;
+    insuranceRate = INSURANCE_RATES.RATE_50K_OR_LESS;
   }
   
   return machinePriceSEK * insuranceRate / 12;
