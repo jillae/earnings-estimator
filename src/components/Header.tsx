@@ -35,7 +35,7 @@ const Header = () => {
       <header className="py-4 px-4 border-b flex justify-between items-center">
         <div>
           <h1 className="text-xl font-bold">Intäktsberäkning</h1>
-          <p className="text-sm text-muted-foreground">Erchonia Nordic - säljverktyg för klinikägare</p>
+          <p className="text-sm text-muted-foreground">Beräkna potentiella intäkter och kostnader baserat på din klinikstorlek och maskin från Erchonia Nordic - Sweden</p>
         </div>
         <Link to="/admin-login">
           <Button variant="outline" size="sm">Admin</Button>
