@@ -21,6 +21,11 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
   selectedMachineId,
   onChange
 }) => {
+  const handleMachineClick = (machineId: string) => {
+    console.log(`Klickade på maskin: ${machineId}, nuvarande vald: ${selectedMachineId}`);
+    onChange(machineId);
+  };
+
   return (
     <div className="w-full py-2">
       <Carousel className="mx-auto w-full">
@@ -30,10 +35,7 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
               <MachineThumbnail 
                 machine={machine} 
                 isSelected={selectedMachineId === machine.id}
-                onClick={() => {
-                  console.log(`Klickade på maskin: ${machine.id}, nuvarande vald: ${selectedMachineId}`);
-                  onChange(machine.id);
-                }}
+                onClick={() => handleMachineClick(machine.id)}
               />
             </CarouselItem>
           ))}

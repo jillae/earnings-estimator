@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import MachineGallery from './MachineGallery';
 import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
+import { toast } from "sonner";
 
 const MachineGalleryContainer: React.FC = () => {
   const { selectedMachineId, setSelectedMachineId } = useCalculator();
@@ -17,7 +18,15 @@ const MachineGalleryContainer: React.FC = () => {
 
   const handleMachineSelection = (machineId: string) => {
     console.log(`MachineGalleryContainer: Sätter vald maskin till: ${machineId}`);
+    
+    // Uppdatera vald maskin i context
     setSelectedMachineId(machineId);
+    
+    // Visa bekräftelse med toast
+    const selectedMachine = machineData.find(machine => machine.id === machineId);
+    if (selectedMachine) {
+      toast.success(`Du har valt ${selectedMachine.name}`);
+    }
   };
 
   return (
