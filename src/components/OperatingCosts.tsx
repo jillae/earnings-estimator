@@ -15,8 +15,9 @@ interface OperatingCostsProps {
   operatingCostPerMonth: number;
   leasingCostPercentage?: number;
   treatmentsPerDay: number;
+  allowBelowFlatrate?: boolean; // Lägg till denna prop för att matcha props i CalculatorInputs
   onFlatrateOptionChange?: (option: 'perCredit' | 'flatrate') => void;
-  useFlatrateOption: 'perCredit' | 'flatrate';
+  useFlatrateOption?: 'perCredit' | 'flatrate';
 }
 
 const OperatingCosts: React.FC<OperatingCostsProps> = ({
@@ -27,6 +28,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   operatingCostPerMonth,
   leasingCostPercentage = 0,
   treatmentsPerDay,
+  allowBelowFlatrate,
   onFlatrateOptionChange,
   useFlatrateOption
 }) => {
@@ -57,9 +59,10 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
       flatrateAmount,
       breakEvenTreatments,
       useFlatrate,
-      useFlatrateOption
+      useFlatrateOption,
+      allowBelowFlatrate
     });
-  }, [isFlatrateUnlocked, leasingCostPercentage, treatmentsPerDay, creditPrice, flatrateAmount, breakEvenTreatments, useFlatrate, useFlatrateOption]);
+  }, [isFlatrateUnlocked, leasingCostPercentage, treatmentsPerDay, creditPrice, flatrateAmount, breakEvenTreatments, useFlatrate, useFlatrateOption, allowBelowFlatrate]);
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
