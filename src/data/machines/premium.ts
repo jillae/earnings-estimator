@@ -28,7 +28,7 @@ export const premiumMachines: Machine[] = [
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 3500,
-    imageUrl: "https://erchonia.com/wp-content/uploads/2020/03/Erchonia-Emerald_Web.jpg"
+    imageUrl: "https://drive.google.com/uc?export=view&id=1jY8a_0g3gK7uM5b8l5G9vA8o9L0uI8T4"
   },
   {
     id: "zerona",
@@ -56,6 +56,6 @@ export const premiumMachines: Machine[] = [
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1800,
-    imageUrl: "https://erchonia.com/wp-content/uploads/2020/02/erchonia-zerona-z6-laser.png"
+    imageUrl: "https://drive.google.com/uc?export=view&id=1iZ1n_9xWzF4eF7b5d8G1F2x6K5d9wL9y"
   }
 ];

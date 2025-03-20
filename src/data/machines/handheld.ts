@@ -18,7 +18,7 @@ export const handheldMachines: Machine[] = [
     usesCredits: false,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 500,
-    imageUrl: "https://erchonia.com/wp-content/uploads/2020/03/XLR8.jpg"
+    imageUrl: "https://drive.google.com/uc?export=view&id=1dG9Y0t10aQ_T6f2I7i6Z6D5A2HjX3L6p"
   },
   {
     id: "evrl",
@@ -36,7 +36,7 @@ export const handheldMachines: Machine[] = [
     usesCredits: false,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 800,
-    imageUrl: "https://erchonia.com/wp-content/uploads/2020/03/EVRL-Handheld.jpg"
+    imageUrl: "https://drive.google.com/uc?export=view&id=1eO2pQ9o9tJ4vX8eN5i3W4K-w5S9i1V2j"
   },
   {
     id: "gvl",
@@ -54,6 +54,6 @@ export const handheldMachines: Machine[] = [
     usesCredits: false,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200,
-    imageUrl: "https://erchonia.com/wp-content/uploads/2019/03/Erchonia-GVL-Laser.png"
+    imageUrl: "https://drive.google.com/uc?export=view&id=1fJ5A_7g1tL5nJ4tW0H9tT7pM9h5I2Q2X"
   }
 ];
