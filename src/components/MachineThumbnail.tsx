@@ -30,6 +30,11 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
             src={machine.imageUrl} 
             alt={machine.name}
             className="w-full h-full object-contain"
+            onError={(e) => {
+              // Om bilden inte kan laddas, visa fallback-ikon
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.parentElement?.classList.add('flex', 'items-center', 'justify-center');
+            }}
           />
         ) : (
           <div className="flex items-center justify-center h-full w-full bg-slate-200">

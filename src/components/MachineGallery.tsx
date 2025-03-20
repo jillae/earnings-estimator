@@ -26,7 +26,7 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
       <Carousel className="mx-auto w-full">
         <CarouselContent className="-ml-2">
           {machines.map((machine) => (
-            <CarouselItem key={`gallery-${machine.id}`} className="pl-2 md:basis-1/3 lg:basis-1/4">
+            <CarouselItem key={machine.id} className="pl-2 md:basis-1/3 lg:basis-1/4">
               <MachineThumbnail 
                 machine={machine} 
                 isSelected={selectedMachineId === machine.id}
@@ -35,7 +35,7 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <div className="flex justify-end gap-2 mt-2">
+        <div className="flex justify-center gap-2 mt-4">
           <CarouselPrevious className="relative static transform-none" />
           <CarouselNext className="relative static transform-none" />
         </div>
