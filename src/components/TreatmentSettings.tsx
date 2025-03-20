@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatCurrency } from '@/utils/calculatorUtils';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
 interface TreatmentSettingsProps {
   treatmentsPerDay: number;
@@ -16,7 +17,6 @@ interface TreatmentSettingsProps {
   onCustomerPriceChange: (value: number) => void;
 }
 
-const treatmentOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 // Create price options with step of 100 from 400 to 5000
 const priceOptions = Array.from({ length: 47 }, (_, i) => 400 + i * 100);
 
@@ -26,12 +26,34 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   onTreatmentsChange,
   onCustomerPriceChange
 }) => {
-  const handleTreatmentsChange = (value: string) => {
-    onTreatmentsChange(parseInt(value, 10));
-  };
-
   const handlePriceChange = (value: string) => {
     onCustomerPriceChange(parseInt(value, 10));
+  };
+
+  // Min och max värden för behandlingar per dag
+  const MIN_TREATMENTS = 1;
+  const MAX_TREATMENTS = 12;
+
+  // Hanterare för öka/minska-knappar
+  const increaseTreatments = () => {
+    if (treatmentsPerDay < MAX_TREATMENTS) {
+      onTreatmentsChange(treatmentsPerDay + 1);
+    }
+  };
+
+  const decreaseTreatments = () => {
+    if (treatmentsPerDay > MIN_TREATMENTS) {
+      onTreatmentsChange(treatmentsPerDay - 1);
+    }
+  };
+
+  // Hanterare för direkt inmatning i fältet
+  const handleTreatmentsInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(event.target.value, 10);
+    if (!isNaN(value)) {
+      const clampedValue = Math.max(MIN_TREATMENTS, Math.min(value, MAX_TREATMENTS));
+      onTreatmentsChange(clampedValue);
+    }
   };
 
   return (
@@ -43,21 +65,36 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
           </label>
         </div>
         
-        <Select 
-          value={treatmentsPerDay.toString()} 
-          onValueChange={handleTreatmentsChange}
-        >
-          <SelectTrigger className="w-full" id="treatments-per-day">
-            <SelectValue placeholder="Välj antal" />
-          </SelectTrigger>
-          <SelectContent>
-            {treatmentOptions.map((value) => (
-              <SelectItem key={value} value={value.toString()}>
-                {value}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex h-10 items-center rounded-md border border-input">
+          <input
+            id="treatments-per-day"
+            type="number"
+            min={MIN_TREATMENTS}
+            max={MAX_TREATMENTS}
+            value={treatmentsPerDay}
+            onChange={handleTreatmentsInputChange}
+            className="w-full rounded-l-md px-3 py-2 text-sm bg-transparent"
+          />
+          <div className="flex flex-col h-full border-l">
+            <button 
+              className="flex-1 px-2 hover:bg-muted flex items-center justify-center"
+              onClick={increaseTreatments}
+              type="button"
+              aria-label="Öka antal behandlingar"
+            >
+              <ChevronUp className="h-4 w-4" />
+            </button>
+            <div className="border-t w-full"></div>
+            <button 
+              className="flex-1 px-2 hover:bg-muted flex items-center justify-center"
+              onClick={decreaseTreatments}
+              type="button"
+              aria-label="Minska antal behandlingar"
+            >
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </div>
       
       <div className="input-group mb-0">

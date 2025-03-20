@@ -1,3 +1,4 @@
+
 /**
  * Utility functions for credit price calculations
  */
@@ -71,38 +72,40 @@ export function shouldUseFlatrate(
     return false;
   }
   
-  // Rule 1: Must have at least 3 treatments per day
+  // VIKTIG ÄNDRING: Kontrollera BÅDE behandlingar per dag OCH leasingkostnad
+  // Regel 1: Måste ha minst 3 behandlingar per dag
   if (treatmentsPerDay < 3) {
-    console.log(`Flatrate denied: Treatments per day (${treatmentsPerDay}) < 3`);
+    console.log(`Flatrate nekad: Antal behandlingar per dag (${treatmentsPerDay}) < 3`);
     return false;
   }
   
-  // Rule 2: Leasing cost must be > 80% of leasingMax
-  // Get leasingMax (prefer machine's defined value if available)
+  // Regel 2: Leasingkostnad måste vara > 80% av leasingMax
+  // Hämta leasingMax (föredra maskinens definierade värde om tillgängligt)
   let leasingMax: number;
   
   if (machine.leasingMax !== undefined) {
     leasingMax = machine.leasingMax;
-    console.log(`Using hardcoded leasingMax for flatrate decision: ${leasingMax}`);
+    console.log(`Använder hårdkodad leasingMax för flatrate-beslut: ${leasingMax}`);
   }
-  // Otherwise use dynamic calculation if possible
+  // Annars använd dynamisk beräkning om möjligt
   else if (leasingRate !== undefined && machinePriceSEK !== undefined) {
     const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate;
     const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
     leasingMax = dynamicRange.max;
-    console.log(`Using dynamically calculated leasingMax for flatrate decision: ${leasingMax}`);
+    console.log(`Använder dynamiskt beräknad leasingMax för flatrate-beslut: ${leasingMax}`);
   } else {
-    console.log(`No leasingMax available for flatrate decision for ${machine.name}`);
+    console.log(`Ingen leasingMax tillgänglig för flatrate-beslut för ${machine.name}`);
     return false;
   }
   
-  // Calculate the threshold at 80% of leasingMax
+  // Beräkna tröskelvärdet vid 80% av leasingMax
   const flatrateThreshold = leasingMax * 0.8;
   
-  // Check if leasingCost is above the 80% threshold
-  const isAboveThreshold = leasingCost > flatrateThreshold;
-  console.log(`Flatrate decision: leasingCost ${leasingCost} ${isAboveThreshold ? '>' : '<='} threshold ${flatrateThreshold} (80% of ${leasingMax}) AND treatments ${treatmentsPerDay} >= 3`);
+  // Kontrollera om leasingCost är över 80%-tröskeln
+  const isAboveThreshold = leasingCost >= flatrateThreshold;
+  console.log(`Flatrate-beslut: leasingCost ${leasingCost} ${isAboveThreshold ? '>=' : '<'} tröskelvärde ${flatrateThreshold} (80% av ${leasingMax}) OCH behandlingar ${treatmentsPerDay} >= 3`);
   
+  // VIKTIG ÄNDRING: Returnera bara true om BÅDA villkoren uppfylls
   return isAboveThreshold;
 }
 
@@ -114,19 +117,19 @@ export function calculateOperatingCost(
   leasingRate?: string | number,
   machinePriceSEK?: number
 ): { costPerMonth: number; useFlatrate: boolean } {
-  // Determine if flatrate should be used based on rules
+  // Avgör om flatrate ska användas baserat på reglerna
   const useFlatrate = shouldUseFlatrate(machine, leasingCost, treatmentsPerDay, leasingRate, machinePriceSEK);
   
   let costPerMonth = 0;
   
   if (machine.usesCredits) {
     if (useFlatrate) {
-      console.log(`Using flatrate amount for ${machine.name}: ${machine.flatrateAmount}`);
+      console.log(`Använder flatrate-belopp för ${machine.name}: ${machine.flatrateAmount}`);
       costPerMonth = machine.flatrateAmount;
     } else {
       const creditsPerTreatment = 1;
       costPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH * creditsPerTreatment * creditPrice;
-      console.log(`Calculated credit cost per month for ${machine.name}: ${costPerMonth} (${treatmentsPerDay} treatments/day × ${WORKING_DAYS_PER_MONTH} days/month × ${creditsPerTreatment} credits/treatment × ${creditPrice} SEK/credit)`);
+      console.log(`Beräknad creditkostnad per månad för ${machine.name}: ${costPerMonth} (${treatmentsPerDay} behandlingar/dag × ${WORKING_DAYS_PER_MONTH} dagar/månad × ${creditsPerTreatment} credits/behandling × ${creditPrice} SEK/credit)`);
     }
   }
   
