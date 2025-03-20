@@ -8,9 +8,9 @@ const Manual = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow container mx-auto py-12">
-        <h1 className="text-3xl font-bold mb-6">Manual för laserkalkylator</h1>
+        <h1 className="text-3xl font-bold mb-6">Manual för Intäktsberäkning</h1>
         <div className="prose max-w-none">
-          <p>Välkommen till manualen för vår laserkalkylator. Här hittar du information om hur du använder kalkylatorn för att beräkna kostnader och intäkter för olika laserutrustningar.</p>
+          <p>Välkommen till manualen för vår Intäktsberäkning. Här hittar du information om hur du använder kalkylatorn för att beräkna kostnader och intäkter för olika laserutrustningar.</p>
           
           <h2 className="text-2xl font-semibold mt-8 mb-4">Kom igång</h2>
           <ol className="list-decimal pl-5 space-y-2">
