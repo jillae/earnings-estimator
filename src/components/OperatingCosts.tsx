@@ -13,10 +13,10 @@ interface OperatingCostsProps {
   creditPrice: number;
   flatrateAmount: number;
   operatingCostPerMonth: number;
-  allowBelowFlatrate: boolean;
   leasingCostPercentage?: number;
   treatmentsPerDay: number;
-  onFlatrateOptionChange?: (useFlatrate: boolean) => void;
+  onFlatrateOptionChange?: (option: 'perCredit' | 'flatrate') => void;
+  useFlatrateOption: 'perCredit' | 'flatrate';
 }
 
 const OperatingCosts: React.FC<OperatingCostsProps> = ({
@@ -25,10 +25,10 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   creditPrice,
   flatrateAmount,
   operatingCostPerMonth,
-  allowBelowFlatrate,
   leasingCostPercentage = 0,
   treatmentsPerDay,
-  onFlatrateOptionChange
+  onFlatrateOptionChange,
+  useFlatrateOption
 }) => {
   if (!usesCredits) {
     return null;
@@ -43,7 +43,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   // Hantera byte av prismodell med Switch
   const handleFlatrateSwitch = (checked: boolean) => {
     if (onFlatrateOptionChange) {
-      onFlatrateOptionChange(checked);
+      onFlatrateOptionChange(checked ? 'flatrate' : 'perCredit');
     }
   };
   
@@ -56,9 +56,10 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
       creditPrice,
       flatrateAmount,
       breakEvenTreatments,
-      useFlatrate
+      useFlatrate,
+      useFlatrateOption
     });
-  }, [isFlatrateUnlocked, leasingCostPercentage, treatmentsPerDay, creditPrice, flatrateAmount, breakEvenTreatments, useFlatrate]);
+  }, [isFlatrateUnlocked, leasingCostPercentage, treatmentsPerDay, creditPrice, flatrateAmount, breakEvenTreatments, useFlatrate, useFlatrateOption]);
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
@@ -66,22 +67,21 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
         Credits - Kostnader
       </label>
       
-      {isFlatrateUnlocked && (
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <Label htmlFor="flatrate-switch" className="text-sm">Flatrate för Credits</Label>
-            <Switch
-              id="flatrate-switch"
-              checked={useFlatrate}
-              onCheckedChange={handleFlatrateSwitch}
-              disabled={!isFlatrateUnlocked}
-            />
-          </div>
-          <span className={`text-xs ${useFlatrate ? 'text-green-600' : 'text-gray-600'}`}>
-            {useFlatrate ? 'Obegränsade credits' : 'Styckepris'}
-          </span>
+      {/* EN tydlig switch för flatrate */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="flatrate-switch"
+            checked={useFlatrateOption === 'flatrate'}
+            onCheckedChange={handleFlatrateSwitch}
+            disabled={!isFlatrateUnlocked}
+          />
+          <Label htmlFor="flatrate-switch" className="text-sm">Flatrate för Credits</Label>
         </div>
-      )}
+        <span className={`text-xs ${useFlatrateOption === 'flatrate' ? 'text-green-600' : 'text-gray-600'}`}>
+          {useFlatrateOption === 'flatrate' ? 'Obegränsade credits' : 'Styckepris'}
+        </span>
+      </div>
       
       {!isFlatrateUnlocked && (
         <div className="flex justify-between items-center mb-4">
@@ -90,7 +90,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
         </div>
       )}
       
-      {useFlatrate ? (
+      {useFlatrateOption === 'flatrate' ? (
         <div className="flex justify-between items-center mb-4">
           <span className="text-sm">Flatrate månadskostnad</span>
           <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount, false)}</span>
@@ -111,7 +111,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
       )}
       
       {/* Visa olika informationsrutor beroende på status */}
-      {useFlatrate && isFlatrateUnlocked ? (
+      {useFlatrateOption === 'flatrate' && isFlatrateUnlocked ? (
         <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm">
           <div className="flex items-start gap-3">
             <Info className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />

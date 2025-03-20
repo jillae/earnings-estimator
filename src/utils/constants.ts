@@ -49,3 +49,6 @@ export const FLATRATE_AMOUNTS = {
   FX_635: 3296,
   FX_405: 4176
 };
+
+// Alternativ för flatrate-användning
+export type FlatrateOption = 'perCredit' | 'flatrate';

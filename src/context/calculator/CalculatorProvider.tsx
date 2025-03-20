@@ -81,7 +81,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     selectedLeasingPeriodId,
     machinePriceSEK,
     allowBelowFlatrate,
-    useFlatrateOption
+    useFlatrateOption: useFlatrateOption === 'flatrate' // Konvertera från string-enum till boolean
   });
 
   // Get revenue calculations

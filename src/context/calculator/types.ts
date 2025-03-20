@@ -35,9 +35,9 @@ export interface CalculatorContextType {
   flatrateThreshold: number;
   leasingCostPercentage: number; // Procentandel av max
   
-  // Flatrate option - använder boolean istället för string-enum
-  useFlatrateOption: boolean;
-  setUseFlatrateOption: (value: boolean) => void;
+  // Flatrate option - använder string-enum istället för boolean
+  useFlatrateOption: 'perCredit' | 'flatrate';
+  setUseFlatrateOption: (value: 'perCredit' | 'flatrate') => void;
   
   // Operating costs
   operatingCost: { costPerMonth: number, useFlatrate: boolean };
