@@ -15,8 +15,10 @@ export function calculateCreditPrice(
   if (!machine.usesCredits) return 0;
   
   // Använd direkt de konstanta värdena från Admin-sidan
-  // Välj rätt multiplikator beroende på maskintyp
-  const multiplier = machine.isPremium 
+  // Välj rätt multiplikator baserat på maskintyp genom att kontrollera ID
+  // Premium maskiner är: emerald och zerona
+  const isPremiumMachine = ['emerald', 'zerona'].includes(machine.id);
+  const multiplier = isPremiumMachine 
     ? CREDIT_PRICE_MULTIPLIERS.PREMIUM 
     : CREDIT_PRICE_MULTIPLIERS.STANDARD;
     
