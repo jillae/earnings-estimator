@@ -8,7 +8,6 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Machine } from '@/data/machines/types';
-import MachineGallery from './MachineGallery';
 
 interface MachineSelectorProps {
   machines: Machine[];
@@ -31,15 +30,8 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
         Välj maskin
       </label>
       
-      {/* Visuell galleri för maskinval */}
-      <MachineGallery 
-        machines={machines} 
-        selectedMachineId={selectedMachineId}
-        onChange={onChange}
-      />
-      
       {/* Traditionell dropdown för maskinval som backup/alternativ */}
-      <div className="mt-4">
+      <div>
         <Select value={selectedMachineId} onValueChange={handleMachineChange}>
           <SelectTrigger className="w-full h-auto py-3 min-h-[50px]" id="machine-select">
             <SelectValue placeholder="Välj maskin" />
