@@ -19,7 +19,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   // Funktion för att uppdatera antal behandlingar
   const handleTreatmentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (!isNaN(value) && value >= 0 && value <= 12) {
+    if (!isNaN(value) && value >= 1 && value <= 12) {
       onTreatmentsChange(value);
     }
   };

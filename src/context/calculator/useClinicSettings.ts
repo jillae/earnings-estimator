@@ -10,19 +10,19 @@ import {
 const MAX_TREATMENTS_PER_DAY = 12;
 
 export function useClinicSettings() {
-  const [clinicSize, setClinicSize] = useState<number>(2);
+  const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(MEDIUM_CLINIC_TREATMENTS);
 
   // Update treatments per day when clinic size changes
   useEffect(() => {
     switch (clinicSize) {
-      case 1:
+      case 'small':
         setTreatmentsPerDay(SMALL_CLINIC_TREATMENTS);
         break;
-      case 2:
+      case 'medium':
         setTreatmentsPerDay(MEDIUM_CLINIC_TREATMENTS);
         break;
-      case 3:
+      case 'large':
         setTreatmentsPerDay(LARGE_CLINIC_TREATMENTS);
         break;
     }
