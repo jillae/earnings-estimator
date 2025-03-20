@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
