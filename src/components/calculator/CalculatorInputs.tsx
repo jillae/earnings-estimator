@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import ClinicSizeSelector from '../ClinicSizeSelector';
 import MachineSelector from '../MachineSelector';
 import LeasingOptions from '../LeasingOptions';
@@ -45,6 +45,34 @@ const CalculatorInputs: React.FC = () => {
   
   // Endast visa kreditsrelaterade fält om en riktig maskin är vald (inte "select-machine")
   const showCreditFields = selectedMachineId !== "select-machine" && isCreditsEnabledMachine;
+  
+  // Synkronisera flatrate-inställningar när useFlatrateOption ändras
+  useEffect(() => {
+    if (useFlatrateOption === 'flatrate') {
+      // När flatrate aktiveras, sätt allowBelowFlatrate till false
+      setAllowBelowFlatrate(false);
+      
+      // Om leasingkostnaden är under tröskeln, justera leasingkostnaden
+      if (leasingCostPercentage < 80 && flatrateThreshold) {
+        const flatratePosition = (flatrateThreshold - leasingRange.min) / 
+                               Math.max(0.001, leasingRange.max - leasingRange.min);
+        setLeaseAdjustmentFactor(flatratePosition);
+      }
+    } else {
+      // När flatrate inaktiveras, sätt allowBelowFlatrate till true
+      setAllowBelowFlatrate(true);
+    }
+  }, [useFlatrateOption, setAllowBelowFlatrate, leasingCostPercentage, 
+      flatrateThreshold, leasingRange, setLeaseAdjustmentFactor]);
+  
+  // Synkronisera useFlatrateOption när allowBelowFlatrate ändras
+  useEffect(() => {
+    if (!allowBelowFlatrate) {
+      setUseFlatrateOption('flatrate');
+    } else {
+      setUseFlatrateOption('perCredit');
+    }
+  }, [allowBelowFlatrate, setUseFlatrateOption]);
 
   return (
     <div className="w-full">
@@ -99,7 +127,7 @@ const CalculatorInputs: React.FC = () => {
             usesCredits={isCreditsEnabledMachine}
             useFlatrate={operatingCost.useFlatrate} 
             creditPrice={creditPrice}
-            flatrateAmount={selectedMachine?.flatrateAmount || 0}
+            flatrateAmount={selectedMachine?.flatrateAmount || 5996}
             operatingCostPerMonth={operatingCost.costPerMonth}
             allowBelowFlatrate={allowBelowFlatrate}
             leasingCostPercentage={leasingCostPercentage}

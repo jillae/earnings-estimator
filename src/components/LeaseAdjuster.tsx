@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
-import FlatrateToggle from './lease-adjuster/FlatrateToggle';
 
 interface LeaseAdjusterProps {
   minLeaseCost: number;
@@ -132,24 +131,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     `);
   }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, shouldShowFlatrateInfo, allowBelowFlatrate]);
 
-  // Hantera växling av flatrate-läge
-  const handleToggleFlatrate = (newOption: 'perCredit' | 'flatrate') => {
-    if (onAllowBelowFlatrateChange) {
-      // Om vi byter till flatrate, sätt allowBelowFlatrate till false
-      // Om vi byter till perCredit, sätt allowBelowFlatrate till true
-      const newAllowBelowFlatrate = newOption === 'perCredit';
-      console.log(`Ändrar allowBelowFlatrate till: ${newAllowBelowFlatrate}`);
-      
-      // Om vi aktiverar flatrate-läget och nuvarande faktorn är under flatratePosition,
-      // uppdatera faktorn till flatratePosition
-      if (!newAllowBelowFlatrate && flatratePosition !== null && adjustmentFactor < flatratePosition / 100) {
-        onAdjustmentChange(flatratePosition / 100);
-      }
-      
-      onAllowBelowFlatrateChange(newAllowBelowFlatrate);
-    }
-  };
-
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
       <label className="input-label">
@@ -175,17 +156,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         maxLeaseCost={exactMaxCost}
         leaseCost={actualLeasingCost}
       />
-
-      {showFlatrateIndicator && flatrateThreshold && (
-        <FlatrateToggle 
-          showFlatrateIndicator={showFlatrateIndicator}
-          flatrateThreshold={flatrateThreshold}
-          useFlatrateOption={allowBelowFlatrate ? 'perCredit' : 'flatrate'}
-          onToggleFlatrate={handleToggleFlatrate}
-          leasingCostPercentage={Math.round(((actualLeasingCost - exactMinCost) / (exactMaxCost - exactMinCost)) * 100)}
-          allowBelowFlatrate={allowBelowFlatrate}
-        />
-      )}
     </div>
   );
 };

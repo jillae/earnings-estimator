@@ -33,7 +33,8 @@ export function useOperatingCosts({
     
     if (selectedMachine && selectedMachine.usesCredits) {
       // Använd maskinens fördefinierade creditMin värde
-      const creditPrice = selectedMachine.creditMin || 0;
+      // Emerald-maskinen har ett fast värde på 149 enligt maskindata
+      const creditPrice = selectedMachine.creditMin || 149;
       setCalculatedCreditPrice(creditPrice);
       
       // Beräkna om flatrate ska vara aktivt (över 80% av maximal leasing och minst 3 behandlingar/dag)
@@ -45,7 +46,7 @@ export function useOperatingCosts({
       
       if (useFlatrateForCalculation) {
         // Använd maskinens fasta flatrate-belopp
-        monthlyOperatingCost = selectedMachine.flatrateAmount || 0;
+        monthlyOperatingCost = selectedMachine.flatrateAmount || 5996;
       } else {
         // Beräkna kostnad per månad baserat på credits
         const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
