@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { formatCurrency } from '@/utils/formatUtils';
+import { formatCurrency } from '@/utils/calculatorUtils';
 
 interface ResultsTableProps {
   dailyRevenueIncVat: number;
@@ -80,8 +80,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <td className="py-3 px-4 text-slate-700">Netto (ex moms)</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700 text-emerald-600">{formatCurrency(netPerMonthExVat)}</td>
-              <td className="py-3 px-4 text-right text-slate-700 text-emerald-600">{formatCurrency(netPerYearExVat)}</td>
+              <td className="py-3 px-4 text-right text-emerald-600">{formatCurrency(netPerMonthExVat)}</td>
+              <td className="py-3 px-4 text-right text-emerald-600">{formatCurrency(netPerYearExVat)}</td>
             </tr>
           </tbody>
         </table>

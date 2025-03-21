@@ -10,28 +10,28 @@ import {
 const MAX_TREATMENTS_PER_DAY = 12;
 
 export function useClinicSettings() {
-  const [clinicSize, setClinicSize] = useState<number>(2);
+  const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(MEDIUM_CLINIC_TREATMENTS);
 
   // Update treatments per day when clinic size changes
   useEffect(() => {
     switch (clinicSize) {
-      case 1:
+      case 'small':
         setTreatmentsPerDay(SMALL_CLINIC_TREATMENTS);
         break;
-      case 2:
+      case 'medium':
         setTreatmentsPerDay(MEDIUM_CLINIC_TREATMENTS);
         break;
-      case 3:
+      case 'large':
         setTreatmentsPerDay(LARGE_CLINIC_TREATMENTS);
         break;
     }
   }, [clinicSize]);
 
-  // Create a wrapped setter function that enforces the maximum limit
+  // Create a wrapped setter function that enforces the minimum and maximum limits
   const setTreatmentsPerDayWithLimit = (value: number) => {
-    // Ensure value is within limits (0 to MAX_TREATMENTS_PER_DAY)
-    const limitedValue = Math.max(0, Math.min(MAX_TREATMENTS_PER_DAY, value));
+    // Ensure value is within limits (1 to MAX_TREATMENTS_PER_DAY)
+    const limitedValue = Math.max(1, Math.min(MAX_TREATMENTS_PER_DAY, value));
     setTreatmentsPerDay(limitedValue);
   };
 
