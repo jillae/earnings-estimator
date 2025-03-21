@@ -16,7 +16,9 @@ const OperatingCosts: React.FC = () => {
     setUseFlatrateOption, 
     treatmentsPerDay, 
     creditPrice,
-    operatingCost
+    operatingCost,
+    allowBelowFlatrate,
+    setAllowBelowFlatrate
   } = useCalculator();
 
   // Se till att vi har giltiga värden
@@ -36,6 +38,19 @@ const OperatingCosts: React.FC = () => {
     ? treatmentsPerMonth * creditsPerTreatment * validCreditPrice 
     : 0;
 
+  // Hantera flatrate-switch
+  const handleFlatrateChange = (checked: boolean) => {
+    if (checked) {
+      // Om vi aktiverar flatrate
+      setUseFlatrateOption('flatrate');
+      setAllowBelowFlatrate(false);
+    } else {
+      // Om vi avaktiverar flatrate
+      setUseFlatrateOption('perCredit');
+      setAllowBelowFlatrate(true);
+    }
+  };
+
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
       <label className="input-label mb-4">
@@ -49,7 +64,7 @@ const OperatingCosts: React.FC = () => {
         <Switch
           id="flatrate-switch"
           checked={useFlatrateOption === 'flatrate'}
-          onCheckedChange={(checked) => setUseFlatrateOption(checked ? 'flatrate' : 'perCredit')}
+          onCheckedChange={handleFlatrateChange}
           disabled={!isFlatrateUnlocked}
         />
       </div>

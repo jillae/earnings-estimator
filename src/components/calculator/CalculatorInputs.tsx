@@ -45,38 +45,11 @@ const CalculatorInputs: React.FC = () => {
   // Endast visa kreditsrelaterade fält om en riktig maskin är vald (inte "select-machine")
   const showCreditFields = selectedMachineId !== "select-machine" && isCreditsEnabledMachine;
   
-  // Synkronisera inställningar när useFlatrateOption ändras
-  useEffect(() => {
-    if (useFlatrateOption === 'flatrate') {
-      // När flatrate aktiveras, sätt allowBelowFlatrate till false
-      if (allowBelowFlatrate) {
-        setAllowBelowFlatrate(false);
-      }
-      
-      // Om leasingkostnaden är under tröskeln, justera leasingkostnaden
-      if (leasingCostPercentage < 80 && flatrateThreshold && leasingRange.max > leasingRange.min) {
-        const flatratePosition = (flatrateThreshold - leasingRange.min) / 
-                               (leasingRange.max - leasingRange.min);
-        setLeaseAdjustmentFactor(flatratePosition);
-      }
-    }
-  }, [useFlatrateOption, setAllowBelowFlatrate, leasingCostPercentage, 
-      flatrateThreshold, leasingRange, setLeaseAdjustmentFactor, allowBelowFlatrate]);
-  
-  // Synkronisera useFlatrateOption när allowBelowFlatrate ändras
-  useEffect(() => {
-    if (!allowBelowFlatrate) {
-      if (useFlatrateOption !== 'flatrate') {
-        setUseFlatrateOption('flatrate');
-      }
-    }
-  }, [allowBelowFlatrate, setUseFlatrateOption, useFlatrateOption]);
-
   return (
     <div className="w-full">
       <ClinicSizeSelector 
         clinicSize={clinicSize} 
-        netYearlyResult={netResults.netPerYearExVat}
+        netYearlyResult={netResults?.netPerYearExVat || 0}
         onChange={setClinicSize} 
       />
       

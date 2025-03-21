@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
 import { calculateCreditPrice, calculateOperatingCost } from '@/utils/creditUtils';
+import { FlatrateOption } from '@/utils/constants';
 
 export function useOperatingCosts({
   selectedMachineId,
@@ -18,7 +19,7 @@ export function useOperatingCosts({
   selectedLeasingPeriodId: string;
   machinePriceSEK: number;
   allowBelowFlatrate: boolean;
-  useFlatrateOption?: 'perCredit' | 'flatrate';
+  useFlatrateOption?: FlatrateOption;
 }) {
   const [operatingCost, setOperatingCost] = useState<{ costPerMonth: number, useFlatrate: boolean }>({ 
     costPerMonth: 0, 
@@ -47,7 +48,7 @@ export function useOperatingCosts({
       const safeLeasingCost = isNaN(leasingCost) ? 0 : leasingCost;
       
       // Beräkna om flatrate ska användas baserat på användarens val
-      const usePerCreditModel = useFlatrateOption === 'perCredit';
+      const useFlatrate = useFlatrateOption === 'flatrate';
       
       // Beräkna månadskostand
       const cost = calculateOperatingCost(
@@ -55,7 +56,7 @@ export function useOperatingCosts({
         safetreatmentsPerDay,
         creditPrice,
         safeLeasingCost,
-        !usePerCreditModel,
+        useFlatrate,
         selectedLeasingPeriodId,
         machinePriceSEK
       );
@@ -64,7 +65,7 @@ export function useOperatingCosts({
       
       console.log(`Operating cost calculated: 
         Credit price: ${creditPrice}
-        Per credit model: ${usePerCreditModel}
+        Per credit model: ${useFlatrateOption === 'perCredit'}
         Cost per month: ${cost.costPerMonth}
         Uses flatrate: ${cost.useFlatrate}
       `);
