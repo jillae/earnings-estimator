@@ -33,7 +33,7 @@ export function calculateCreditPrice(
   // Om ingen creditMin, beräkna baserat på leasingkostnad och prismultiplikator
   if (machine.creditPriceMultiplier && safeLeasingCost > 0) {
     const calculatedPrice = Math.round(safeLeasingCost * machine.creditPriceMultiplier);
-    console.log(`Beräknat kredippris baserat på multiplikator (${machine.creditPriceMultiplier}) och leasingkostnad (${safeLeasingCost}): ${calculatedPrice}`);
+    console.log(`Beräknat kreditpris baserat på multiplikator (${machine.creditPriceMultiplier}) och leasingkostnad (${safeLeasingCost}): ${calculatedPrice}`);
     return calculatedPrice;
   }
   

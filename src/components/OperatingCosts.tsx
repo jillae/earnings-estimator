@@ -25,7 +25,7 @@ const OperatingCosts: React.FC = () => {
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
   const creditsPerTreatment = selectedMachine?.creditsPerTreatment || 1;
   
-  // Säkerställ att vi använder en giltig kreditpris
+  // Säkerställ att vi använder ett giltigt kreditpris
   const validCreditPrice = isNaN(creditPrice) ? 0 : creditPrice;
   
   // Beräkna kostnad per månad för credits

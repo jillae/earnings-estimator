@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { machineData } from '@/data/machines';
 import { Machine } from '@/data/machines/types';
+import { FlatrateOption } from '@/utils/constants';
 
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
@@ -12,7 +13,7 @@ export function useStateSelections() {
   const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true); // Som standard tillåter vi under 80% och inaktiverar flatrate
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
-  const [useFlatrateOption, setUseFlatrateOption] = useState<'perCredit' | 'flatrate'>('perCredit'); // Använd string-enum
+  const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit'); // Använd FlatrateOption typ från constants
 
   // Härled den valda maskinen från maskin-ID
   const selectedMachine = useMemo(() => {
@@ -28,8 +29,9 @@ export function useStateSelections() {
       maxLeaseMultiplier: 0,
       defaultLeaseMultiplier: 0,
       creditPriceMultiplier: 0,
-      description: ''
-    };
+      description: '',
+      priceEur: 0
+    } as Machine;
   }, [selectedMachineId]);
 
   // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen

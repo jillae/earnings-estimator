@@ -6,7 +6,7 @@ import LeasingOptions from '../LeasingOptions';
 import LeaseAdjuster from '../LeaseAdjuster';
 import OperatingCosts from '../OperatingCosts';
 import TreatmentSettings from '../TreatmentSettings';
-import { useCalculator } from '@/context/CalculatorContext';
+import { useCalculator } from '@/context/calculator/context';
 import { machineData, leasingPeriods, insuranceOptions } from './imports';
 
 const CalculatorInputs: React.FC = () => {
@@ -74,10 +74,6 @@ const CalculatorInputs: React.FC = () => {
     if (!allowBelowFlatrate) {
       if (useFlatrateOption !== 'flatrate') {
         setUseFlatrateOption('flatrate');
-      }
-    } else {
-      if (useFlatrateOption !== 'perCredit') {
-        setUseFlatrateOption('perCredit');
       }
     }
   }, [allowBelowFlatrate, setUseFlatrateOption, useFlatrateOption]);
