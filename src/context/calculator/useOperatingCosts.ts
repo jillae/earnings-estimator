@@ -1,11 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
-import { 
-  calculateOperatingCost,
-  shouldUseFlatrate,
-  calculateCreditPrice
-} from '@/utils/calculatorUtils';
 
 export function useOperatingCosts({
   selectedMachineId,
@@ -29,44 +24,45 @@ export function useOperatingCosts({
     useFlatrate: false 
   });
   
-  // Calculate the appropriate credit price based on the current machine
+  // Beräkna och spara kreditpris baserat på maskin
   const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
   
-  // Beräkna kreditpris och uppdatera driftskostnad när maskin eller leasing ändras
+  // Uppdatera driftskostnad när maskin eller behandlingsdata ändras
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
     
     if (selectedMachine && selectedMachine.usesCredits) {
-      // Använd korrekt credit-min värde från maskin-objektet
+      // Använd maskinens fördefinierade creditMin värde
       const creditPrice = selectedMachine.creditMin || 0;
       setCalculatedCreditPrice(creditPrice);
       
-      console.log(`Använder fördefinierat credit-värde för ${selectedMachine.name}: ${creditPrice}`);
-      
-      // Beräkna om operating cost direkt för att undvika fördröjning
+      // Beräkna om flatrate ska vara aktivt (över 80% av maximal leasing och minst 3 behandlingar/dag)
       const isFlatrateUnlocked = leasingCost >= (selectedMachine.leasingMax * 0.8) && treatmentsPerDay >= 3;
       const useFlatrateForCalculation = useFlatrateOption === 'flatrate' && isFlatrateUnlocked;
       
-      // Använd maskiens flatrateAmount direkt - inte beräknad
-      const flatrateAmount = selectedMachine.flatrateAmount;
+      // Beräkna driftskostnad baserat på valt läge
+      let monthlyOperatingCost = 0;
       
-      // Beräkna driftkostnad
-      const monthlyOperatingCost = useFlatrateForCalculation 
-        ? flatrateAmount 
-        : (treatmentsPerDay * 22 * creditPrice); // 22 arbetsdagar per månad
+      if (useFlatrateForCalculation) {
+        // Använd maskinens fasta flatrate-belopp
+        monthlyOperatingCost = selectedMachine.flatrateAmount || 0;
+      } else {
+        // Beräkna kostnad per månad baserat på credits
+        const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
+        monthlyOperatingCost = treatmentsPerDay * 22 * creditsPerTreatment * creditPrice;
+      }
       
       setOperatingCost({
         costPerMonth: monthlyOperatingCost,
         useFlatrate: useFlatrateForCalculation
       });
       
-      console.log(`Beräknad driftkostnad för ${selectedMachine.name}: 
-        Använder flatrate: ${useFlatrateForCalculation}
-        Flatrate belopp: ${flatrateAmount}
-        Credits per behandling: ${selectedMachine.creditsPerTreatment || 1}
+      console.log(`Uppdaterad driftkostnad för ${selectedMachine.name}:
         Credit pris: ${creditPrice}
-        Behandlingar per dag: ${treatmentsPerDay}
-        Månadskostnad: ${monthlyOperatingCost}`);
+        Flatrate belopp: ${selectedMachine.flatrateAmount}
+        Använder flatrate: ${useFlatrateForCalculation}
+        Kostnad per månad: ${monthlyOperatingCost}
+      `);
     }
   }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK, treatmentsPerDay, useFlatrateOption]);
 

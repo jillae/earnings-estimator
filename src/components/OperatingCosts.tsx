@@ -1,40 +1,47 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Info, Lock, Unlock } from 'lucide-react';
 import { calculateFlatrateBreakEven } from '@/utils/creditUtils';
-import { useCalculator } from '@/context/calculator/context';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
-const OperatingCosts: React.FC = () => {
-  const { 
-    selectedMachine, 
-    leasingCost, 
-    leasingRange, 
-    treatmentsPerDay, 
-    useFlatrateOption, 
-    setUseFlatrateOption,
-    creditPrice
-  } = useCalculator();
+interface OperatingCostsProps {
+  usesCredits: boolean;
+  useFlatrate: boolean;
+  creditPrice: number;
+  flatrateAmount: number;
+  operatingCostPerMonth: number;
+  allowBelowFlatrate: boolean;
+  leasingCostPercentage: number;
+  treatmentsPerDay: number;
+  onFlatrateOptionChange: (value: 'perCredit' | 'flatrate') => void;
+  useFlatrateOption: 'perCredit' | 'flatrate';
+}
 
-  // Beräkna 80% av maximal leasingkostnad för att avgöra om flatrate är tillgängligt
-  const eightyPercentOfMax = leasingRange?.max ? leasingRange.max * 0.8 : 0;
-  const isFlatrateUnlocked = leasingCost >= eightyPercentOfMax && treatmentsPerDay >= 3;
-
-  // Använd värden direkt från maskinen
-  const flatrateAmount = selectedMachine?.flatrateAmount || 0;
-  
-  // Beräkna driftkostnad baserat på credits per månad
-  const treatmentsPerMonth = treatmentsPerDay * 22; // Använd 22 arbetsdagar per månad
-  const creditsCostPerMonth = selectedMachine?.usesCredits 
-    ? treatmentsPerMonth * creditPrice 
-    : 0;
-
+const OperatingCosts: React.FC<OperatingCostsProps> = ({
+  usesCredits,
+  useFlatrate,
+  creditPrice,
+  flatrateAmount,
+  operatingCostPerMonth,
+  allowBelowFlatrate,
+  leasingCostPercentage,
+  treatmentsPerDay,
+  onFlatrateOptionChange,
+  useFlatrateOption
+}) => {
   // Om maskinen inte använder credits, visa inget
-  if (!selectedMachine?.usesCredits) {
+  if (!usesCredits) {
     return null;
   }
+  
+  // Beräkna om flatrate är upplåst baserat på leasingCostPercentage
+  const isFlatrateUnlocked = leasingCostPercentage >= 80 && treatmentsPerDay >= 3;
+  
+  // Beräkna ungefärlig kostnad för credits per månad
+  const treatmentsPerMonth = treatmentsPerDay * 22; // Använd 22 arbetsdagar per månad
+  const creditsCostPerMonth = treatmentsPerMonth * creditPrice;
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
@@ -49,14 +56,14 @@ const OperatingCosts: React.FC = () => {
         <Switch
           id="flatrate-switch"
           checked={useFlatrateOption === 'flatrate'}
-          onCheckedChange={(checked) => setUseFlatrateOption(checked ? 'flatrate' : 'perCredit')}
+          onCheckedChange={(checked) => onFlatrateOptionChange(checked ? 'flatrate' : 'perCredit')}
           disabled={!isFlatrateUnlocked}
         />
       </div>
       
       {!isFlatrateUnlocked && (
         <p className="text-xs text-red-500 mb-4">
-          Flatrate blir tillgängligt när leasingkostnaden når {Math.round(eightyPercentOfMax)} kr eller mer och du anger minst 3 behandlingar per dag.
+          Flatrate blir tillgängligt när leasingkostnaden når 80% eller mer och du anger minst 3 behandlingar per dag.
         </p>
       )}
       
@@ -127,8 +134,8 @@ const OperatingCosts: React.FC = () => {
               </p>
               <ul className="list-none space-y-2">
                 <li className="flex items-center">
-                  <span className={`inline-block w-5 h-5 rounded-full mr-2 flex items-center justify-center ${leasingCost >= eightyPercentOfMax ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
-                    {leasingCost >= eightyPercentOfMax ? '✓' : '○'}
+                  <span className={`inline-block w-5 h-5 rounded-full mr-2 flex items-center justify-center ${leasingCostPercentage >= 80 ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                    {leasingCostPercentage >= 80 ? '✓' : '○'}
                   </span>
                   <span>Justera leasingkostnaden till 80% eller mer</span>
                 </li>
