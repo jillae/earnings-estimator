@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import ClinicSizeSelector from '../ClinicSizeSelector';
 import MachineSelector from '../MachineSelector';
 import LeasingOptions from '../LeasingOptions';
@@ -26,7 +26,6 @@ const CalculatorInputs: React.FC = () => {
     setCustomerPrice,
     leasingRange,
     leasingCost,
-    leasingCostPercentage,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     allowBelowFlatrate,

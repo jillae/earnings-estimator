@@ -16,10 +16,11 @@ export const premiumMachines: Machine[] = [
     creditPriceMultiplier: 0.00045,
     flatrateAmount: 5996,
     usesCredits: true,
-    leasingMin: 21716,
-    leasingMax: 24116,
+    leasingMin: 21706,
+    leasingMax: 24106,
     creditMin: 149,
     creditMax: 299,
+    creditsPerTreatment: 1,
     leasingTariffs: {
       "24": 0.04566,
       "36": 0.03189,
@@ -48,6 +49,7 @@ export const premiumMachines: Machine[] = [
     leasingMax: 11206,
     creditMin: 99,
     creditMax: 199,
+    creditsPerTreatment: 1,
     leasingTariffs: {
       "24": 0.04566,
       "36": 0.03189,
