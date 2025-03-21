@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import ClinicSizeSelector from '../ClinicSizeSelector';
 import MachineSelector from '../MachineSelector';
 import LeasingOptions from '../LeasingOptions';
@@ -26,7 +26,6 @@ const CalculatorInputs: React.FC = () => {
     setCustomerPrice,
     leasingRange,
     leasingCost,
-    leasingCostPercentage,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     allowBelowFlatrate,
@@ -34,9 +33,7 @@ const CalculatorInputs: React.FC = () => {
     flatrateThreshold,
     operatingCost,
     creditPrice,
-    netResults,
-    useFlatrateOption,
-    setUseFlatrateOption
+    netResults
   } = useCalculator();
 
   // Säkerställ att selectedMachine inte är null innan vi använder dess egenskaper
@@ -45,42 +42,6 @@ const CalculatorInputs: React.FC = () => {
   
   // Endast visa kreditsrelaterade fält om en riktig maskin är vald (inte "select-machine")
   const showCreditFields = selectedMachineId !== "select-machine" && isCreditsEnabledMachine;
-  
-  // Synkronisera inställningar när useFlatrateOption ändras
-  useEffect(() => {
-    if (useFlatrateOption === 'flatrate') {
-      // När flatrate aktiveras, sätt allowBelowFlatrate till false
-      if (allowBelowFlatrate) {
-        setAllowBelowFlatrate(false);
-      }
-      
-      // Om leasingkostnaden är under tröskeln, justera leasingkostnaden
-      if (leasingCostPercentage < 80 && flatrateThreshold && leasingRange.max > leasingRange.min) {
-        const flatratePosition = (flatrateThreshold - leasingRange.min) / 
-                               (leasingRange.max - leasingRange.min);
-        setLeaseAdjustmentFactor(flatratePosition);
-      }
-    } else if (useFlatrateOption === 'perCredit') {
-      // När flatrate inaktiveras, sätt allowBelowFlatrate till true
-      if (!allowBelowFlatrate) {
-        setAllowBelowFlatrate(true);
-      }
-    }
-  }, [useFlatrateOption, setAllowBelowFlatrate, leasingCostPercentage, 
-      flatrateThreshold, leasingRange, setLeaseAdjustmentFactor, allowBelowFlatrate]);
-  
-  // Synkronisera useFlatrateOption när allowBelowFlatrate ändras
-  useEffect(() => {
-    if (!allowBelowFlatrate) {
-      if (useFlatrateOption !== 'flatrate') {
-        setUseFlatrateOption('flatrate');
-      }
-    } else {
-      if (useFlatrateOption !== 'perCredit') {
-        setUseFlatrateOption('perCredit');
-      }
-    }
-  }, [allowBelowFlatrate, setUseFlatrateOption, useFlatrateOption]);
 
   return (
     <div className="w-full">
@@ -131,7 +92,14 @@ const CalculatorInputs: React.FC = () => {
         )}
         
         {showCreditFields && (
-          <OperatingCosts />
+          <OperatingCosts 
+            usesCredits={isCreditsEnabledMachine}
+            useFlatrate={operatingCost.useFlatrate}
+            creditPrice={creditPrice}
+            flatrateAmount={selectedMachine?.flatrateAmount || 0}
+            operatingCostPerMonth={operatingCost.costPerMonth}
+            allowBelowFlatrate={allowBelowFlatrate}
+          />
         )}
       </div>
     </div>
