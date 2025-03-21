@@ -34,7 +34,8 @@ const CalculatorInputs: React.FC = () => {
     flatrateThreshold,
     operatingCost,
     useFlatrateOption,
-    setUseFlatrateOption
+    setUseFlatrateOption,
+    netResults
   } = useCalculator();
 
   // Säkerställ att selectedMachine inte är null innan vi använder dess egenskaper
