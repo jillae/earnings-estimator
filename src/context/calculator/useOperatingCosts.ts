@@ -29,10 +29,11 @@ export function useOperatingCosts({
   // Beräkna och spara kreditpris baserat på maskin
   const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
   
+  // Hämta vald maskin
+  const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
+  
   // Uppdatera driftskostnad när maskin eller behandlingsdata ändras
   useEffect(() => {
-    const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
-    
     if (selectedMachine && selectedMachine.usesCredits) {
       // Beräkna kreditpris baserat på maskin och leasingkostnad
       const creditPrice = calculateCreditPrice(
@@ -42,7 +43,7 @@ export function useOperatingCosts({
         machinePriceSEK
       );
       
-      console.log(`Beräknat kreditpris för ${selectedMachine.name}: ${creditPrice} kr`);
+      console.log(`Beräknat kreditpris för ${selectedMachine.name}: ${creditPrice} kr (från useOperatingCosts)`);
       setCalculatedCreditPrice(creditPrice);
       
       // Säkerställ att treatmentsPerDay och leasingCost är giltiga värden
@@ -79,7 +80,7 @@ export function useOperatingCosts({
         useFlatrate: false
       });
     }
-  }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK, treatmentsPerDay, useFlatrateOption, allowBelowFlatrate]);
+  }, [selectedMachine, leasingCost, selectedLeasingPeriodId, machinePriceSEK, treatmentsPerDay, useFlatrateOption, allowBelowFlatrate]);
 
   return { 
     operatingCost,

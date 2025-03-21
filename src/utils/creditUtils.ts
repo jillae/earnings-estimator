@@ -76,6 +76,7 @@ export function calculateCreditPrice(
   }
   
   // Fallback om ingen av ovanstående fungerar
+  console.log(`Använder standardvärde 149 för credits för ${machine.name}`);
   return 149; // Standardvärde för credits
 }
 
