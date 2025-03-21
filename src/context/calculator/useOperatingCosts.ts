@@ -41,6 +41,8 @@ export function useOperatingCosts({
         selectedLeasingPeriodId,
         machinePriceSEK
       );
+      
+      console.log(`Beräknat kreditpris för ${selectedMachine.name}: ${creditPrice} kr`);
       setCalculatedCreditPrice(creditPrice);
       
       // Säkerställ att treatmentsPerDay och leasingCost är giltiga värden

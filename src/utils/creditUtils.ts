@@ -21,6 +21,14 @@ export function calculateCreditPrice(
 ): number {
   if (!machine || !machine.usesCredits) return 0;
   
+  console.log(`Beräknar kreditpris för ${machine.name}:
+    - leasingCost: ${leasingCost}
+    - machine.leasingMin: ${machine.leasingMin}
+    - machine.leasingMax: ${machine.leasingMax}
+    - machine.creditMin: ${machine.creditMin}
+    - machine.creditMax: ${machine.creditMax}
+  `);
+  
   // Om vi har leasingMin, leasingMax, creditMin, creditMax - beräkna dynamiskt baserat på leasingCost
   if (machine.leasingMin !== undefined && machine.leasingMax !== undefined &&
       machine.creditMin !== undefined && machine.creditMax !== undefined && 

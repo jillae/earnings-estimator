@@ -40,15 +40,9 @@ const OperatingCosts: React.FC = () => {
 
   // Hantera flatrate-switch
   const handleFlatrateChange = (checked: boolean) => {
-    if (checked) {
-      // Om vi aktiverar flatrate
-      setUseFlatrateOption('flatrate');
-      setAllowBelowFlatrate(false);
-    } else {
-      // Om vi avaktiverar flatrate
-      setUseFlatrateOption('perCredit');
-      setAllowBelowFlatrate(true);
-    }
+    console.log(`Flatrate switch ändrad till: ${checked}`);
+    setUseFlatrateOption(checked ? 'flatrate' : 'perCredit');
+    setAllowBelowFlatrate(!checked);
   };
 
   return (
