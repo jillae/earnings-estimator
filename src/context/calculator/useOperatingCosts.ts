@@ -33,7 +33,7 @@ export function useOperatingCosts({
     
     if (selectedMachine && selectedMachine.usesCredits) {
       // Använd maskinens fördefinierade creditMin värde
-      const creditPrice = selectedMachine.creditMin || 149;
+      const creditPrice = selectedMachine.creditMin || 149; // Säkerställ att vi använder 149 som standard
       setCalculatedCreditPrice(creditPrice);
       
       // Beräkna om flatrate ska vara aktivt (över 80% av maximal leasing och minst 3 behandlingar/dag)
@@ -56,13 +56,6 @@ export function useOperatingCosts({
         costPerMonth: monthlyOperatingCost,
         useFlatrate: useFlatrateForCalculation
       });
-      
-      console.log(`Uppdaterad driftkostnad för ${selectedMachine.name}:
-        Credit pris: ${creditPrice}
-        Flatrate belopp: ${selectedMachine.flatrateAmount}
-        Använder flatrate: ${useFlatrateForCalculation}
-        Kostnad per månad: ${monthlyOperatingCost}
-      `);
     }
   }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK, treatmentsPerDay, useFlatrateOption, allowBelowFlatrate]);
 
