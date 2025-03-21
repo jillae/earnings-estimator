@@ -3,41 +3,38 @@ import React, { useEffect } from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Info, Lock, Unlock } from 'lucide-react';
 import { calculateFlatrateBreakEven } from '@/utils/creditUtils';
+import { useCalculator } from '@/context/calculator/context';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
-interface OperatingCostsProps {
-  usesCredits: boolean;
-  useFlatrate: boolean;
-  creditPrice: number;
-  flatrateAmount: number;
-  operatingCostPerMonth: number;
-  leasingCostPercentage?: number;
-  treatmentsPerDay: number;
-  allowBelowFlatrate?: boolean;
-  onFlatrateOptionChange?: (option: 'perCredit' | 'flatrate') => void;
-  useFlatrateOption?: 'perCredit' | 'flatrate';
-}
+const OperatingCosts: React.FC = () => {
+  const { 
+    selectedMachine, 
+    leasingCost, 
+    leasingRange, 
+    treatmentsPerDay, 
+    useFlatrateOption, 
+    setUseFlatrateOption,
+    creditPrice
+  } = useCalculator();
 
-const OperatingCosts: React.FC<OperatingCostsProps> = ({
-  usesCredits,
-  useFlatrate,
-  creditPrice,
-  flatrateAmount,
-  operatingCostPerMonth,
-  leasingCostPercentage = 0,
-  treatmentsPerDay,
-  allowBelowFlatrate,
-  onFlatrateOptionChange,
-  useFlatrateOption
-}) => {
-  if (!usesCredits) {
+  // Beräkna 80% av maximal leasingkostnad för att avgöra om flatrate är tillgängligt
+  const eightyPercentOfMax = leasingRange?.max ? leasingRange.max * 0.8 : 0;
+  const isFlatrateUnlocked = leasingCost >= eightyPercentOfMax && treatmentsPerDay >= 3;
+
+  // Använd värden direkt från maskinen
+  const flatrateAmount = selectedMachine?.flatrateAmount || 0;
+  
+  // Beräkna driftkostnad baserat på credits per månad
+  const treatmentsPerMonth = treatmentsPerDay * 22; // Använd 22 arbetsdagar per månad
+  const creditsCostPerMonth = selectedMachine?.usesCredits 
+    ? treatmentsPerMonth * creditPrice 
+    : 0;
+
+  // Om maskinen inte använder credits, visa inget
+  if (!selectedMachine?.usesCredits) {
     return null;
   }
-  
-  // Det omvända villkoret för flatrate är aktiverat (baserat på slider position och behandlingar)
-  const isFlatrateUnlocked = leasingCostPercentage >= 80 && treatmentsPerDay >= 3;
-  
-  // Beräkna brytpunkten för när flatrate blir mer kostnadseffektivt
-  const breakEvenTreatments = calculateFlatrateBreakEven(flatrateAmount, creditPrice);
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
@@ -45,12 +42,25 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
         Credits - Kostnader
       </label>
       
-      {useFlatrateOption === 'flatrate' ? (
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-sm">Flatrate månadskostnad</span>
-          <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount, false)}</span>
-        </div>
-      ) : (
+      <div className="flex items-center space-x-2 mb-4">
+        <Label htmlFor="flatrate-switch" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          Flatrate för Credits
+        </Label>
+        <Switch
+          id="flatrate-switch"
+          checked={useFlatrateOption === 'flatrate'}
+          onCheckedChange={(checked) => setUseFlatrateOption(checked ? 'flatrate' : 'perCredit')}
+          disabled={!isFlatrateUnlocked}
+        />
+      </div>
+      
+      {!isFlatrateUnlocked && (
+        <p className="text-xs text-red-500 mb-4">
+          Flatrate blir tillgängligt när leasingkostnaden når {Math.round(eightyPercentOfMax)} kr eller mer och du anger minst 3 behandlingar per dag.
+        </p>
+      )}
+      
+      {useFlatrateOption === 'perCredit' ? (
         <>
           <div className="flex justify-between items-center mb-4">
             <span className="text-sm">Pris per credit</span>
@@ -58,10 +68,15 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
           </div>
           <div className="flex justify-between items-center mb-4">
             <span className="text-sm">Credits kostnad per månad</span>
-            <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCostPerMonth, false)}</span>
+            <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditsCostPerMonth, false)}</span>
           </div>
         </>
-      )}
+      ) : isFlatrateUnlocked ? (
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-sm">Flatrate månadskostnad</span>
+          <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount, false)}</span>
+        </div>
+      ) : null}
       
       {/* Visa olika informationsrutor beroende på status */}
       {useFlatrateOption === 'flatrate' && isFlatrateUnlocked ? (
@@ -73,9 +88,9 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
               <p className="text-emerald-800 mb-3">
                 Du har nu tillgång till obegränsat antal credits under avtalsperioden för en fast månadsavgift.
               </p>
-              {breakEvenTreatments > 0 && (
+              {flatrateAmount > 0 && creditPrice > 0 && (
                 <p className="text-emerald-800 text-xs mt-2">
-                  Vid {breakEvenTreatments} eller fler behandlingar per dag är flatrate mer kostnadseffektivt än styckepris.
+                  Vid {calculateFlatrateBreakEven(flatrateAmount, creditPrice)} eller fler behandlingar per dag är flatrate mer kostnadseffektivt än styckepris.
                 </p>
               )}
             </div>
@@ -91,11 +106,11 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
                 Du kvalificerar dig för vårt flatrate-erbjudande med obegränsade credits.
               </p>
               <p className="text-emerald-800 mb-2">
-                Använd reglaget i leasingjusteraren för obegränsade credits till fast pris: {formatCurrency(flatrateAmount, false)}/månad.
+                Aktivera switchen ovan för obegränsade credits till fast pris: {formatCurrency(flatrateAmount, false)}/månad.
               </p>
-              {breakEvenTreatments > 0 && (
+              {flatrateAmount > 0 && creditPrice > 0 && (
                 <p className="text-emerald-800 text-xs mt-2">
-                  Vid {breakEvenTreatments} eller fler behandlingar per dag är flatrate mer kostnadseffektivt än styckepris.
+                  Vid {calculateFlatrateBreakEven(flatrateAmount, creditPrice)} eller fler behandlingar per dag är flatrate mer kostnadseffektivt än styckepris.
                 </p>
               )}
             </div>
@@ -112,8 +127,8 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
               </p>
               <ul className="list-none space-y-2">
                 <li className="flex items-center">
-                  <span className={`inline-block w-5 h-5 rounded-full mr-2 flex items-center justify-center ${leasingCostPercentage >= 80 ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
-                    {leasingCostPercentage >= 80 ? '✓' : '○'}
+                  <span className={`inline-block w-5 h-5 rounded-full mr-2 flex items-center justify-center ${leasingCost >= eightyPercentOfMax ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                    {leasingCost >= eightyPercentOfMax ? '✓' : '○'}
                   </span>
                   <span>Justera leasingkostnaden till 80% eller mer</span>
                 </li>
