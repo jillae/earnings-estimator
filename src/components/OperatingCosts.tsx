@@ -15,10 +15,7 @@ const OperatingCosts: React.FC = () => {
     useFlatrateOption, 
     setUseFlatrateOption, 
     treatmentsPerDay, 
-    creditPrice,
-    operatingCost,
-    allowBelowFlatrate,
-    setAllowBelowFlatrate
+    exchangeRate
   } = useCalculator();
 
   // Se till att vi har giltiga värden
@@ -29,21 +26,24 @@ const OperatingCosts: React.FC = () => {
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
   const creditsPerTreatment = selectedMachine?.creditsPerTreatment || 1;
   
-  // Säkerställ att vi använder ett giltigt kreditpris och logga det för felsökning
-  const validCreditPrice = isNaN(creditPrice) ? 0 : creditPrice;
-  console.log(`OperatingCosts rendering with credit price: ${validCreditPrice}`);
+  // Använd creditMin och creditMax direkt från maskinen
+  const creditPrice = selectedMachine?.creditMin || 0;
+  console.log(`OperatingCosts rendering using direct values: 
+    - Selected machine: ${selectedMachine?.name}
+    - Credit price (from creditMin): ${creditPrice}
+    - creditMin: ${selectedMachine?.creditMin}, creditMax: ${selectedMachine?.creditMax}
+  `);
   
-  // Beräkna kostnad per månad för credits
+  // Direkt beräkning av kostnad per månad för credits
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
   const creditsCostPerMonth = selectedMachine?.usesCredits 
-    ? treatmentsPerMonth * creditsPerTreatment * validCreditPrice 
+    ? treatmentsPerMonth * creditsPerTreatment * creditPrice 
     : 0;
 
   // Hantera flatrate-switch
   const handleFlatrateChange = (checked: boolean) => {
     console.log(`Flatrate switch ändrad till: ${checked}`);
     setUseFlatrateOption(checked ? 'flatrate' : 'perCredit');
-    setAllowBelowFlatrate(!checked);
   };
 
   return (
@@ -74,11 +74,11 @@ const OperatingCosts: React.FC = () => {
             <>
               <div className="flex justify-between items-center mb-4">
                 <span className="text-sm">Pris per credit</span>
-                <span className="text-lg font-semibold text-slate-700">{formatCurrency(validCreditPrice, false)}</span>
+                <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditPrice, false)}</span>
               </div>
               <div className="flex justify-between items-center mb-4">
                 <span className="text-sm">Credits kostnad per månad</span>
-                <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCost.costPerMonth, false)}</span>
+                <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditsCostPerMonth, false)}</span>
               </div>
             </>
           )}
@@ -95,7 +95,7 @@ const OperatingCosts: React.FC = () => {
 
           {flatrateAmount > 0 && useFlatrateOption === 'perCredit' && (
             <p className="text-xs text-blue-500">
-              Vid ca {calculateFlatrateBreakEven(flatrateAmount, validCreditPrice, creditsPerTreatment)} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt än styckepris.
+              Vid ca {calculateFlatrateBreakEven(flatrateAmount, creditPrice, creditsPerTreatment)} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt än styckepris.
             </p>
           )}
         </>
