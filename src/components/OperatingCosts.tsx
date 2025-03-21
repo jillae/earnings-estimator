@@ -24,7 +24,8 @@ const OperatingCosts: React.FC = () => {
   const isFlatrateUnlocked = leasingCost >= eightyPercentOfMaxLeasing && treatmentsPerDay >= 3;
 
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
-  const creditPrice = selectedMachine?.creditPriceMultiplier ? selectedMachine.creditPriceMultiplier * (exchangeRate || 1) : 0;
+  // Använd ENDAST creditMin från maskindatan
+  const creditPrice = selectedMachine?.creditMin !== undefined ? selectedMachine.creditMin : 0;
   
   // Direkt beräkning av kostnad per månad för credits
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
