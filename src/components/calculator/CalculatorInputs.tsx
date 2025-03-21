@@ -46,33 +46,41 @@ const CalculatorInputs: React.FC = () => {
   // Endast visa kreditsrelaterade fält om en riktig maskin är vald (inte "select-machine")
   const showCreditFields = selectedMachineId !== "select-machine" && isCreditsEnabledMachine;
   
-  // Synkronisera flatrate-inställningar när useFlatrateOption ändras
+  // Synkronisera inställningar när useFlatrateOption ändras
   useEffect(() => {
     if (useFlatrateOption === 'flatrate') {
       // När flatrate aktiveras, sätt allowBelowFlatrate till false
-      setAllowBelowFlatrate(false);
+      if (allowBelowFlatrate) {
+        setAllowBelowFlatrate(false);
+      }
       
       // Om leasingkostnaden är under tröskeln, justera leasingkostnaden
-      if (leasingCostPercentage < 80 && flatrateThreshold) {
+      if (leasingCostPercentage < 80 && flatrateThreshold && leasingRange.max > leasingRange.min) {
         const flatratePosition = (flatrateThreshold - leasingRange.min) / 
-                               Math.max(0.001, leasingRange.max - leasingRange.min);
+                               (leasingRange.max - leasingRange.min);
         setLeaseAdjustmentFactor(flatratePosition);
       }
-    } else {
+    } else if (useFlatrateOption === 'perCredit') {
       // När flatrate inaktiveras, sätt allowBelowFlatrate till true
-      setAllowBelowFlatrate(true);
+      if (!allowBelowFlatrate) {
+        setAllowBelowFlatrate(true);
+      }
     }
   }, [useFlatrateOption, setAllowBelowFlatrate, leasingCostPercentage, 
-      flatrateThreshold, leasingRange, setLeaseAdjustmentFactor]);
+      flatrateThreshold, leasingRange, setLeaseAdjustmentFactor, allowBelowFlatrate]);
   
   // Synkronisera useFlatrateOption när allowBelowFlatrate ändras
   useEffect(() => {
     if (!allowBelowFlatrate) {
-      setUseFlatrateOption('flatrate');
+      if (useFlatrateOption !== 'flatrate') {
+        setUseFlatrateOption('flatrate');
+      }
     } else {
-      setUseFlatrateOption('perCredit');
+      if (useFlatrateOption !== 'perCredit') {
+        setUseFlatrateOption('perCredit');
+      }
     }
-  }, [allowBelowFlatrate, setUseFlatrateOption]);
+  }, [allowBelowFlatrate, setUseFlatrateOption, useFlatrateOption]);
 
   return (
     <div className="w-full">

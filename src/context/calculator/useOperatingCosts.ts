@@ -33,7 +33,6 @@ export function useOperatingCosts({
     
     if (selectedMachine && selectedMachine.usesCredits) {
       // Använd maskinens fördefinierade creditMin värde
-      // Emerald-maskinen har ett fast värde på 149 enligt maskindata
       const creditPrice = selectedMachine.creditMin || 149;
       setCalculatedCreditPrice(creditPrice);
       
@@ -65,7 +64,7 @@ export function useOperatingCosts({
         Kostnad per månad: ${monthlyOperatingCost}
       `);
     }
-  }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK, treatmentsPerDay, useFlatrateOption]);
+  }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK, treatmentsPerDay, useFlatrateOption, allowBelowFlatrate]);
 
   return { 
     operatingCost,

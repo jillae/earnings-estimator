@@ -41,7 +41,7 @@ export function calculateCreditPrice(
   }
   
   // Fallback om ingen av ovanstående fungerar
-  return 100; // Standardvärde
+  return 149; // Standardvärde för Emerald
 }
 
 /**

@@ -74,7 +74,7 @@ export function useLeasingCalculations({
       `);
       
       // Uppdatera leasingkostnaden baserat på den linjära interpoleringen
-      setLeasingCost(newLeasingCost);
+      setLeasingCost(Math.round(newLeasingCost));
     }
   }, [leaseAdjustmentFactor, leasingRange, selectedMachineId]);
 

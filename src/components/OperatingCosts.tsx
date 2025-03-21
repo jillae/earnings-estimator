@@ -39,9 +39,8 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
   // Beräkna om flatrate är upplåst baserat på leasingCostPercentage
   const isFlatrateUnlocked = leasingCostPercentage >= 80 && treatmentsPerDay >= 3;
   
-  // Beräkna ungefärlig kostnad för credits per månad
+  // Beräkna ungefärlig kostnad för credits per månad baserat på creditPrice
   const treatmentsPerMonth = treatmentsPerDay * 22; // Använd 22 arbetsdagar per månad
-  const creditsCostPerMonth = treatmentsPerMonth * creditPrice;
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
@@ -75,7 +74,7 @@ const OperatingCosts: React.FC<OperatingCostsProps> = ({
           </div>
           <div className="flex justify-between items-center mb-4">
             <span className="text-sm">Credits kostnad per månad</span>
-            <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditsCostPerMonth, false)}</span>
+            <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCostPerMonth, false)}</span>
           </div>
         </>
       ) : isFlatrateUnlocked ? (

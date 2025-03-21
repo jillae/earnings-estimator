@@ -150,12 +150,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         showFlatrateIndicator={showFlatrateIndicator}
         allowBelowFlatrate={allowBelowFlatrate}
       />
-
-      <CostDisplay 
-        minLeaseCost={exactMinCost}
-        maxLeaseCost={exactMaxCost}
-        leaseCost={actualLeasingCost}
-      />
     </div>
   );
 };
