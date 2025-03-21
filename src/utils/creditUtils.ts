@@ -59,7 +59,7 @@ export function calculateOperatingCost(
   treatmentsPerDay: number,
   creditPrice: number,
   leasingCost: number = 0,
-  usePerCreditModel: boolean = true,
+  useFlatrate: boolean = false,
   selectedLeasingPeriodId?: string,
   machinePriceSEK?: number
 ): { costPerMonth: number, useFlatrate: boolean } {
@@ -73,9 +73,6 @@ export function calculateOperatingCost(
   
   // Säkerställ att kreditpriset är giltigt
   const safeCreditPrice = Math.max(0, isNaN(creditPrice) ? 0 : creditPrice);
-  
-  // Flagga för att avgöra om flatrate ska användas
-  let useFlatrate = !usePerCreditModel;
   
   let costPerMonth = 0;
   

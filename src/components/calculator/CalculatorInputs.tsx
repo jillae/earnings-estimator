@@ -33,8 +33,6 @@ const CalculatorInputs: React.FC = () => {
     setAllowBelowFlatrate,
     flatrateThreshold,
     operatingCost,
-    creditPrice,
-    netResults,
     useFlatrateOption,
     setUseFlatrateOption
   } = useCalculator();
@@ -59,11 +57,6 @@ const CalculatorInputs: React.FC = () => {
         const flatratePosition = (flatrateThreshold - leasingRange.min) / 
                                (leasingRange.max - leasingRange.min);
         setLeaseAdjustmentFactor(flatratePosition);
-      }
-    } else if (useFlatrateOption === 'perCredit') {
-      // När flatrate inaktiveras, sätt allowBelowFlatrate till true
-      if (!allowBelowFlatrate) {
-        setAllowBelowFlatrate(true);
       }
     }
   }, [useFlatrateOption, setAllowBelowFlatrate, leasingCostPercentage, 

@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { useCalculator } from '@/context/calculator/context';
 import { formatCurrency } from '@/utils/formatUtils';
 import { calculateFlatrateBreakEven } from '@/utils/creditUtils';
+import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 
 const OperatingCosts: React.FC = () => {
   const { 
@@ -14,7 +15,8 @@ const OperatingCosts: React.FC = () => {
     useFlatrateOption, 
     setUseFlatrateOption, 
     treatmentsPerDay, 
-    creditPrice 
+    creditPrice,
+    operatingCost
   } = useCalculator();
 
   // Se till att vi har giltiga värden
@@ -29,7 +31,7 @@ const OperatingCosts: React.FC = () => {
   const validCreditPrice = isNaN(creditPrice) ? 0 : creditPrice;
   
   // Beräkna kostnad per månad för credits
-  const treatmentsPerMonth = treatmentsPerDay * 22; // Använd konstanten för arbetsdagar per månad
+  const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
   const creditsCostPerMonth = selectedMachine?.usesCredits 
     ? treatmentsPerMonth * creditsPerTreatment * validCreditPrice 
     : 0;
@@ -66,7 +68,7 @@ const OperatingCosts: React.FC = () => {
               </div>
               <div className="flex justify-between items-center mb-4">
                 <span className="text-sm">Credits kostnad per månad</span>
-                <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditsCostPerMonth, false)}</span>
+                <span className="text-lg font-semibold text-slate-700">{formatCurrency(operatingCost.costPerMonth, false)}</span>
               </div>
             </>
           )}
