@@ -29,6 +29,9 @@ export function calculateLeasingRange(
   // Ensure leasingRate is a number
   const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate || 0;
   
+  // Säkerställ att machinePriceSEK är ett giltigt värde
+  const validMachinePriceSEK = machinePriceSEK || 0;
+  
   // Always use tariff-based calculation as specified in the requirements
   // Find the closest leasing period match
   const closestTariff = LEASING_TARIFFS.reduce((prev, curr) => 
@@ -36,7 +39,7 @@ export function calculateLeasingRange(
   );
   
   // Calculate exchange rate to convert EUR to SEK
-  const exchangeRate = machinePriceSEK / machine.priceEur;
+  const exchangeRate = machine.priceEur > 0 ? validMachinePriceSEK / machine.priceEur : 11.49260;
   
   // Use the tariff-based calculation for all machines
   const baseLeasingMax = calculateTariffBasedLeasingMax(
@@ -55,7 +58,7 @@ export function calculateLeasingRange(
 
   let insuranceCost = 0;
   if (includeInsurance) {
-    insuranceCost = calculateInsuranceCost(machinePriceSEK);
+    insuranceCost = calculateInsuranceCost(validMachinePriceSEK);
     console.log(`Adding insurance cost: ${insuranceCost}`);
   }
   
@@ -82,6 +85,10 @@ export function calculateLeasingRange(
  * Helper function to calculate insurance cost
  */
 function calculateInsuranceCost(machinePriceSEK: number): number {
+  if (!machinePriceSEK || isNaN(machinePriceSEK)) {
+    return 0;
+  }
+  
   let insuranceRate = INSURANCE_RATES.RATE_ABOVE_50K;
   
   if (machinePriceSEK <= 10000) {

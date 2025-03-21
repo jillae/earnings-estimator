@@ -48,6 +48,11 @@ export function formatCurrency(amount: number | undefined, addVAT: boolean = fal
  * @returns Avrundat värde till närmaste hundratal som slutar på 6
  */
 export function roundToHundredEndingSix(value: number): number {
+  // Kontrollera att value är ett giltigt värde
+  if (value === undefined || value === null || isNaN(value)) {
+    return 0;
+  }
+  
   // Avrunda till närmaste hundratal först
   const roundedToHundred = Math.round(value / 100) * 100;
   

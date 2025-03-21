@@ -25,6 +25,10 @@ export function calculateTariffBasedLeasingMax(
   usesCredits: boolean,
   exchangeRate: number = 11.49260
 ): number {
+  if (!machinePriceEur || isNaN(machinePriceEur)) {
+    return 0;
+  }
+  
   const factor = getLeasingFactor(leaseDurationMonths);
   const shippingCost = usesCredits ? SHIPPING_COST_EUR_CREDITS : SHIPPING_COST_EUR_NO_CREDITS;
   
