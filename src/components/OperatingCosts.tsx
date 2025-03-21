@@ -2,6 +2,7 @@
 import React from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useCalculator } from '@/context/calculator/context';
 import { formatCurrency } from '@/utils/formatUtils';
 import { calculateFlatrateBreakEven } from '@/utils/creditUtils';
@@ -15,7 +16,9 @@ const OperatingCosts: React.FC = () => {
     useFlatrateOption, 
     setUseFlatrateOption, 
     treatmentsPerDay, 
-    exchangeRate
+    exchangeRate,
+    allowBelowFlatrate,
+    setAllowBelowFlatrate
   } = useCalculator();
 
   // Se till att vi har giltiga värden
@@ -44,6 +47,13 @@ const OperatingCosts: React.FC = () => {
   const handleFlatrateChange = (checked: boolean) => {
     console.log(`Flatrate switch ändrad till: ${checked}`);
     setUseFlatrateOption(checked ? 'flatrate' : 'perCredit');
+    setAllowBelowFlatrate(!checked);
+  };
+
+  // Hantera allowBelowFlatrate-checkbox
+  const handleAllowBelowFlatrateChange = (checked: boolean) => {
+    console.log(`Allow below flatrate ändrad till: ${checked}`);
+    setAllowBelowFlatrate(checked);
   };
 
   return (
@@ -68,6 +78,17 @@ const OperatingCosts: React.FC = () => {
         <p className="text-xs text-red-500 mb-2">Flatrate blir tillgängligt när leasingkostnaden når {Math.round(eightyPercentOfMaxLeasing)} kr eller mer och du anger minst 3 behandlingar per dag.</p>
       )}
 
+      <div className="flex items-center space-x-2 mb-4">
+        <Checkbox 
+          id="allow-below-flatrate" 
+          checked={allowBelowFlatrate}
+          onCheckedChange={handleAllowBelowFlatrateChange}
+        />
+        <Label htmlFor="allow-below-flatrate" className="text-sm">
+          Lås upp erbjudandet (under 80% leasing)
+        </Label>
+      </div>
+
       {selectedMachine?.usesCredits && (
         <>
           {useFlatrateOption === 'perCredit' && (
@@ -80,6 +101,7 @@ const OperatingCosts: React.FC = () => {
                 <span className="text-sm">Credits kostnad per månad</span>
                 <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditsCostPerMonth, false)}</span>
               </div>
+              <p className="text-xs text-blue-500 mb-2">Styckepris per behandling används.</p>
             </>
           )}
 
