@@ -27,21 +27,11 @@ const OperatingCosts: React.FC = () => {
   const isFlatrateUnlocked = leasingCost >= eightyPercentOfMaxLeasing && treatmentsPerDay >= 3;
 
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
-  const creditsPerTreatment = selectedMachine?.creditsPerTreatment || 1;
-  
-  // Använd creditMin och creditMax direkt från maskinen
-  const creditPrice = selectedMachine?.creditMin || 0;
-  console.log(`OperatingCosts rendering using direct values: 
-    - Selected machine: ${selectedMachine?.name}
-    - Credit price (from creditMin): ${creditPrice}
-    - creditMin: ${selectedMachine?.creditMin}, creditMax: ${selectedMachine?.creditMax}
-  `);
+  const creditPrice = selectedMachine?.creditPriceMultiplier ? selectedMachine.creditPriceMultiplier * (exchangeRate || 1) : 0;
   
   // Direkt beräkning av kostnad per månad för credits
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
-  const creditsCostPerMonth = selectedMachine?.usesCredits 
-    ? treatmentsPerMonth * creditsPerTreatment * creditPrice 
-    : 0;
+  const creditsCostPerMonth = selectedMachine?.usesCredits ? treatmentsPerMonth * creditPrice : 0;
 
   // Hantera flatrate-switch
   const handleFlatrateChange = (checked: boolean) => {
@@ -117,7 +107,7 @@ const OperatingCosts: React.FC = () => {
 
           {flatrateAmount > 0 && useFlatrateOption === 'perCredit' && (
             <p className="text-xs text-blue-500">
-              Vid ca {calculateFlatrateBreakEven(flatrateAmount, creditPrice, creditsPerTreatment)} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt än styckepris.
+              Vid ca {calculateFlatrateBreakEven(flatrateAmount, creditPrice)} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt än styckepris.
             </p>
           )}
         </>
