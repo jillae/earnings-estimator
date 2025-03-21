@@ -131,18 +131,7 @@ const CalculatorInputs: React.FC = () => {
         )}
         
         {showCreditFields && (
-          <OperatingCosts 
-            usesCredits={isCreditsEnabledMachine}
-            useFlatrate={operatingCost.useFlatrate} 
-            creditPrice={creditPrice}
-            flatrateAmount={selectedMachine?.flatrateAmount || 5996}
-            operatingCostPerMonth={operatingCost.costPerMonth}
-            allowBelowFlatrate={allowBelowFlatrate}
-            leasingCostPercentage={leasingCostPercentage}
-            treatmentsPerDay={treatmentsPerDay}
-            onFlatrateOptionChange={setUseFlatrateOption}
-            useFlatrateOption={useFlatrateOption}
-          />
+          <OperatingCosts />
         )}
       </div>
     </div>
