@@ -27,8 +27,8 @@ const OperatingCosts: React.FC = () => {
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
   
   // Fasta värden för creditMin och creditMax - som nummer
-  const creditMin = 149;
-  const creditMax = 299;
+  const creditMin: number = 149;
+  const creditMax: number = 299;
   
   // Visa prisintervall om både min och max finns och är olika
   const hasCreditRange = creditMin !== creditMax;
