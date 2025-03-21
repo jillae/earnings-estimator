@@ -143,6 +143,7 @@ const OperatingCosts: React.FC = () => {
                 <span className="text-sm">Flatrate månadskostnad</span>
                 <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount, false)}</span>
               </div>
+              <p className="text-xs text-green-500 mb-2">Obegränsat antal behandlingar ingår.</p>
             </>
           )}
 
