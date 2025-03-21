@@ -3,6 +3,12 @@
  * Utility functions for formatting values
  */
 export function formatCurrency(amount: number, shouldRound: boolean = true): string {
+  // Kontrollera om amount är ett giltigt nummer
+  if (isNaN(amount) || amount === null || amount === undefined) {
+    console.warn(`Försökte formatera ett ogiltigt belopp: ${amount}`);
+    amount = 0;
+  }
+  
   let displayAmount = amount;
   
   if (shouldRound) {

@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { formatCurrency } from '@/utils/calculatorUtils';
+import { formatCurrency } from '@/utils/formatUtils';
 import { Info } from 'lucide-react';
 
 interface OperatingCostsProps {
