@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { formatCurrency } from '@/utils/calculatorUtils';
+import { formatCurrency } from '@/utils/formatUtils';
 
 interface ResultsTableProps {
   dailyRevenueIncVat: number;

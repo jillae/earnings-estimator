@@ -11,7 +11,10 @@ import { VAT_RATE } from './constants';
  * @returns Formaterad valutasträng
  */
 export function formatCurrency(amount: number | undefined, addVAT: boolean = false, endWith6: boolean = false): string {
-  if (amount === undefined) return '0 kr';
+  // Kontrollera att amount är ett giltigt värde
+  if (amount === undefined || amount === null || isNaN(amount)) {
+    return '0 kr';
+  }
   
   // Lägg till moms om det behövs
   const finalAmount = addVAT ? amount * (1 + VAT_RATE) : amount;
