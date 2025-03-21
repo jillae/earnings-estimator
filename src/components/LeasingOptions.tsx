@@ -40,11 +40,9 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
   return (
     <div className="calculator-grid animate-slide-in" style={{ animationDelay: '200ms' }}>
       <div className="input-group">
-        <div className="h-14 flex items-center">
-          <label htmlFor="leasing-period" className="input-label">
-            Leasingperiod
-          </label>
-        </div>
+        <label htmlFor="leasing-period" className="input-label">
+          Leasingperiod
+        </label>
         
         <Select value={selectedLeasingPeriodId} onValueChange={onLeasingPeriodChange}>
           <SelectTrigger className="w-full" id="leasing-period">
@@ -62,14 +60,12 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
       </div>
       
       <div className="input-group">
-        <div className="h-14 flex items-center">
-          <label htmlFor="insurance" className="input-label">
-            Försäkring
-            <div className="text-xs text-gray-500 mt-1">
-              Försäkring - fullvärdesförsäkring, självrisk 1500 kr
-            </div>
-          </label>
-        </div>
+        <label htmlFor="insurance" className="input-label">
+          Försäkring
+          <div className="text-xs text-gray-500 mt-1">
+            Försäkring - fullvärdesförsäkring, självrisk 1500 kr
+          </div>
+        </label>
         
         <Select value={selectedInsuranceId} onValueChange={onInsuranceChange}>
           <SelectTrigger className="w-full" id="insurance">

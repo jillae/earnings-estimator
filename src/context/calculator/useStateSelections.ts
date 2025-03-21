@@ -12,7 +12,6 @@ export function useStateSelections() {
   const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true); // Som standard tillåter vi under 80% och inaktiverar flatrate
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
-  const [useFlatrateOption, setUseFlatrateOption] = useState<'perCredit' | 'flatrate'>('perCredit'); // Använd string-enum
 
   // Härled den valda maskinen från maskin-ID
   const selectedMachine = useMemo(() => {
@@ -50,9 +49,6 @@ export function useStateSelections() {
       
       // Återställ allowBelowFlatrate till true när en ny maskin väljs (flatrate inaktiverat)
       setAllowBelowFlatrate(true);
-      
-      // Återställ flatrate-valet till perCredit
-      setUseFlatrateOption('perCredit');
     }
   }, [selectedMachine]);
 
@@ -73,8 +69,6 @@ export function useStateSelections() {
     treatmentsPerDay,
     setTreatmentsPerDay,
     customerPrice,
-    setCustomerPrice,
-    useFlatrateOption,
-    setUseFlatrateOption
+    setCustomerPrice
   };
 }

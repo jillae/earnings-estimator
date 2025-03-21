@@ -1,140 +1,158 @@
 
-import { Machine } from '../data/machines/types';
-import { WORKING_DAYS_PER_MONTH } from './constants';
-
-// Beräkna antalet behandlingar per månad baserat på antalet behandlingar per dag
-export function calculateTreatmentsPerMonth(treatmentsPerDay: number): number {
-  return treatmentsPerDay * WORKING_DAYS_PER_MONTH;
-}
-
 /**
- * Beräknar och returnerar priset per credit baserat på maskintyp och leasingkostnad
+ * Utility functions for credit price calculations
  */
+import { WORKING_DAYS_PER_MONTH } from './constants';
+import { Machine } from '../data/machineData';
+import { calculateLeasingRange } from './leasingUtils';
+
 export function calculateCreditPrice(
   machine: Machine, 
   leasingCost: number,
-  selectedLeasingPeriodId?: string,
+  leasingRate?: string | number, 
   machinePriceSEK?: number
 ): number {
   if (!machine.usesCredits) return 0;
   
-  // Använd maskinens fördefinierade creditMin värde om det finns
-  if (machine.creditMin !== undefined) {
-    console.log(`Använder fördefinierat credit-värde för ${machine.name}: ${machine.creditMin}`);
-    return machine.creditMin;
+  // Ensure we have defined credit min/max values
+  if (machine.creditMin === undefined || machine.creditMax === undefined) {
+    console.error("Machine credit min/max values are undefined");
+    return 0;
   }
   
-  // Om ingen creditMin, beräkna baserat på leasingkostnad och prismultiplikator
-  if (machine.creditPriceMultiplier && leasingCost > 0) {
-    const calculatedPrice = Math.round(leasingCost * machine.creditPriceMultiplier);
-    console.log(`Beräknat kredippris baserat på multiplikator (${machine.creditPriceMultiplier}) och leasingkostnad (${leasingCost}): ${calculatedPrice}`);
-    return calculatedPrice;
-  }
+  console.log(`Starting credit price calculation for ${machine.name} with min: ${machine.creditMin}, max: ${machine.creditMax}`);
   
-  // Beräkna kreditpris baserat på maskinpris (om sådant finns) som fallback
-  if (machinePriceSEK) {
-    // En konstant multiplikator för alla maskiner
-    const baseCreditFactor = 0.002;
-    const calculatedPrice = Math.round(machinePriceSEK * baseCreditFactor);
-    console.log(`Beräknat kreditpris baserat på maskinpris (${machinePriceSEK}): ${calculatedPrice}`);
-    return calculatedPrice;
-  }
+  // Get the leasing range to calculate the position within the range
+  let leasingMin: number, leasingMax: number;
   
-  // Fallback om ingen av ovanstående fungerar
-  return 149; // Standardvärde för Emerald
-}
-
-/**
- * Beräknar driftkostnaden (per månad) baserat på maskintyp,
- * antal behandlingar per dag, och kreditpris
- */
-export function calculateOperatingCost(
-  machine: Machine,
-  treatmentsPerDay: number,
-  creditPrice: number,
-  leasingCost: number = 0,
-  usePerCreditModel: boolean = true,
-  selectedLeasingPeriodId?: string,
-  machinePriceSEK?: number
-): { costPerMonth: number, useFlatrate: boolean } {
-  // Om maskinen inte använder credits, är driftkostnaden 0
-  if (!machine.usesCredits) {
-    return { costPerMonth: 0, useFlatrate: false };
-  }
-  
-  // Flagga för att avgöra om flatrate ska användas
-  let useFlatrate = !usePerCreditModel;
-  
-  let costPerMonth = 0;
-  
-  // Om flatrate används, använd det fasta beloppet
-  if (useFlatrate) {
-    costPerMonth = machine.flatrateAmount || 0;
-    console.log(`Flatrate används för ${machine.name}: ${costPerMonth} kr/månad`);
+  if (machine.leasingMin !== undefined && machine.leasingMax !== undefined) {
+    leasingMin = machine.leasingMin;
+    leasingMax = machine.leasingMax;
+  } else if (leasingRate !== undefined && machinePriceSEK !== undefined) {
+    const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate;
+    const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
+    leasingMin = dynamicRange.min;
+    leasingMax = dynamicRange.max;
   } else {
-    // Annars beräkna baserat på krediter
-    const creditsPerTreatment = machine.creditsPerTreatment || 1;
-    const treatmentsPerMonth = calculateTreatmentsPerMonth(treatmentsPerDay);
-    costPerMonth = creditsPerTreatment * treatmentsPerMonth * creditPrice;
-    console.log(`Per-credit modell används för ${machine.name}: 
-      ${creditsPerTreatment} credits/beh * ${treatmentsPerMonth} beh/mån * ${creditPrice} kr/credit = ${costPerMonth} kr/mån`);
+    console.error("Unable to determine leasing range for credit price calculation");
+    return machine.creditMax; // Return maximum credit price as fallback
   }
   
-  console.log(`Beräknad driftkostnad:
-    Maskin: ${machine.name}
-    Behandlingar/dag: ${treatmentsPerDay}
-    Kreditpris: ${creditPrice}
-    Använder flatrate: ${useFlatrate}
-    Kostnad/månad: ${costPerMonth}
+  // Calculate normalized position within the leasing range
+  const leasingPosition = Math.max(0, Math.min(1, (leasingCost - leasingMin) / (leasingMax - leasingMin)));
+  
+  // Inverse mapping: when leasing cost is high, credit price should be lower
+  const inverseLeasingPosition = 1 - leasingPosition;
+  
+  // Calculate credit price based on position (linear interpolation)
+  const creditPrice = machine.creditMin + inverseLeasingPosition * (machine.creditMax - machine.creditMin);
+  
+  console.log(`Credit price calculation: 
+    Leasing cost: ${leasingCost} 
+    Leasing range: ${leasingMin} - ${leasingMax}
+    Leasing position: ${leasingPosition}
+    Inverse position: ${inverseLeasingPosition}
+    Credit range: ${machine.creditMin} - ${machine.creditMax}
+    Calculated credit price: ${creditPrice}
   `);
   
-  return { costPerMonth, useFlatrate };
+  // Return the calculated credit price, ensuring it's within the valid range
+  return Math.max(machine.creditMin, Math.min(machine.creditMax, creditPrice));
 }
 
-/**
- * Avgör om flatrate ska användas baserat på regler
- */
+// Function to determine if flatrate should be used based on the rules
 export function shouldUseFlatrate(
   machine: Machine,
   leasingCost: number,
   treatmentsPerDay: number,
-  allowBelowFlatrate: boolean,
-  selectedLeasingPeriodId?: string,
+  allowBelowFlatrate: boolean = true,
+  leasingRate?: string | number, 
   machinePriceSEK?: number
 ): boolean {
-  if (!machine.usesCredits || !machine.flatrateAmount) {
+  if (!machine.usesCredits) {
     return false;
   }
   
-  // Leasingkostnad måste vara minst 80% av max för att kvalificera för flatrate
-  const leasingPercent = machine.leasingMax > 0 ? leasingCost / machine.leasingMax : 0;
+  // Om användaren har valt att inte aktivera flatrate, returnera false direkt
+  if (allowBelowFlatrate) {
+    console.log(`Flatrate nekad: Användaren har inaktiverat flatrate (allowBelowFlatrate: ${allowBelowFlatrate})`);
+    return false;
+  }
   
-  // Minst 3 behandlingar per dag krävs för flatrate
-  const minTreatments = treatmentsPerDay >= 3;
+  // VIKTIG FELSÖKNING: Logga alla ingående värden för att förstå när flatrate ska visas
+  console.log(`shouldUseFlatrate kontroll för ${machine.name}:`, {
+    leasingCost,
+    treatmentsPerDay,
+    leasingRate,
+    machinePriceSEK,
+    usesCredits: machine.usesCredits,
+    allowBelowFlatrate
+  });
   
-  // Om allowBelowFlatrate är false, måste vi vara över tröskelvärdet
-  // för att aktivera flatrate
-  const meetsLeasingRequirement = allowBelowFlatrate || leasingPercent >= 0.8;
+  // REGEL 1: Måste ha minst 3 behandlingar per dag
+  if (treatmentsPerDay < 3) {
+    console.log(`Flatrate nekad: Antal behandlingar per dag (${treatmentsPerDay}) < 3`);
+    return false;
+  }
   
-  // Båda kraven måste vara uppfyllda
-  return meetsLeasingRequirement && minTreatments;
+  // REGEL 2: Leasingkostnad måste vara > 80% av leasingMax (eller flatrateThreshold om det finns)
+  let flatrateThreshold: number;
+  
+  // Hämta dynamiskt beräknad flatrateThreshold om möjligt
+  if (leasingRate !== undefined && machinePriceSEK !== undefined) {
+    const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate;
+    const dynamicRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
+    
+    if (dynamicRange.flatrateThreshold !== undefined) {
+      flatrateThreshold = dynamicRange.flatrateThreshold;
+      console.log(`Använder dynamiskt beräknad flatrateThreshold: ${flatrateThreshold}`);
+    } else {
+      // Om flatrateThreshold saknas, beräkna det som 80% av vägen från min till max
+      flatrateThreshold = dynamicRange.min + (dynamicRange.max - dynamicRange.min) * 0.8;
+      console.log(`Beräknad flatrateThreshold: ${flatrateThreshold} (80% mellan ${dynamicRange.min} och ${dynamicRange.max})`);
+    }
+  } 
+  // Fallback: om vi inte kan beräkna dynamiskt, använd leasingMax * 0.8
+  else if (machine.leasingMax !== undefined) {
+    flatrateThreshold = machine.leasingMax * 0.8;
+    console.log(`Använder 80% av leasingMax för flatrate-beslut: ${flatrateThreshold}`);
+  } else {
+    console.log(`Ingen flatrateThreshold tillgänglig för flatrate-beslut för ${machine.name}`);
+    return false;
+  }
+  
+  // Kontrollera om leasingCost är över tröskeln
+  const isAboveThreshold = leasingCost >= flatrateThreshold;
+  console.log(`Flatrate-beslut: leasingCost ${leasingCost} ${isAboveThreshold ? '>=' : '<'} tröskelvärde ${flatrateThreshold} OCH behandlingar ${treatmentsPerDay} >= 3`);
+  
+  // Returnera true bara om BÅDA villkoren uppfylls
+  return isAboveThreshold;
 }
 
-/**
- * Beräknar det antal behandlingar per dag där flatrate blir mer kostnadseffektivt
- * än att betala per credit
- */
-export function calculateFlatrateBreakEven(
-  flatrateAmount: number,
+export function calculateOperatingCost(
+  machine: Machine,
+  treatmentsPerDay: number,
   creditPrice: number,
-  creditsPerTreatment: number = 1
-): number {
-  if (creditPrice <= 0 || flatrateAmount <= 0) return 0;
+  leasingCost: number,
+  allowBelowFlatrate: boolean = true,
+  leasingRate?: string | number,
+  machinePriceSEK?: number
+): { costPerMonth: number; useFlatrate: boolean } {
+  // Avgör om flatrate ska användas baserat på reglerna
+  const useFlatrate = shouldUseFlatrate(machine, leasingCost, treatmentsPerDay, allowBelowFlatrate, leasingRate, machinePriceSEK);
   
-  // Beräkna hur många behandlingar som krävs för att flatrate ska löna sig
-  // Formel: flatrateAmount / (creditPrice * creditsPerTreatment * workingDaysPerMonth)
-  const breakEvenTreatmentsPerMonth = flatrateAmount / (creditPrice * creditsPerTreatment);
-  const breakEvenTreatmentsPerDay = Math.ceil(breakEvenTreatmentsPerMonth / WORKING_DAYS_PER_MONTH);
+  let costPerMonth = 0;
   
-  return breakEvenTreatmentsPerDay;
+  if (machine.usesCredits) {
+    if (useFlatrate) {
+      console.log(`Använder flatrate-belopp för ${machine.name}: ${machine.flatrateAmount}`);
+      costPerMonth = machine.flatrateAmount;
+    } else {
+      const creditsPerTreatment = 1;
+      costPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH * creditsPerTreatment * creditPrice;
+      console.log(`Beräknad creditkostnad per månad för ${machine.name}: ${costPerMonth} (${treatmentsPerDay} behandlingar/dag × ${WORKING_DAYS_PER_MONTH} dagar/månad × ${creditsPerTreatment} credits/behandling × ${creditPrice} SEK/credit)`);
+    }
+  }
+  
+  return { costPerMonth, useFlatrate };
 }

@@ -12,8 +12,6 @@ import { useDebugLogging } from './useDebugLogging';
 export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Get state selections
   const {
-    clinicSize,
-    setClinicSize,
     selectedMachineId,
     setSelectedMachineId,
     selectedMachine,
@@ -26,12 +24,16 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     allowBelowFlatrate,
     setAllowBelowFlatrate,
     customerPrice,
-    setCustomerPrice,
-    useFlatrateOption,
-    setUseFlatrateOption,
-    treatmentsPerDay,
-    setTreatmentsPerDay
+    setCustomerPrice
   } = useStateSelections();
+
+  // Get clinic settings
+  const { 
+    clinicSize, 
+    setClinicSize, 
+    treatmentsPerDay, 
+    setTreatmentsPerDay 
+  } = useClinicSettings();
 
   // Get machine pricing
   const { exchangeRate, machinePriceSEK } = useMachinePricing({
@@ -53,11 +55,6 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     treatmentsPerDay
   });
 
-  // Beräkna leasingkostnaden som en procentandel av max (0-100%)
-  const leasingCostPercentage = leasingRange.max > 0 
-    ? Math.round(((leasingCost - leasingRange.min) / (leasingRange.max - leasingRange.min)) * 100) 
-    : 0;
-
   // Set up debug logging
   useDebugLogging({
     leasingRange,
@@ -66,7 +63,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     allowBelowFlatrate
   });
 
-  // Get operating costs - skicka med useFlatrateOption
+  // Get operating costs
   const { 
     operatingCost,
     calculatedCreditPrice
@@ -76,8 +73,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     leasingCost,
     selectedLeasingPeriodId,
     machinePriceSEK,
-    allowBelowFlatrate,
-    useFlatrateOption: useFlatrateOption
+    allowBelowFlatrate
   });
 
   // Get revenue calculations
@@ -107,15 +103,12 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     machinePriceSEK,
     leasingRange,
     leasingCost,
-    leasingCostPercentage,
     creditPrice: calculatedCreditPrice,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     allowBelowFlatrate,
     setAllowBelowFlatrate,
     flatrateThreshold,
-    useFlatrateOption,
-    setUseFlatrateOption,
     operatingCost,
     revenue,
     occupancyRevenues,
