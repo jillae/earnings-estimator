@@ -24,11 +24,12 @@ const OperatingCosts: React.FC = () => {
   const eightyPercentOfMaxLeasing = validLeasingRange.max ? validLeasingRange.max * 0.8 : 0;
   const isFlatrateUnlocked = leasingCost >= eightyPercentOfMaxLeasing && treatmentsPerDay >= 3;
 
+  // Använd flatrateAmount direkt från den valda maskinen
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
   
-  // Fasta värden för creditMin och creditMax - som nummer
-  const creditMin: number = 149;
-  const creditMax: number = 299;
+  // Använd creditMin och creditMax från den valda maskinen om tillgängliga
+  const creditMin: number = selectedMachine?.creditMin || 149;
+  const creditMax: number = selectedMachine?.creditMax || 299;
   
   // Visa prisintervall om både min och max finns och är olika
   const hasCreditRange = creditMin !== creditMax;
