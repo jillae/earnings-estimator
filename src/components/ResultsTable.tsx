@@ -29,8 +29,21 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   occupancy75,
   occupancy100
 }) => {
+  // Validera värden och se till att de är giltiga nummer
+  const safeDaily = isNaN(dailyRevenueIncVat) ? 0 : dailyRevenueIncVat;
+  const safeWeekly = isNaN(weeklyRevenueIncVat) ? 0 : weeklyRevenueIncVat;
+  const safeMonthly = isNaN(monthlyRevenueIncVat) ? 0 : monthlyRevenueIncVat;
+  const safeYearly = isNaN(yearlyRevenueIncVat) ? 0 : yearlyRevenueIncVat;
+  const safeLeasingCost = isNaN(leasingCostPerMonth) ? 0 : leasingCostPerMonth;
+  const safeOperatingCost = isNaN(operatingCostPerMonth) ? 0 : operatingCostPerMonth;
+  const safeNetMonth = isNaN(netPerMonthExVat) ? 0 : netPerMonthExVat;
+  const safeNetYear = isNaN(netPerYearExVat) ? 0 : netPerYearExVat;
+  const safeOcc50 = isNaN(occupancy50) ? 0 : occupancy50;
+  const safeOcc75 = isNaN(occupancy75) ? 0 : occupancy75;
+  const safeOcc100 = isNaN(occupancy100) ? 0 : occupancy100;
+  
   // Calculate total costs per month
-  const totalCostPerMonth = leasingCostPerMonth + operatingCostPerMonth;
+  const totalCostPerMonth = safeLeasingCost + safeOperatingCost;
   
   return (
     <div className="glass-card mt-8 animate-slide-in" style={{ animationDelay: '600ms' }}>
@@ -50,24 +63,24 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           <tbody>
             <tr className="border-b border-slate-200">
               <td className="py-3 px-4 text-slate-700">Intäkt (ink moms)</td>
-              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(dailyRevenueIncVat)}</td>
-              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(weeklyRevenueIncVat)}</td>
-              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(monthlyRevenueIncVat)}</td>
-              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(yearlyRevenueIncVat)}</td>
+              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeDaily)}</td>
+              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeWeekly)}</td>
+              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeMonthly)}</td>
+              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeYearly)}</td>
             </tr>
             <tr className="border-b border-slate-200">
               <td className="py-3 px-4 text-slate-700">Leasingkostnad (ex moms)</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(leasingCostPerMonth)}</td>
-              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(leasingCostPerMonth * 12)}</td>
+              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeLeasingCost)}</td>
+              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeLeasingCost * 12)}</td>
             </tr>
             <tr className="border-b border-slate-200">
               <td className="py-3 px-4 text-slate-700">Drift (credits/flatrate) (ex moms)</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(operatingCostPerMonth)}</td>
-              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(operatingCostPerMonth * 12)}</td>
+              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeOperatingCost)}</td>
+              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeOperatingCost * 12)}</td>
             </tr>
             <tr className="border-b border-slate-200">
               <td className="py-3 px-4 text-slate-700">Total kostnad (ex moms)</td>
@@ -80,8 +93,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <td className="py-3 px-4 text-slate-700">Netto (ex moms)</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-emerald-600">{formatCurrency(netPerMonthExVat)}</td>
-              <td className="py-3 px-4 text-right text-emerald-600">{formatCurrency(netPerYearExVat)}</td>
+              <td className="py-3 px-4 text-right text-emerald-600">{formatCurrency(safeNetMonth)}</td>
+              <td className="py-3 px-4 text-right text-emerald-600">{formatCurrency(safeNetYear)}</td>
             </tr>
           </tbody>
         </table>
@@ -92,15 +105,15 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
         <div className="grid grid-cols-3 gap-4">
           <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:shadow-md transition-shadow">
             <div className="text-sm text-slate-600 mb-1">Beläggning 50%, år 1 (ink moms)</div>
-            <div className="text-xl font-semibold text-emerald-600">{formatCurrency(occupancy50)}</div>
+            <div className="text-xl font-semibold text-emerald-600">{formatCurrency(safeOcc50)}</div>
           </div>
           <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:shadow-md transition-shadow">
             <div className="text-sm text-slate-600 mb-1">Beläggning 75%, år 2 (ink moms)</div>
-            <div className="text-xl font-semibold text-emerald-600">{formatCurrency(occupancy75)}</div>
+            <div className="text-xl font-semibold text-emerald-600">{formatCurrency(safeOcc75)}</div>
           </div>
           <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:shadow-md transition-shadow">
             <div className="text-sm text-slate-600 mb-1">Beläggning 100%, år 3 (ink moms)</div>
-            <div className="text-xl font-semibold text-emerald-600">{formatCurrency(occupancy100)}</div>
+            <div className="text-xl font-semibold text-emerald-600">{formatCurrency(safeOcc100)}</div>
           </div>
         </div>
       </div>

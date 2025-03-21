@@ -4,6 +4,9 @@ import { WORKING_DAYS_PER_MONTH } from './constants';
 
 // Beräkna antalet behandlingar per månad baserat på antalet behandlingar per dag
 export function calculateTreatmentsPerMonth(treatmentsPerDay: number): number {
+  if (isNaN(treatmentsPerDay) || treatmentsPerDay === null || treatmentsPerDay === undefined) {
+    return 0;
+  }
   return treatmentsPerDay * WORKING_DAYS_PER_MONTH;
 }
 
@@ -24,15 +27,18 @@ export function calculateCreditPrice(
     return machine.creditMin;
   }
   
+  // Säkerställ att leasingCost är ett giltigt värde
+  const safeLeasingCost = isNaN(leasingCost) ? 0 : leasingCost;
+  
   // Om ingen creditMin, beräkna baserat på leasingkostnad och prismultiplikator
-  if (machine.creditPriceMultiplier && leasingCost > 0) {
-    const calculatedPrice = Math.round(leasingCost * machine.creditPriceMultiplier);
-    console.log(`Beräknat kredippris baserat på multiplikator (${machine.creditPriceMultiplier}) och leasingkostnad (${leasingCost}): ${calculatedPrice}`);
+  if (machine.creditPriceMultiplier && safeLeasingCost > 0) {
+    const calculatedPrice = Math.round(safeLeasingCost * machine.creditPriceMultiplier);
+    console.log(`Beräknat kredippris baserat på multiplikator (${machine.creditPriceMultiplier}) och leasingkostnad (${safeLeasingCost}): ${calculatedPrice}`);
     return calculatedPrice;
   }
   
   // Beräkna kreditpris baserat på maskinpris (om sådant finns) som fallback
-  if (machinePriceSEK) {
+  if (machinePriceSEK && !isNaN(machinePriceSEK)) {
     // En konstant multiplikator för alla maskiner
     const baseCreditFactor = 0.002;
     const calculatedPrice = Math.round(machinePriceSEK * baseCreditFactor);
@@ -41,7 +47,7 @@ export function calculateCreditPrice(
   }
   
   // Fallback om ingen av ovanstående fungerar
-  return 149; // Standardvärde för Emerald
+  return 149; // Standardvärde för credits
 }
 
 /**
@@ -63,10 +69,10 @@ export function calculateOperatingCost(
   }
   
   // Säkerställ att behandlingar per dag är ett positivt tal
-  const safetreatmentsPerDay = Math.max(0, treatmentsPerDay || 0);
+  const safetreatmentsPerDay = Math.max(0, isNaN(treatmentsPerDay) ? 0 : treatmentsPerDay);
   
   // Säkerställ att kreditpriset är giltigt
-  const safeCreditPrice = Math.max(0, creditPrice || 0);
+  const safeCreditPrice = Math.max(0, isNaN(creditPrice) ? 0 : creditPrice);
   
   // Flagga för att avgöra om flatrate ska användas
   let useFlatrate = !usePerCreditModel;
@@ -113,13 +119,14 @@ export function shouldUseFlatrate(
   }
   
   // Säkerställ att leasingCost är giltigt
-  const safeLeasingCost = Math.max(0, leasingCost || 0);
+  const safeLeasingCost = Math.max(0, isNaN(leasingCost) ? 0 : leasingCost);
+  const safetreatmentsPerDay = isNaN(treatmentsPerDay) ? 0 : treatmentsPerDay;
   
   // Leasingkostnad måste vara minst 80% av max för att kvalificera för flatrate
   const leasingPercent = machine.leasingMax > 0 ? safeLeasingCost / machine.leasingMax : 0;
   
   // Minst 3 behandlingar per dag krävs för flatrate
-  const minTreatments = treatmentsPerDay >= 3;
+  const minTreatments = safetreatmentsPerDay >= 3;
   
   // Om allowBelowFlatrate är false, måste vi vara över tröskelvärdet
   // för att aktivera flatrate
@@ -138,8 +145,10 @@ export function calculateFlatrateBreakEven(
   creditPrice: number,
   creditsPerTreatment: number = 1
 ): number {
-  // Säkerställ att vi inte delar med noll
-  if (creditPrice <= 0 || flatrateAmount <= 0) return 0;
+  // Säkerställ att vi inte delar med noll och hanterar ogiltiga värden
+  if (isNaN(flatrateAmount) || isNaN(creditPrice) || flatrateAmount <= 0 || creditPrice <= 0) {
+    return 0;
+  }
   
   // Beräkna hur många behandlingar som krävs för att flatrate ska löna sig
   // Formel: flatrateAmount / (creditPrice * creditsPerTreatment * workingDaysPerMonth)

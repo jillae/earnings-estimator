@@ -36,8 +36,13 @@ export function useOperatingCosts({
       const creditPrice = selectedMachine.creditMin || 149; // Säkerställ att vi använder 149 som standard
       setCalculatedCreditPrice(creditPrice);
       
+      // Säkerställ att treatmentsPerDay och leasingCost är giltiga värden
+      const safetreatmentsPerDay = isNaN(treatmentsPerDay) ? 0 : treatmentsPerDay;
+      const safeLeasingCost = isNaN(leasingCost) ? 0 : leasingCost;
+      
       // Beräkna om flatrate ska vara aktivt (över 80% av maximal leasing och minst 3 behandlingar/dag)
-      const isFlatrateUnlocked = leasingCost >= (selectedMachine.leasingMax * 0.8) && treatmentsPerDay >= 3;
+      const maxLeasingCost = selectedMachine.leasingMax || 0;
+      const isFlatrateUnlocked = safeLeasingCost >= (maxLeasingCost * 0.8) && safetreatmentsPerDay >= 3;
       const useFlatrateForCalculation = useFlatrateOption === 'flatrate' && isFlatrateUnlocked;
       
       // Beräkna driftskostnad baserat på valt läge
@@ -49,7 +54,7 @@ export function useOperatingCosts({
       } else {
         // Beräkna kostnad per månad baserat på credits
         const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
-        monthlyOperatingCost = treatmentsPerDay * 22 * creditsPerTreatment * creditPrice;
+        monthlyOperatingCost = safetreatmentsPerDay * 22 * creditsPerTreatment * creditPrice;
       }
       
       setOperatingCost({
