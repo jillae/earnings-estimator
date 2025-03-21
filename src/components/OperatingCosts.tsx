@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Info, Lock, Unlock } from 'lucide-react';
