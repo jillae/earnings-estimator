@@ -56,6 +56,13 @@ export function useOperatingCosts({
         costPerMonth: monthlyOperatingCost,
         useFlatrate: useFlatrateForCalculation
       });
+    } else {
+      // Återställ värdena om ingen maskin är vald eller om den valda maskinen inte använder credits
+      setCalculatedCreditPrice(0);
+      setOperatingCost({
+        costPerMonth: 0,
+        useFlatrate: false
+      });
     }
   }, [selectedMachineId, leasingCost, selectedLeasingPeriodId, machinePriceSEK, treatmentsPerDay, useFlatrateOption, allowBelowFlatrate]);
 

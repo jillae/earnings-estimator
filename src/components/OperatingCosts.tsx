@@ -13,11 +13,14 @@ const OperatingCosts: React.FC = () => {
   const isFlatrateUnlocked = leasingCost >= eightyPercentOfMaxLeasing && treatmentsPerDay >= 3;
 
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
-  const creditPrice = selectedMachine?.creditPriceMultiplier ? selectedMachine.creditPriceMultiplier * (exchangeRate || 1) : 0;
+  
+  // Använd maskinens fördefinierade creditMin värde istället för att beräkna med multiplikator
+  const creditPrice = selectedMachine?.creditMin || 0;
 
   // Direkt beräkning av kostnad per månad för credits
-  const treatmentsPerMonth = treatmentsPerDay * 20; // Antag 20 arbetsdagar per månad
-  const creditsCostPerMonth = selectedMachine?.usesCredits ? treatmentsPerMonth * creditPrice : 0;
+  const treatmentsPerMonth = treatmentsPerDay * 22; // Använd konstanten för arbetsdagar per månad
+  const creditsPerTreatment = selectedMachine?.creditsPerTreatment || 1;
+  const creditsCostPerMonth = selectedMachine?.usesCredits ? treatmentsPerMonth * creditsPerTreatment * creditPrice : 0;
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
