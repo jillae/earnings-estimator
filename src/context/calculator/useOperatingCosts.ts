@@ -46,7 +46,14 @@ export function useOperatingCosts({
       const safeLeasingCost = isNaN(leasingCost) ? 0 : leasingCost;
       
       // Beräkna om flatrate ska användas baserat på användarens val
-      const useFlatrate = useFlatrateOption === 'flatrate';
+      // Men bara om vi är över tröskeln (80%)
+      let useFlatrate = useFlatrateOption === 'flatrate';
+      
+      // Om vi använder flatrate men är under tröskeln, inaktivera det
+      if (useFlatrate && allowBelowFlatrate) {
+        console.log('Flatrate begärd men är under tröskeln, inaktiverar flatrate');
+        useFlatrate = false;
+      }
       
       // Beräkna månadskostand
       const cost = calculateOperatingCost(

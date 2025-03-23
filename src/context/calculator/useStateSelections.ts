@@ -58,6 +58,18 @@ export function useStateSelections() {
     }
   }, [selectedMachine]);
 
+  // En anpassad setUseFlatrateOption som kontrollerar 80%-tröskeln
+  const setUseFlatrateOptionSecure = (option: FlatrateOption) => {
+    // Om användaren försöker aktivera flatrate, se till att vi är över 80% och har minst 3 behandlingar per dag
+    if (option === 'flatrate' && (allowBelowFlatrate || treatmentsPerDay < 3)) {
+      console.log('Försöker aktivera flatrate men inte tillåtet - ignorerar begäran');
+      return; // Ignorera begäran om att aktivera flatrate när det inte är tillåtet
+    }
+    
+    // Annars, tillåt ändringen
+    setUseFlatrateOption(option);
+  };
+
   return {
     clinicSize,
     setClinicSize,
@@ -77,6 +89,6 @@ export function useStateSelections() {
     customerPrice,
     setCustomerPrice,
     useFlatrateOption,
-    setUseFlatrateOption
+    setUseFlatrateOption: setUseFlatrateOptionSecure
   };
 }
