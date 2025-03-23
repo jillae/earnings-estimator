@@ -29,17 +29,14 @@ const OperatingCosts: React.FC = () => {
   // Använd flatrateAmount direkt från den valda maskinen
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
   
-  // Använd creditMin värdet från den valda maskinen
-  const creditPrice: number = selectedMachine?.creditMin || 149;
-  
-  // Hämta information om kreditintervall för visning
-  const creditMin = selectedMachine?.creditMin || 0;
-  const creditMax = selectedMachine?.creditMax || 0;
+  // Använd creditMin och creditMax värdet från den valda maskinen
+  const creditMin: number = selectedMachine?.creditMin || 0;
+  const creditMax: number = selectedMachine?.creditMax || 0;
   const hasCreditRange = creditMin !== creditMax && creditMin > 0 && creditMax > 0;
   
   // Direkt beräkning av kostnad per månad för credits
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
-  const creditsCostPerMonth = selectedMachine?.usesCredits ? treatmentsPerMonth * creditPrice : 0;
+  const creditsCostPerMonth = selectedMachine?.usesCredits ? treatmentsPerMonth * creditMin : 0;
 
   // Hantera flatrate-switch
   const handleFlatrateChange = (checked: boolean) => {
@@ -118,7 +115,7 @@ const OperatingCosts: React.FC = () => {
               <div className="flex justify-between items-center mb-4">
                 <span className="text-sm">Pris per credit</span>
                 <span className="text-lg font-semibold text-slate-700">
-                  {formatCurrency(creditPrice, false)}
+                  {formatCurrency(creditMin, false)}
                   {hasCreditRange && (
                     <span className="text-xs text-slate-500 ml-1">
                       (Intervall: {formatCurrency(creditMin, false)} - {formatCurrency(creditMax, false)})
@@ -145,7 +142,7 @@ const OperatingCosts: React.FC = () => {
 
           {flatrateAmount > 0 && useFlatrateOption === 'perCredit' && (
             <p className="text-xs text-blue-500">
-              Vid ca {calculateFlatrateBreakEven(flatrateAmount, creditPrice)} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt än styckepris.
+              Vid ca {calculateFlatrateBreakEven(flatrateAmount, creditMin)} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt än styckepris.
             </p>
           )}
         </>
