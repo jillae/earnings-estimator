@@ -58,22 +58,6 @@ export function useStateSelections() {
     }
   }, [selectedMachine]);
 
-  // En anpassad setUseFlatrateOption som kontrollerar 80%-tröskeln
-  const setUseFlatrateOptionSecure = (option: FlatrateOption) => {
-    // Låt användaren alltid växla tillbaka till perCredit-läge
-    if (option === 'perCredit') {
-      setUseFlatrateOption(option);
-      return;
-    }
-    
-    // För att aktivera flatrate, kontrollera kraven
-    if (option === 'flatrate') {
-      // Behöver inte kontrollera här, låt OperatingCosts.tsx hantera inaktiveringen av knappen
-      // baserat på isFlatrateUnlocked
-      setUseFlatrateOption(option);
-    }
-  };
-
   return {
     clinicSize,
     setClinicSize,
@@ -93,6 +77,6 @@ export function useStateSelections() {
     customerPrice,
     setCustomerPrice,
     useFlatrateOption,
-    setUseFlatrateOption: setUseFlatrateOptionSecure
+    setUseFlatrateOption
   };
 }

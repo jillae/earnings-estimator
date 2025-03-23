@@ -45,23 +45,19 @@ export function useOperatingCosts({
       const safetreatmentsPerDay = isNaN(treatmentsPerDay) ? 0 : treatmentsPerDay;
       const safeLeasingCost = isNaN(leasingCost) ? 0 : leasingCost;
       
-      // Beräkna om flatrate ska användas baserat på användarens val
-      // Men bara om vi är över tröskeln (80%) och har minst 3 behandlingar per dag
-      let useFlatrate = useFlatrateOption === 'flatrate';
+      // Beräkna om flatrate kan aktiveras
+      const flatrateThreshold = selectedMachine.leasingMax ? selectedMachine.leasingMax * 0.8 : 0;
+      const meetsLeasingRequirement = safeLeasingCost >= flatrateThreshold;
+      const meetsMinTreatments = safetreatmentsPerDay >= 3;
+      const canUseFlatrate = meetsLeasingRequirement && meetsMinTreatments;
       
-      // Om vi har valt flatrate, kontrollera om vi uppfyller kraven
-      if (useFlatrate) {
-        // Beräkna tröskelvärdet (80% av max leasing)
-        const flatrateThreshold = selectedMachine.leasingMax ? selectedMachine.leasingMax * 0.8 : 0;
-        
-        // Kontrollera om vi är över tröskeln och har tillräckligt med behandlingar
-        if (safeLeasingCost < flatrateThreshold || safetreatmentsPerDay < 3) {
-          console.log('Flatrate begärd men är under tröskeln eller för få behandlingar, inaktiverar flatrate');
-          useFlatrate = false;
-        }
+      // Använd flatrate om användaren valt det OCH flatrate får användas
+      let useFlatrate = false;
+      if (useFlatrateOption === 'flatrate' && canUseFlatrate) {
+        useFlatrate = true;
       }
       
-      // Beräkna månadskostand
+      // Beräkna månadskostnad
       const cost = calculateOperatingCost(
         selectedMachine,
         safetreatmentsPerDay,

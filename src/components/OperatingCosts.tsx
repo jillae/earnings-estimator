@@ -91,15 +91,15 @@ const OperatingCosts: React.FC = () => {
 
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-2">
-          <Label htmlFor="flatrate-switch" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Flatrate för Credits
-          </Label>
           <Switch
             id="flatrate-switch"
             checked={useFlatrateOption === 'flatrate'}
             onCheckedChange={handleFlatrateChange}
-            disabled={!isFlatrateUnlocked}
+            disabled={!isFlatrateUnlocked && useFlatrateOption !== 'flatrate'}
           />
+          <Label htmlFor="flatrate-switch" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Flatrate för Credits
+          </Label>
         </div>
         <span className="text-sm text-gray-500">
           {useFlatrateOption === 'flatrate' ? 'Flatrate' : 'Styckepris'}
