@@ -102,7 +102,7 @@ const OperatingCosts: React.FC = () => {
           />
         </div>
         <span className="text-sm text-gray-500">
-          {useFlatrateOption === 'perCredit' ? 'Styckepris' : 'Flatrate'}
+          {useFlatrateOption === 'flatrate' ? 'Flatrate' : 'Styckepris'}
         </span>
       </div>
 

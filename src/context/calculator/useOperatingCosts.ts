@@ -49,11 +49,12 @@ export function useOperatingCosts({
       // Men bara om vi är över tröskeln (80%) och har minst 3 behandlingar per dag
       let useFlatrate = useFlatrateOption === 'flatrate';
       
-      // Om vi har valt flatrate men är under tröskeln eller har för få behandlingar, inaktivera det
+      // Om vi har valt flatrate, kontrollera om vi uppfyller kraven
       if (useFlatrate) {
         // Beräkna tröskelvärdet (80% av max leasing)
         const flatrateThreshold = selectedMachine.leasingMax ? selectedMachine.leasingMax * 0.8 : 0;
         
+        // Kontrollera om vi är över tröskeln och har tillräckligt med behandlingar
         if (safeLeasingCost < flatrateThreshold || safetreatmentsPerDay < 3) {
           console.log('Flatrate begärd men är under tröskeln eller för få behandlingar, inaktiverar flatrate');
           useFlatrate = false;
