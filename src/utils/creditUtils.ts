@@ -1,3 +1,4 @@
+
 import { Machine } from '../data/machines/types';
 import { WORKING_DAYS_PER_MONTH } from './constants';
 
@@ -41,13 +42,15 @@ export function calculateCreditPrice(
       Math.min(1, Math.max(0, (leasingCost - machine.leasingMin) / leasingRange)) : 0;
     
     // Linjär interpolation av kreditpriset baserat på position
+    // RÄTTELSE: Vänd på beräkningen så att leasingMax ger creditMin och leasingMin ger creditMax
     const creditRange = machine.creditMax - machine.creditMin;
-    const calculatedCreditPrice = machine.creditMin + (position * creditRange);
+    const calculatedCreditPrice = machine.creditMax - (position * creditRange);
     
     console.log(`Linjär interpolation av kreditpris för ${machine.name}:
       Position: ${position.toFixed(2)} i spannet (${leasingCost} mellan ${machine.leasingMin} och ${machine.leasingMax})
       Kreditintervall: ${machine.creditMin} till ${machine.creditMax}
       Beräknat kreditpris: ${Math.round(calculatedCreditPrice)} kr/credit
+      Korrigerad beräkning: creditMax - (position * creditRange)
     `);
     
     return Math.round(calculatedCreditPrice);
