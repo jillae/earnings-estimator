@@ -26,7 +26,7 @@ export function useOperatingCosts({
     useFlatrate: false 
   });
   
-  // Beräkna och spara kreditpris baserat på maskin
+  // Beräkna och spara kreditpris baserat på maskin och leasingkostnad
   const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
   
   // Hämta vald maskin
@@ -35,11 +35,15 @@ export function useOperatingCosts({
   // Uppdatera driftskostnad när maskin eller behandlingsdata ändras
   useEffect(() => {
     if (selectedMachine && selectedMachine.usesCredits) {
-      // Vi använder direkt maskinens creditMin-värde utan dynamisk beräkning
-      // Detta matchar funktionaliteten från Version A
-      const creditPrice = selectedMachine.creditMin !== undefined ? selectedMachine.creditMin : 149;
+      // Beräkna kreditpris med linjär interpolation baserat på leasingkostnad
+      const creditPrice = calculateCreditPrice(
+        selectedMachine,
+        leasingCost,
+        selectedLeasingPeriodId,
+        machinePriceSEK
+      );
       
-      console.log(`Använder kreditpris för ${selectedMachine.name}: ${creditPrice} kr (direkt från maskindata)`);
+      console.log(`Beräknat kreditpris för ${selectedMachine.name}: ${creditPrice} kr baserat på leasingkostnad ${leasingCost} kr`);
       setCalculatedCreditPrice(creditPrice);
       
       // Säkerställ att treatmentsPerDay och leasingCost är giltiga värden

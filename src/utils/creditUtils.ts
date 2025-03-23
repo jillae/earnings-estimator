@@ -1,4 +1,3 @@
-
 import { Machine } from '../data/machines/types';
 import { WORKING_DAYS_PER_MONTH } from './constants';
 
@@ -29,28 +28,35 @@ export function calculateCreditPrice(
     - machine.creditMax: ${machine.creditMax}
   `);
   
-  // Prioritera användning av maskinens creditMin-värde direkt
-  // Detta återställer funktionaliteten från Version A
-  if (machine.creditMin !== undefined) {
-    console.log(`Använder fördefinierat credit-värde för ${machine.name}: ${machine.creditMin}`);
-    return machine.creditMin;
-  }
-  
-  // Fallback-logik nedan används endast om creditMin saknas (vilket inte bör hända)
-  
-  // Säkerställ att leasingCost är ett giltigt värde
-  const safeLeasingCost = isNaN(leasingCost) ? 0 : leasingCost;
-  
-  // Om creditPriceMultiplier finns, beräkna baserat på leasingkostnad
-  if (machine.creditPriceMultiplier && safeLeasingCost > 0) {
-    const calculatedPrice = Math.round(safeLeasingCost * machine.creditPriceMultiplier);
-    console.log(`Beräknat kreditpris baserat på multiplikator (${machine.creditPriceMultiplier}) och leasingkostnad (${safeLeasingCost}): ${calculatedPrice}`);
-    return calculatedPrice;
+  // Om vi har leasingMin, leasingMax, creditMin, creditMax - beräkna dynamiskt med linjär interpolation
+  if (machine.leasingMin !== undefined && 
+      machine.leasingMax !== undefined && 
+      machine.creditMin !== undefined && 
+      machine.creditMax !== undefined && 
+      leasingCost >= machine.leasingMin) {
+    
+    // Beräkna var i spannet mellan min och max leasing vi befinner oss (0-1)
+    const leasingRange = machine.leasingMax - machine.leasingMin;
+    const position = leasingRange > 0 ?
+      Math.min(1, Math.max(0, (leasingCost - machine.leasingMin) / leasingRange)) : 0;
+    
+    // Linjär interpolation av kreditpriset baserat på position
+    const creditRange = machine.creditMax - machine.creditMin;
+    const calculatedCreditPrice = machine.creditMin + (position * creditRange);
+    
+    console.log(`Linjär interpolation av kreditpris för ${machine.name}:
+      Position: ${position.toFixed(2)} i spannet (${leasingCost} mellan ${machine.leasingMin} och ${machine.leasingMax})
+      Kreditintervall: ${machine.creditMin} till ${machine.creditMax}
+      Beräknat kreditpris: ${Math.round(calculatedCreditPrice)} kr/credit
+    `);
+    
+    return Math.round(calculatedCreditPrice);
   }
   
   // Fallback till standardvärde om inget annat fungerar
-  console.log(`Använder standardvärde 149 för credits för ${machine.name}`);
-  return 149; // Standardvärde för credits
+  const defaultCreditPrice = machine.creditMin || 149;
+  console.log(`Använder standardvärde ${defaultCreditPrice} för credits för ${machine.name}`);
+  return defaultCreditPrice;
 }
 
 /**
