@@ -1,4 +1,3 @@
-
 import { Machine } from '../data/machines/types';
 import { WORKING_DAYS_PER_MONTH } from './constants';
 
@@ -12,6 +11,7 @@ export function calculateTreatmentsPerMonth(treatmentsPerDay: number): number {
 
 /**
  * Beräknar och returnerar priset per credit baserat på maskintyp och leasingkostnad
+ * med förbättrad linjär interpolation
  */
 export function calculateCreditPrice(
   machine: Machine, 
@@ -29,28 +29,31 @@ export function calculateCreditPrice(
     - machine.creditMax: ${machine.creditMax}
   `);
   
-  // Om vi har leasingMin, leasingMax, creditMin, creditMax - beräkna dynamiskt med linjär interpolation
+  // Om vi har leasingMin, leasingMax, creditMin, creditMax - beräkna dynamiskt
   if (machine.leasingMin !== undefined && 
       machine.leasingMax !== undefined && 
       machine.creditMin !== undefined && 
-      machine.creditMax !== undefined && 
+      machine.creditMax !== undefined &&
       leasingCost >= machine.leasingMin) {
     
-    // Beräkna var i spannet mellan min och max leasing vi befinner oss (0-1)
+    // Beräkna adjustmentFactor baserat på leasingkostnad
     const leasingRange = machine.leasingMax - machine.leasingMin;
-    const position = leasingRange > 0 ?
+    const adjustmentFactor = leasingRange > 0 ?
       Math.min(1, Math.max(0, (leasingCost - machine.leasingMin) / leasingRange)) : 0;
     
-    // Linjär interpolation av kreditpriset baserat på position
-    // RÄTTELSE: Vänd på beräkningen så att leasingMax ger creditMin och leasingMin ger creditMax
+    // Direkt linjär interpolation
+    // Här interpolerar vi så att:
+    // - leasingMin motsvarar creditMax
+    // - leasingMax motsvarar creditMin
+    // Detta ger en omvänd korrelation där högre leasingkostnad ger lägre kreditpris
     const creditRange = machine.creditMax - machine.creditMin;
-    const calculatedCreditPrice = machine.creditMax - (position * creditRange);
+    const calculatedCreditPrice = machine.creditMax - (adjustmentFactor * creditRange);
     
     console.log(`Linjär interpolation av kreditpris för ${machine.name}:
-      Position: ${position.toFixed(2)} i spannet (${leasingCost} mellan ${machine.leasingMin} och ${machine.leasingMax})
+      Justeringsfaktor: ${adjustmentFactor.toFixed(2)} i spannet (${leasingCost} mellan ${machine.leasingMin} och ${machine.leasingMax})
       Kreditintervall: ${machine.creditMin} till ${machine.creditMax}
       Beräknat kreditpris: ${Math.round(calculatedCreditPrice)} kr/credit
-      Korrigerad beräkning: creditMax - (position * creditRange)
+      Formel: creditMax - (adjustmentFactor * creditRange)
     `);
     
     return Math.round(calculatedCreditPrice);
@@ -60,6 +63,38 @@ export function calculateCreditPrice(
   const defaultCreditPrice = machine.creditMin || 149;
   console.log(`Använder standardvärde ${defaultCreditPrice} för credits för ${machine.name}`);
   return defaultCreditPrice;
+}
+
+/**
+ * Hjälpfunktion för att direkt beräkna kreditvärde från justeringsfaktor
+ */
+export function calculateCreditPriceWithDirectInterpolation(
+  adjustmentFactor: number, // Värde mellan 0 och 1 som representerar sliderns position
+  creditMin: number,
+  creditMax: number
+): number {
+  // Säkerställ att justeringsfaktorn är inom giltigt intervall
+  const clampedFactor = Math.max(0, Math.min(1, adjustmentFactor));
+
+  // Direkt linjär interpolation, omvänd relation (högre faktor = lägre kreditpris)
+  const creditValue = creditMax - clampedFactor * (creditMax - creditMin);
+
+  return Math.round(creditValue);
+}
+
+/**
+ * Beräknar justeringsfaktorn baserat på leasingkostnad
+ */
+export function getAdjustmentFactorFromLeasingCost(
+  currentLeasingCost: number,
+  leasingMin: number,
+  leasingMax: number
+): number {
+  if (leasingMax === leasingMin) {
+    return 0; // Undvik division med noll
+  }
+  const factor = (currentLeasingCost - leasingMin) / (leasingMax - leasingMin);
+  return Math.max(0, Math.min(1, factor)); // Säkerställ inom 0 och 1
 }
 
 /**
