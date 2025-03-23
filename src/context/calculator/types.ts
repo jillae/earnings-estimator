@@ -2,8 +2,8 @@
 // Types for the Calculator Context
 export interface CalculatorContextType {
   // Clinic and machine selection
-  clinicSize: number;
-  setClinicSize: (size: number) => void;
+  clinicSize: any;
+  setClinicSize: (size: any) => void;
   selectedMachineId: string;
   setSelectedMachineId: (id: string) => void;
   selectedMachine: any;
@@ -33,6 +33,11 @@ export interface CalculatorContextType {
   allowBelowFlatrate: boolean;
   setAllowBelowFlatrate: (value: boolean) => void;
   flatrateThreshold: number;
+  leasingCostPercentage: number; // Procentandel av max
+  
+  // Flatrate option - använder string-enum istället för boolean
+  useFlatrateOption: 'perCredit' | 'flatrate';
+  setUseFlatrateOption: (value: 'perCredit' | 'flatrate') => void;
   
   // Operating costs
   operatingCost: { costPerMonth: number, useFlatrate: boolean };

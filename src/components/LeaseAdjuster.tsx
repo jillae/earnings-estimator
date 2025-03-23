@@ -1,9 +1,7 @@
 
 import React, { useEffect } from 'react';
-import { Slider } from "@/components/ui/slider";
-import { formatCurrency } from '@/utils/calculatorUtils';
-import { Info } from 'lucide-react';
-import { Switch } from "@/components/ui/switch";
+import CostDisplay from './lease-adjuster/CostDisplay';
+import LeaseSlider from './lease-adjuster/LeaseSlider';
 
 interface LeaseAdjusterProps {
   minLeaseCost: number;
@@ -46,29 +44,49 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMaxCost = maxLeaseCost;
   const costRange = exactMaxCost - exactMinCost;
 
-  // Beräkna stegstorlek baserat på ett rimligt antal steg över hela intervallet
-  const totalSteps = 100; // Vi vill ha 100 steg från min till max
-  const sliderStep = 1 / totalSteps; // Fast steg på 1/100 av sliderns skala
-
   // Beräkna exakt leasingkostnad för den aktuella faktorn
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
+  // Avrunda leasingkostnaden till närmaste 100 SEK och se till att den slutar på 6
+  const stepSize = 100;
+  let roundedLeasingCost = Math.round(calculatedLeasingCost / stepSize) * stepSize;
+  
+  // För att säkerställa att kostnaden slutar på 6, justera värdet
+  const lastDigit = roundedLeasingCost % 10;
+  if (lastDigit !== 6) {
+    // Lägg till skillnaden för att få 6 som sista siffra
+    roundedLeasingCost = roundedLeasingCost - lastDigit + 6;
+  }
+  
   // Beräkna flatrate-faktorn (position) om vi har ett tröskelvärde
-  let flatratePosition = 0;
+  let flatratePosition = null;
   if (flatrateThreshold) {
     flatratePosition = (flatrateThreshold - exactMinCost) / Math.max(0.001, costRange);
-    flatratePosition = Math.max(0, Math.min(1, flatratePosition));
+    flatratePosition = Math.max(0, Math.min(1, flatratePosition)) * 100; // Konvertera till procent
   }
   
   const handleSliderChange = (values: number[]) => {
-    // Om under-80%-läge inte är tillåtet, begränsa slider till flatratePosition
+    // Ta bort begränsningen som hindrar slidern från att gå under flatratePosition
+    // Oavsett om allowBelowFlatrate är true eller false
     let newValue = values[0];
     
-    if (!allowBelowFlatrate && flatrateThreshold && newValue < flatratePosition) {
-      newValue = flatratePosition;
+    // Beräkna exakt kostnad baserat på positionen
+    const exactCost = exactMinCost + (newValue * costRange);
+    
+    // Avrunda till närmaste 100 SEK och se till att det slutar på 6
+    let roundedCost = Math.round(exactCost / stepSize) * stepSize;
+    const lastDigit = roundedCost % 10;
+    if (lastDigit !== 6) {
+      roundedCost = roundedCost - lastDigit + 6;
     }
     
-    onAdjustmentChange(newValue);
+    // Konvertera tillbaka till en faktor mellan 0 och 1
+    const newFactor = (roundedCost - exactMinCost) / Math.max(0.001, costRange);
+    
+    // Begränsa faktorn till mellan 0 och 1
+    const clampedFactor = Math.max(0, Math.min(1, newFactor));
+    
+    onAdjustmentChange(clampedFactor);
   };
 
   // Omfattande diagnostikloggning för att felsöka sliderbeteendet
@@ -79,11 +97,13 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       - Max: ${exactMaxCost}
       - Range: ${costRange}
       - Beräknad kostnad vid faktor ${adjustmentFactor}: ${calculatedLeasingCost}
+      - Avrundad kostnad med 6 i slutet: ${roundedLeasingCost}
       - Aktuell kostnad: ${leaseCost}
       - Flatrate position: ${flatratePosition}
       - Allow below flatrate: ${allowBelowFlatrate}
+      - Steg storlek: ${stepSize}
     `);
-  }, [adjustmentFactor, exactMinCost, exactMaxCost, costRange, leaseCost, calculatedLeasingCost, flatratePosition, allowBelowFlatrate]);
+  }, [adjustmentFactor, exactMinCost, exactMaxCost, costRange, leaseCost, calculatedLeasingCost, flatratePosition, allowBelowFlatrate, roundedLeasingCost]);
 
   // Säkerställ att leasingCost är inom intervallet
   let actualLeasingCost = leaseCost;
@@ -91,21 +111,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     actualLeasingCost = exactMaxCost;
   } else if (leaseCost < exactMinCost) {
     actualLeasingCost = exactMinCost;
-  }
-
-  // Använd formaterade värden utan avrundning för konsekvent visning
-  const formattedMinCost = formatCurrency(exactMinCost, false);
-  const formattedMaxCost = formatCurrency(exactMaxCost, false);
-  const formattedCost = formatCurrency(actualLeasingCost, false);
-
-  // Beräkna flatrate-tröskelpositionen som procent om relevant
-  let thresholdPosition = null;
-  if (showFlatrateIndicator && flatrateThreshold && !allowBelowFlatrate) {
-    // Beräkna tröskelpositionen som procent av slidersträckan
-    thresholdPosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
-    // Säkerställ att positionen är begränsad mellan 0 och 100
-    thresholdPosition = Math.max(0, Math.min(100, thresholdPosition));
-    console.log(`Flatrate threshold position: ${thresholdPosition}% (${flatrateThreshold} / ${exactMinCost} / ${exactMaxCost})`);
   }
 
   // Kontrollera och logga om vi är över flatrate-tröskeln
@@ -123,89 +128,25 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     `);
   }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, shouldShowFlatrateInfo, allowBelowFlatrate]);
 
-  // Hantera växling av flatrate-läge
-  const handleToggleFlatrate = () => {
-    if (onAllowBelowFlatrateChange) {
-      const newValue = !allowBelowFlatrate;
-      console.log(`Ändrar allowBelowFlatrate till: ${newValue}`);
-      
-      // Om vi aktiverar flatrate-läget (allowBelowFlatrate = false) och nuvarande faktorn är under flatratePosition,
-      // uppdatera faktorn till flatratePosition
-      if (!newValue && adjustmentFactor < flatratePosition) {
-        onAdjustmentChange(flatratePosition);
-      }
-      
-      onAllowBelowFlatrateChange(newValue);
-    }
-  };
-
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
       <label className="input-label">
         Justera leasingkostnad
       </label>
 
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-xs text-slate-500">Min: {formattedMinCost}</span>
-        <span className="text-xs text-slate-500">Max: {formattedMaxCost}</span>
-      </div>
+      <CostDisplay 
+        minLeaseCost={exactMinCost}
+        maxLeaseCost={exactMaxCost}
+        leaseCost={actualLeasingCost}
+      />
 
-      <div className="slider-container relative mb-6">
-        {showFlatrateIndicator && thresholdPosition !== null && (
-          <div className="flatrate-indicator">
-            <div 
-              className="absolute h-8 border-l-2 border-primary z-10 top-4" 
-              style={{ left: `${thresholdPosition}%` }}
-            />
-            <div 
-              className="absolute text-xs text-primary font-medium top-0"
-              style={{ 
-                left: `${thresholdPosition > 70 ? thresholdPosition - 50 : thresholdPosition}%`, 
-                maxWidth: '50%',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {!allowBelowFlatrate ? '80% flatrate gräns' : '80%'}
-            </div>
-          </div>
-        )}
-        
-        <Slider
-          id="leasingCostSlider"
-          value={[adjustmentFactor]}
-          min={0}
-          max={1}
-          step={sliderStep}
-          onValueChange={handleSliderChange}
-          className="mt-8"
-        />
-      </div>
-
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-medium">Leasingkostnad per månad (ex moms)</span>
-        <span className="text-lg font-semibold text-slate-700">{formattedCost}</span>
-      </div>
-
-      {showFlatrateIndicator && flatrateThreshold && (
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Switch 
-              id="allow-below-flatrate" 
-              checked={!allowBelowFlatrate}
-              onCheckedChange={handleToggleFlatrate}
-            />
-            <label 
-              htmlFor="allow-below-flatrate"
-              className="text-sm cursor-pointer"
-            >
-              Aktivera flatrate för credits
-            </label>
-          </div>
-          <span className={`text-xs ${allowBelowFlatrate ? 'text-yellow-600' : 'text-green-600'}`}>
-            {allowBelowFlatrate ? 'Flatrate inaktiverat' : 'Flatrate aktiverat'}
-          </span>
-        </div>
-      )}
+      <LeaseSlider 
+        adjustmentFactor={adjustmentFactor}
+        onSliderChange={handleSliderChange}
+        thresholdPosition={flatratePosition}
+        showFlatrateIndicator={showFlatrateIndicator}
+        allowBelowFlatrate={allowBelowFlatrate}
+      />
     </div>
   );
 };

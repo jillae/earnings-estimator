@@ -1,4 +1,3 @@
-
 export interface Machine {
   id: string;
   name: string;
@@ -22,6 +21,7 @@ export interface Machine {
   fullName?: string;
   shortName?: string;
   modelCode?: string;
+  creditsPerTreatment?: number;
 }
 
 export interface LeasingPeriod {

@@ -4,10 +4,10 @@
  */
 
 // Re-export all utility functions to maintain backward compatibility
-export { formatCurrency } from './formatUtils';
+export { formatCurrency, roundToHundredEndingSix } from './formatUtils';
 export { fetchExchangeRate, calculateMachinePriceSEK } from './exchangeRateUtils';
 export { calculateLeasingRange, calculateLeasingCost } from './leasingUtils';
-export { calculateCreditPrice, calculateOperatingCost, shouldUseFlatrate } from './creditUtils';
+export { calculateCreditPrice, calculateOperatingCost, shouldUseFlatrate, calculateFlatrateBreakEven } from './creditUtils';
 export { 
   calculateRevenue, 
   calculateOccupancyRevenues,
