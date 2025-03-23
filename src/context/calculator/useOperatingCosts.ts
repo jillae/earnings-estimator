@@ -35,8 +35,8 @@ export function useOperatingCosts({
   // Uppdatera driftskostnad när maskin eller behandlingsdata ändras
   useEffect(() => {
     if (selectedMachine && selectedMachine.usesCredits) {
-      // VIKTIGT: Använd ALLTID maskinens creditMin-värde om det finns
-      // Detta är den kritiska lösningen - creditMin från maskinen måste prioriteras
+      // ABSOLUT VIKTIGAST: Använd ALLTID maskinens creditMin-värde direkt
+      // Detta är exakt vad som fungerade i Version A
       const creditPrice = selectedMachine.creditMin !== undefined ? selectedMachine.creditMin : 149;
       
       console.log(`Använder kreditpris för ${selectedMachine.name}: ${creditPrice} kr (direkt från maskindata)`);

@@ -19,7 +19,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   allowBelowFlatrate
 }) => {
   // Vi använder alltid procent (0-100) istället för faktor (0-1)
-  // Inga begränsningar baserat på thresholdPosition, användaren ska kunna dra slidern fritt
+  // Inga begränsningar eller tvingande villkor - låt användaren dra slidern fritt oavsett
   return (
     <div className="slider-container relative mb-6">
       <FlatrateIndicator 

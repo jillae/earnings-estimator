@@ -19,7 +19,7 @@ const OperatingCosts: React.FC = () => {
     treatmentsPerDay, 
     exchangeRate,
     leasingCostPercentage,
-    creditPrice
+    creditPrice  // Säkerställ att vi använder creditPrice från context
   } = useCalculator();
 
   // Se till att vi har giltiga värden
@@ -30,8 +30,8 @@ const OperatingCosts: React.FC = () => {
   // Använd flatrateAmount direkt från den valda maskinen
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
   
-  // VIKTIGT: Här använder vi kreditpriset direkt från maskinen via creditPrice från context
-  // Detta säkerställer att vi visar rätt värde i UI:t
+  // VIKTIGT: Här använder vi kreditpriset direkt från maskindata via creditPrice från context
+  // Detta säkerställer att vi visar exakt 149 kr för Emerald-maskinen
   const creditMin: number = creditPrice || (selectedMachine?.creditMin || 0);
   const creditMax: number = selectedMachine?.creditMax || 0;
   const hasCreditRange = creditMin !== creditMax && creditMin > 0 && creditMax > 0;

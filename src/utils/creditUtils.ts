@@ -30,7 +30,7 @@ export function calculateCreditPrice(
   `);
   
   // KRITISK FIX: Prioritera ALLTID användning av maskinens fördefinierade creditMin värde
-  // Detta är nyckeln till att återställa den fungerande logiken från version A
+  // Detta är exakt den funktionalitet som fanns i Version A och fungerade korrekt
   if (machine.creditMin !== undefined) {
     console.log(`Använder fördefinierat credit-värde för ${machine.name}: ${machine.creditMin}`);
     return machine.creditMin;
