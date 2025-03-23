@@ -29,7 +29,14 @@ export function calculateCreditPrice(
     - machine.creditMax: ${machine.creditMax}
   `);
   
-  // Om vi har leasingMin, leasingMax, creditMin, creditMax - beräkna dynamiskt baserat på leasingCost
+  // PRIORITERA: Använd maskinens fördefinierade creditMin värde om det finns
+  if (machine.creditMin !== undefined) {
+    console.log(`Använder fördefinierat credit-värde för ${machine.name}: ${machine.creditMin}`);
+    return machine.creditMin;
+  }
+  
+  // Fallback till dynamisk beräkning om alla nödvändiga parametrar finns
+  // men detta bör inte behövas eftersom vi nu prioriterar machine.creditMin
   if (machine.leasingMin !== undefined && machine.leasingMax !== undefined &&
       machine.creditMin !== undefined && machine.creditMax !== undefined && 
       leasingCost !== undefined) {
@@ -47,13 +54,6 @@ export function calculateCreditPrice(
       Position ${position.toFixed(2)} i spannet ger ${Math.round(calculatedCreditPrice)} kr/credit`);
     
     return Math.round(calculatedCreditPrice);
-  }
-  
-  // Fallback till det ursprungliga sättet
-  // Använd maskinens fördefinierade creditMin värde om det finns
-  if (machine.creditMin !== undefined) {
-    console.log(`Använder fördefinierat credit-värde för ${machine.name}: ${machine.creditMin}`);
-    return machine.creditMin;
   }
   
   // Säkerställ att leasingCost är ett giltigt värde

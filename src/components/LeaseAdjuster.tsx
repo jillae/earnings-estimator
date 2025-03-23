@@ -66,8 +66,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   }
   
   const handleSliderChange = (values: number[]) => {
-    // Ta bort begränsningen som hindrar slidern från att gå under flatratePosition
-    // Oavsett om allowBelowFlatrate är true eller false
+    // VIKTIGT: Ta bort begränsningen som hindrar slidern från att gå under flatratePosition
+    // så att användaren kan justera värdet fritt oavsett om allowBelowFlatrate är true eller false
     let newValue = values[0];
     
     // Beräkna exakt kostnad baserat på positionen
