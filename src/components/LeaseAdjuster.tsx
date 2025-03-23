@@ -66,8 +66,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   }
   
   const handleSliderChange = (values: number[]) => {
-    // VIKTIGT: Ta bort ALLA begränsningar som hindrar slidern från att gå under flatratePosition
-    // så att användaren kan justera värdet fritt oavsett om allowBelowFlatrate är true eller false
     let newValue = values[0] / 100; // Konvertera från 0-100 till 0-1
     
     // Beräkna exakt kostnad baserat på positionen
