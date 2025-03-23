@@ -1,8 +1,8 @@
 
 import { useEffect } from 'react';
 
-// Konstant för versionsnummer - uppdaterad till version 3.0
-const VERSION = "3.0";
+// Konstant för versionsnummer
+const VERSION = "bas1";
 
 export function useDebugLogging({
   leasingRange,

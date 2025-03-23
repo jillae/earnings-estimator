@@ -2,7 +2,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { machineData } from '@/data/machines';
 import { Machine } from '@/data/machines/types';
-import { FlatrateOption } from '@/utils/constants';
 
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
@@ -10,10 +9,9 @@ export function useStateSelections() {
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60');
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
   const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(1); // Börja med max (1) istället för min (0)
-  const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(false); // Ändrad till false för att blockera flatrate under 80%
+  const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true); // Som standard tillåter vi under 80% och inaktiverar flatrate
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
-  const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit'); // Använd FlatrateOption typ från constants
 
   // Härled den valda maskinen från maskin-ID
   const selectedMachine = useMemo(() => {
@@ -29,9 +27,8 @@ export function useStateSelections() {
       maxLeaseMultiplier: 0,
       defaultLeaseMultiplier: 0,
       creditPriceMultiplier: 0,
-      description: '',
-      priceEur: 0
-    } as Machine;
+      description: ''
+    };
   }, [selectedMachineId]);
 
   // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen
@@ -50,11 +47,8 @@ export function useStateSelections() {
       // Sätt alltid leaseAdjustmentFactor till 1 (max) när en ny maskin väljs
       setLeaseAdjustmentFactor(1);
       
-      // Återställ allowBelowFlatrate till false när en ny maskin väljs (blockera flatrate under 80%)
-      setAllowBelowFlatrate(false);
-      
-      // Återställ flatrate-valet till perCredit
-      setUseFlatrateOption('perCredit');
+      // Återställ allowBelowFlatrate till true när en ny maskin väljs (flatrate inaktiverat)
+      setAllowBelowFlatrate(true);
     }
   }, [selectedMachine]);
 
@@ -75,8 +69,6 @@ export function useStateSelections() {
     treatmentsPerDay,
     setTreatmentsPerDay,
     customerPrice,
-    setCustomerPrice,
-    useFlatrateOption,
-    setUseFlatrateOption
+    setCustomerPrice
   };
 }

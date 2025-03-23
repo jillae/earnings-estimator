@@ -6,7 +6,7 @@ import LeasingOptions from '../LeasingOptions';
 import LeaseAdjuster from '../LeaseAdjuster';
 import OperatingCosts from '../OperatingCosts';
 import TreatmentSettings from '../TreatmentSettings';
-import { useCalculator } from '@/context/calculator/context';
+import { useCalculator } from '@/context/CalculatorContext';
 import { machineData, leasingPeriods, insuranceOptions } from './imports';
 
 const CalculatorInputs: React.FC = () => {
@@ -32,8 +32,7 @@ const CalculatorInputs: React.FC = () => {
     setAllowBelowFlatrate,
     flatrateThreshold,
     operatingCost,
-    useFlatrateOption,
-    setUseFlatrateOption,
+    creditPrice,
     netResults
   } = useCalculator();
 
@@ -43,12 +42,12 @@ const CalculatorInputs: React.FC = () => {
   
   // Endast visa kreditsrelaterade fält om en riktig maskin är vald (inte "select-machine")
   const showCreditFields = selectedMachineId !== "select-machine" && isCreditsEnabledMachine;
-  
+
   return (
     <div className="w-full">
       <ClinicSizeSelector 
         clinicSize={clinicSize} 
-        netYearlyResult={netResults?.netPerYearExVat || 0}
+        netYearlyResult={netResults.netPerYearExVat}
         onChange={setClinicSize} 
       />
       
@@ -93,7 +92,14 @@ const CalculatorInputs: React.FC = () => {
         )}
         
         {showCreditFields && (
-          <OperatingCosts />
+          <OperatingCosts 
+            usesCredits={isCreditsEnabledMachine}
+            useFlatrate={operatingCost.useFlatrate}
+            creditPrice={creditPrice}
+            flatrateAmount={selectedMachine?.flatrateAmount || 0}
+            operatingCostPerMonth={operatingCost.costPerMonth}
+            allowBelowFlatrate={allowBelowFlatrate}
+          />
         )}
       </div>
     </div>
