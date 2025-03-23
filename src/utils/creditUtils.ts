@@ -1,4 +1,3 @@
-
 import { Machine } from '../data/machines/types';
 import { WORKING_DAYS_PER_MONTH } from './constants';
 
@@ -44,24 +43,23 @@ export function calculateCreditPrice(
     
     // Direkt linjär interpolation
     // Här interpolerar vi så att:
-    // - leasingMin motsvarar creditMax (290)
-    // - leasingMax motsvarar creditMin (140)
-    // Detta ger en omvänd korrelation där högre leasingkostnad ger lägre kreditpris
+    // - leasingMin motsvarar creditMin (149)
+    // - leasingMax motsvarar creditMax (299)
     const creditRange = machine.creditMax - machine.creditMin;
-    const calculatedCreditPrice = machine.creditMax - (adjustmentFactor * creditRange);
+    const calculatedCreditPrice = machine.creditMin + (adjustmentFactor * creditRange);
     
     console.log(`Linjär interpolation av kreditpris för ${machine.name}:
       Justeringsfaktor: ${adjustmentFactor.toFixed(2)} i spannet (${leasingCost} mellan ${machine.leasingMin} och ${machine.leasingMax})
       Kreditintervall: ${machine.creditMin} till ${machine.creditMax}
       Beräknat kreditpris: ${Math.round(calculatedCreditPrice)} kr/credit
-      Formel: creditMax - (adjustmentFactor * creditRange)
+      Formel: creditMin + (adjustmentFactor * creditRange)
     `);
     
     return Math.round(calculatedCreditPrice);
   }
   
   // Fallback till standardvärde om inget annat fungerar
-  const defaultCreditPrice = machine.creditMin || 140;
+  const defaultCreditPrice = machine.creditMin || 149;
   console.log(`Använder standardvärde ${defaultCreditPrice} för credits för ${machine.name}`);
   return defaultCreditPrice;
 }
@@ -77,8 +75,8 @@ export function calculateCreditPriceWithDirectInterpolation(
   // Säkerställ att justeringsfaktorn är inom giltigt intervall
   const clampedFactor = Math.max(0, Math.min(1, adjustmentFactor));
 
-  // Direkt linjär interpolation, omvänd relation (högre faktor = lägre kreditpris)
-  const creditValue = creditMax - clampedFactor * (creditMax - creditMin);
+  // Direkt linjär interpolation
+  const creditValue = creditMin + clampedFactor * (creditMax - creditMin);
 
   return Math.round(creditValue);
 }
