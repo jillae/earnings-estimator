@@ -66,12 +66,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   }
   
   const handleSliderChange = (values: number[]) => {
-    // Om under-80%-läge inte är tillåtet, begränsa slider till flatratePosition
+    // Ta bort begränsningen som hindrar slidern från att gå under flatratePosition
+    // Oavsett om allowBelowFlatrate är true eller false
     let newValue = values[0];
-    
-    if (!allowBelowFlatrate && flatrateThreshold && flatratePosition !== null && newValue < flatratePosition / 100) {
-      newValue = flatratePosition / 100;
-    }
     
     // Beräkna exakt kostnad baserat på positionen
     const exactCost = exactMinCost + (newValue * costRange);

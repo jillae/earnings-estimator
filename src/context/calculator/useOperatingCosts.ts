@@ -35,7 +35,7 @@ export function useOperatingCosts({
   // Uppdatera driftskostnad när maskin eller behandlingsdata ändras
   useEffect(() => {
     if (selectedMachine && selectedMachine.usesCredits) {
-      // Använda maskinens creditMin direkt
+      // Använd maskinens creditMin direkt
       const creditPrice = selectedMachine.creditMin || 149;
       
       console.log(`Använder kreditpris för ${selectedMachine.name}: ${creditPrice} kr (direkt från maskindata)`);
