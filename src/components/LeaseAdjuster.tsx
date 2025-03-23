@@ -71,7 +71,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     let newValue = values[0];
     
     // Beräkna exakt kostnad baserat på positionen
-    const exactCost = exactMinCost + (newValue * costRange);
+    const exactCost = exactMinCost + (newValue * costRange / 100);
     
     // Avrunda till närmaste 100 SEK och se till att det slutar på 6
     let roundedCost = Math.round(exactCost / stepSize) * stepSize;

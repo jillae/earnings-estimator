@@ -36,6 +36,7 @@ export function useOperatingCosts({
   useEffect(() => {
     if (selectedMachine && selectedMachine.usesCredits) {
       // VIKTIGT: Använd maskinens creditMin direkt för att säkerställa korrekt värde
+      // Detta är den kritiska ändringen för att återställa fungerande beteende från version A
       const creditPrice = selectedMachine.creditMin || 149;
       
       console.log(`Använder kreditpris för ${selectedMachine.name}: ${creditPrice} kr (direkt från maskindata)`);
