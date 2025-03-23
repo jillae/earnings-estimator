@@ -26,7 +26,7 @@ export function useOperatingCosts({
     useFlatrate: false 
   });
   
-  // Beräkna och spara kreditpris baserat på maskin och leasingkostnad
+  // Beräkna och spara kreditpris baserat på maskin, nu använder vi maskinens creditMin direkt
   const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
   
   // Hämta vald maskin
@@ -35,32 +35,11 @@ export function useOperatingCosts({
   // Uppdatera driftskostnad när maskin eller behandlingsdata ändras
   useEffect(() => {
     if (selectedMachine && selectedMachine.usesCredits) {
-      // Hämta kreditprisintervall från maskinen
-      const creditMin = selectedMachine.creditMin || 140;
-      const creditMax = selectedMachine.creditMax || 290;
+      // Använda maskinens creditMin direkt
+      const creditPrice = selectedMachine.creditMin || 149;
       
-      // Beräkna position inom leasingintervallet (0-1)
-      const leasingMin = selectedMachine.leasingMin || 0;
-      const leasingMax = selectedMachine.leasingMax || 0;
-      const leasingRange = leasingMax - leasingMin;
-      
-      // Invertera positionen (högt leasing = lågt kreditpris)
-      let position = 0;
-      if (leasingRange > 0) {
-        position = 1 - ((leasingCost - leasingMin) / leasingRange);
-      }
-      
-      // Beräkna dynamiskt kreditpris baserat på position
-      const creditRange = creditMax - creditMin;
-      const dynamicCreditPrice = creditMin + (position * creditRange);
-      
-      console.log(`Beräknar kreditpris för ${selectedMachine.name}:
-        Leasing position: ${position * 100}%
-        Kreditprisintervall: ${creditMin} - ${creditMax}
-        Dynamiskt kreditpris: ${dynamicCreditPrice}
-      `);
-      
-      setCalculatedCreditPrice(dynamicCreditPrice);
+      console.log(`Använder kreditpris för ${selectedMachine.name}: ${creditPrice} kr (direkt från maskindata)`);
+      setCalculatedCreditPrice(creditPrice);
       
       // Säkerställ att treatmentsPerDay och leasingCost är giltiga värden
       const safetreatmentsPerDay = isNaN(treatmentsPerDay) ? 0 : treatmentsPerDay;
@@ -73,7 +52,7 @@ export function useOperatingCosts({
       const cost = calculateOperatingCost(
         selectedMachine,
         safetreatmentsPerDay,
-        dynamicCreditPrice,
+        creditPrice,
         safeLeasingCost,
         useFlatrate,
         selectedLeasingPeriodId,
@@ -83,7 +62,7 @@ export function useOperatingCosts({
       setOperatingCost(cost);
       
       console.log(`Operating cost calculated: 
-        Credit price: ${dynamicCreditPrice}
+        Credit price: ${creditPrice}
         Per credit model: ${useFlatrateOption === 'perCredit'}
         Cost per month: ${cost.costPerMonth}
         Uses flatrate: ${cost.useFlatrate}
