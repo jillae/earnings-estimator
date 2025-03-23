@@ -18,7 +18,8 @@ const OperatingCosts: React.FC = () => {
     setUseFlatrateOption, 
     treatmentsPerDay, 
     exchangeRate,
-    leasingCostPercentage
+    leasingCostPercentage,
+    creditPrice
   } = useCalculator();
 
   // Se till att vi har giltiga värden
@@ -29,8 +30,9 @@ const OperatingCosts: React.FC = () => {
   // Använd flatrateAmount direkt från den valda maskinen
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
   
-  // Använd creditMin och creditMax värdet från den valda maskinen - DETTA ÄR KRITISKT
-  const creditMin: number = selectedMachine?.creditMin || 0;
+  // VIKTIGT: Här använder vi kreditpriset direkt från maskinen via creditPrice från context
+  // Detta säkerställer att vi visar rätt värde i UI:t
+  const creditMin: number = creditPrice || (selectedMachine?.creditMin || 0);
   const creditMax: number = selectedMachine?.creditMax || 0;
   const hasCreditRange = creditMin !== creditMax && creditMin > 0 && creditMax > 0;
   

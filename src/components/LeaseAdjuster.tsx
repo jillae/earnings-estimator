@@ -61,8 +61,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Beräkna flatrate-faktorn (position) om vi har ett tröskelvärde
   let flatratePosition = null;
   if (flatrateThreshold) {
-    flatratePosition = (flatrateThreshold - exactMinCost) / Math.max(0.001, costRange);
-    flatratePosition = Math.max(0, Math.min(1, flatratePosition)) * 100; // Konvertera till procent
+    flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, costRange)) * 100;
+    flatratePosition = Math.max(0, Math.min(100, flatratePosition)); // Säkerställ att det är inom 0-100
   }
   
   const handleSliderChange = (values: number[]) => {
@@ -141,7 +141,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       />
 
       <LeaseSlider 
-        adjustmentFactor={adjustmentFactor}
+        adjustmentFactor={adjustmentFactor * 100} // Konvertera till procentvärde (0-100) för slider
         onSliderChange={handleSliderChange}
         thresholdPosition={flatratePosition}
         showFlatrateIndicator={showFlatrateIndicator}

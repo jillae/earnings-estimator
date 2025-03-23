@@ -29,54 +29,26 @@ export function calculateCreditPrice(
     - machine.creditMax: ${machine.creditMax}
   `);
   
-  // KRITISKA ÄNDRINGEN: Använd maskinens fördefinierade creditMin värde FÖRST
-  // Detta är nyckeln till att fixa det som fungerade i version A
+  // KRITISK FIX: Prioritera ALLTID användning av maskinens fördefinierade creditMin värde
+  // Detta är nyckeln till att återställa den fungerande logiken från version A
   if (machine.creditMin !== undefined) {
     console.log(`Använder fördefinierat credit-värde för ${machine.name}: ${machine.creditMin}`);
     return machine.creditMin;
   }
   
-  // Fallback till dynamisk beräkning om alla nödvändiga parametrar finns
-  // men detta bör inte behövas eftersom vi nu prioriterar machine.creditMin
-  if (machine.leasingMin !== undefined && machine.leasingMax !== undefined &&
-      machine.creditMin !== undefined && machine.creditMax !== undefined && 
-      leasingCost !== undefined) {
-      
-    // Beräkna var i spannet mellan min och max leasing vi befinner oss (0-1)
-    const leasingRange = machine.leasingMax - machine.leasingMin;
-    const position = leasingRange > 0 ? 
-      Math.max(0, Math.min(1, (leasingCost - machine.leasingMin) / leasingRange)) : 0;
-    
-    // Interpolera kreditpriset baserat på position
-    const creditRange = machine.creditMax - machine.creditMin;
-    const calculatedCreditPrice = machine.creditMin + (position * creditRange);
-    
-    console.log(`Dynamiskt beräknat kreditpris för ${machine.name}: 
-      Position ${position.toFixed(2)} i spannet ger ${Math.round(calculatedCreditPrice)} kr/credit`);
-    
-    return Math.round(calculatedCreditPrice);
-  }
+  // Fallback-logik nedan används endast om creditMin saknas (vilket inte bör hända)
   
   // Säkerställ att leasingCost är ett giltigt värde
   const safeLeasingCost = isNaN(leasingCost) ? 0 : leasingCost;
   
-  // Om ingen creditMin, beräkna baserat på leasingkostnad och prismultiplikator
+  // Om creditPriceMultiplier finns, beräkna baserat på leasingkostnad
   if (machine.creditPriceMultiplier && safeLeasingCost > 0) {
     const calculatedPrice = Math.round(safeLeasingCost * machine.creditPriceMultiplier);
     console.log(`Beräknat kreditpris baserat på multiplikator (${machine.creditPriceMultiplier}) och leasingkostnad (${safeLeasingCost}): ${calculatedPrice}`);
     return calculatedPrice;
   }
   
-  // Beräkna kreditpris baserat på maskinpris (om sådant finns) som fallback
-  if (machinePriceSEK && !isNaN(machinePriceSEK)) {
-    // En konstant multiplikator för alla maskiner
-    const baseCreditFactor = 0.002;
-    const calculatedPrice = Math.round(machinePriceSEK * baseCreditFactor);
-    console.log(`Beräknat kreditpris baserat på maskinpris (${machinePriceSEK}): ${calculatedPrice}`);
-    return calculatedPrice;
-  }
-  
-  // Fallback om ingen av ovanstående fungerar
+  // Fallback till standardvärde om inget annat fungerar
   console.log(`Använder standardvärde 149 för credits för ${machine.name}`);
   return 149; // Standardvärde för credits
 }

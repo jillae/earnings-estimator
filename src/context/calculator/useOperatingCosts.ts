@@ -26,7 +26,7 @@ export function useOperatingCosts({
     useFlatrate: false 
   });
   
-  // Beräkna och spara kreditpris baserat på maskin, nu använder vi maskinens creditMin direkt
+  // Beräkna och spara kreditpris baserat på maskin
   const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
   
   // Hämta vald maskin
@@ -35,8 +35,8 @@ export function useOperatingCosts({
   // Uppdatera driftskostnad när maskin eller behandlingsdata ändras
   useEffect(() => {
     if (selectedMachine && selectedMachine.usesCredits) {
-      // VIKTIGT: Använd maskinens creditMin direkt för att säkerställa korrekt värde
-      // Detta är den kritiska ändringen för att återställa fungerande beteende från version A
+      // KRITISK FÖRBÄTTRING: Alltid prioritera maskinens fasta creditMin värde först
+      // Detta är den avgörande ändringen från version A som fungerade
       const creditPrice = selectedMachine.creditMin || 149;
       
       console.log(`Använder kreditpris för ${selectedMachine.name}: ${creditPrice} kr (direkt från maskindata)`);

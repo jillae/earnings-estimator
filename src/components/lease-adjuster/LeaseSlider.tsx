@@ -4,7 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import FlatrateIndicator from './FlatrateIndicator';
 
 interface LeaseSliderProps {
-  adjustmentFactor: number;
+  adjustmentFactor: number; // Nu som procentvärde (0-100)
   onSliderChange: (values: number[]) => void;
   thresholdPosition: number | null;
   showFlatrateIndicator: boolean;
@@ -18,9 +18,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   showFlatrateIndicator,
   allowBelowFlatrate
 }) => {
-  // Steg i procentenheter för att stödja 100 SEK ökningar
-  const sliderStep = 0.005; // För att stödja 100 SEK ökningar
-
+  // Slider använder procent (0-100) istället för faktor (0-1)
   return (
     <div className="slider-container relative mb-6">
       <FlatrateIndicator 
@@ -33,8 +31,8 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
         id="leasingCostSlider"
         value={[adjustmentFactor]}
         min={0}
-        max={1}
-        step={sliderStep}
+        max={100}
+        step={1} // Använd heltal för procentvärden
         onValueChange={onSliderChange}
         className="mt-8"
       />
