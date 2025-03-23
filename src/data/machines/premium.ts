@@ -18,8 +18,8 @@ export const premiumMachines: Machine[] = [
     usesCredits: true,
     leasingMin: 20666,
     leasingMax: 24114,
-    creditMin: 149,
-    creditMax: 299,
+    creditMin: 140,
+    creditMax: 290,
     creditsPerTreatment: 1,
     leasingTariffs: {
       "24": 0.04566,
