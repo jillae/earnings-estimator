@@ -29,22 +29,17 @@ const OperatingCosts: React.FC = () => {
   // Använd flatrateAmount direkt från den valda maskinen
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
   
-  // Använd creditMin och creditMax från den valda maskinen om tillgängliga
-  const creditMin: number = selectedMachine?.creditMin || 140;
-  const creditMax: number = selectedMachine?.creditMax || 290;
+  // Använd creditMin värdet från den valda maskinen
+  const creditPrice: number = selectedMachine?.creditMin || 149;
   
-  // Visa prisintervall om både min och max finns och är olika
-  const hasCreditRange = creditMin !== creditMax;
-  
-  // Beräkna aktuellt kreditpris baserat på leasingkostnadens position
-  // När leasing är MIN -> creditMax, när leasing är MAX -> creditMin
-  const creditRange = creditMax - creditMin;
-  const percentage = (100 - leasingCostPercentage) / 100; // Inverterar procenten (låg leasing = hög credit)
-  const dynamicCreditPrice = creditMin + (percentage * creditRange);
+  // Hämta information om kreditintervall för visning
+  const creditMin = selectedMachine?.creditMin || 0;
+  const creditMax = selectedMachine?.creditMax || 0;
+  const hasCreditRange = creditMin !== creditMax && creditMin > 0 && creditMax > 0;
   
   // Direkt beräkning av kostnad per månad för credits
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
-  const creditsCostPerMonth = selectedMachine?.usesCredits ? treatmentsPerMonth * dynamicCreditPrice : 0;
+  const creditsCostPerMonth = selectedMachine?.usesCredits ? treatmentsPerMonth * creditPrice : 0;
 
   // Hantera flatrate-switch
   const handleFlatrateChange = (checked: boolean) => {
@@ -118,16 +113,12 @@ const OperatingCosts: React.FC = () => {
               <div className="flex justify-between items-center mb-4">
                 <span className="text-sm">Pris per credit</span>
                 <span className="text-lg font-semibold text-slate-700">
-                  {hasCreditRange 
-                    ? (
-                      <>
-                        <span>{formatCurrency(dynamicCreditPrice, false)}</span>
-                        <span className="text-xs text-slate-500 ml-1">
-                          (Intervall: {formatCurrency(creditMin, false)} - {formatCurrency(creditMax, false)})
-                        </span>
-                      </>
-                    )
-                    : formatCurrency(dynamicCreditPrice, false)}
+                  {formatCurrency(creditPrice, false)}
+                  {hasCreditRange && (
+                    <span className="text-xs text-slate-500 ml-1">
+                      (Intervall: {formatCurrency(creditMin, false)} - {formatCurrency(creditMax, false)})
+                    </span>
+                  )}
                 </span>
               </div>
               <div className="flex justify-between items-center mb-4">
@@ -149,7 +140,7 @@ const OperatingCosts: React.FC = () => {
 
           {flatrateAmount > 0 && useFlatrateOption === 'perCredit' && (
             <p className="text-xs text-blue-500">
-              Vid ca {calculateFlatrateBreakEven(flatrateAmount, dynamicCreditPrice)} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt än styckepris.
+              Vid ca {calculateFlatrateBreakEven(flatrateAmount, creditPrice)} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt än styckepris.
             </p>
           )}
         </>
