@@ -120,7 +120,7 @@ const OperatingCosts: React.FC = () => {
                   {formatCurrency(creditMin, false)}
                   {hasCreditRange && (
                     <span className="text-xs text-slate-500 ml-1">
-                      (Intervall: {formatCurrency(creditMin, false)} - {formatCurrency(creditMax, false)})
+                      (Intervall: {formatCurrency(selectedMachine.creditMin || 0, false)} - {formatCurrency(selectedMachine.creditMax || 0, false)})
                     </span>
                   )}
                 </span>

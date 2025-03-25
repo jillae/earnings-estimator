@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
-import { calculateCreditPrice, calculateOperatingCost } from '@/utils/creditUtils';
+import { calculateCreditPrice, calculateOperatingCost, shouldUseFlatrate } from '@/utils/creditUtils';
 import { FlatrateOption } from '@/utils/constants';
 
 export function useOperatingCosts({
@@ -50,17 +50,24 @@ export function useOperatingCosts({
       const safetreatmentsPerDay = isNaN(treatmentsPerDay) ? 0 : treatmentsPerDay;
       const safeLeasingCost = isNaN(leasingCost) ? 0 : leasingCost;
       
-      // Beräkna om flatrate kan aktiveras
-      const flatrateThreshold = selectedMachine.leasingMax ? selectedMachine.leasingMax * 0.8 : 0;
-      const meetsLeasingRequirement = safeLeasingCost >= flatrateThreshold;
-      const meetsMinTreatments = safetreatmentsPerDay >= 3;
-      const canUseFlatrate = meetsLeasingRequirement && meetsMinTreatments;
+      // Kontrollera om flatrate kan användas baserat på regler
+      const canUseFlatrate = shouldUseFlatrate(
+        selectedMachine,
+        safeLeasingCost,
+        safetreatmentsPerDay,
+        allowBelowFlatrate,
+        selectedLeasingPeriodId,
+        machinePriceSEK
+      );
       
       // Använd flatrate om användaren valt det OCH flatrate får användas
-      let useFlatrate = false;
-      if (useFlatrateOption === 'flatrate' && canUseFlatrate) {
-        useFlatrate = true;
-      }
+      let useFlatrate = useFlatrateOption === 'flatrate' && canUseFlatrate;
+      
+      console.log(`Flatrate status för ${selectedMachine.name}:
+        canUseFlatrate: ${canUseFlatrate}
+        useFlatrateOption: ${useFlatrateOption}
+        final useFlatrate: ${useFlatrate}
+      `);
       
       // Beräkna månadskostnad
       const cost = calculateOperatingCost(
