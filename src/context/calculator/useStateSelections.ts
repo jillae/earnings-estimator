@@ -58,6 +58,17 @@ export function useStateSelections() {
     }
   }, [selectedMachine]);
 
+  // När klinikstorlek ändras, uppdatera behandlingar per dag
+  useEffect(() => {
+    if (clinicSize === 'small') {
+      setTreatmentsPerDay(2);
+    } else if (clinicSize === 'medium') {
+      setTreatmentsPerDay(4);
+    } else if (clinicSize === 'large') {
+      setTreatmentsPerDay(6);
+    }
+  }, [clinicSize]);
+
   return {
     clinicSize,
     setClinicSize,

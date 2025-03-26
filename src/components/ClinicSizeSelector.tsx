@@ -5,9 +5,9 @@ import { SMALL_CLINIC_TREATMENTS, MEDIUM_CLINIC_TREATMENTS, LARGE_CLINIC_TREATME
 import { formatCurrency } from '@/utils/calculatorUtils';
 
 interface ClinicSizeSelectorProps {
-  clinicSize: number;
+  clinicSize: 'small' | 'medium' | 'large';
   netYearlyResult: number;
-  onChange: (value: number) => void;
+  onChange: (value: 'small' | 'medium' | 'large') => void;
 }
 
 const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({ 
@@ -16,18 +16,28 @@ const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({
   onChange 
 }) => {
   const handleSliderChange = (values: number[]) => {
-    onChange(values[0]);
+    // Konvertera numeriskt värde till string-enum
+    if (values[0] === 1) onChange('small');
+    else if (values[0] === 2) onChange('medium');
+    else onChange('large');
+  };
+  
+  // Konvertera string-enum till numeriskt värde för slidern
+  const getSliderValue = (): number => {
+    if (clinicSize === 'small') return 1;
+    if (clinicSize === 'medium') return 2;
+    return 3;
   };
   
   const getSizeLabel = () => {
-    if (clinicSize === 1) return "Liten klinik";
-    if (clinicSize === 2) return "Mellanstor klinik";
+    if (clinicSize === 'small') return "Liten klinik";
+    if (clinicSize === 'medium') return "Mellanstor klinik";
     return "Stor klinik";
   };
   
   const getTreatmentsText = () => {
-    if (clinicSize === 1) return `${SMALL_CLINIC_TREATMENTS} behandlingar/dag`;
-    if (clinicSize === 2) return `${MEDIUM_CLINIC_TREATMENTS} behandlingar/dag`;
+    if (clinicSize === 'small') return `${SMALL_CLINIC_TREATMENTS} behandlingar/dag`;
+    if (clinicSize === 'medium') return `${MEDIUM_CLINIC_TREATMENTS} behandlingar/dag`;
     return `${LARGE_CLINIC_TREATMENTS} behandlingar/dag`;
   };
 
@@ -43,7 +53,7 @@ const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({
         </div>
         
         <Slider
-          value={[clinicSize]}
+          value={[getSliderValue()]}
           min={1}
           max={3}
           step={1}
