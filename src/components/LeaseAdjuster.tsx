@@ -44,6 +44,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMaxCost = maxLeaseCost;
   const costRange = exactMaxCost - exactMinCost;
 
+  // Beräkna mittpunkten (gamla maxvärdet) i den nya skalan
+  const oldMaxCost = (exactMinCost + exactMaxCost) / 2;
+  
   // Beräkna exakt leasingkostnad för den aktuella faktorn
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
@@ -58,9 +61,10 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     roundedLeasingCost = roundedLeasingCost - lastDigit + 6;
   }
   
-  // Beräkna flatrate-faktorn (position) om vi har ett tröskelvärde
+  // Beräkna flatrate-faktorn (position) baserat på gamla maxvärdet (mittpunkten)
   let flatratePosition = null;
   if (flatrateThreshold) {
+    // Vi behöver konvertera tröskelvärdet till en relativ position på den nya skalan
     flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, costRange)) * 100;
     flatratePosition = Math.max(0, Math.min(100, flatratePosition)); // Säkerställ att det är inom 0-100
   }
@@ -93,6 +97,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       - Faktor: ${adjustmentFactor}
       - Min: ${exactMinCost}
       - Max: ${exactMaxCost}
+      - Gamla Max (mittpunkt): ${oldMaxCost}
       - Range: ${costRange}
       - Beräknad kostnad vid faktor ${adjustmentFactor}: ${calculatedLeasingCost}
       - Avrundad kostnad med 6 i slutet: ${roundedLeasingCost}
@@ -101,7 +106,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       - Allow below flatrate: ${allowBelowFlatrate}
       - Steg storlek: ${stepSize}
     `);
-  }, [adjustmentFactor, exactMinCost, exactMaxCost, costRange, leaseCost, calculatedLeasingCost, flatratePosition, allowBelowFlatrate, roundedLeasingCost]);
+  }, [adjustmentFactor, exactMinCost, exactMaxCost, oldMaxCost, costRange, leaseCost, calculatedLeasingCost, flatratePosition, allowBelowFlatrate, roundedLeasingCost]);
 
   // Säkerställ att leasingCost är inom intervallet
   let actualLeasingCost = leaseCost;
@@ -112,6 +117,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   }
 
   // Kontrollera och logga om vi är över flatrate-tröskeln
+  // Nu baserat på gamla maxvärdet (mittpunkten)
   const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
   
   // Visa flatrate-info om vi är över tröskeln, visar flatrate-indikatorn, och allowBelowFlatrate är false (alltså flatrate är aktiverat)
@@ -120,11 +126,12 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   useEffect(() => {
     console.log(`FLATRATE INFO SYNLIGHET: 
       Leasingkostnad (${leaseCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold})
+      Gamla Max (mittpunkt): ${oldMaxCost}
       Antal behandlingar per dag: ${treatmentsPerDay}
       Visar info: ${shouldShowFlatrateInfo}
       AllowBelowFlatrate: ${allowBelowFlatrate}
     `);
-  }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, shouldShowFlatrateInfo, allowBelowFlatrate]);
+  }, [leaseCost, flatrateThreshold, oldMaxCost, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, shouldShowFlatrateInfo, allowBelowFlatrate]);
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>

@@ -12,7 +12,7 @@ export function calculateTreatmentsPerMonth(treatmentsPerDay: number): number {
 
 /**
  * Beräknar och returnerar priset per credit baserat på maskintyp och leasingkostnad
- * med förbättrad linjär interpolation
+ * med förbättrad linjär interpolation enligt den nya logiken
  */
 export function calculateCreditPrice(
   machine: Machine, 
@@ -36,24 +36,35 @@ export function calculateCreditPrice(
       machine.creditMin !== undefined && 
       machine.creditMax !== undefined &&
       leasingCost >= machine.leasingMin) {
+      
+    // Beräkna det gamla leasingMax värdet (mittpunkten i den nya skalan)
+    const oldLeasingMax = (machine.leasingMin + machine.leasingMax) / 2;
     
-    // Beräkna adjustmentFactor baserat på leasingkostnad
+    // Beräkna justeringsfaktorn baserat på var leasingCost ligger på den nya skalan
     const leasingRange = machine.leasingMax - machine.leasingMin;
     const adjustmentFactor = leasingRange > 0 ?
       Math.min(1, Math.max(0, (leasingCost - machine.leasingMin) / leasingRange)) : 0;
     
-    // Direkt linjär interpolation
-    // Här interpolerar vi så att:
-    // - leasingMin motsvarar creditMin (149)
-    // - leasingMax motsvarar creditMax (299)
-    const creditRange = machine.creditMax - machine.creditMin;
-    const calculatedCreditPrice = machine.creditMin + (adjustmentFactor * creditRange);
+    let calculatedCreditPrice = 0;
     
-    console.log(`Linjär interpolation av kreditpris för ${machine.name}:
-      Justeringsfaktor: ${adjustmentFactor.toFixed(2)} i spannet (${leasingCost} mellan ${machine.leasingMin} och ${machine.leasingMax})
-      Kreditintervall: ${machine.creditMin} till ${machine.creditMax}
+    // Ny logik för direkt linjär interpolation i två steg
+    if (leasingCost <= oldLeasingMax) {
+      // Mellan leasingMin och oldLeasingMax (mittpunkten)
+      // Här går vi från creditMax till creditMin
+      const factorInFirstHalf = (leasingCost - machine.leasingMin) / (oldLeasingMax - machine.leasingMin);
+      calculatedCreditPrice = machine.creditMax - factorInFirstHalf * (machine.creditMax - machine.creditMin);
+    } else {
+      // Mellan oldLeasingMax (mittpunkten) och leasingMax
+      // Här går vi från creditMin till 0
+      const factorInSecondHalf = (leasingCost - oldLeasingMax) / (machine.leasingMax - oldLeasingMax);
+      calculatedCreditPrice = machine.creditMin * (1 - factorInSecondHalf);
+    }
+    
+    console.log(`Ny linjär interpolation av kreditpris för ${machine.name}:
+      Leasingkostnad: ${leasingCost}
+      Gamla leasingMax (mittpunkt): ${oldLeasingMax}
+      Justeringsfaktor: ${adjustmentFactor.toFixed(2)}
       Beräknat kreditpris: ${Math.round(calculatedCreditPrice)} kr/credit
-      Formel: creditMin + (adjustmentFactor * creditRange)
     `);
     
     return Math.round(calculatedCreditPrice);
@@ -166,8 +177,11 @@ export function shouldUseFlatrate(
   const safeLeasingCost = Math.max(0, isNaN(leasingCost) ? 0 : leasingCost);
   const safetreatmentsPerDay = isNaN(treatmentsPerDay) ? 0 : treatmentsPerDay;
   
-  // Leasingkostnad måste vara minst 80% av max för att kvalificera för flatrate
-  const leasingPercent = machine.leasingMax > 0 ? safeLeasingCost / machine.leasingMax : 0;
+  // Beräkna det gamla leasingMax värdet (mittpunkten i den nya skalan)
+  const oldLeasingMax = (machine.leasingMin + machine.leasingMax) / 2;
+  
+  // Leasingkostnad måste vara minst 80% av gamla max för att kvalificera för flatrate
+  const leasingPercent = oldLeasingMax > 0 ? safeLeasingCost / oldLeasingMax : 0;
   
   // Minst 3 behandlingar per dag krävs för flatrate
   const minTreatments = safetreatmentsPerDay >= 3;

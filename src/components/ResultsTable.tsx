@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 interface ResultsTableProps {
@@ -115,7 +116,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
         </div>
       </div>
       
-      <div className="mt-8 text-sm text-slate-500 italic link: www.dn.se">Detta är endast ett beräkningsunderlag. Avtal gäller. För leasing offert ansök här. </div>
+      <div className="mt-8 text-sm text-slate-500 italic">Detta är endast ett beräkningsunderlag. Avtal gäller. <a href="https://bit.ly/leasingeen" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">För leasing offert ansök här.</a></div>
     </div>;
 };
 export default ResultsTable;
