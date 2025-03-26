@@ -1,7 +1,5 @@
-
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
-
 interface ResultsTableProps {
   dailyRevenueIncVat: number;
   weeklyRevenueIncVat: number;
@@ -15,7 +13,6 @@ interface ResultsTableProps {
   occupancy75: number;
   occupancy100: number;
 }
-
 const ResultsTable: React.FC<ResultsTableProps> = ({
   dailyRevenueIncVat,
   weeklyRevenueIncVat,
@@ -41,12 +38,12 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const safeOcc50 = isNaN(occupancy50) ? 0 : occupancy50;
   const safeOcc75 = isNaN(occupancy75) ? 0 : occupancy75;
   const safeOcc100 = isNaN(occupancy100) ? 0 : occupancy100;
-  
+
   // Calculate total costs per month
   const totalCostPerMonth = safeLeasingCost + safeOperatingCost;
-  
-  return (
-    <div className="glass-card mt-8 animate-slide-in" style={{ animationDelay: '600ms' }}>
+  return <div className="glass-card mt-8 animate-slide-in" style={{
+    animationDelay: '600ms'
+  }}>
       <h2 className="text-2xl font-bold mb-6">Resultat</h2>
       
       <div className="overflow-x-auto">
@@ -118,11 +115,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
         </div>
       </div>
       
-      <div className="mt-8 text-sm text-slate-500 italic">
-        Detta är endast ett beräkningsunderlag. Avtal gäller.
-      </div>
-    </div>
-  );
+      <div className="mt-8 text-sm text-slate-500 italic link: www.dn.se">Detta är endast ett beräkningsunderlag. Avtal gäller. För leasing offert ansök här. </div>
+    </div>;
 };
-
 export default ResultsTable;
