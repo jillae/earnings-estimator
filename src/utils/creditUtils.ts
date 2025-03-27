@@ -40,11 +40,6 @@ export function calculateCreditPrice(
     // Beräkna det gamla leasingMax värdet (mittpunkten i den nya skalan)
     const oldLeasingMax = (machine.leasingMin + machine.leasingMax) / 2;
     
-    // Beräkna justeringsfaktorn baserat på var leasingCost ligger på den nya skalan
-    const leasingRange = machine.leasingMax - machine.leasingMin;
-    const adjustmentFactor = leasingRange > 0 ?
-      Math.min(1, Math.max(0, (leasingCost - machine.leasingMin) / leasingRange)) : 0;
-    
     let calculatedCreditPrice = 0;
     
     // Ny logik för direkt linjär interpolation i två steg
@@ -62,8 +57,11 @@ export function calculateCreditPrice(
     
     console.log(`Ny linjär interpolation av kreditpris för ${machine.name}:
       Leasingkostnad: ${leasingCost}
+      LeasingMin: ${machine.leasingMin}
       Gamla leasingMax (mittpunkt): ${oldLeasingMax}
-      Justeringsfaktor: ${adjustmentFactor.toFixed(2)}
+      LeasingMax: ${machine.leasingMax}
+      CreditMin: ${machine.creditMin}
+      CreditMax: ${machine.creditMax}
       Beräknat kreditpris: ${Math.round(calculatedCreditPrice)} kr/credit
     `);
     
@@ -186,12 +184,24 @@ export function shouldUseFlatrate(
   // Minst 3 behandlingar per dag krävs för flatrate
   const minTreatments = safetreatmentsPerDay >= 3;
   
-  // Om allowBelowFlatrate är false, måste vi vara över tröskelvärdet
-  // för att aktivera flatrate
+  // Om allowBelowFlatrate är true, behöver vi inte uppfylla leasingkravet
   const meetsLeasingRequirement = allowBelowFlatrate || leasingPercent >= 0.8;
   
   // Båda kraven måste vara uppfyllda
-  return meetsLeasingRequirement && minTreatments;
+  const canUseFlatrate = meetsLeasingRequirement && minTreatments;
+  
+  console.log(`shouldUseFlatrate för ${machine.name}:
+    leasingCost: ${safeLeasingCost}
+    oldLeasingMax: ${oldLeasingMax}
+    leasingPercent: ${(leasingPercent * 100).toFixed(1)}%
+    treatmentsPerDay: ${safetreatmentsPerDay}
+    allowBelowFlatrate: ${allowBelowFlatrate}
+    meetsLeasingRequirement: ${meetsLeasingRequirement}
+    minTreatments: ${minTreatments}
+    canUseFlatrate: ${canUseFlatrate}
+  `);
+  
+  return canUseFlatrate;
 }
 
 /**

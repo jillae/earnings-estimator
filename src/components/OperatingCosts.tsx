@@ -19,19 +19,37 @@ const OperatingCosts: React.FC = () => {
     treatmentsPerDay, 
     exchangeRate,
     leasingCostPercentage,
-    creditPrice
+    creditPrice,
+    allowBelowFlatrate
   } = useCalculator();
 
   // Se till att vi har giltiga värden
   const validLeasingRange = leasingRange || { min: 0, max: 0 };
-  const eightyPercentOfMaxLeasing = validLeasingRange.max ? validLeasingRange.max * 0.8 : 0;
-  const isFlatrateUnlocked = leasingCost >= eightyPercentOfMaxLeasing && treatmentsPerDay >= 3;
+  
+  // Beräkna det gamla maxvärdet (mittpunkten i den nya skalan)
+  const oldMaxCost = (validLeasingRange.min + validLeasingRange.max) / 2;
+  const eightyPercentOfOldMax = oldMaxCost ? oldMaxCost * 0.8 : 0;
+  
+  // Kontrollera om leasingkostnaden är tillräckligt hög och vi har minst 3 behandlingar per dag
+  const meetsLeasingRequirement = allowBelowFlatrate || (leasingCost >= eightyPercentOfOldMax);
+  const meetsMinTreatments = treatmentsPerDay >= 3;
+  const isFlatrateUnlocked = meetsLeasingRequirement && meetsMinTreatments;
+
+  console.log(`OperatingCosts Flatrate Status:
+    leasingCost: ${leasingCost}
+    oldMaxCost (mittpunkt): ${oldMaxCost}
+    80% av oldMaxCost: ${eightyPercentOfOldMax}
+    meetsLeasingRequirement: ${meetsLeasingRequirement}
+    allowBelowFlatrate: ${allowBelowFlatrate}
+    treatmentsPerDay: ${treatmentsPerDay}
+    meetsMinTreatments: ${meetsMinTreatments}
+    isFlatrateUnlocked: ${isFlatrateUnlocked}
+  `);
 
   // Använd flatrateAmount direkt från den valda maskinen
   const flatrateAmount = selectedMachine?.flatrateAmount || 0;
   
   // Använd kreditpriset från context för att säkerställa konsistens
-  // Detta matchar kreditpriset som beräknas i useOperatingCosts
   const creditMin: number = creditPrice || (selectedMachine?.creditMin || 0);
   const creditMax: number = selectedMachine?.creditMax || 0;
   const hasCreditRange = creditMin !== creditMax && creditMin > 0 && creditMax > 0;
@@ -77,7 +95,7 @@ const OperatingCosts: React.FC = () => {
           <Lock className="h-4 w-4 text-blue-500" />
           <AlertTitle className="text-blue-700">Flatrate ej tillgängligt</AlertTitle>
           <AlertDescription className="text-blue-600">
-            För att låsa upp flatrate behöver din leasingkostnad nå minst 80% av max och du behöver ange minst 3 behandlingar per dag.
+            För att låsa upp flatrate behöver din leasingkostnad nå minst 80% av standardleasingen och du behöver ange minst 3 behandlingar per dag.
           </AlertDescription>
         </Alert>
       );

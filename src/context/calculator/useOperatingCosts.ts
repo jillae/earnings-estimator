@@ -61,11 +61,13 @@ export function useOperatingCosts({
       );
       
       // Använd flatrate om användaren valt det OCH flatrate får användas
-      let useFlatrate = useFlatrateOption === 'flatrate' && canUseFlatrate;
+      // Om allowBelowFlatrate är true, kan vi alltid använda flatrate om användaren valt det
+      const useFlatrate = useFlatrateOption === 'flatrate' && canUseFlatrate;
       
       console.log(`Flatrate status för ${selectedMachine.name}:
         canUseFlatrate: ${canUseFlatrate}
         useFlatrateOption: ${useFlatrateOption}
+        allowBelowFlatrate: ${allowBelowFlatrate}
         final useFlatrate: ${useFlatrate}
       `);
       

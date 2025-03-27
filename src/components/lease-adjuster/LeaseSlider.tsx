@@ -29,6 +29,14 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
       newValues[0] = thresholdPosition;
     }
     
+    // Lägg till loggning för att diagnostisera problem
+    console.log(`LeaseSlider - handleSliderChange:
+      Original value: ${values[0]}
+      Modified value: ${newValues[0]}
+      allowBelowFlatrate: ${allowBelowFlatrate}
+      thresholdPosition: ${thresholdPosition}
+    `);
+    
     onSliderChange(newValues);
   };
   

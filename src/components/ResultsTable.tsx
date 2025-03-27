@@ -1,6 +1,6 @@
-
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
+
 interface ResultsTableProps {
   dailyRevenueIncVat: number;
   weeklyRevenueIncVat: number;
@@ -14,6 +14,7 @@ interface ResultsTableProps {
   occupancy75: number;
   occupancy100: number;
 }
+
 const ResultsTable: React.FC<ResultsTableProps> = ({
   dailyRevenueIncVat,
   weeklyRevenueIncVat,
@@ -42,6 +43,17 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
 
   // Calculate total costs per month
   const totalCostPerMonth = safeLeasingCost + safeOperatingCost;
+
+  // Lägg till länk för leasingoffert
+  const leasingOffertLink = (
+    <a href="https://bit.ly/leasingeen" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       className="text-primary hover:underline font-medium">
+      För leasing offert ansök här
+    </a>
+  );
+
   return <div className="glass-card mt-8 animate-slide-in" style={{
     animationDelay: '600ms'
   }}>
@@ -72,6 +84,11 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeLeasingCost)}</td>
               <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeLeasingCost * 12)}</td>
+            </tr>
+            <tr>
+              <td colSpan={2} className="text-center py-2">
+                {leasingOffertLink}
+              </td>
             </tr>
             <tr className="border-b border-slate-200">
               <td className="py-3 px-4 text-slate-700">Drift (credits/flatrate) (ex moms)</td>
@@ -116,7 +133,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
         </div>
       </div>
       
-      <div className="mt-8 text-sm text-slate-500 italic">Detta är endast ett beräkningsunderlag. Avtal gäller. <a href="https://bit.ly/leasingeen" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">För leasing offert ansök här.</a></div>
+      <div className="mt-8 text-sm text-slate-500 italic">Detta är endast ett beräkningsunderlag. Avtal gäller. {leasingOffertLink}</div>
     </div>;
 };
+
 export default ResultsTable;
