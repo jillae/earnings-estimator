@@ -1,41 +1,17 @@
+// src/data/machines/types.ts (eller motsvarande)
 export interface Machine {
   id: string;
   name: string;
-  description: string;
-  priceEur: number;
-  priceSek?: number;
-  minLeaseMultiplier: number;
-  maxLeaseMultiplier: number;
-  defaultLeaseMultiplier: number;
-  creditPriceMultiplier: number;
-  flatrateAmount: number;
+  description?: string; // Behåll om du använder
+  price?: string | number; // Behåll om du använder för tariffberäkning
   usesCredits: boolean;
-  leasingMin?: number;
-  leasingMax?: number;
-  creditMin?: number;
-  creditMax?: number;
-  leasingTariffs?: {[key: string]: number};
-  defaultLeasingPeriod?: string;
+  leasingMin?: number; // Minsta leasingkostnad
+  leasingOriginal?: number; // Viktigt: Det ursprungliga maxvärdet för leasing
+  creditMin?: number; // Minsta kreditpris (vid leasingOriginal)
+  creditMax?: number; // Högsta kreditpris (vid leasingMin)
+  flatrateAmount?: number; // Fast flatrate-kostnad
+  // Eventuellt defaultCustomerPrice, defaultLeasingPeriod etc.
   defaultCustomerPrice?: number;
-  imageUrl?: string;
-  fullName?: string;
-  shortName?: string;
-  modelCode?: string;
-  creditsPerTreatment?: number;
-}
-
-export interface LeasingPeriod {
-  id: string;
-  name: string;
-  rate: number;
-}
-
-export interface InsuranceOption {
-  id: string;
-  name: string;
-  rate: number;
-}
-
-export interface InsuranceRates {
-  [threshold: number]: number;
+  defaultLeasingPeriod?: string; // t.ex. "60"
+  creditPriceMultiplier?: number; // Om denna fortfarande används någonstans (bör fasas ut)
 }
