@@ -4,168 +4,86 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useCalculator } from '@/context/calculator/context';
 import { formatCurrency } from '@/utils/formatUtils';
-import { calculateFlatrateBreakEven } from '@/utils/creditUtils';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Lock, Unlock } from 'lucide-react';
 
 const OperatingCosts: React.FC = () => {
   const { 
-    leasingCost, 
-    leasingRange, 
     selectedMachine, 
     useFlatrateOption, 
     setUseFlatrateOption, 
     treatmentsPerDay, 
-    exchangeRate,
-    leasingCostPercentage,
-    creditPrice,
-    allowBelowFlatrate
+    creditPrice
   } = useCalculator();
 
-  // Se till att vi har giltiga värden
-  const validLeasingRange = leasingRange || { min: 0, max: 0 };
-  
-  // Beräkna det gamla maxvärdet (mittpunkten i den nya skalan)
-  const oldMaxCost = (validLeasingRange.min + validLeasingRange.max) / 2;
-  const eightyPercentOfOldMax = oldMaxCost ? oldMaxCost * 0.8 : 0;
-  
-  // Kontrollera om leasingkostnaden är tillräckligt hög och vi har minst 3 behandlingar per dag
-  const meetsLeasingRequirement = allowBelowFlatrate || (leasingCost >= eightyPercentOfOldMax);
-  const meetsMinTreatments = treatmentsPerDay >= 3;
-  const isFlatrateUnlocked = meetsLeasingRequirement && meetsMinTreatments;
+  // Om ingen maskin är vald eller maskinen inte använder krediter, visa inget
+  if (!selectedMachine || !selectedMachine.usesCredits) {
+    return null;
+  }
 
-  console.log(`OperatingCosts Flatrate Status:
-    leasingCost: ${leasingCost}
-    oldMaxCost (mittpunkt): ${oldMaxCost}
-    80% av oldMaxCost: ${eightyPercentOfOldMax}
-    meetsLeasingRequirement: ${meetsLeasingRequirement}
-    allowBelowFlatrate: ${allowBelowFlatrate}
-    treatmentsPerDay: ${treatmentsPerDay}
-    meetsMinTreatments: ${meetsMinTreatments}
-    isFlatrateUnlocked: ${isFlatrateUnlocked}
-  `);
-
-  // Använd flatrateAmount direkt från den valda maskinen
-  const flatrateAmount = selectedMachine?.flatrateAmount || 0;
-  
-  // Använd kreditpriset från context för att säkerställa konsistens
-  const creditMin: number = creditPrice || (selectedMachine?.creditMin || 0);
-  const creditMax: number = selectedMachine?.creditMax || 0;
-  const hasCreditRange = creditMin !== creditMax && creditMin > 0 && creditMax > 0;
-  
-  // Direkt beräkning av kostnad per månad för credits
+  // Beräkna kostnader utifrån credits eller flatrate
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
-  const creditsCostPerMonth = selectedMachine?.usesCredits ? treatmentsPerMonth * creditMin : 0;
+  const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
+  const creditsCostPerMonth = treatmentsPerMonth * creditsPerTreatment * (creditPrice || 0);
+  const flatrateAmount = selectedMachine.flatrateAmount || 0;
 
   // Hantera flatrate-switch
   const handleFlatrateChange = (checked: boolean) => {
-    console.log(`Flatrate switch ändrad till: ${checked}`);
     setUseFlatrateOption(checked ? 'flatrate' : 'perCredit');
   };
 
-  // Bestäm vilken informationsruta som ska visas
-  const renderFlatrateAlert = () => {
-    if (useFlatrateOption === 'flatrate' && isFlatrateUnlocked) {
-      // Flatrate är aktiverat
-      return (
-        <Alert className="mt-4 bg-green-50 border-green-200">
-          <Unlock className="h-4 w-4 text-green-500" />
-          <AlertTitle className="text-green-700">Flatrate är aktiverat</AlertTitle>
-          <AlertDescription className="text-green-600">
-            Du har valt flatrate för dina credits, vilket innebär en fast månadskostnad oavsett antalet behandlingar.
-          </AlertDescription>
-        </Alert>
-      );
-    } else if (isFlatrateUnlocked && useFlatrateOption !== 'flatrate') {
-      // Flatrate är tillgängligt men inte aktiverat
-      return (
-        <Alert className="mt-4 bg-green-50 border-green-200">
-          <Unlock className="h-4 w-4 text-green-500" />
-          <AlertTitle className="text-green-700">Flatrate tillgängligt</AlertTitle>
-          <AlertDescription className="text-green-600">
-            Med din nuvarande leasingkostnad och antal behandlingar har du möjlighet att aktivera flatrate för en fast månadskostnad.
-          </AlertDescription>
-        </Alert>
-      );
-    } else if (!isFlatrateUnlocked) {
-      // Flatrate är inte tillgängligt
-      return (
-        <Alert className="mt-4 bg-blue-50 border-blue-200">
-          <Lock className="h-4 w-4 text-blue-500" />
-          <AlertTitle className="text-blue-700">Flatrate ej tillgängligt</AlertTitle>
-          <AlertDescription className="text-blue-600">
-            För att låsa upp flatrate behöver din leasingkostnad nå minst 80% av standardleasingen och du behöver ange minst 3 behandlingar per dag.
-          </AlertDescription>
-        </Alert>
-      );
-    }
-    return null;
+  // Beräkna vid vilken punkt flatrate blir mer kostnadseffektivt
+  const calculateBreakEven = () => {
+    if (!creditPrice || creditPrice <= 0) return 0;
+    const breakEvenTreatmentsPerMonth = flatrateAmount / (creditPrice * creditsPerTreatment);
+    return Math.ceil(breakEvenTreatmentsPerMonth / WORKING_DAYS_PER_MONTH);
   };
 
   return (
-    <div className="input-group animate-slide-in" style={{ animationDelay: '400ms' }}>
-      <label className="input-label mb-4">
-        Credits - Kostnader
-      </label>
+    <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
+      <h3 className="text-lg font-semibold mb-4">Driftskostnader - Credits</h3>
 
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
           <Switch
             id="flatrate-switch"
             checked={useFlatrateOption === 'flatrate'}
             onCheckedChange={handleFlatrateChange}
-            disabled={!isFlatrateUnlocked && useFlatrateOption !== 'flatrate'}
           />
-          <Label htmlFor="flatrate-switch" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Flatrate för Credits
+          <Label htmlFor="flatrate-switch" className="text-sm font-medium">
+            Använd Flatrate
           </Label>
         </div>
         <span className="text-sm text-gray-500">
-          {useFlatrateOption === 'flatrate' ? 'Flatrate' : 'Styckepris'}
+          {useFlatrateOption === 'flatrate' ? 'Flatrate' : 'Per Credit'}
         </span>
       </div>
 
-      {renderFlatrateAlert()}
-
-      {selectedMachine?.usesCredits && (
+      {useFlatrateOption === 'perCredit' ? (
         <>
-          {useFlatrateOption === 'perCredit' && (
-            <>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm">Pris per credit</span>
-                <span className="text-lg font-semibold text-slate-700">
-                  {formatCurrency(creditMin, false)}
-                  {hasCreditRange && (
-                    <span className="text-xs text-slate-500 ml-1">
-                      (Intervall: {formatCurrency(selectedMachine.creditMin || 0, false)} - {formatCurrency(selectedMachine.creditMax || 0, false)})
-                    </span>
-                  )}
-                </span>
-              </div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm">Credits kostnad per månad</span>
-                <span className="text-lg font-semibold text-slate-700">{formatCurrency(creditsCostPerMonth, false)}</span>
-              </div>
-            </>
-          )}
-
-          {useFlatrateOption === 'flatrate' && isFlatrateUnlocked && (
-            <>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm">Flatrate månadskostnad</span>
-                <span className="text-lg font-semibold text-slate-700">{formatCurrency(flatrateAmount, false)}</span>
-              </div>
-              <p className="text-xs text-green-500 mb-2">Obegränsat antal behandlingar ingår.</p>
-            </>
-          )}
-
-          {flatrateAmount > 0 && useFlatrateOption === 'perCredit' && (
-            <p className="text-xs text-blue-500">
-              Vid ca {calculateFlatrateBreakEven(flatrateAmount, creditMin)} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt än styckepris.
-            </p>
-          )}
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm">Pris per credit</span>
+            <span className="text-lg font-semibold">{formatCurrency(creditPrice || 0)}</span>
+          </div>
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm">Credits per behandling</span>
+            <span className="text-lg font-semibold">{creditsPerTreatment}</span>
+          </div>
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm">Kostnad per månad</span>
+            <span className="text-lg font-semibold text-blue-600">{formatCurrency(creditsCostPerMonth)}</span>
+          </div>
         </>
+      ) : (
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm">Flatrate kostnad per månad</span>
+          <span className="text-lg font-semibold text-blue-600">{formatCurrency(flatrateAmount)}</span>
+        </div>
+      )}
+
+      {flatrateAmount > 0 && useFlatrateOption === 'perCredit' && (
+        <p className="text-xs text-blue-500 mt-2">
+          Vid {calculateBreakEven()} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt.
+        </p>
       )}
     </div>
   );

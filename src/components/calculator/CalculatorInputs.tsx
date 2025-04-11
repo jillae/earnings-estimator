@@ -2,12 +2,17 @@
 import React from 'react';
 import ClinicSizeSelector from '../ClinicSizeSelector';
 import TreatmentSettings from '../TreatmentSettings';
-import { useCalculator } from '@/context/CalculatorContext';
+import MachineSelector from '../MachineSelector';
+import OperatingCosts from '../OperatingCosts';
+import { useCalculator } from '@/context/calculator/context';
+import { machineData } from '@/data/machines';
 
 const CalculatorInputs: React.FC = () => {
   const {
     clinicSize,
     setClinicSize,
+    selectedMachineId,
+    setSelectedMachineId,
     treatmentsPerDay,
     setTreatmentsPerDay,
     customerPrice,
@@ -31,6 +36,14 @@ const CalculatorInputs: React.FC = () => {
           onCustomerPriceChange={setCustomerPrice}
         />
       </div>
+
+      <MachineSelector 
+        machines={machineData}
+        selectedMachineId={selectedMachineId}
+        onChange={setSelectedMachineId}
+      />
+
+      <OperatingCosts />
     </div>
   );
 };

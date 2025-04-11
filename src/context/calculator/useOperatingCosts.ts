@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
-import { calculateCreditPrice, calculateOperatingCost, shouldUseFlatrate } from '@/utils/creditUtils';
 import { FlatrateOption } from '@/utils/constants';
 
 export function useOperatingCosts({
@@ -34,71 +33,54 @@ export function useOperatingCosts({
   
   // Uppdatera driftskostnad när maskin eller behandlingsdata ändras
   useEffect(() => {
-    if (selectedMachine && selectedMachine.usesCredits) {
-      // Beräkna kreditpris med linjär interpolation baserat på leasingkostnad
-      const creditPrice = calculateCreditPrice(
-        selectedMachine,
-        leasingCost,
-        selectedLeasingPeriodId,
-        machinePriceSEK
-      );
-      
-      console.log(`Beräknat kreditpris för ${selectedMachine.name}: ${creditPrice} kr baserat på leasingkostnad ${leasingCost} kr`);
+    if (!selectedMachine) {
+      setOperatingCost({ costPerMonth: 0, useFlatrate: false });
+      setCalculatedCreditPrice(0);
+      return;
+    }
+
+    // Om maskinen använder krediter, beräkna driftskostnad
+    if (selectedMachine.usesCredits) {
+      // För enkelheten i denna implementation, använd ett fast kreditpris
+      const creditPrice = selectedMachine.creditMin || 149;
       setCalculatedCreditPrice(creditPrice);
       
-      // Säkerställ att treatmentsPerDay och leasingCost är giltiga värden
-      const safetreatmentsPerDay = isNaN(treatmentsPerDay) ? 0 : treatmentsPerDay;
-      const safeLeasingCost = isNaN(leasingCost) ? 0 : leasingCost;
+      // Beräkna antalet behandlingar per månad
+      const treatmentsPerMonth = treatmentsPerDay * 22; // 22 arbetsdagar per månad
       
-      // Kontrollera om flatrate kan användas baserat på regler
-      const canUseFlatrate = shouldUseFlatrate(
-        selectedMachine,
-        safeLeasingCost,
-        safetreatmentsPerDay,
-        allowBelowFlatrate,
-        selectedLeasingPeriodId,
-        machinePriceSEK
-      );
+      // Avgör om vi ska använda flatrate baserat på användarens val
+      // I en verklig implementation skulle vi ha mer komplexa regler här
+      const shouldUseFlatrate = useFlatrateOption === 'flatrate';
       
-      // Använd flatrate om användaren valt det OCH flatrate får användas
-      // Om allowBelowFlatrate är true, kan vi alltid använda flatrate om användaren valt det
-      const useFlatrate = useFlatrateOption === 'flatrate' && canUseFlatrate;
+      let monthlyCost = 0;
       
-      console.log(`Flatrate status för ${selectedMachine.name}:
-        canUseFlatrate: ${canUseFlatrate}
-        useFlatrateOption: ${useFlatrateOption}
-        allowBelowFlatrate: ${allowBelowFlatrate}
-        final useFlatrate: ${useFlatrate}
-      `);
+      if (shouldUseFlatrate && selectedMachine.flatrateAmount) {
+        // Använd flatrate
+        monthlyCost = selectedMachine.flatrateAmount;
+      } else {
+        // Använd per-credit kostnad
+        const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
+        monthlyCost = creditsPerTreatment * treatmentsPerMonth * creditPrice;
+      }
       
-      // Beräkna månadskostnad
-      const cost = calculateOperatingCost(
-        selectedMachine,
-        safetreatmentsPerDay,
-        creditPrice,
-        safeLeasingCost,
-        useFlatrate,
-        selectedLeasingPeriodId,
-        machinePriceSEK
-      );
+      setOperatingCost({
+        costPerMonth: monthlyCost,
+        useFlatrate: shouldUseFlatrate
+      });
       
-      setOperatingCost(cost);
-      
-      console.log(`Operating cost calculated: 
-        Credit price: ${creditPrice}
-        Per credit model: ${useFlatrateOption === 'perCredit'}
-        Cost per month: ${cost.costPerMonth}
-        Uses flatrate: ${cost.useFlatrate}
+      console.log(`Driftskostnad beräknad för ${selectedMachine.name}:
+        Behandlingar per dag: ${treatmentsPerDay}
+        Behandlingar per månad: ${treatmentsPerMonth}
+        Kreditpris: ${creditPrice}
+        Använder flatrate: ${shouldUseFlatrate}
+        Månadskostnad: ${monthlyCost} kr
       `);
     } else {
-      // Återställ värdena om ingen maskin är vald eller om den valda maskinen inte använder credits
+      // Om maskinen inte använder krediter, sätt kostnad till 0
+      setOperatingCost({ costPerMonth: 0, useFlatrate: false });
       setCalculatedCreditPrice(0);
-      setOperatingCost({
-        costPerMonth: 0,
-        useFlatrate: false
-      });
     }
-  }, [selectedMachine, leasingCost, selectedLeasingPeriodId, machinePriceSEK, treatmentsPerDay, useFlatrateOption, allowBelowFlatrate]);
+  }, [selectedMachine, treatmentsPerDay, useFlatrateOption]);
 
   return { 
     operatingCost,
