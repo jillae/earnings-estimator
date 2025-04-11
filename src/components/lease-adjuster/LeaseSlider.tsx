@@ -4,7 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import FlatrateIndicator from './FlatrateIndicator';
 
 interface LeaseSliderProps {
-  adjustmentFactor: number; // Nu som procentvärde (0-100)
+  adjustmentFactor: number; // Som procentvärde (0-100)
   onSliderChange: (values: number[]) => void;
   thresholdPosition: number | null;
   showFlatrateIndicator: boolean;
@@ -18,24 +18,16 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   showFlatrateIndicator,
   allowBelowFlatrate
 }) => {
-  // Vi använder alltid procent (0-100) istället för faktor (0-1)
-  // Vi tillämpar begränsning baserat på tillåtelseinställningar och tröskelvärde
+  // Vi använder alltid procent (0-100)
   const handleSliderChange = (values: number[]) => {
     let newValues = [...values];
     
     // Begränsa slidern från att gå under thresholdPosition om allowBelowFlatrate är false
-    // och vi har ett giltigt thresholdPosition
     if (!allowBelowFlatrate && thresholdPosition !== null && newValues[0] < thresholdPosition) {
       newValues[0] = thresholdPosition;
     }
     
-    // Lägg till loggning för att diagnostisera problem
-    console.log(`LeaseSlider - handleSliderChange:
-      Original value: ${values[0]}
-      Modified value: ${newValues[0]}
-      allowBelowFlatrate: ${allowBelowFlatrate}
-      thresholdPosition: ${thresholdPosition}
-    `);
+    console.log(`Slider värde: ${newValues[0]}%, Begränsning: ${allowBelowFlatrate ? 'Av' : 'På'}, Tröskel: ${thresholdPosition}%`);
     
     onSliderChange(newValues);
   };
@@ -53,7 +45,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
         value={[adjustmentFactor]}
         min={0}
         max={100}
-        step={1} // Använd heltal för procentvärden
+        step={1}
         onValueChange={handleSliderChange}
         className="mt-8"
       />

@@ -20,7 +20,7 @@ const CalculatorResults: React.FC = () => {
         monthlyRevenueIncVat={revenue.monthlyRevenueIncVat}
         yearlyRevenueIncVat={revenue.yearlyRevenueIncVat}
         leasingCostPerMonth={leasingCost}
-        operatingCostPerMonth={operatingCost.costPerMonth}
+        operatingCostPerMonth={operatingCost}
         netPerMonthExVat={netResults.netPerMonthExVat}
         netPerYearExVat={netResults.netPerYearExVat}
         occupancy50={occupancyRevenues.occupancy50}

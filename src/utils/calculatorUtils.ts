@@ -1,28 +1,82 @@
 
 /**
- * Main calculator utilities - Re-exports from specialized utility files
+ * Formatterar ett värde till svensk valutaformat
  */
+export const formatCurrency = (value: number): string => {
+  return new Intl.NumberFormat('sv-SE', {
+    style: 'currency',
+    currency: 'SEK',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value);
+};
 
-// Re-export all utility functions to maintain backward compatibility
-export { formatCurrency, roundToHundredEndingSix } from './formatUtils';
-export { fetchExchangeRate, calculateMachinePriceSEK } from './exchangeRateUtils';
-export { calculateLeasingRange, calculateLeasingCost } from './leasingUtils';
-export { calculateCreditPrice, calculateOperatingCost, shouldUseFlatrate, calculateFlatrateBreakEven } from './creditUtils';
-export { 
-  calculateRevenue, 
-  calculateOccupancyRevenues,
-  calculateNetResults 
-} from './revenueUtils';
+/**
+ * Beräknar intäkter baserat på antal behandlingar och kundpris
+ */
+export const calculateRevenue = (
+  treatmentsPerDay: number, 
+  customerPrice: number
+) => {
+  const VAT_RATE = 0.25;
+  const WORKING_DAYS_PER_MONTH = 22;
+  
+  // Beräkna daglig intäkt inklusive moms
+  const dailyRevenueIncVat = treatmentsPerDay * customerPrice;
+  
+  // Beräkna veckovis intäkt
+  const weeklyRevenueIncVat = dailyRevenueIncVat * 5;
+  
+  // Beräkna månadsvis intäkt
+  const monthlyRevenueIncVat = dailyRevenueIncVat * WORKING_DAYS_PER_MONTH;
+  
+  // Beräkna årlig intäkt
+  const yearlyRevenueIncVat = monthlyRevenueIncVat * 12;
+  
+  // Beräkna intäkter exklusive moms
+  const monthlyRevenueExVat = monthlyRevenueIncVat / (1 + VAT_RATE);
+  const yearlyRevenueExVat = yearlyRevenueExVat = monthlyRevenueExVat * 12;
+  
+  return {
+    revenuePerTreatmentExVat: customerPrice / (1 + VAT_RATE),
+    dailyRevenueIncVat,
+    weeklyRevenueIncVat,
+    monthlyRevenueIncVat,
+    yearlyRevenueIncVat,
+    monthlyRevenueExVat,
+    yearlyRevenueExVat
+  };
+};
 
-// Re-export constants to maintain backward compatibility
-export { 
-  VAT_RATE, 
-  WORKING_DAYS_PER_MONTH, 
-  MONTHS_PER_YEAR, 
-  FLATRATE_THRESHOLD,
-  SHIPPING_COST_EUR_CREDITS,
-  SHIPPING_COST_EUR_NO_CREDITS,
-  SMALL_CLINIC_TREATMENTS,
-  MEDIUM_CLINIC_TREATMENTS,
-  LARGE_CLINIC_TREATMENTS
-} from './constants';
+/**
+ * Beräknar nettoresultat baserat på intäkter och kostnader
+ */
+export const calculateNetResults = (
+  monthlyRevenueExVat: number,
+  leasingCost: number = 0,
+  operatingCost: number = 0
+) => {
+  // Beräkna netto per månad (ex moms)
+  const netPerMonthExVat = monthlyRevenueExVat - leasingCost - operatingCost;
+  
+  // Beräkna netto per år (ex moms)
+  const netPerYearExVat = netPerMonthExVat * 12;
+  
+  return {
+    netPerMonthExVat,
+    netPerYearExVat
+  };
+};
+
+/**
+ * Beräknar intäkter vid olika beläggningsgrader
+ */
+export const calculateOccupancyRevenues = (
+  yearlyRevenueIncVat: number
+) => {
+  return {
+    occupancy50: yearlyRevenueIncVat * 0.5,
+    occupancy75: yearlyRevenueIncVat * 0.75,
+    occupancy100: yearlyRevenueIncVat
+  };
+};

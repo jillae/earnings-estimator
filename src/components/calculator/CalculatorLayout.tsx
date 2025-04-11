@@ -9,7 +9,7 @@ const CalculatorLayout: React.FC = () => {
   
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6">
-      <div className="calculator-grid">
+      <div className="grid md:grid-cols-2 gap-8">
         <CalculatorInputs />
         <CalculatorResults />
       </div>
