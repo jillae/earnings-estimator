@@ -10,21 +10,7 @@ import {
   MEDIUM_CLINIC_TREATMENTS,
   LARGE_CLINIC_TREATMENTS
 } from '@/utils/constants';
-
-// Definiera context-typen
-type CalculatorContextType = {
-  clinicSize: 'small' | 'medium' | 'large';
-  setClinicSize: (size: 'small' | 'medium' | 'large') => void;
-  treatmentsPerDay: number;
-  setTreatmentsPerDay: (value: number) => void;
-  customerPrice: number;
-  setCustomerPrice: (value: number) => void;
-  leasingCost: number;
-  operatingCost: number;
-  revenue: any;
-  netResults: any;
-  occupancyRevenues: any;
-};
+import { CalculatorContextType } from '@/context/calculator/types';
 
 // Skapa context
 const CalculatorContext = createContext<CalculatorContextType | undefined>(undefined);
@@ -44,6 +30,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [treatmentsPerDay, setTreatmentsPerDay] = useState(MEDIUM_CLINIC_TREATMENTS);
   const [customerPrice, setCustomerPrice] = useState(1800);
+  const [selectedMachineId, setSelectedMachineId] = useState('select-machine');
   
   // Beräknade värden
   const [revenue, setRevenue] = useState({
@@ -100,19 +87,46 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setOccupancyRevenues(calculatedOccupancyRevenues);
   }, [treatmentsPerDay, customerPrice]);
   
+  // Skapa ett dummyobjekt för att uppfylla typen CalculatorContextType
+  // Detta är bara för att undvika typfel under utveckling
+  const dummyValues = {
+    selectedMachine: null,
+    selectedLeasingPeriodId: '',
+    setSelectedLeasingPeriodId: () => {},
+    selectedInsuranceId: '',
+    setSelectedInsuranceId: () => {},
+    exchangeRate: 0,
+    machinePriceSEK: 0,
+    leasingRange: { min: 0, max: 0, default: 0 },
+    leasingCost: 0,
+    leasingCostPercentage: 0,
+    creditPrice: 0,
+    leaseAdjustmentFactor: 0,
+    setLeaseAdjustmentFactor: () => {},
+    allowBelowFlatrate: false,
+    setAllowBelowFlatrate: () => {},
+    flatrateThreshold: 0,
+    useFlatrateOption: 'perCredit' as const,
+    setUseFlatrateOption: () => {},
+    operatingCost: { costPerMonth: 0, useFlatrate: false }
+  };
+  
   // Värden att göra tillgängliga via context
-  const value = {
+  const value: CalculatorContextType = {
     clinicSize,
     setClinicSize,
     treatmentsPerDay,
     setTreatmentsPerDay,
     customerPrice,
     setCustomerPrice,
+    selectedMachineId,
+    setSelectedMachineId,
     leasingCost: 0, // Ingen leasingkostnad i första iterationen
-    operatingCost: 0, // Ingen driftkostnad i första iterationen
+    operatingCost: { costPerMonth: 0, useFlatrate: false }, // Ingen driftkostnad i första iterationen
     revenue,
     netResults,
-    occupancyRevenues
+    occupancyRevenues,
+    ...dummyValues // Lägg till dummyvärden för att uppfylla typen
   };
   
   return (
