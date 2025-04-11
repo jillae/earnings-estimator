@@ -1,6 +1,6 @@
 
-import React, { useEffect } from 'react';
-import { CalculatorContext } from './context';
+import React from 'react';
+import { CalculatorContext } from '../CalculatorContext';
 import { useStateSelections } from './useStateSelections';
 import { useClinicSettings } from './useClinicSettings';
 import { useMachinePricing } from './useMachinePricing';
@@ -35,7 +35,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   } = useStateSelections();
 
   // Sätt standard leasingperiod om det inte är valt
-  useEffect(() => {
+  React.useEffect(() => {
     if (!selectedLeasingPeriodId && leasingPeriods.length > 0) {
       setSelectedLeasingPeriodId(leasingPeriods[1].id); // Välj 36 månader som standard
     }

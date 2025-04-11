@@ -3,10 +3,10 @@ import React, { createContext, useContext } from 'react';
 import { CalculatorProvider as ActualCalculatorProvider } from './calculator/CalculatorProvider';
 import { CalculatorContextType } from './calculator/types';
 
-// Create context
+// Skapa context
 const CalculatorContext = createContext<CalculatorContextType | undefined>(undefined);
 
-// Custom hook to use calculator context
+// Custom hook för att använda calculator context
 export const useCalculator = () => {
   const context = useContext(CalculatorContext);
   if (context === undefined) {
@@ -15,10 +15,10 @@ export const useCalculator = () => {
   return context;
 };
 
-// Re-export the context provider for backward compatibility
+// Exportera provider för bakåtkompatibilitet
 export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return <ActualCalculatorProvider>{children}</ActualCalculatorProvider>;
 };
 
-// Export the context for direct use
+// Exportera context för direkt användning
 export { CalculatorContext };
