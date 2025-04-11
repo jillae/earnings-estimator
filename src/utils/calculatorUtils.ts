@@ -81,7 +81,7 @@ export const calculateOccupancyRevenues = (
   };
 };
 
-// Exportera de saknade funktionerna från leasingUtils.ts
+// Exportera de nödvändiga funktionerna från andra moduler
 export { calculateLeasingRange } from './leasingRangeUtils';
 export { calculateLeasingCost } from './leasingCostUtils';
 export { fetchExchangeRate, calculateMachinePriceSEK } from './exchangeRateUtils';
