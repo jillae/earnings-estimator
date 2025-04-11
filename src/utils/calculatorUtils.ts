@@ -35,7 +35,7 @@ export const calculateRevenue = (
   
   // Beräkna intäkter exklusive moms
   const monthlyRevenueExVat = monthlyRevenueIncVat / (1 + VAT_RATE);
-  const yearlyRevenueExVat = yearlyRevenueExVat = monthlyRevenueExVat * 12;
+  const yearlyRevenueExVat = monthlyRevenueExVat * 12;
   
   return {
     revenuePerTreatmentExVat: customerPrice / (1 + VAT_RATE),
