@@ -32,12 +32,12 @@ export const INSURANCE_RATES = {
   RATE_ABOVE_50K: 0.015  // 1.5% för maskiner > 50 000 SEK
 };
 
-// Leasing tariff-värden
+// Leasing tariff-värden - UPPDATERADE VÄRDEN
 export const LEASING_TARIFFS = [
-  { Löptid: 24, Faktor: 4.566 },
-  { Löptid: 36, Faktor: 3.189 },
-  { Löptid: 48, Faktor: 2.504 },
-  { Löptid: 60, Faktor: 2.095 }
+  { Löptid: 24, Faktor: 4.5136 },
+  { Löptid: 36, Faktor: 3.1346 },
+  { Löptid: 48, Faktor: 2.4475 },
+  { Löptid: 60, Faktor: 2.0372 }
 ];
 
 // Flatrate-belopp för olika maskintyper (SEK)

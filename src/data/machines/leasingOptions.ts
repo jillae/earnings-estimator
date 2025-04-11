@@ -2,10 +2,10 @@
 import { LeasingPeriod, InsuranceOption, InsuranceRates } from './types';
 
 export const leasingPeriods: LeasingPeriod[] = [
-  { id: "24", name: "24 månader", rate: 0.04566 },
-  { id: "36", name: "36 månader", rate: 0.03189 },
-  { id: "48", name: "48 månader", rate: 0.02504 },
-  { id: "60", name: "60 månader", rate: 0.02095 }
+  { id: "24", name: "24 månader", rate: 0.045136 },
+  { id: "36", name: "36 månader", rate: 0.031346 },
+  { id: "48", name: "48 månader", rate: 0.024475 },
+  { id: "60", name: "60 månader", rate: 0.020372 }
 ];
 
 export const insuranceOptions: InsuranceOption[] = [
