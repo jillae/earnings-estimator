@@ -3,7 +3,6 @@ import React from 'react';
 import Header from '@/components/Header';
 import Calculator from '@/components/Calculator';
 import Footer from '@/components/Footer';
-import { CalculatorProvider } from '@/context/CalculatorContext';
 import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
@@ -15,11 +14,9 @@ const Index = () => {
       </Helmet>
       
       <Header />
-      <CalculatorProvider>
-        <main className="flex-grow py-6">
-          <Calculator />
-        </main>
-      </CalculatorProvider>
+      <main className="flex-grow py-6">
+        <Calculator />
+      </main>
       <Footer />
     </div>
   );
