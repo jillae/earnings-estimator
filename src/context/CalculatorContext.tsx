@@ -72,12 +72,12 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     
     // I denna förenklade version har vi inga leasingkostnader eller driftkostnader ännu
     const leasingCost = 0;
-    const operatingCost = 0;
+    const operatingCostPerMonth = 0;
     
     const calculatedNetResults = calculateNetResults(
       calculatedRevenue.monthlyRevenueExVat,
-      leasingCost,
-      operatingCost
+      calculatedRevenue.yearlyRevenueExVat,
+      leasingCost + operatingCostPerMonth
     );
     setNetResults(calculatedNetResults);
     

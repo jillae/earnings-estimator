@@ -53,14 +53,14 @@ export const calculateRevenue = (
  */
 export const calculateNetResults = (
   monthlyRevenueExVat: number,
-  leasingCost: number = 0,
-  operatingCost: number = 0
+  yearlyRevenueExVat: number,
+  totalMonthlyCostExVat: number
 ) => {
   // Beräkna netto per månad (ex moms)
-  const netPerMonthExVat = monthlyRevenueExVat - leasingCost - operatingCost;
+  const netPerMonthExVat = monthlyRevenueExVat - totalMonthlyCostExVat;
   
   // Beräkna netto per år (ex moms)
-  const netPerYearExVat = netPerMonthExVat * 12;
+  const netPerYearExVat = yearlyRevenueExVat - (totalMonthlyCostExVat * 12);
   
   return {
     netPerMonthExVat,
