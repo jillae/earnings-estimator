@@ -80,3 +80,8 @@ export const calculateOccupancyRevenues = (
     occupancy100: yearlyRevenueIncVat
   };
 };
+
+// Exportera de saknade funktionerna från leasingUtils.ts
+export { calculateLeasingRange } from './leasingRangeUtils';
+export { calculateLeasingCost } from './leasingCostUtils';
+export { fetchExchangeRate, calculateMachinePriceSEK } from './exchangeRateUtils';

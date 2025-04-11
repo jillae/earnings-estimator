@@ -4,6 +4,10 @@ export interface Machine {
   name: string;
   description?: string;
   price?: string | number;
+  priceEur?: number;
+  fullName?: string;
+  shortName?: string;
+  modelCode?: string;
   usesCredits: boolean;
   creditMin?: number;
   creditMax?: number;
@@ -12,4 +16,27 @@ export interface Machine {
   flatrateAmount?: number;
   defaultCustomerPrice?: number;
   defaultLeasingPeriod?: string;
+  imageUrl?: string;
+  minLeaseMultiplier?: number;
+  maxLeaseMultiplier?: number;
+  defaultLeaseMultiplier?: number;
+  creditPriceMultiplier?: number;
+  creditsPerTreatment?: number;
+  leasingTariffs?: {[key: string]: number};
+}
+
+export interface LeasingPeriod {
+  id: string;
+  name: string;
+  rate: number;
+}
+
+export interface InsuranceOption {
+  id: string;
+  name: string;
+  rate: number;
+}
+
+export interface InsuranceRates {
+  [key: number]: number;
 }
