@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { 
   Form,
   FormControl,
@@ -31,11 +32,14 @@ import {
   LARGE_CLINIC_TREATMENTS,
   DEFAULT_CUSTOMER_PRICE,
   INSURANCE_RATES,
-  LEASING_TARIFFS,
+  LEASING_TARIFFS_2024,
+  LEASING_TARIFFS_2025,
   FLATRATE_AMOUNTS
 } from '@/utils/constants';
 
 const Admin = () => {
+  const [useTariff2025, setUseTariff2025] = useState(true);
+  
   const form = useForm({
     defaultValues: {
       // Grundläggande konstanter
@@ -62,11 +66,11 @@ const Admin = () => {
       insurance_rate_50k_or_less: INSURANCE_RATES.RATE_50K_OR_LESS,
       insurance_rate_above_50k: INSURANCE_RATES.RATE_ABOVE_50K,
       
-      // Leasing tariff värden
-      leasing_tariff_24: LEASING_TARIFFS.find(t => t.Löptid === 24)?.Faktor || 4.566,
-      leasing_tariff_36: LEASING_TARIFFS.find(t => t.Löptid === 36)?.Faktor || 3.189,
-      leasing_tariff_48: LEASING_TARIFFS.find(t => t.Löptid === 48)?.Faktor || 2.504,
-      leasing_tariff_60: LEASING_TARIFFS.find(t => t.Löptid === 60)?.Faktor || 2.095,
+      // Leasing tariff värden - dessa uppdateras dynamiskt baserat på toggle
+      leasing_tariff_24: 0,
+      leasing_tariff_36: 0,
+      leasing_tariff_48: 0,
+      leasing_tariff_60: 0,
       
       // Flatrate-belopp för olika maskintyper
       flatrate_amount_emerald: FLATRATE_AMOUNTS.EMERALD,
@@ -76,14 +80,30 @@ const Admin = () => {
     }
   });
   
+  // Uppdatera formulärvärden när tariff-år ändras
+  useEffect(() => {
+    const tariffValues = useTariff2025 ? LEASING_TARIFFS_2025 : LEASING_TARIFFS_2024;
+    
+    form.setValue('leasing_tariff_24', tariffValues.find(t => t.Löptid === 24)?.Faktor || 0);
+    form.setValue('leasing_tariff_36', tariffValues.find(t => t.Löptid === 36)?.Faktor || 0);
+    form.setValue('leasing_tariff_48', tariffValues.find(t => t.Löptid === 48)?.Faktor || 0);
+    form.setValue('leasing_tariff_60', tariffValues.find(t => t.Löptid === 60)?.Faktor || 0);
+    
+    // Visa toast med vilket år som är aktivt
+    toast.success(`Tariffvärden för ${useTariff2025 ? '2025' : '2024'} har laddats`);
+  }, [useTariff2025, form]);
+  
   const onSubmit = (data: any) => {
     // I en riktig app skulle vi spara värdena till en databas eller localStorage
-    // men här visar vi bara ett meddelande
     console.log("Sparade konfigurationsvärden:", data);
     toast.success("Konfigurationen har uppdaterats");
     
     // Här kan du lägga till logik för att spara inställningarna
     // Till exempel genom att använda en API-anrop eller localStorage
+  };
+
+  const handleToggleTariffYear = () => {
+    setUseTariff2025(!useTariff2025);
   };
   
   return (
@@ -392,6 +412,26 @@ const Admin = () => {
             <div className="space-y-6">
               <h2 className="text-xl font-semibold border-b pb-2">Leasing Tariff Värden</h2>
               
+              <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold">Tarifftabell:</span>
+                  <div className="flex items-center space-x-2">
+                    <span className={!useTariff2025 ? "font-semibold text-primary" : "text-slate-500"}>2024</span>
+                    <Switch 
+                      checked={useTariff2025} 
+                      onCheckedChange={handleToggleTariffYear} 
+                      id="tariff-year-toggle"
+                    />
+                    <span className={useTariff2025 ? "font-semibold text-primary" : "text-slate-500"}>2025</span>
+                  </div>
+                </div>
+                <div className="text-sm text-slate-500 mb-2">
+                  {useTariff2025 
+                    ? "Visar 2025 års uppdaterade tarifftabell" 
+                    : "Visar 2024 års tarifftabell"}
+                </div>
+              </div>
+              
               <FormField
                 control={form.control}
                 name="leasing_tariff_24"
@@ -399,9 +439,9 @@ const Admin = () => {
                   <FormItem>
                     <FormLabel>24 månader (faktor %)</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                      <Input type="number" step="0.0001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
                     </FormControl>
-                    <FormDescription>Faktor för 24 månaders period (t.ex. 4.566)</FormDescription>
+                    <FormDescription>Faktor för 24 månaders period</FormDescription>
                   </FormItem>
                 )}
               />
@@ -413,9 +453,9 @@ const Admin = () => {
                   <FormItem>
                     <FormLabel>36 månader (faktor %)</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                      <Input type="number" step="0.0001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
                     </FormControl>
-                    <FormDescription>Faktor för 36 månaders period (t.ex. 3.189)</FormDescription>
+                    <FormDescription>Faktor för 36 månaders period</FormDescription>
                   </FormItem>
                 )}
               />
@@ -427,9 +467,9 @@ const Admin = () => {
                   <FormItem>
                     <FormLabel>48 månader (faktor %)</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                      <Input type="number" step="0.0001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
                     </FormControl>
-                    <FormDescription>Faktor för 48 månaders period (t.ex. 2.504)</FormDescription>
+                    <FormDescription>Faktor för 48 månaders period</FormDescription>
                   </FormItem>
                 )}
               />
@@ -441,12 +481,45 @@ const Admin = () => {
                   <FormItem>
                     <FormLabel>60 månader (faktor %)</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                      <Input type="number" step="0.0001" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
                     </FormControl>
-                    <FormDescription>Faktor för 60 månaders period (t.ex. 2.095)</FormDescription>
+                    <FormDescription>Faktor för 60 månaders period</FormDescription>
                   </FormItem>
                 )}
               />
+
+              <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 text-amber-800 text-sm">
+                <p className="font-medium">Tariffvärden jämförelse:</p>
+                <table className="w-full mt-2 text-xs">
+                  <thead>
+                    <tr>
+                      <th className="text-left">Löptid</th>
+                      <th className="text-right">2024</th>
+                      <th className="text-right">2025</th>
+                      <th className="text-right">Diff</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[24, 36, 48, 60].map(period => {
+                      const value2024 = LEASING_TARIFFS_2024.find(t => t.Löptid === period)?.Faktor || 0;
+                      const value2025 = LEASING_TARIFFS_2025.find(t => t.Löptid === period)?.Faktor || 0;
+                      const diff = value2025 - value2024;
+                      const diffPercent = (diff / value2024 * 100).toFixed(2);
+                      
+                      return (
+                        <tr key={period}>
+                          <td>{period} mån</td>
+                          <td className="text-right">{value2024.toFixed(4)}</td>
+                          <td className="text-right">{value2025.toFixed(4)}</td>
+                          <td className={`text-right ${diff < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                            {diff.toFixed(4)} ({diffPercent}%)
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
           
