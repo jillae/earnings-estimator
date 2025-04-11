@@ -2,7 +2,7 @@
 import React from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { useCalculator } from '@/context/calculator/context';
+import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 

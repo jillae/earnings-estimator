@@ -4,7 +4,7 @@ import ClinicSizeSelector from '../ClinicSizeSelector';
 import TreatmentSettings from '../TreatmentSettings';
 import MachineSelector from '../MachineSelector';
 import OperatingCosts from '../OperatingCosts';
-import { useCalculator } from '@/context/calculator/context';
+import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
 
 const CalculatorInputs: React.FC = () => {
