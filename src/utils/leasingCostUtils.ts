@@ -4,7 +4,7 @@
  */
 import { Machine } from '../data/machineData';
 import { calculateLeasingRange } from './leasingRangeUtils';
-import { INSURANCE_RATES } from './constants';
+import { calculateInsuranceCost } from './insuranceUtils';
 import { roundToHundredEndingSix } from './formatUtils';
 
 /**
@@ -52,19 +52,3 @@ export function calculateLeasingCost(
   return finalCost;
 }
 
-/**
- * Helper function to calculate insurance cost
- */
-function calculateInsuranceCost(machinePriceSEK: number): number {
-  let insuranceRate = INSURANCE_RATES.RATE_ABOVE_50K;
-  
-  if (machinePriceSEK <= 10000) {
-    insuranceRate = INSURANCE_RATES.RATE_10K_OR_LESS;
-  } else if (machinePriceSEK <= 20000) {
-    insuranceRate = INSURANCE_RATES.RATE_20K_OR_LESS;
-  } else if (machinePriceSEK <= 50000) {
-    insuranceRate = INSURANCE_RATES.RATE_50K_OR_LESS;
-  }
-  
-  return machinePriceSEK * insuranceRate / 12;
-}

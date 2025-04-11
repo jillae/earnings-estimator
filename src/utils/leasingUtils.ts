@@ -9,4 +9,6 @@
 export { getLeasingFactor, calculateTariffBasedLeasingMax } from './leasingTariffUtils';
 export { calculateLeasingRange } from './leasingRangeUtils';
 export { calculateLeasingCost } from './leasingCostUtils';
+export { calculateInsuranceCost, isInsuranceEnabled } from './insuranceUtils';
 export type { LeasingRange } from './leasingRangeUtils';
+

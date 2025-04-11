@@ -3,9 +3,10 @@
  * Utility functions for calculating leasing ranges
  */
 import { Machine } from '../data/machineData';
-import { FLATRATE_THRESHOLD_PERCENTAGE, LEASING_TARIFFS, INSURANCE_RATES } from './constants';
+import { FLATRATE_THRESHOLD_PERCENTAGE, LEASING_TARIFFS } from './constants';
 import { calculateTariffBasedLeasingMax } from './leasingTariffUtils';
 import { roundToHundredEndingSix } from './formatUtils';
+import { calculateInsuranceCost } from './insuranceUtils';
 
 /**
  * Interface for the return value from calculateLeasingRange
@@ -81,23 +82,3 @@ export function calculateLeasingRange(
   return result;
 }
 
-/**
- * Helper function to calculate insurance cost
- */
-function calculateInsuranceCost(machinePriceSEK: number): number {
-  if (!machinePriceSEK || isNaN(machinePriceSEK)) {
-    return 0;
-  }
-  
-  let insuranceRate = INSURANCE_RATES.RATE_ABOVE_50K;
-  
-  if (machinePriceSEK <= 10000) {
-    insuranceRate = INSURANCE_RATES.RATE_10K_OR_LESS;
-  } else if (machinePriceSEK <= 20000) {
-    insuranceRate = INSURANCE_RATES.RATE_20K_OR_LESS;
-  } else if (machinePriceSEK <= 50000) {
-    insuranceRate = INSURANCE_RATES.RATE_50K_OR_LESS;
-  }
-  
-  return machinePriceSEK * insuranceRate / 12;
-}
