@@ -40,7 +40,7 @@ export function useRevenueCalculations({
 
   // Calculate revenue and occupancy
   useEffect(() => {
-    const calculatedRevenue = calculateRevenue(customerPrice, treatmentsPerDay);
+    const calculatedRevenue = calculateRevenue(treatmentsPerDay, customerPrice);
     setRevenue(calculatedRevenue);
     
     const calculatedOccupancyRevenues = calculateOccupancyRevenues(calculatedRevenue.yearlyRevenueIncVat);
