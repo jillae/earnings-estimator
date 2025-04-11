@@ -12,7 +12,9 @@ const OperatingCosts: React.FC = () => {
     useFlatrateOption, 
     setUseFlatrateOption, 
     treatmentsPerDay, 
-    creditPrice
+    creditPrice,
+    leasingCost,
+    flatrateThreshold
   } = useCalculator();
 
   // Om ingen maskin är vald eller maskinen inte använder krediter, visa inget
@@ -37,6 +39,9 @@ const OperatingCosts: React.FC = () => {
     const breakEvenTreatmentsPerMonth = flatrateAmount / (creditPrice * creditsPerTreatment);
     return Math.ceil(breakEvenTreatmentsPerMonth / WORKING_DAYS_PER_MONTH);
   };
+
+  // Visa recommendation baserat på leasingkostnad och flatrate-tröskelvärde
+  const showFlatrateRecommendation = flatrateThreshold && leasingCost >= flatrateThreshold;
 
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
@@ -84,6 +89,15 @@ const OperatingCosts: React.FC = () => {
         <p className="text-xs text-blue-500 mt-2">
           Vid {calculateBreakEven()} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt.
         </p>
+      )}
+      
+      {showFlatrateRecommendation && useFlatrateOption !== 'flatrate' && (
+        <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded-md">
+          <p className="text-xs text-blue-700">
+            Baserat på din leasingkostnad rekommenderar vi att du använder flatrate. 
+            Detta ger dig obegränsad användning av credits.
+          </p>
+        </div>
       )}
     </div>
   );

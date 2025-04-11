@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CalculatorContext } from './context';
 import { useStateSelections } from './useStateSelections';
 import { useClinicSettings } from './useClinicSettings';
@@ -8,6 +8,7 @@ import { useLeasingCalculations } from './useLeasingCalculations';
 import { useOperatingCosts } from './useOperatingCosts';
 import { useRevenueCalculations } from './useRevenueCalculations';
 import { useDebugLogging } from './useDebugLogging';
+import { leasingPeriods } from '@/data/machines';
 
 export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Get state selections
@@ -32,6 +33,16 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     treatmentsPerDay,
     setTreatmentsPerDay
   } = useStateSelections();
+
+  // Sätt standard leasingperiod om det inte är valt
+  useEffect(() => {
+    if (!selectedLeasingPeriodId && leasingPeriods.length > 0) {
+      setSelectedLeasingPeriodId(leasingPeriods[1].id); // Välj 36 månader som standard
+    }
+    if (!selectedInsuranceId) {
+      setSelectedInsuranceId('no'); // Välj ingen försäkring som standard
+    }
+  }, [selectedLeasingPeriodId, selectedInsuranceId, setSelectedLeasingPeriodId, setSelectedInsuranceId]);
 
   // Get machine pricing
   const { exchangeRate, machinePriceSEK } = useMachinePricing({
