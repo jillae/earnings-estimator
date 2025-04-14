@@ -4,7 +4,6 @@ import Header from '@/components/Header';
 import Calculator from '@/components/Calculator';
 import Footer from '@/components/Footer';
 import { Helmet } from 'react-helmet-async';
-import MachineGalleryContainer from '@/components/MachineGalleryContainer';
 
 const Index = () => {
   return (
@@ -16,8 +15,6 @@ const Index = () => {
       
       <Header />
       <main className="flex-grow py-6">
-        {/* Lägg till MachineGalleryContainer innan Calculator */}
-        <MachineGalleryContainer />
         <Calculator />
       </main>
       <Footer />

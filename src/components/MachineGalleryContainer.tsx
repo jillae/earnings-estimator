@@ -45,7 +45,7 @@ const MachineGalleryContainer: React.FC = () => {
   };
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 sm:px-6 mt-4 mb-6">
+    <div className="max-w-7xl mx-auto mb-6">
       <div className="glass-card animate-slide-in" style={{ animationDelay: '200ms' }}>
         <h2 className="text-xl font-semibold mb-4">Välj din maskin</h2>
         <MachineGallery
