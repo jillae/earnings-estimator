@@ -1,4 +1,3 @@
-
 /**
  * Formatterar ett värde till svensk valutaformat
  */
@@ -84,4 +83,4 @@ export const calculateOccupancyRevenues = (
 // Exportera de nödvändiga funktionerna från andra moduler
 export { calculateLeasingRange } from './leasingRangeUtils';
 export { calculateLeasingCost } from './leasingCostUtils';
-export { getExchangeRate, calculateMachinePriceSEK } from './exchangeRateUtils';
+export { getExchangeRate, fetchExchangeRate, calculateMachinePriceSEK } from './exchangeRateUtils';

@@ -3,10 +3,11 @@ import { Machine } from '../data/machines/types';
 import { calculateInsuranceCost, isInsuranceEnabled } from './insuranceUtils';
 import { roundToHundredEndingSix } from './formatUtils';
 
-interface LeasingRange {
+export interface LeasingRange {
   min: number;
   max: number;
   default: number;
+  flatrateThreshold?: number;
 }
 
 /**
@@ -70,9 +71,17 @@ export function calculateLeasingRange(
     defaultLeasingCost += insuranceCost;
   }
 
+  // Beräkna flatrate-tröskelvärdet för maskiner som använder krediter
+  let flatrateThreshold;
+  if (machine.usesCredits) {
+    // Sätt tröskeln vid 80% av vägen från min till max
+    flatrateThreshold = minLeasingCost + (maxLeasingCost - minLeasingCost) * 0.8;
+  }
+
   return {
     min: minLeasingCost,
     max: maxLeasingCost,
-    default: defaultLeasingCost
+    default: defaultLeasingCost,
+    flatrateThreshold
   };
 }

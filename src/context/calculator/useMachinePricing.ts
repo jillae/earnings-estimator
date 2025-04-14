@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
-import { fetchExchangeRate, calculateMachinePriceSEK } from '@/utils/calculatorUtils';
+import { fetchExchangeRate, calculateMachinePriceSEK } from '@/utils/exchangeRateUtils';
 
 export function useMachinePricing({
   selectedMachineId,
@@ -17,7 +17,7 @@ export function useMachinePricing({
   useEffect(() => {
     const getExchangeRate = async () => {
       try {
-        const rate = await fetchExchangeRate();
+        const rate = await fetchExchangeRate('EUR', 'SEK');
         console.log("Fetched exchange rate:", rate);
         setExchangeRate(rate);
       } catch (error) {
@@ -30,14 +30,18 @@ export function useMachinePricing({
 
   // Update machine price in SEK when exchange rate or selected machine changes
   useEffect(() => {
-    const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
-    if (selectedMachine) {
-      setCustomerPrice(selectedMachine.defaultCustomerPrice || 1990);
-      
-      const priceSEK = calculateMachinePriceSEK(selectedMachine, exchangeRate);
-      console.log("Machine price in SEK:", priceSEK);
-      setMachinePriceSEK(priceSEK);
-    }
+    const updateMachinePrice = async () => {
+      const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
+      if (selectedMachine) {
+        setCustomerPrice(selectedMachine.defaultCustomerPrice || 1990);
+        
+        const priceSEK = await calculateMachinePriceSEK(selectedMachine);
+        console.log("Machine price in SEK:", priceSEK);
+        setMachinePriceSEK(priceSEK);
+      }
+    };
+    
+    updateMachinePrice();
   }, [selectedMachineId, exchangeRate, setCustomerPrice]);
 
   return {
