@@ -24,6 +24,19 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
     }
   };
   
+  // Nya funktioner för att öka/minska behandlingar med pilarna
+  const incrementTreatments = () => {
+    if (treatmentsPerDay < 12) {
+      onTreatmentsChange(treatmentsPerDay + 1);
+    }
+  };
+  
+  const decrementTreatments = () => {
+    if (treatmentsPerDay > 1) {
+      onTreatmentsChange(treatmentsPerDay - 1);
+    }
+  };
+  
   // Funktion för att uppdatera kundpris
   const handleCustomerPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -31,6 +44,17 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
       // Avrunda till närmaste 100-tal
       const roundedValue = Math.round(value / 100) * 100;
       onCustomerPriceChange(roundedValue);
+    }
+  };
+  
+  // Nya funktioner för att öka/minska pris med pilarna
+  const incrementPrice = () => {
+    onCustomerPriceChange(customerPrice + 100);
+  };
+  
+  const decrementPrice = () => {
+    if (customerPrice >= 100) {
+      onCustomerPriceChange(customerPrice - 100);
     }
   };
   
@@ -62,11 +86,23 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               <span className="text-gray-500">st</span>
             </div>
             <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col">
-              <ChevronUp className="h-4 w-4 text-gray-600" />
-              <ChevronDown className="h-4 w-4 text-gray-600" />
+              <button 
+                onClick={incrementTreatments} 
+                className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
+                aria-label="Öka antal behandlingar"
+              >
+                <ChevronUp className="h-4 w-4 text-gray-600" />
+              </button>
+              <button 
+                onClick={decrementTreatments} 
+                className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
+                aria-label="Minska antal behandlingar"
+              >
+                <ChevronDown className="h-4 w-4 text-gray-600" />
+              </button>
             </div>
           </div>
-          <p className="mt-1 text-xs text-gray-500">Använd pilarna på tangentbordet för att justera värdet</p>
+          <p className="mt-1 text-xs text-gray-500">Justera med pilarna eller använd tangentbordet</p>
         </div>
         
         <div className="input-group">
@@ -88,11 +124,23 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               <span className="text-gray-500">kr</span>
             </div>
             <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col">
-              <ChevronUp className="h-4 w-4 text-gray-600" />
-              <ChevronDown className="h-4 w-4 text-gray-600" />
+              <button 
+                onClick={incrementPrice} 
+                className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
+                aria-label="Öka pris"
+              >
+                <ChevronUp className="h-4 w-4 text-gray-600" />
+              </button>
+              <button 
+                onClick={decrementPrice} 
+                className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
+                aria-label="Minska pris"
+              >
+                <ChevronDown className="h-4 w-4 text-gray-600" />
+              </button>
             </div>
           </div>
-          <p className="mt-1 text-xs text-gray-500">Använd pilarna på tangentbordet för att justera värdet</p>
+          <p className="mt-1 text-xs text-gray-500">Justera med pilarna eller använd tangentbordet</p>
         </div>
       </div>
     </div>

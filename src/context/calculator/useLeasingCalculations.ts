@@ -34,6 +34,8 @@ export function useLeasingCalculations({
     const includeInsurance = selectedInsuranceId === 'yes';
     
     if (selectedMachine && selectedLeasingPeriod) {
+      console.log(`Beräknar leasingrange med försäkring: ${includeInsurance ? 'Ja' : 'Nej'}`);
+      
       const range = calculateLeasingRange(
         selectedMachine,
         machinePriceSEK,
@@ -61,22 +63,30 @@ export function useLeasingCalculations({
   // Calculate leasing cost whenever adjustment factor changes
   useEffect(() => {
     const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
+    const selectedLeasingPeriod = leasingPeriods.find(period => period.id === selectedLeasingPeriodId);
+    const includeInsurance = selectedInsuranceId === 'yes';
     
-    if (selectedMachine && leasingRange.min !== undefined && leasingRange.max !== undefined) {
+    if (selectedMachine && selectedLeasingPeriod && leasingRange.min !== undefined && leasingRange.max !== undefined) {
+      console.log(`Beräknar leasingkostnad med justeringsfaktor ${leaseAdjustmentFactor} och försäkring: ${includeInsurance ? 'Ja' : 'Nej'}`);
+      
       // Direkt linjär interpolation mellan min och max baserat på justeringsfaktorn
-      const newLeasingCost = leasingRange.min + (leaseAdjustmentFactor * (leasingRange.max - leasingRange.min));
+      const baseLeasing = leasingRange.min + (leaseAdjustmentFactor * (leasingRange.max - leasingRange.min));
       
-      console.log(`Beräknar leasingkostnad med justeringsfaktor ${leaseAdjustmentFactor}:
-        Min: ${leasingRange.min}
-        Max: ${leasingRange.max}
-        Range: ${leasingRange.max - leasingRange.min}
-        Beräknad kostnad: ${newLeasingCost}
-      `);
+      // Beräkna leasingkostnaden med försäkring om det är valt
+      const newLeasingCost = calculateLeasingCost(
+        selectedMachine,
+        machinePriceSEK,
+        selectedLeasingPeriod.rate,
+        includeInsurance,
+        leaseAdjustmentFactor
+      );
       
-      // Uppdatera leasingkostnaden baserat på den linjära interpoleringen
+      console.log(`Beräknad leasingkostnad: ${newLeasingCost} SEK (Basleasingkostnad: ${baseLeasing} SEK)`);
+      
+      // Uppdatera leasingkostnaden
       setLeasingCost(Math.round(newLeasingCost));
     }
-  }, [leaseAdjustmentFactor, leasingRange, selectedMachineId]);
+  }, [leaseAdjustmentFactor, leasingRange, selectedMachineId, selectedLeasingPeriodId, selectedInsuranceId, machinePriceSEK]);
 
   return {
     leasingRange,

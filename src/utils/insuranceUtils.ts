@@ -2,7 +2,6 @@
 /**
  * Utility functions for handling insurance calculations
  */
-import { INSURANCE_RATES } from './constants';
 import { insuranceRates } from '@/data/machines/leasingOptions';
 
 /**
@@ -30,7 +29,9 @@ export function calculateInsuranceCost(machinePriceSEK: number): number {
   }
   
   // Beräkna månadskostnad (årskostnad / 12)
-  return Math.round(machinePriceSEK * insuranceRate / 12);
+  const monthlyCost = Math.round(machinePriceSEK * insuranceRate / 12);
+  console.log(`Beräknad försäkringskostnad: ${monthlyCost} SEK/månad (Maskinpris: ${machinePriceSEK} SEK, Sats: ${insuranceRate})`);
+  return monthlyCost;
 }
 
 /**
@@ -42,4 +43,3 @@ export function calculateInsuranceCost(machinePriceSEK: number): number {
 export function isInsuranceEnabled(selectedInsuranceId: string): boolean {
   return selectedInsuranceId === 'yes';
 }
-

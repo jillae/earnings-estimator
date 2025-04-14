@@ -41,13 +41,16 @@ export function calculateLeasingCost(
     Calculated: ${baseLeasingCost}
   `);
   
+  // Beräkna försäkringskostnaden separat
   let insuranceCost = 0;
-  if (includeInsurance && isInsuranceEnabled(machine.id)) {
+  if (includeInsurance) {
     insuranceCost = calculateInsuranceCost(machinePriceSEK);
-    console.log(`Adding insurance cost: ${insuranceCost}`);
+    console.log(`Adding insurance cost: ${insuranceCost} (for machine price: ${machinePriceSEK})`);
+  } else {
+    console.log("Försäkring inkluderas inte i beräkningen");
   }
   
   const finalCost = baseLeasingCost + insuranceCost;
-  console.log(`Final leasing cost: ${finalCost}`);
+  console.log(`Final leasing cost: ${finalCost} (Base: ${baseLeasingCost}, Insurance: ${insuranceCost})`);
   return finalCost;
 }

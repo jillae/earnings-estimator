@@ -117,11 +117,18 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   }
 
   // Kontrollera och logga om vi är över flatrate-tröskeln
-  // Nu baserat på gamla maxvärdet (mittpunkten)
   const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
   
   // Visa flatrate-info om vi är över tröskeln, visar flatrate-indikatorn, och allowBelowFlatrate är false (alltså flatrate är aktiverat)
   const shouldShowFlatrateInfo = showFlatrateIndicator && isAboveFlatrateThreshold && !allowBelowFlatrate;
+  
+  // Hantera toggle av allowBelowFlatrate
+  const toggleAllowBelowFlatrate = () => {
+    if (onAllowBelowFlatrateChange) {
+      onAllowBelowFlatrateChange(!allowBelowFlatrate);
+      console.log(`Toggle allowBelowFlatrate från ${allowBelowFlatrate} till ${!allowBelowFlatrate}`);
+    }
+  };
   
   useEffect(() => {
     console.log(`FLATRATE INFO SYNLIGHET: 
@@ -152,6 +159,21 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         showFlatrateIndicator={showFlatrateIndicator}
         allowBelowFlatrate={allowBelowFlatrate}
       />
+      
+      {showFlatrateIndicator && onAllowBelowFlatrateChange && (
+        <div className="mt-2 flex items-center">
+          <input
+            type="checkbox"
+            id="allowBelowFlatrate"
+            checked={allowBelowFlatrate}
+            onChange={toggleAllowBelowFlatrate}
+            className="mr-2 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+          />
+          <label htmlFor="allowBelowFlatrate" className="text-sm text-slate-600 cursor-pointer">
+            Tillåt justering under 80% gränsen
+          </label>
+        </div>
+      )}
     </div>
   );
 };
