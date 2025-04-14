@@ -26,7 +26,7 @@ export const specialMachines: Machine[] = [
     fullName: "Lunula Laser",
     shortName: "Lunula",
     modelCode: "FFS",
-    description: "Specialiserad behandlingsutrustning för medicinsk fotvård.",
+    description: "Specialiserad behandlingsutrustning för medicinsk fotvård",
     priceEur: 25900,
     minLeaseMultiplier: 0.018,
     maxLeaseMultiplier: 0.032,

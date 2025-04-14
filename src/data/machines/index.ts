@@ -1,4 +1,3 @@
-
 import { Machine } from './types';
 import { handheldMachines } from './handheld';
 import { premiumMachines } from './premium';
@@ -23,13 +22,30 @@ import {
   DEFAULT_CUSTOMER_PRICE
 } from '../../utils/constants';
 
-// Kombinera alla maskiner och sortera dem alfabetiskt på namn
+// Definiera den önskade ordningen för maskinerna
+const machineOrder = [
+  "emerald",
+  "zerona",
+  "fx-635",
+  "fx-405",
+  "xlr8",
+  "evrl",
+  "gvl",
+  "base-station",
+  "lunula"
+];
+
+// Kombinera alla maskiner och sortera dem enligt den specificerade ordningen
 export const machineData: Machine[] = [
-  ...handheldMachines,
   ...premiumMachines,
-  ...specialMachines,
-  ...treatmentMachines
-].sort((a, b) => a.name.localeCompare(b.name, 'sv'));
+  ...treatmentMachines,
+  ...handheldMachines,
+  ...specialMachines
+].sort((a, b) => {
+  const indexA = machineOrder.indexOf(a.id);
+  const indexB = machineOrder.indexOf(b.id);
+  return indexA - indexB;
+});
 
 // Reexport all constants
 export {
