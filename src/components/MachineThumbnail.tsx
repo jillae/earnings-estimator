@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { cn } from "@/lib/utils";
-import { Computer } from 'lucide-react';
+import { Computer, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { Machine } from '@/data/machines/types';
 
 interface MachineThumbnailProps {
@@ -17,9 +16,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
 
-  // Uppdaterade bildlänkar för maskiner baserat på maskin-ID
   const getPlaceholderImageForMachine = (machineId: string) => {
-    // Använd de uppdaterade bilderna från imgur
     const placeholders: {[key: string]: string} = {
       "emerald": "https://i.imgur.com/IRED95Z.png",
       "zerona": "https://i.imgur.com/2LGOVPB.png", 
@@ -29,10 +26,23 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
       "evrl": "https://i.imgur.com/cuTXUCb.png",
       "gvl": "https://i.imgur.com/8G0fOsI.png",
       "base-station": "https://i.imgur.com/lnCem77.png",
-      "lunula": "https://i.imgur.com/QHbeZpX.jpg"
+      "lunula": "https://i.imgur.com/QHbeZpX.jpg",
+      "thumbs-up": "https://i.imgur.com/bHqJNZz.png",
+      "thumbs-down": "https://i.imgur.com/VNqBkwm.png"
     };
 
     return placeholders[machineId] || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=200&q=80";
+  };
+  
+  const renderIcon = () => {
+    switch (machine.id) {
+      case 'thumbs-up':
+        return <ThumbsUp className="h-10 w-10 text-green-500" />;
+      case 'thumbs-down':
+        return <ThumbsDown className="h-10 w-10 text-red-500" />;
+      default:
+        return <Computer className="h-10 w-10 text-slate-400" />;
+    }
   };
   
   return (
@@ -51,7 +61,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
     >
       <div className="relative w-full h-24 mb-2 rounded overflow-hidden bg-slate-100 flex items-center justify-center">
         {imageError ? (
-          <Computer className="h-10 w-10 text-slate-400" />
+          renderIcon()
         ) : (
           <img 
             src={getPlaceholderImageForMachine(machine.id)} 

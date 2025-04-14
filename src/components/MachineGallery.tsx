@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/carousel";
 import MachineThumbnail from './MachineThumbnail';
 import { Machine } from '@/data/machines/types';
+import { ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface MachineGalleryProps {
   machines: Machine[];
@@ -28,8 +29,6 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
 
   const handleMachineClick = (machineId: string) => {
     console.log(`MachineGallery: Klickade på maskin med ID: ${machineId}`);
-    // Alltid trigga onChange, även om samma maskin väljs igen
-    // Detta är viktigt för att säkerställa att hela UI uppdateras
     onChange(machineId);
   };
 
