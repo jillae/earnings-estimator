@@ -1,12 +1,11 @@
-
 /**
  * Utility functions for calculating leasing ranges
  */
-import { Machine } from '../data/machineData';
+import { Machine } from '../data/machines/types';
 import { FLATRATE_THRESHOLD_PERCENTAGE, LEASING_TARIFFS } from './constants';
 import { calculateTariffBasedLeasingMax } from './leasingTariffUtils';
 import { roundToHundredEndingSix } from './formatUtils';
-import { calculateInsuranceCost } from './insuranceUtils';
+import { calculateInsuranceCost, isInsuranceEnabled } from './insuranceUtils';
 
 /**
  * Interface for the return value from calculateLeasingRange
@@ -58,7 +57,7 @@ export function calculateLeasingRange(
   console.log(`Calculated tariff-based leasing range for ${machine.name}: ${roundedLeasingMin} - ${roundedLeasingMax}`);
 
   let insuranceCost = 0;
-  if (includeInsurance) {
+  if (includeInsurance && isInsuranceEnabled(machine)) {
     insuranceCost = calculateInsuranceCost(validMachinePriceSEK);
     console.log(`Adding insurance cost: ${insuranceCost}`);
   }
@@ -81,4 +80,3 @@ export function calculateLeasingRange(
   console.log("Final leasing range:", result);
   return result;
 }
-

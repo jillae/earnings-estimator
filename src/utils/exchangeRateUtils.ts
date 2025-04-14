@@ -1,26 +1,19 @@
+import axios from 'axios';
+import { DEFAULT_EXCHANGE_RATE } from '../utils/constants';
+import { Machine } from '../data/machines/types';
 
-/**
- * Utility functions for handling exchange rates
- */
-import { getExchangeRate } from './exchangeRate';
-import { Machine } from '../data/machineData';
-
-export async function fetchExchangeRate(): Promise<number> {
+export async function getExchangeRate(fromCurrency: string, toCurrency: string): Promise<number> {
   try {
-    console.log("Fetching exchange rate from API...");
-    const rate = await getExchangeRate('EUR', 'SEK');
-    console.log("Fetched exchange rate:", rate);
-    return rate;
+    const response = await axios.get(`https://api.exchangerate.host/convert?from=${fromCurrency}&to=${toCurrency}`);
+    
+    if (response.data.success) {
+      return response.data.result;
+    } else {
+      console.error('Error fetching exchange rate:', response.data.error);
+      return DEFAULT_EXCHANGE_RATE;
+    }
   } catch (error) {
     console.error('Error fetching exchange rate:', error);
-    const fallbackRate = 11.4926;
-    console.log("Using fallback exchange rate:", fallbackRate);
-    return fallbackRate;
+    return DEFAULT_EXCHANGE_RATE;
   }
-}
-
-export function calculateMachinePriceSEK(machine: Machine, exchangeRate: number): number {
-  const priceSEK = machine.priceEur * exchangeRate;
-  console.log(`Calculated price for ${machine.name}: ${machine.priceEur} EUR × ${exchangeRate} = ${priceSEK} SEK`);
-  return priceSEK;
 }

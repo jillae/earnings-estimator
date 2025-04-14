@@ -1,10 +1,9 @@
-
 /**
  * Utility functions for calculating leasing costs
  */
-import { Machine } from '../data/machineData';
+import { Machine } from '../data/machines/types';
 import { calculateLeasingRange } from './leasingRangeUtils';
-import { calculateInsuranceCost } from './insuranceUtils';
+import { calculateInsuranceCost, isInsuranceEnabled } from './insuranceUtils';
 import { roundToHundredEndingSix } from './formatUtils';
 
 /**
@@ -42,7 +41,7 @@ export function calculateLeasingCost(
   `);
   
   let insuranceCost = 0;
-  if (includeInsurance) {
+  if (includeInsurance && isInsuranceEnabled(machine)) {
     insuranceCost = calculateInsuranceCost(machinePriceSEK);
     console.log(`Adding insurance cost: ${insuranceCost}`);
   }
@@ -51,4 +50,3 @@ export function calculateLeasingCost(
   console.log(`Final leasing cost: ${finalCost}`);
   return finalCost;
 }
-
