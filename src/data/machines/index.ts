@@ -4,7 +4,11 @@ import { handheldMachines } from './handheld';
 import { premiumMachines } from './premium';
 import { specialMachines } from './special';
 import { treatmentMachines } from './treatment';
-import { leasingPeriods, insuranceOptions, insuranceRates } from './leasingOptions';
+import {
+  leasingPeriods,
+  insuranceOptions,
+  insuranceRates
+} from './leasingOptions';
 import {
   VAT_RATE,
   WORKING_DAYS_PER_MONTH,
@@ -19,46 +23,13 @@ import {
   DEFAULT_CUSTOMER_PRICE
 } from '../../utils/constants';
 
-const thumbsMachines: Machine[] = [
-  {
-    id: 'thumbs-up',
-    name: 'Tumme Upp',
-    modelCode: 'THUMB-UP',
-    description: 'Positiv maskin för optimistiska resultat',
-    usesCredits: false,
-    priceEur: 0,
-    flatrateAmount: 0,
-    defaultCustomerPrice: 2500,
-    defaultLeasingPeriod: '60',
-    minLeaseMultiplier: 0.8,
-    maxLeaseMultiplier: 1,
-    defaultLeaseMultiplier: 1,
-    creditPriceMultiplier: 1
-  },
-  {
-    id: 'thumbs-down',
-    name: 'Tumme Ner',
-    modelCode: 'THUMB-DOWN',
-    description: 'Pessimistisk maskin för konservativa beräkningar',
-    usesCredits: false,
-    priceEur: 0,
-    flatrateAmount: 0,
-    defaultCustomerPrice: 2000,
-    defaultLeasingPeriod: '60',
-    minLeaseMultiplier: 0.8,
-    maxLeaseMultiplier: 1,
-    defaultLeaseMultiplier: 1,
-    creditPriceMultiplier: 1
-  }
-];
-
+// Kombinera alla maskiner och sortera dem alfabetiskt på namn
 export const machineData: Machine[] = [
   ...handheldMachines,
   ...premiumMachines,
   ...specialMachines,
-  ...treatmentMachines,
-  ...thumbsMachines
-];
+  ...treatmentMachines
+].sort((a, b) => a.name.localeCompare(b.name, 'sv'));
 
 // Reexport all constants
 export {
