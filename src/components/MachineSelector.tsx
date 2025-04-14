@@ -31,12 +31,9 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
     onChange(newMachineId);
   };
 
-  // Visa inte dropdown-väljaren om en maskin redan är vald via galleriet
-  // men visa den om "select-machine" är valt (inget val gjort ännu)
-  const showSelector = selectedMachineId === "select-machine";
-
+  // Visa alltid dropdown-väljaren, oavsett vald maskin
   return (
-    <div className={`input-group animate-slide-in ${!showSelector ? 'hidden' : ''}`} style={{ animationDelay: '100ms' }}>
+    <div className="input-group animate-slide-in" style={{ animationDelay: '100ms' }}>
       <label htmlFor="machine-select" className="input-label mb-4">
         Välj maskin
       </label>
