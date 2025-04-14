@@ -1,7 +1,7 @@
 
-import { getExchangeRate } from './exchangeRate';
+import { getExchangeRate } from './exchangeRateUtils';
 import { Machine } from '../data/machines/types';
-import { calculateLeasingRange } from './leasingUtils';
+import { calculateLeasingRange } from './leasingRangeUtils';
 
 export async function calculateLeasingCost(
   machine: Machine,

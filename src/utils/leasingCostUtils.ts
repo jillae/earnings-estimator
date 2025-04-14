@@ -1,3 +1,4 @@
+
 /**
  * Utility functions for calculating leasing costs
  */
@@ -41,7 +42,7 @@ export function calculateLeasingCost(
   `);
   
   let insuranceCost = 0;
-  if (includeInsurance && isInsuranceEnabled(machine)) {
+  if (includeInsurance && isInsuranceEnabled(machine.id)) {
     insuranceCost = calculateInsuranceCost(machinePriceSEK);
     console.log(`Adding insurance cost: ${insuranceCost}`);
   }

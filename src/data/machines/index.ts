@@ -17,7 +17,7 @@ import {
   SHIPPING_COST_EUR_NO_CREDITS,
   DEFAULT_EXCHANGE_RATE,
   DEFAULT_CUSTOMER_PRICE
-} from '../utils/constants';
+} from '../../utils/constants';
 
 const thumbsMachines: Machine[] = [
   {

@@ -84,4 +84,4 @@ export const calculateOccupancyRevenues = (
 // Exportera de nödvändiga funktionerna från andra moduler
 export { calculateLeasingRange } from './leasingRangeUtils';
 export { calculateLeasingCost } from './leasingCostUtils';
-export { fetchExchangeRate, calculateMachinePriceSEK } from './exchangeRateUtils';
+export { getExchangeRate, calculateMachinePriceSEK } from './exchangeRateUtils';

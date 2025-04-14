@@ -1,82 +1,78 @@
-/**
- * Utility functions for calculating leasing ranges
- */
-import { Machine } from '../data/machines/types';
-import { FLATRATE_THRESHOLD_PERCENTAGE, LEASING_TARIFFS } from './constants';
-import { calculateTariffBasedLeasingMax } from './leasingTariffUtils';
-import { roundToHundredEndingSix } from './formatUtils';
-import { calculateInsuranceCost, isInsuranceEnabled } from './insuranceUtils';
 
-/**
- * Interface for the return value from calculateLeasingRange
- */
-export interface LeasingRange {
+import { Machine } from '../data/machines/types';
+import { calculateInsuranceCost, isInsuranceEnabled } from './insuranceUtils';
+import { roundToHundredEndingSix } from './formatUtils';
+
+interface LeasingRange {
   min: number;
   max: number;
   default: number;
-  flatrateThreshold?: number;
 }
 
 /**
- * Calculates the leasing range (min, max, default) for a machine
+ * Calculates the possible leasing range (min, max, default) for a machine
  */
 export function calculateLeasingRange(
   machine: Machine,
   machinePriceSEK: number,
-  leasingRate: number | string,
+  leasingRate: number,
   includeInsurance: boolean
 ): LeasingRange {
-  // Ensure leasingRate is a number
-  const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate || 0;
-  
-  // Säkerställ att machinePriceSEK är ett giltigt värde
-  const validMachinePriceSEK = machinePriceSEK || 0;
-  
-  // Always use tariff-based calculation as specified in the requirements
-  // Find the closest leasing period match
-  const closestTariff = LEASING_TARIFFS.reduce((prev, curr) => 
-    Math.abs(curr.Faktor - leasingRateNum * 100) < Math.abs(prev.Faktor - leasingRateNum * 100) ? curr : prev
-  );
-  
-  // Calculate exchange rate to convert EUR to SEK
-  const exchangeRate = machine.priceEur > 0 ? validMachinePriceSEK / machine.priceEur : 11.49260;
-  
-  // Use the tariff-based calculation for all machines
-  const baseLeasingMax = calculateTariffBasedLeasingMax(
-    machine.priceEur, 
-    closestTariff.Löptid, 
-    machine.usesCredits,
-    exchangeRate
-  );
-  
-  // Avrunda till närmaste 100-tal som slutar på 6
-  const roundedLeasingMax = roundToHundredEndingSix(baseLeasingMax);
-  const roundedLeasingMin = roundToHundredEndingSix(Math.round(0.90 * roundedLeasingMax)); // 90% av max som krav
-  const roundedLeasingDefault = roundedLeasingMax;
-  
-  console.log(`Calculated tariff-based leasing range for ${machine.name}: ${roundedLeasingMin} - ${roundedLeasingMax}`);
+  // Sanity check
+  if (!machine || machinePriceSEK <= 0 || leasingRate <= 0) {
+    console.warn('Invalid input for leasing range calculation', { machine, machinePriceSEK, leasingRate });
+    return { min: 0, max: 0, default: 0 };
+  }
 
-  let insuranceCost = 0;
-  if (includeInsurance && isInsuranceEnabled(machine)) {
-    insuranceCost = calculateInsuranceCost(validMachinePriceSEK);
-    console.log(`Adding insurance cost: ${insuranceCost}`);
+  let minLeasingCost: number;
+  let maxLeasingCost: number;
+  let defaultLeasingCost: number;
+
+  if (machine.leasingMin && machine.leasingMax) {
+    // Om maskinen har fördefinierade leasingMin/Max värden
+    minLeasingCost = machine.leasingMin;
+    maxLeasingCost = machine.leasingMax;
+    
+    // Beräkna default baserat på maskinens defaultLeaseMultiplier
+    const defaultMultiplier = machine.defaultLeaseMultiplier || 0.025;
+    
+    // Använd linjär interpolation för default, baserat på maskinens defaultLeaseMultiplier
+    // defaultLeaseMultiplier ska ligga mellan minLeaseMultiplier och maxLeaseMultiplier
+    // och används för att beräkna defaultLeasingCost mellan min och max
+    if (machine.minLeaseMultiplier !== undefined && machine.maxLeaseMultiplier !== undefined) {
+      const normalizedDefaultMultiplier = 
+        (defaultMultiplier - machine.minLeaseMultiplier) / 
+        (machine.maxLeaseMultiplier - machine.minLeaseMultiplier);
+        
+      defaultLeasingCost = minLeasingCost + normalizedDefaultMultiplier * (maxLeasingCost - minLeasingCost);
+    } else {
+      // Om saknas, använd 50% mellan min och max
+      defaultLeasingCost = minLeasingCost + 0.5 * (maxLeasingCost - minLeasingCost);
+    }
+  } else {
+    // Beräkna baserat på maskinpris, leasingränta och multiplikatorer
+    minLeasingCost = machinePriceSEK * leasingRate * (machine.minLeaseMultiplier || 0.018);
+    maxLeasingCost = machinePriceSEK * leasingRate * (machine.maxLeaseMultiplier || 0.032);
+    defaultLeasingCost = machinePriceSEK * leasingRate * (machine.defaultLeaseMultiplier || 0.025);
   }
-  
-  // Skapa resultatobjektet
-  let result: LeasingRange = {
-    min: roundedLeasingMin,
-    max: roundedLeasingMax,
-    default: roundedLeasingDefault + insuranceCost
+
+  // Avrunda alla värden till närmaste 100-tal som slutar på 6
+  minLeasingCost = roundToHundredEndingSix(minLeasingCost);
+  maxLeasingCost = roundToHundredEndingSix(maxLeasingCost);
+  defaultLeasingCost = roundToHundredEndingSix(defaultLeasingCost);
+
+  // Lägg till försäkring om det är aktiverat
+  if (includeInsurance && isInsuranceEnabled(machine.id)) {
+    const insuranceCost = calculateInsuranceCost(machinePriceSEK);
+    console.log(`Adding insurance cost to leasing range: ${insuranceCost}`);
+    minLeasingCost += insuranceCost;
+    maxLeasingCost += insuranceCost;
+    defaultLeasingCost += insuranceCost;
+  }
+
+  return {
+    min: minLeasingCost,
+    max: maxLeasingCost,
+    default: defaultLeasingCost
   };
-  
-  // Lägg till flatrateThreshold för maskiner som använder credits
-  if (machine.usesCredits) {
-    // Sätt tröskeln vid 80% av vägen från min till max
-    const threshold = roundedLeasingMin + (roundedLeasingMax - roundedLeasingMin) * FLATRATE_THRESHOLD_PERCENTAGE;
-    console.log(`Flatrate threshold calculated: ${threshold}`);
-    result.flatrateThreshold = roundToHundredEndingSix(threshold);
-  }
-  
-  console.log("Final leasing range:", result);
-  return result;
 }
