@@ -1,4 +1,3 @@
-
 // Viktiga konstanter för kalkylatorn
 export const VAT_RATE = 0.25;
 export const WORKING_DAYS_PER_MONTH = 22;
@@ -33,7 +32,7 @@ export const INSURANCE_RATES = {
 };
 
 // Leasing tariff-värden 2024
-export const LEASING_TARIFFS_2024 = [
+export const LEASING_TARIFFS_2024: LeasingPeriod[] = [
   { Löptid: 24, Faktor: 4.566 },
   { Löptid: 36, Faktor: 3.189 },
   { Löptid: 48, Faktor: 2.504 },
@@ -41,15 +40,15 @@ export const LEASING_TARIFFS_2024 = [
 ];
 
 // Leasing tariff-värden 2025
-export const LEASING_TARIFFS_2025 = [
+export const LEASING_TARIFFS_2025: LeasingPeriod[] = [
   { Löptid: 24, Faktor: 4.5136 },
   { Löptid: 36, Faktor: 3.1346 },
   { Löptid: 48, Faktor: 2.4475 },
   { Löptid: 60, Faktor: 2.0372 }
 ];
 
-// Aktuellt tariffvärde - defaultar till 2025
-export const LEASING_TARIFFS = LEASING_TARIFFS_2025;
+// Aktuellt tariffvärde - defaultar till 2024
+export const LEASING_TARIFFS = LEASING_TARIFFS_2024;
 
 // Flatrate-belopp för olika maskintyper (SEK)
 export const FLATRATE_AMOUNTS = {
