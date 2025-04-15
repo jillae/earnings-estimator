@@ -24,7 +24,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
     }
   };
   
-  // Nya funktioner för att öka/minska behandlingar med pilarna
+  // Funktioner för att öka/minska behandlingar
   const incrementTreatments = () => {
     if (treatmentsPerDay < 12) {
       onTreatmentsChange(treatmentsPerDay + 1);
@@ -47,7 +47,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
     }
   };
   
-  // Nya funktioner för att öka/minska pris med pilarna
+  // Funktioner för att öka/minska pris
   const incrementPrice = () => {
     onCustomerPriceChange(customerPrice + 100);
   };
@@ -85,7 +85,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <span className="text-gray-500">st</span>
             </div>
-            <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col">
               <button 
                 onClick={incrementTreatments} 
                 className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
@@ -125,7 +125,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <span className="text-gray-500">kr</span>
             </div>
-            <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col">
               <button 
                 onClick={incrementPrice} 
                 className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
