@@ -5,6 +5,7 @@ import { calculateLeasingRange } from '@/utils/leasingRangeUtils';
 import { calculateLeasingCost } from '@/utils/leasingCostUtils';
 import { calculateCashPrice } from '@/utils/pricingUtils';
 import { SHIPPING_COST_EUR_CREDITS, SHIPPING_COST_EUR_NO_CREDITS } from '@/utils/constants';
+import { calculateLeasingMax60mRef } from '@/utils/pricingUtils';
 
 export function useLeasingCalculations({
   selectedMachineId,
@@ -29,8 +30,20 @@ export function useLeasingCalculations({
   const [leasingCost, setLeasingCost] = useState<number>(0);
   const [flatrateThreshold, setFlatrateThreshold] = useState<number>(0);
   const [cashPriceSEK, setCashPriceSEK] = useState<number>(0);
+  const [leasingMax60mRef, setLeasingMax60mRef] = useState<number>(0);
   
   const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
+  
+  // Beräkna leasingMax60mRef-referensvärdet när maskinen ändras
+  useEffect(() => {
+    if (selectedMachine?.priceEur) {
+      const refValue = calculateLeasingMax60mRef(selectedMachine, exchangeRate);
+      setLeasingMax60mRef(refValue);
+      console.log(`Beräknat leasingMax60mRef för ${selectedMachine.name}: ${refValue} SEK`);
+    } else {
+      setLeasingMax60mRef(0);
+    }
+  }, [selectedMachine, exchangeRate]);
   
   // Beräkna kontantpris när maskinen ändras
   useEffect(() => {
@@ -99,6 +112,7 @@ export function useLeasingCalculations({
       Adjustment factor: ${leaseAdjustmentFactor}
       Range: ${range.min} - ${range.max} (default: ${range.default})
       Calculated cost: ${cost}
+      LeasingMax60mRef: ${leasingMax60mRef}
     `);
   }, [
     selectedMachine,
@@ -112,6 +126,7 @@ export function useLeasingCalculations({
     leasingRange,
     leasingCost,
     flatrateThreshold,
-    cashPriceSEK
+    cashPriceSEK,
+    leasingMax60mRef
   };
 }

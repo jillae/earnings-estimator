@@ -11,13 +11,6 @@ export const SMALL_CLINIC_TREATMENTS = 2;
 export const MEDIUM_CLINIC_TREATMENTS = 4;
 export const LARGE_CLINIC_TREATMENTS = 6;
 
-// SLA-nivåer och kostnader
-export const SLA_PRICES = {
-  Brons: 0,      // Ingår (kostnadsfritt)
-  Silver: 448,   // SEK per månad
-  Guld: 1996     // SEK per månad
-};
-
 // Typer för flatrate-alternativ
 export type FlatrateOption = 'perCredit' | 'flatrate';
 
@@ -26,6 +19,15 @@ export type PaymentOption = 'leasing' | 'cash';
 
 // Typer för SLA-nivåer
 export type SlaLevel = 'Brons' | 'Silver' | 'Guld';
+
+// SLA procentsatser för maskiner utan credits
+export const SLA_PERCENT_NO_CREDITS = {
+  Silver: 0.25,  // 25% av leasingMax_60m_ref
+  Guld: 0.50     // 50% av leasingMax_60m_ref
+};
+
+// SLA procentsats för Guld (för alla maskiner)
+export const SLA_PERCENT_GULD = 0.50;
 
 // Flatrate konstanter
 export const FLATRATE_THRESHOLD = 4; // Antal behandlingar per dag där flatrate aktiveras

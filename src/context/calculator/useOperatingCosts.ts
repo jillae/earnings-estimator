@@ -1,9 +1,10 @@
 
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
-import { FlatrateOption, SlaLevel, SLA_PRICES } from '@/utils/constants';
+import { FlatrateOption, SlaLevel } from '@/utils/constants';
 import { calculateCreditPrice } from '@/utils/creditUtils';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
+import { calculateSlaCost } from '@/utils/pricingUtils';
 
 export function useOperatingCosts({
   selectedMachineId,
@@ -13,9 +14,10 @@ export function useOperatingCosts({
   machinePriceSEK,
   allowBelowFlatrate,
   useFlatrateOption = 'perCredit',
-  leaseAdjustmentFactor = 1, // Adjustmentfaktor för att beräkna kreditpriset korrekt
-  selectedSlaLevel = 'Brons', // SLA-nivå
-  paymentOption = 'leasing' // Betalningsalternativ
+  leaseAdjustmentFactor = 1,
+  selectedSlaLevel = 'Brons',
+  paymentOption = 'leasing',
+  leasingMax60mRef = 0
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
@@ -27,9 +29,10 @@ export function useOperatingCosts({
   leaseAdjustmentFactor?: number;
   selectedSlaLevel?: SlaLevel;
   paymentOption?: 'leasing' | 'cash';
+  leasingMax60mRef?: number;
 }) {
   const [operatingCost, setOperatingCost] = useState<{ 
-    costPerMonth: number, 
+    costPerMonth: number,
     useFlatrate: boolean,
     slaCost: number,
     totalCost: number
@@ -56,12 +59,13 @@ export function useOperatingCosts({
       return;
     }
 
-    // Hämta SLA-kostnad från konstanter
-    const slaCost = SLA_PRICES[selectedSlaLevel] || 0;
+    // Beräkna SLA-kostnad baserat på vald nivå och referensvärde
+    const slaCost = calculateSlaCost(selectedMachine, selectedSlaLevel, leasingMax60mRef);
 
     let creditOrFlatrateCost = 0;
     
-    if (selectedMachine.usesCredits) {
+    // Om maskinen använder credits OCH vi är på Brons-nivå, beräkna credit/flatrate-kostnad
+    if (selectedMachine.usesCredits && selectedSlaLevel === 'Brons') {
       let creditPrice: number = 0;
       
       // Beräkna kreditpris baserat på betalningsalternativ
@@ -112,44 +116,53 @@ export function useOperatingCosts({
         creditOrFlatrateCost = creditsPerTreatment * treatmentsPerMonth * creditPrice;
       }
       
-      // Total driftskostnad = kredit/flatrate + SLA
-      const totalCost = creditOrFlatrateCost + slaCost;
-      
+      // För Brons SLA, är totalCost = creditOrFlatrateCost (eftersom slaCost = 0)
       setOperatingCost({
         costPerMonth: creditOrFlatrateCost,
         useFlatrate: shouldUseFlatrate,
         slaCost: slaCost,
-        totalCost: totalCost
+        totalCost: creditOrFlatrateCost
       });
-      
-      console.log(`Driftskostnad beräknad för ${selectedMachine.name}:
-        Betalningsalternativ: ${paymentOption}
-        Behandlingar per dag: ${treatmentsPerDay}
-        Behandlingar per månad: ${treatmentsPerMonth}
-        Kreditpris: ${creditPrice}
-        Använder flatrate: ${shouldUseFlatrate}
-        Kredit/Flatrate-kostnad: ${creditOrFlatrateCost} kr
-        SLA-nivå: ${selectedSlaLevel}
-        SLA-kostnad: ${slaCost} kr
-        Total driftskostnad: ${totalCost} kr
-      `);
     } else {
-      // För maskiner utan credits är driftskostnaden bara SLA-kostnaden
+      // För maskiner utan credits ELLER Silver/Guld SLA, 
+      // är driftskostnaden bara SLA-kostnaden (som nu inkluderar Flatrate för Silver/Guld)
       setOperatingCost({ 
         costPerMonth: 0, 
         useFlatrate: false,
         slaCost: slaCost,
         totalCost: slaCost
       });
-      setCalculatedCreditPrice(0);
       
-      console.log(`Driftskostnad beräknad för ${selectedMachine.name} (utan credits):
-        SLA-nivå: ${selectedSlaLevel}
-        SLA-kostnad: ${slaCost} kr
-        Total driftskostnad: ${slaCost} kr
-      `);
+      // För maskiner utan credits eller nivåer med Flatrate ingår (Silver/Guld), 
+      // har vi inget kreditpris
+      if (!selectedMachine.usesCredits || selectedSlaLevel !== 'Brons') {
+        setCalculatedCreditPrice(0);
+      } else {
+        // För Brons, behåll kreditpriset som beräknats ovan
+        setCalculatedCreditPrice(selectedMachine.creditMin || 149);
+      }
     }
-  }, [selectedMachine, treatmentsPerDay, useFlatrateOption, leaseAdjustmentFactor, leasingCost, selectedSlaLevel, paymentOption, allowBelowFlatrate]);
+    
+    console.log(`Driftskostnad beräknad för ${selectedMachine.name}:
+      Betalningsalternativ: ${paymentOption}
+      SLA-nivå: ${selectedSlaLevel}
+      leasingMax60mRef: ${leasingMax60mRef}
+      SLA-kostnad: ${slaCost} kr
+      Behandlingar per dag: ${treatmentsPerDay}
+      Credit/Flatrate-kostnad (om Brons): ${creditOrFlatrateCost} kr
+      Total driftskostnad: ${operatingCost.totalCost} kr
+    `);
+  }, [
+    selectedMachine, 
+    treatmentsPerDay, 
+    useFlatrateOption, 
+    leaseAdjustmentFactor, 
+    leasingCost, 
+    selectedSlaLevel, 
+    paymentOption, 
+    allowBelowFlatrate, 
+    leasingMax60mRef
+  ]);
 
   return { 
     operatingCost,

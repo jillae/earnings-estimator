@@ -2,13 +2,10 @@
 import React from 'react';
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useCalculator } from '@/context/CalculatorContext';
+import { formatCurrency } from '@/utils/formatUtils';
 
-interface PaymentOptionToggleProps {
-  cashPriceSEK?: number;
-}
-
-const PaymentOptionToggle: React.FC<PaymentOptionToggleProps> = ({ cashPriceSEK }) => {
-  const { paymentOption, setPaymentOption } = useCalculator();
+const PaymentOptionToggle: React.FC = () => {
+  const { paymentOption, setPaymentOption, cashPriceSEK } = useCalculator();
 
   return (
     <div className="mb-4">
@@ -26,7 +23,7 @@ const PaymentOptionToggle: React.FC<PaymentOptionToggleProps> = ({ cashPriceSEK 
           <span className="mr-2">Leasing</span>
         </ToggleGroupItem>
         <ToggleGroupItem value="cash" className="w-full rounded-l-none">
-          <span className="mr-2">Kontant</span>
+          <span className="mr-2">Kontant ({formatCurrency(cashPriceSEK)})</span>
         </ToggleGroupItem>
       </ToggleGroup>
     </div>

@@ -25,7 +25,6 @@ const CalculatorInputs: React.FC = () => {
     netResults,
     selectedMachine,
     paymentOption,
-    setPaymentOption,
     cashPriceSEK,
     selectedLeasingPeriodId,
     setSelectedLeasingPeriodId,
@@ -70,7 +69,7 @@ const CalculatorInputs: React.FC = () => {
           <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '250ms' }}>
             <div className="text-lg font-semibold mb-4">Investeringskostnad</div>
             
-            <PaymentOptionToggle cashPriceSEK={cashPriceSEK} />
+            <PaymentOptionToggle />
             
             {paymentOption === 'leasing' ? (
               <>
@@ -84,7 +83,7 @@ const CalculatorInputs: React.FC = () => {
                 />
                 
                 <div className="mt-4">
-                  <div className="text-sm text-slate-700 mb-2">Grundläggande leasing</div>
+                  <div className="text-sm text-slate-700 mb-2">Månadskostnad leasing</div>
                   <div className="text-2xl font-bold text-blue-600">{formatCurrency(leasingCost)}</div>
                   <div className="text-xs text-slate-500 mt-1">per månad exkl. moms</div>
                 </div>

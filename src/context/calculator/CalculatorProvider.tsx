@@ -9,6 +9,8 @@ import { useOperatingCosts } from './useOperatingCosts';
 import { useRevenueCalculations } from './useRevenueCalculations';
 import { useDebugLogging } from './useDebugLogging';
 import { leasingPeriods } from '@/data/machines';
+import { calculateSlaCost } from '@/utils/pricingUtils';
+import { SlaLevel } from '@/utils/constants';
 
 export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Get state selections
@@ -59,7 +61,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     leasingRange, 
     leasingCost, 
     flatrateThreshold,
-    cashPriceSEK
+    cashPriceSEK,
+    leasingMax60mRef
   } = useLeasingCalculations({
     selectedMachineId,
     machinePriceSEK,
@@ -76,12 +79,27 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     ? Math.round(((leasingCost - leasingRange.min) / (leasingRange.max - leasingRange.min)) * 100) 
     : 0;
 
+  // Beräkna SLA-kostnader för alla nivåer
+  const slaCosts = React.useMemo(() => {
+    if (!selectedMachine) {
+      return { Brons: 0, Silver: 0, Guld: 0 };
+    }
+    
+    return {
+      Brons: calculateSlaCost(selectedMachine, 'Brons', leasingMax60mRef),
+      Silver: calculateSlaCost(selectedMachine, 'Silver', leasingMax60mRef),
+      Guld: calculateSlaCost(selectedMachine, 'Guld', leasingMax60mRef)
+    };
+  }, [selectedMachine, leasingMax60mRef]);
+
   // Set up debug logging
   useDebugLogging({
     leasingRange,
     leasingCost,
     leaseAdjustmentFactor,
-    allowBelowFlatrate
+    allowBelowFlatrate,
+    slaCosts,
+    leasingMax60mRef
   });
 
   // Get operating costs - skicka med leaseAdjustmentFactor för kreditprisberäkning
@@ -98,7 +116,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     useFlatrateOption,
     leaseAdjustmentFactor,
     selectedSlaLevel,
-    paymentOption
+    paymentOption,
+    leasingMax60mRef
   });
 
   // Get revenue calculations
@@ -148,6 +167,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     revenue,
     occupancyRevenues,
     netResults,
+    slaCosts,
+    leasingMax60mRef
   };
 
   return (

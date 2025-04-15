@@ -1,10 +1,10 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
-import { WORKING_DAYS_PER_MONTH, SLA_PRICES } from '@/utils/constants';
+import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 
 const OperatingCosts: React.FC = () => {
   const { 
@@ -20,7 +20,8 @@ const OperatingCosts: React.FC = () => {
     setLeaseAdjustmentFactor,
     paymentOption,
     selectedSlaLevel,
-    operatingCost
+    operatingCost,
+    slaCosts
   } = useCalculator();
 
   // Om ingen maskin är vald, visa inget
@@ -28,31 +29,36 @@ const OperatingCosts: React.FC = () => {
     return null;
   }
 
-  // Visa olika UI beroende på om maskinen använder credits eller inte
-  if (!selectedMachine.usesCredits) {
-    // För maskiner utan credits visar vi bara SLA-kostnaden
+  // För maskiner utan credits eller med Silver/Guld SLA visar vi förenklade kostnader
+  if (!selectedMachine.usesCredits || selectedSlaLevel !== 'Brons') {
+    const includesFlatrate = selectedMachine.usesCredits && selectedSlaLevel !== 'Brons';
+    
     return (
       <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
         <h3 className="text-lg font-semibold mb-4">Driftskostnader</h3>
         
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm">Serviceavtal ({selectedSlaLevel})</span>
-          <span className="text-lg font-semibold text-blue-600">
-            {formatCurrency(SLA_PRICES[selectedSlaLevel] || 0)}
+          <span className="text-sm">
+            Serviceavtal ({selectedSlaLevel})
+            {includesFlatrate && ' inkl. Flatrate Credits'}
           </span>
-        </div>
-        
-        <div className="flex justify-between items-center mb-2 pt-2 border-t border-gray-200">
-          <span className="text-sm font-semibold">Total driftskostnad per månad</span>
           <span className="text-lg font-semibold text-blue-600">
             {formatCurrency(operatingCost.totalCost)}
           </span>
         </div>
+        
+        {includesFlatrate && (
+          <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded-md">
+            <p className="text-xs text-blue-700">
+              Obegränsat antal credits ingår i detta SLA-abonnemang.
+            </p>
+          </div>
+        )}
       </div>
     );
   }
 
-  // Beräkna kostnader utifrån credits eller flatrate
+  // För maskiner med credits och Brons SLA visa detaljerad vy med kreditpris/flatrate
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
   const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
   const creditsCostPerMonth = treatmentsPerMonth * creditsPerTreatment * (creditPrice || 0);
