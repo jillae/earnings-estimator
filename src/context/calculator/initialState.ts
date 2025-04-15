@@ -1,13 +1,12 @@
-
 import { machineData } from '@/data/machines';
 
 // Initial state values for the calculator
-export const initialState = {
+export const initialState: CalculatorState = {
   clinicSize: 2,
   selectedMachineId: "select-machine", // Default to "select-machine"
   selectedLeasingPeriodId: "48", // Default to 48 months
   selectedInsuranceId: "yes", // Default to include insurance
-  leaseAdjustmentFactor: 1,
+  leaseAdjustmentFactor: 0.5, // Sätt default till 50%
   treatmentsPerDay: 4, // Default to medium clinic
   customerPrice: machineData[0].defaultCustomerPrice || 1990,
   exchangeRate: 11.49260,
