@@ -80,12 +80,12 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               step="1"
               value={treatmentsPerDay}
               onChange={handleTreatmentsChange}
-              className="input-field pr-12"
+              className="input-field pr-12 w-full"
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <span className="text-gray-500">st</span>
             </div>
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col">
+            <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col">
               <button 
                 onClick={incrementTreatments} 
                 className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
@@ -120,12 +120,12 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               value={customerPrice}
               onChange={handleCustomerPriceChange}
               onBlur={handleCustomerPriceBlur}
-              className="input-field pr-12"
+              className="input-field pr-12 w-full"
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <span className="text-gray-500">kr</span>
             </div>
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col">
+            <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col">
               <button 
                 onClick={incrementPrice} 
                 className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
