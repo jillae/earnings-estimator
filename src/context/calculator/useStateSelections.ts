@@ -9,8 +9,8 @@ export function useStateSelections() {
   const [selectedMachineId, setSelectedMachineId] = useState<string>('select-machine');
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60');
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
-  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(1); // Börja med max (1) istället för min (0)
-  const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true); // Ändrad till true för att alltid tillåta under 80%
+  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(0.5); // Använd 0.5 (50%) som default
+  const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(false); // Ändras till false så att användaren inte kan dra under 80% i flatrate-läge
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
   const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit'); // Använd FlatrateOption typ från constants
@@ -47,11 +47,11 @@ export function useStateSelections() {
         setCustomerPrice(selectedMachine.defaultCustomerPrice);
       }
       
-      // Sätt alltid leaseAdjustmentFactor till 1 (max) när en ny maskin väljs
-      setLeaseAdjustmentFactor(1);
+      // Sätt alltid leaseAdjustmentFactor till 0.5 (50%) när en ny maskin väljs
+      setLeaseAdjustmentFactor(0.5);
       
-      // Sätt alltid allowBelowFlatrate till true för att tillåta justering under 80%
-      setAllowBelowFlatrate(true);
+      // Sätt alltid allowBelowFlatrate till false för att förhindra justering under 80%
+      setAllowBelowFlatrate(false);
       
       // Återställ flatrate-valet till perCredit
       setUseFlatrateOption('perCredit');

@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
@@ -75,7 +76,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const handleSliderChange = (values: number[]) => {
     let newValue = values[0] / 100;
     
-    if (!allowBelowFlatrate) {
+    // Om flatrate är aktivt (showFlatrateIndicator) och inte tillåter under 80%, begränsa till minst 0.8
+    if (showFlatrateIndicator && !allowBelowFlatrate) {
       newValue = Math.max(0.8, newValue);
     }
     
@@ -129,7 +131,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         onSliderChange={handleSliderChange}
         thresholdPosition={flatratePosition}
         showFlatrateIndicator={showFlatrateIndicator}
-        allowBelowFlatrate={true}
+        allowBelowFlatrate={allowBelowFlatrate}
       />
     </div>
   );

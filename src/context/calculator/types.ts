@@ -1,5 +1,54 @@
 
 // Types for the Calculator Context
+export interface CalculatorState {
+  // Clinic and machine selection
+  clinicSize: any;
+  selectedMachineId: string;
+  
+  // Leasing options
+  selectedLeasingPeriodId: string;
+  selectedInsuranceId: string;
+  
+  // Adjustment settings
+  leaseAdjustmentFactor: number;
+  
+  // Treatment settings
+  treatmentsPerDay: number;
+  customerPrice: number;
+  
+  // Calculations
+  exchangeRate: number;
+  machinePriceSEK: number;
+  leasingRange: { min: number, max: number, default: number };
+  leasingCost: number;
+  creditPrice: number;
+  flatrateThreshold: number;
+  
+  // Operating cost
+  operatingCost: { costPerMonth: number, useFlatrate: boolean };
+  
+  // Results
+  revenue: {
+    revenuePerTreatmentExVat: number;
+    dailyRevenueIncVat: number;
+    weeklyRevenueIncVat: number;
+    monthlyRevenueIncVat: number;
+    yearlyRevenueIncVat: number;
+    monthlyRevenueExVat: number;
+    yearlyRevenueExVat: number;
+  };
+  occupancyRevenues: {
+    occupancy50: number;
+    occupancy75: number;
+    occupancy100: number;
+  };
+  netResults: {
+    netPerMonthExVat: number;
+    netPerYearExVat: number;
+  };
+}
+
+// Types for the Calculator Context
 export interface CalculatorContextType {
   // Clinic and machine selection
   clinicSize: any;

@@ -11,7 +11,7 @@ import {
 import { roundToHundredEndingSix } from './formatUtils';
 
 // Aktuella tariffvärden som används (kan uppdateras via admin)
-let currentTariffs = LEASING_TARIFFS_2025;
+let currentTariffs = LEASING_TARIFFS_2024;
 
 /**
  * Uppdaterar vilken tariff som används (2024 eller 2025)
@@ -24,8 +24,8 @@ export function setActiveTariffYear(use2025: boolean) {
  * Gets the leasing factor based on leasing duration in months
  */
 export function getLeasingFactor(leaseDurationMonths: number): number | undefined {
-  const tariffEntry = currentTariffs.find(entry => entry.Löptid === leaseDurationMonths);
-  return tariffEntry?.Faktor;
+  const tariffEntry = currentTariffs.find(entry => entry.id === leaseDurationMonths.toString() || entry.Löptid === leaseDurationMonths);
+  return tariffEntry?.rate || tariffEntry?.Faktor;
 }
 
 /**

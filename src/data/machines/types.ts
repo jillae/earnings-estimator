@@ -29,6 +29,8 @@ export interface LeasingPeriod {
   id: string;
   name: string;
   rate: number;
+  Löptid?: number; // Backward compatibility för övergång
+  Faktor?: number; // Backward compatibility för övergång
 }
 
 export interface InsuranceOption {

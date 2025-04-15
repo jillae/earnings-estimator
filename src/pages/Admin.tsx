@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -38,7 +37,7 @@ import {
 } from '@/utils/constants';
 
 const Admin = () => {
-  const [useTariff2025, setUseTariff2025] = useState(true);
+  const [useTariff2025, setUseTariff2025] = useState(false);
   
   const form = useForm({
     defaultValues: {
@@ -84,10 +83,10 @@ const Admin = () => {
   useEffect(() => {
     const tariffValues = useTariff2025 ? LEASING_TARIFFS_2025 : LEASING_TARIFFS_2024;
     
-    form.setValue('leasing_tariff_24', tariffValues.find(t => t.Löptid === 24)?.Faktor || 0);
-    form.setValue('leasing_tariff_36', tariffValues.find(t => t.Löptid === 36)?.Faktor || 0);
-    form.setValue('leasing_tariff_48', tariffValues.find(t => t.Löptid === 48)?.Faktor || 0);
-    form.setValue('leasing_tariff_60', tariffValues.find(t => t.Löptid === 60)?.Faktor || 0);
+    form.setValue('leasing_tariff_24', tariffValues.find(t => t.id === "24" || t.Löptid === 24)?.Faktor || 0);
+    form.setValue('leasing_tariff_36', tariffValues.find(t => t.id === "36" || t.Löptid === 36)?.Faktor || 0);
+    form.setValue('leasing_tariff_48', tariffValues.find(t => t.id === "48" || t.Löptid === 48)?.Faktor || 0);
+    form.setValue('leasing_tariff_60', tariffValues.find(t => t.id === "60" || t.Löptid === 60)?.Faktor || 0);
     
     // Visa toast med vilket år som är aktivt
     toast.success(`Tariffvärden för ${useTariff2025 ? '2025' : '2024'} har laddats`);
@@ -501,8 +500,8 @@ const Admin = () => {
                   </thead>
                   <tbody>
                     {[24, 36, 48, 60].map(period => {
-                      const value2024 = LEASING_TARIFFS_2024.find(t => t.Löptid === period)?.Faktor || 0;
-                      const value2025 = LEASING_TARIFFS_2025.find(t => t.Löptid === period)?.Faktor || 0;
+                      const value2024 = LEASING_TARIFFS_2024.find(t => t.id === period.toString() || t.Löptid === period)?.Faktor || 0;
+                      const value2025 = LEASING_TARIFFS_2025.find(t => t.id === period.toString() || t.Löptid === period)?.Faktor || 0;
                       const diff = value2025 - value2024;
                       const diffPercent = (diff / value2024 * 100).toFixed(2);
                       

@@ -1,3 +1,4 @@
+
 import { LeasingPeriod } from '../data/machines/types';
 
 // Viktiga konstanter för kalkylatorn
@@ -35,18 +36,18 @@ export const INSURANCE_RATES = {
 
 // Leasing tariff-värden 2024
 export const LEASING_TARIFFS_2024: LeasingPeriod[] = [
-  { Löptid: 24, Faktor: 4.566 },
-  { Löptid: 36, Faktor: 3.189 },
-  { Löptid: 48, Faktor: 2.504 },
-  { Löptid: 60, Faktor: 2.095 }
+  { id: "24", name: "24 månader", rate: 0.04566, Löptid: 24, Faktor: 4.566 },
+  { id: "36", name: "36 månader", rate: 0.03189, Löptid: 36, Faktor: 3.189 },
+  { id: "48", name: "48 månader", rate: 0.02504, Löptid: 48, Faktor: 2.504 },
+  { id: "60", name: "60 månader", rate: 0.02095, Löptid: 60, Faktor: 2.095 }
 ];
 
 // Leasing tariff-värden 2025
 export const LEASING_TARIFFS_2025: LeasingPeriod[] = [
-  { Löptid: 24, Faktor: 4.5136 },
-  { Löptid: 36, Faktor: 3.1346 },
-  { Löptid: 48, Faktor: 2.4475 },
-  { Löptid: 60, Faktor: 2.0372 }
+  { id: "24", name: "24 månader", rate: 0.045136, Löptid: 24, Faktor: 4.5136 },
+  { id: "36", name: "36 månader", rate: 0.031346, Löptid: 36, Faktor: 3.1346 },
+  { id: "48", name: "48 månader", rate: 0.024475, Löptid: 48, Faktor: 2.4475 },
+  { id: "60", name: "60 månader", rate: 0.020372, Löptid: 60, Faktor: 2.0372 }
 ];
 
 // Aktuellt tariffvärde - defaultar till 2024

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
 import { FlatrateOption } from '@/utils/constants';
@@ -58,6 +59,7 @@ export function useOperatingCosts({
         creditPrice = 149;
       }
       
+      // Säkerställ att kreditpriset aldrig blir negativt
       creditPrice = Math.max(0, Math.round(creditPrice));
       setCalculatedCreditPrice(creditPrice);
       
