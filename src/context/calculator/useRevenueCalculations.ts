@@ -5,17 +5,27 @@ import {
   calculateOccupancyRevenues,
   calculateNetResults
 } from '@/utils/calculatorUtils';
+import { MONTHS_PER_YEAR } from '@/utils/constants';
 
 export function useRevenueCalculations({
   customerPrice,
   treatmentsPerDay,
+  paymentOption = 'leasing',
   leasingCost,
+  cashPriceSEK = 0,
   operatingCost
 }: {
   customerPrice: number;
   treatmentsPerDay: number;
+  paymentOption?: 'leasing' | 'cash';
   leasingCost: number;
-  operatingCost: { costPerMonth: number, useFlatrate: boolean };
+  cashPriceSEK?: number;
+  operatingCost: { 
+    costPerMonth: number, 
+    useFlatrate: boolean, 
+    slaCost: number, 
+    totalCost: number 
+  };
 }) {
   const [revenue, setRevenue] = useState<any>({
     revenuePerTreatmentExVat: 0,
@@ -49,7 +59,18 @@ export function useRevenueCalculations({
 
   // Calculate net results
   useEffect(() => {
-    const totalMonthlyCostExVat = leasingCost + operatingCost.costPerMonth;
+    let investmentCostPerMonth = 0;
+    
+    if (paymentOption === 'leasing') {
+      // För leasing, använd leasingCost som investeringskostnad per månad
+      investmentCostPerMonth = leasingCost;
+    } else {
+      // För kontant, sprid kostnaden över 60 månader (5 år) som en ungefärlig avskrivningsperiod
+      investmentCostPerMonth = cashPriceSEK / 60;
+    }
+    
+    // Total månadskostnad: investeringskostnad + driftskostnad (som nu inkluderar SLA)
+    const totalMonthlyCostExVat = investmentCostPerMonth + operatingCost.totalCost;
     
     const calculatedNetResults = calculateNetResults(
       revenue.monthlyRevenueExVat,
@@ -57,8 +78,17 @@ export function useRevenueCalculations({
       totalMonthlyCostExVat
     );
     
+    console.log(`Beräknar nettoresultat:
+      Betalningsalternativ: ${paymentOption}
+      Investeringskostnad/mån: ${investmentCostPerMonth}
+      Total driftskostnad/mån: ${operatingCost.totalCost}
+      Total kostnad/mån: ${totalMonthlyCostExVat}
+      Intäkt/mån (ex moms): ${revenue.monthlyRevenueExVat}
+      Netto/mån (ex moms): ${calculatedNetResults.netPerMonthExVat}
+    `);
+    
     setNetResults(calculatedNetResults);
-  }, [revenue, leasingCost, operatingCost]);
+  }, [revenue, leasingCost, cashPriceSEK, operatingCost, paymentOption]);
 
   return {
     revenue,

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 
@@ -8,6 +9,8 @@ interface ResultsTableProps {
   yearlyRevenueIncVat: number;
   leasingCostPerMonth: number;
   operatingCostPerMonth: number;
+  paymentOption?: 'leasing' | 'cash';
+  cashPriceSEK?: number;
   netPerMonthExVat: number;
   netPerYearExVat: number;
   occupancy50: number;
@@ -22,6 +25,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   yearlyRevenueIncVat,
   leasingCostPerMonth,
   operatingCostPerMonth,
+  paymentOption = 'leasing',
+  cashPriceSEK = 0,
   netPerMonthExVat,
   netPerYearExVat,
   occupancy50,
@@ -35,6 +40,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const safeYearly = isNaN(yearlyRevenueIncVat) ? 0 : yearlyRevenueIncVat;
   const safeLeasingCost = isNaN(leasingCostPerMonth) ? 0 : leasingCostPerMonth;
   const safeOperatingCost = isNaN(operatingCostPerMonth) ? 0 : operatingCostPerMonth;
+  const safeCashPrice = isNaN(cashPriceSEK) ? 0 : cashPriceSEK;
   const safeNetMonth = isNaN(netPerMonthExVat) ? 0 : netPerMonthExVat;
   const safeNetYear = isNaN(netPerYearExVat) ? 0 : netPerYearExVat;
   const safeOcc50 = isNaN(occupancy50) ? 0 : occupancy50;
@@ -78,25 +84,41 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeMonthly)}</td>
               <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeYearly)}</td>
             </tr>
+            
+            {paymentOption === 'leasing' ? (
+              <tr className="border-b border-slate-200">
+                <td className="py-3 px-4 text-slate-700">Leasingkostnad (ex moms)</td>
+                <td className="py-3 px-4 text-right text-slate-700">-</td>
+                <td className="py-3 px-4 text-right text-slate-700">-</td>
+                <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeLeasingCost)}</td>
+                <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeLeasingCost * 12)}</td>
+              </tr>
+            ) : (
+              <tr className="border-b border-slate-200">
+                <td className="py-3 px-4 text-slate-700">Kontantköp (ex moms, avskrivning 5 år)</td>
+                <td className="py-3 px-4 text-right text-slate-700">-</td>
+                <td className="py-3 px-4 text-right text-slate-700">-</td>
+                <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeCashPrice / 60)}</td>
+                <td className="py-3 px-4 text-right text-slate-700">{formatCurrency((safeCashPrice / 60) * 12)}</td>
+              </tr>
+            )}
+            
+            {paymentOption === 'leasing' && (
+              <tr>
+                <td colSpan={2} className="text-center py-2">
+                  {leasingOffertLink}
+                </td>
+              </tr>
+            )}
+            
             <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">Leasingkostnad (ex moms)</td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeLeasingCost)}</td>
-              <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeLeasingCost * 12)}</td>
-            </tr>
-            <tr>
-              <td colSpan={2} className="text-center py-2">
-                {leasingOffertLink}
-              </td>
-            </tr>
-            <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">Drift (credits/flatrate) (ex moms)</td>
+              <td className="py-3 px-4 text-slate-700">Driftskostnad (ex moms)</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeOperatingCost)}</td>
               <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(safeOperatingCost * 12)}</td>
             </tr>
+            
             <tr className="border-b border-slate-200">
               <td className="py-3 px-4 text-slate-700">Total kostnad (ex moms)</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
@@ -104,6 +126,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(totalCostPerMonth)}</td>
               <td className="py-3 px-4 text-right text-slate-700">{formatCurrency(totalCostPerMonth * 12)}</td>
             </tr>
+            
             <tr className="border-b border-slate-200 font-bold">
               <td className="py-3 px-4 text-slate-700">Netto (ex moms)</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
@@ -133,7 +156,10 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
         </div>
       </div>
       
-      <div className="mt-8 text-sm text-slate-500 italic">Detta är endast ett beräkningsunderlag. Avtal gäller. {leasingOffertLink}</div>
+      <div className="mt-8 text-sm text-slate-500 italic">
+        Detta är endast ett beräkningsunderlag. Avtal gäller. 
+        {paymentOption === 'leasing' && ' ' + leasingOffertLink}
+      </div>
     </div>;
 };
 

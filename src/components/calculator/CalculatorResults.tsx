@@ -9,7 +9,9 @@ const CalculatorResults: React.FC = () => {
     leasingCost,
     operatingCost,
     netResults,
-    occupancyRevenues
+    occupancyRevenues,
+    paymentOption,
+    cashPriceSEK
   } = useCalculator();
 
   return (
@@ -20,7 +22,9 @@ const CalculatorResults: React.FC = () => {
         monthlyRevenueIncVat={revenue.monthlyRevenueIncVat}
         yearlyRevenueIncVat={revenue.yearlyRevenueIncVat}
         leasingCostPerMonth={leasingCost}
-        operatingCostPerMonth={operatingCost.costPerMonth}
+        operatingCostPerMonth={operatingCost.totalCost}
+        paymentOption={paymentOption}
+        cashPriceSEK={cashPriceSEK}
         netPerMonthExVat={netResults.netPerMonthExVat}
         netPerYearExVat={netResults.netPerYearExVat}
         occupancy50={occupancyRevenues.occupancy50}

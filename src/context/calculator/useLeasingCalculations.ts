@@ -1,10 +1,10 @@
 
 import { useState, useEffect } from 'react';
-import { machineData, leasingPeriods } from '@/data/machines';
-import { 
-  calculateLeasingRange, 
-  calculateLeasingCost
-} from '@/utils/calculatorUtils';
+import { machineData } from '@/data/machines';
+import { calculateLeasingRange } from '@/utils/leasingRangeUtils';
+import { calculateLeasingCost } from '@/utils/leasingCostUtils';
+import { calculateCashPrice } from '@/utils/pricingUtils';
+import { SHIPPING_COST_EUR_CREDITS, SHIPPING_COST_EUR_NO_CREDITS } from '@/utils/constants';
 
 export function useLeasingCalculations({
   selectedMachineId,
@@ -12,86 +12,106 @@ export function useLeasingCalculations({
   selectedLeasingPeriodId,
   selectedInsuranceId,
   leaseAdjustmentFactor,
-  treatmentsPerDay = 0
+  treatmentsPerDay,
+  paymentOption = 'leasing',
+  exchangeRate = 11.49260
 }: {
   selectedMachineId: string;
   machinePriceSEK: number;
   selectedLeasingPeriodId: string;
   selectedInsuranceId: string;
   leaseAdjustmentFactor: number;
-  treatmentsPerDay?: number;
+  treatmentsPerDay: number;
+  paymentOption?: 'leasing' | 'cash';
+  exchangeRate?: number;
 }) {
-  const [leasingRange, setLeasingRange] = useState<{ min: number, max: number, default: number, flatrateThreshold?: number }>({ 
-    min: 0, max: 0, default: 0 
-  });
+  const [leasingRange, setLeasingRange] = useState<any>({ min: 0, max: 0, default: 0 });
   const [leasingCost, setLeasingCost] = useState<number>(0);
   const [flatrateThreshold, setFlatrateThreshold] = useState<number>(0);
-
-  // Calculate leasing range when machine or leasing options change
+  const [cashPriceSEK, setCashPriceSEK] = useState<number>(0);
+  
+  const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
+  
+  // Beräkna kontantpris när maskinen ändras
   useEffect(() => {
-    const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
-    const selectedLeasingPeriod = leasingPeriods.find(period => period.id === selectedLeasingPeriodId);
-    const includeInsurance = selectedInsuranceId === 'yes';
-    
-    if (selectedMachine && selectedLeasingPeriod) {
-      console.log(`Beräknar leasingrange med försäkring: ${includeInsurance ? 'Ja' : 'Nej'}`);
-      
-      const range = calculateLeasingRange(
-        selectedMachine,
-        machinePriceSEK,
-        selectedLeasingPeriod.rate,
-        includeInsurance
-      );
-      
-      console.log("Leasing range calculated:", range);
-      
-      // Calculate flatrate threshold for machines that use credits
-      if (selectedMachine.usesCredits) {
-        // Set threshold at 80% of the way from min to max
-        const threshold = range.flatrateThreshold || (range.min + (range.max - range.min) * 0.8);
-        console.log("Flatrate threshold calculated:", threshold);
-        setFlatrateThreshold(threshold);
+    if (selectedMachine?.priceEur) {
+      const shippingCostEur = selectedMachine.usesCredits 
+        ? SHIPPING_COST_EUR_CREDITS 
+        : SHIPPING_COST_EUR_NO_CREDITS;
         
-        // Include flatrateThreshold in the range object
-        range.flatrateThreshold = threshold;
-      }
-      
-      setLeasingRange(range);
-    }
-  }, [selectedMachineId, machinePriceSEK, selectedLeasingPeriodId, selectedInsuranceId]);
-
-  // Calculate leasing cost whenever adjustment factor changes
-  useEffect(() => {
-    const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
-    const selectedLeasingPeriod = leasingPeriods.find(period => period.id === selectedLeasingPeriodId);
-    const includeInsurance = selectedInsuranceId === 'yes';
-    
-    if (selectedMachine && selectedLeasingPeriod && leasingRange.min !== undefined && leasingRange.max !== undefined) {
-      console.log(`Beräknar leasingkostnad med justeringsfaktor ${leaseAdjustmentFactor} och försäkring: ${includeInsurance ? 'Ja' : 'Nej'}`);
-      
-      // Direkt linjär interpolation mellan min och max baserat på justeringsfaktorn
-      const baseLeasing = leasingRange.min + (leaseAdjustmentFactor * (leasingRange.max - leasingRange.min));
-      
-      // Beräkna leasingkostnaden med försäkring om det är valt
-      const newLeasingCost = calculateLeasingCost(
-        selectedMachine,
-        machinePriceSEK,
-        selectedLeasingPeriod.rate,
-        includeInsurance,
-        leaseAdjustmentFactor
+      const calculatedCashPrice = calculateCashPrice(
+        selectedMachine.priceEur,
+        shippingCostEur,
+        exchangeRate
       );
       
-      console.log(`Beräknad leasingkostnad: ${newLeasingCost} SEK (Basleasingkostnad: ${baseLeasing} SEK)`);
-      
-      // Uppdatera leasingkostnaden
-      setLeasingCost(Math.round(newLeasingCost));
+      setCashPriceSEK(calculatedCashPrice);
+      console.log(`Beräknat kontantpris för ${selectedMachine.name}: ${calculatedCashPrice} SEK`);
+    } else {
+      setCashPriceSEK(0);
     }
-  }, [leaseAdjustmentFactor, leasingRange, selectedMachineId, selectedLeasingPeriodId, selectedInsuranceId, machinePriceSEK]);
+  }, [selectedMachine, exchangeRate]);
+
+  // Beräkna leasingintervall och kostnad
+  useEffect(() => {
+    if (!selectedMachine || !machinePriceSEK) {
+      setLeasingRange({ min: 0, max: 0, default: 0 });
+      setLeasingCost(0);
+      setFlatrateThreshold(0);
+      return;
+    }
+    
+    // Konvertera leasingRate från string till number
+    const leasingRateObj = machineData
+      .flatMap(m => m.leasingTariffs || [])
+      .find(tariff => tariff?.id === selectedLeasingPeriodId);
+    
+    const leasingRate = leasingRateObj?.rate || 0.02504; // Default till 48 månader
+    
+    // Beräkna om försäkring ska inkluderas
+    const includeInsurance = selectedInsuranceId === 'yes';
+    
+    // Beräkna möjligt leasingintervall
+    const range = calculateLeasingRange(selectedMachine, machinePriceSEK, leasingRate, includeInsurance);
+    setLeasingRange(range);
+    
+    // Spara flatrate threshold för UI
+    if (range.flatrateThreshold) {
+      setFlatrateThreshold(range.flatrateThreshold);
+    }
+    
+    // Beräkna aktuell leasingkostnad baserat på justeringsfaktor
+    const cost = calculateLeasingCost(
+      selectedMachine,
+      machinePriceSEK,
+      leasingRate,
+      includeInsurance,
+      leaseAdjustmentFactor
+    );
+    
+    setLeasingCost(cost);
+    
+    console.log(`Leasing calculations updated:
+      Machine: ${selectedMachine.name}
+      Machine price SEK: ${machinePriceSEK}
+      Leasing period: ${selectedLeasingPeriodId} (rate: ${leasingRate})
+      Include insurance: ${includeInsurance}
+      Adjustment factor: ${leaseAdjustmentFactor}
+      Range: ${range.min} - ${range.max} (default: ${range.default})
+      Calculated cost: ${cost}
+    `);
+  }, [
+    selectedMachine,
+    machinePriceSEK,
+    selectedLeasingPeriodId,
+    selectedInsuranceId,
+    leaseAdjustmentFactor
+  ]);
 
   return {
     leasingRange,
     leasingCost,
     flatrateThreshold,
-    treatmentsPerDay
+    cashPriceSEK
   };
 }

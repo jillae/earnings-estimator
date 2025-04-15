@@ -4,7 +4,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
-import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
+import { WORKING_DAYS_PER_MONTH, SLA_PRICES } from '@/utils/constants';
 
 const OperatingCosts: React.FC = () => {
   const { 
@@ -17,12 +17,39 @@ const OperatingCosts: React.FC = () => {
     leasingRange,
     flatrateThreshold,
     leaseAdjustmentFactor,
-    setLeaseAdjustmentFactor
+    setLeaseAdjustmentFactor,
+    paymentOption,
+    selectedSlaLevel,
+    operatingCost
   } = useCalculator();
 
-  // Om ingen maskin är vald eller maskinen inte använder krediter, visa inget
-  if (!selectedMachine || !selectedMachine.usesCredits) {
+  // Om ingen maskin är vald, visa inget
+  if (!selectedMachine) {
     return null;
+  }
+
+  // Visa olika UI beroende på om maskinen använder credits eller inte
+  if (!selectedMachine.usesCredits) {
+    // För maskiner utan credits visar vi bara SLA-kostnaden
+    return (
+      <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
+        <h3 className="text-lg font-semibold mb-4">Driftskostnader</h3>
+        
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm">Serviceavtal ({selectedSlaLevel})</span>
+          <span className="text-lg font-semibold text-blue-600">
+            {formatCurrency(SLA_PRICES[selectedSlaLevel] || 0)}
+          </span>
+        </div>
+        
+        <div className="flex justify-between items-center mb-2 pt-2 border-t border-gray-200">
+          <span className="text-sm font-semibold">Total driftskostnad per månad</span>
+          <span className="text-lg font-semibold text-blue-600">
+            {formatCurrency(operatingCost.totalCost)}
+          </span>
+        </div>
+      </div>
+    );
   }
 
   // Beräkna kostnader utifrån credits eller flatrate
@@ -37,7 +64,7 @@ const OperatingCosts: React.FC = () => {
     setUseFlatrateOption(checked ? 'flatrate' : 'perCredit');
     
     // Om användaren aktiverar flatrate och är under tröskelvärdet, justera slidern automatiskt
-    if (checked && flatrateThreshold && leasingCost < flatrateThreshold) {
+    if (checked && flatrateThreshold && leasingCost < flatrateThreshold && paymentOption === 'leasing') {
       // Beräkna den nya justeringsfaktorn för att nå tröskelvärdet
       const thresholdFactor = leasingRange.max > leasingRange.min
         ? (flatrateThreshold - leasingRange.min) / (leasingRange.max - leasingRange.min)
@@ -62,11 +89,12 @@ const OperatingCosts: React.FC = () => {
   };
 
   // Visa recommendation baserat på leasingkostnad och flatrate-tröskelvärde
-  const showFlatrateRecommendation = flatrateThreshold && leasingCost >= flatrateThreshold;
+  const showFlatrateRecommendation = flatrateThreshold && 
+    (paymentOption === 'cash' || (paymentOption === 'leasing' && leasingCost >= flatrateThreshold));
 
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
-      <h3 className="text-lg font-semibold mb-4">Driftskostnader - Credits</h3>
+      <h3 className="text-lg font-semibold mb-4">Driftskostnader</h3>
 
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
@@ -95,16 +123,26 @@ const OperatingCosts: React.FC = () => {
             <span className="text-lg font-semibold">{creditsPerTreatment}</span>
           </div>
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm">Kostnad per månad</span>
-            <span className="text-lg font-semibold text-blue-600">{formatCurrency(creditsCostPerMonth)}</span>
+            <span className="text-sm">Credit-kostnad per månad</span>
+            <span className="text-lg font-semibold">{formatCurrency(creditsCostPerMonth)}</span>
           </div>
         </>
       ) : (
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm">Flatrate kostnad per månad</span>
-          <span className="text-lg font-semibold text-blue-600">{formatCurrency(flatrateAmount)}</span>
+          <span className="text-lg font-semibold">{formatCurrency(flatrateAmount)}</span>
         </div>
       )}
+      
+      <div className="flex justify-between items-center mb-2 pt-2 mt-2 border-t border-gray-200">
+        <span className="text-sm">Serviceavtal ({selectedSlaLevel})</span>
+        <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost)}</span>
+      </div>
+      
+      <div className="flex justify-between items-center mb-2 pt-2 border-t border-gray-200">
+        <span className="text-sm font-semibold">Total driftskostnad per månad</span>
+        <span className="text-lg font-semibold text-blue-600">{formatCurrency(operatingCost.totalCost)}</span>
+      </div>
 
       {flatrateAmount > 0 && useFlatrateOption === 'perCredit' && (
         <p className="text-xs text-blue-500 mt-2">
@@ -115,8 +153,9 @@ const OperatingCosts: React.FC = () => {
       {showFlatrateRecommendation && useFlatrateOption !== 'flatrate' && (
         <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded-md">
           <p className="text-xs text-blue-700">
-            Baserat på din leasingkostnad rekommenderar vi att du använder flatrate. 
-            Detta ger dig obegränsad användning av credits.
+            {paymentOption === 'cash' 
+              ? 'Vid kontantköp rekommenderar vi flatrate för obegränsad användning av credits.'
+              : 'Baserat på din leasingkostnad rekommenderar vi att du använder flatrate för obegränsad användning av credits.'}
           </p>
         </div>
       )}

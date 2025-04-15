@@ -11,16 +11,29 @@ export const SMALL_CLINIC_TREATMENTS = 2;
 export const MEDIUM_CLINIC_TREATMENTS = 4;
 export const LARGE_CLINIC_TREATMENTS = 6;
 
+// SLA-nivåer och kostnader
+export const SLA_PRICES = {
+  Brons: 0,      // Ingår (kostnadsfritt)
+  Silver: 448,   // SEK per månad
+  Guld: 1996     // SEK per månad
+};
+
 // Typer för flatrate-alternativ
 export type FlatrateOption = 'perCredit' | 'flatrate';
+
+// Typer för betalningsalternativ
+export type PaymentOption = 'leasing' | 'cash';
+
+// Typer för SLA-nivåer
+export type SlaLevel = 'Brons' | 'Silver' | 'Guld';
 
 // Flatrate konstanter
 export const FLATRATE_THRESHOLD = 4; // Antal behandlingar per dag där flatrate aktiveras
 export const FLATRATE_THRESHOLD_PERCENTAGE = 0.8; // 80% av vägen från min till max
 
 // Transport och leveranskostnader
-export const SHIPPING_COST_EUR_CREDITS = 250; // EUR
-export const SHIPPING_COST_EUR_NO_CREDITS = 350; // EUR
+export const SHIPPING_COST_EUR_CREDITS = 652; // EUR
+export const SHIPPING_COST_EUR_NO_CREDITS = 230; // EUR
 
 // Valutakurs och priser
 export const DEFAULT_EXCHANGE_RATE = 11.49260; // SEK per EUR

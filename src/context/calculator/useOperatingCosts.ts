@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
-import { FlatrateOption } from '@/utils/constants';
+import { FlatrateOption, SlaLevel, SLA_PRICES } from '@/utils/constants';
 import { calculateCreditPrice } from '@/utils/creditUtils';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 
@@ -13,7 +13,9 @@ export function useOperatingCosts({
   machinePriceSEK,
   allowBelowFlatrate,
   useFlatrateOption = 'perCredit',
-  leaseAdjustmentFactor = 1 // Adjustmentfaktor för att beräkna kreditpriset korrekt
+  leaseAdjustmentFactor = 1, // Adjustmentfaktor för att beräkna kreditpriset korrekt
+  selectedSlaLevel = 'Brons', // SLA-nivå
+  paymentOption = 'leasing' // Betalningsalternativ
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
@@ -23,10 +25,19 @@ export function useOperatingCosts({
   allowBelowFlatrate: boolean;
   useFlatrateOption?: FlatrateOption;
   leaseAdjustmentFactor?: number;
+  selectedSlaLevel?: SlaLevel;
+  paymentOption?: 'leasing' | 'cash';
 }) {
-  const [operatingCost, setOperatingCost] = useState<{ costPerMonth: number, useFlatrate: boolean }>({ 
+  const [operatingCost, setOperatingCost] = useState<{ 
+    costPerMonth: number, 
+    useFlatrate: boolean,
+    slaCost: number,
+    totalCost: number
+  }>({ 
     costPerMonth: 0, 
-    useFlatrate: false 
+    useFlatrate: false,
+    slaCost: 0,
+    totalCost: 0
   });
   
   const [calculatedCreditPrice, setCalculatedCreditPrice] = useState<number>(0);
@@ -35,28 +46,45 @@ export function useOperatingCosts({
   
   useEffect(() => {
     if (!selectedMachine) {
-      setOperatingCost({ costPerMonth: 0, useFlatrate: false });
+      setOperatingCost({ 
+        costPerMonth: 0, 
+        useFlatrate: false,
+        slaCost: 0,
+        totalCost: 0
+      });
       setCalculatedCreditPrice(0);
       return;
     }
 
+    // Hämta SLA-kostnad från konstanter
+    const slaCost = SLA_PRICES[selectedSlaLevel] || 0;
+
+    let creditOrFlatrateCost = 0;
+    
     if (selectedMachine.usesCredits) {
       let creditPrice: number = 0;
       
-      if (selectedMachine.creditMin && selectedMachine.creditMax && 
-          selectedMachine.leasingMin && selectedMachine.leasingMax) {
-        
-        const oldLeasingMax = (selectedMachine.leasingMin + selectedMachine.leasingMax) / 2;
-        
-        if (leasingCost <= oldLeasingMax) {
-          const factor = (leasingCost - selectedMachine.leasingMin) / (oldLeasingMax - selectedMachine.leasingMin);
-          creditPrice = selectedMachine.creditMax - factor * (selectedMachine.creditMax - selectedMachine.creditMin);
+      // Beräkna kreditpris baserat på betalningsalternativ
+      if (paymentOption === 'leasing') {
+        // För leasing, använd trepunktsinterpolation
+        if (selectedMachine.creditMin && selectedMachine.creditMax && 
+            selectedMachine.leasingMin && selectedMachine.leasingMax) {
+          
+          const oldLeasingMax = (selectedMachine.leasingMin + selectedMachine.leasingMax) / 2;
+          
+          if (leasingCost <= oldLeasingMax) {
+            const factor = (leasingCost - selectedMachine.leasingMin) / (oldLeasingMax - selectedMachine.leasingMin);
+            creditPrice = selectedMachine.creditMax - factor * (selectedMachine.creditMax - selectedMachine.creditMin);
+          } else {
+            const factor = (leasingCost - oldLeasingMax) / (selectedMachine.leasingMax - oldLeasingMax);
+            creditPrice = Math.max(0, selectedMachine.creditMin * (1 - factor));
+          }
         } else {
-          const factor = (leasingCost - oldLeasingMax) / (selectedMachine.leasingMax - oldLeasingMax);
-          creditPrice = Math.max(0, selectedMachine.creditMin * (1 - factor));
+          creditPrice = 149;
         }
       } else {
-        creditPrice = 149;
+        // För kontant, använd creditMin
+        creditPrice = selectedMachine.creditMin || 149;
       }
       
       // Säkerställ att kreditpriset aldrig blir negativt
@@ -65,34 +93,63 @@ export function useOperatingCosts({
       
       const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
       
-      const shouldUseFlatrate = useFlatrateOption === 'flatrate';
+      // Avgör om flatrate ska användas baserat på betalningsalternativ
+      let shouldUseFlatrate = useFlatrateOption === 'flatrate';
       
-      let monthlyCost = 0;
-      
-      if (shouldUseFlatrate && selectedMachine.flatrateAmount) {
-        monthlyCost = selectedMachine.flatrateAmount;
+      // För kontantalternativ, kräver vi bara minst 3 behandlingar per dag
+      if (paymentOption === 'cash') {
+        shouldUseFlatrate = shouldUseFlatrate && treatmentsPerDay >= 3;
       } else {
-        const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
-        monthlyCost = creditsPerTreatment * treatmentsPerMonth * creditPrice;
+        // För leasing, kräver vi både minst 3 behandlingar och 80% av leasingMax
+        const meetsLeasingRequirement = allowBelowFlatrate || (leasingCost >= selectedMachine.leasingMin * 0.8);
+        shouldUseFlatrate = shouldUseFlatrate && treatmentsPerDay >= 3 && meetsLeasingRequirement;
       }
       
+      if (shouldUseFlatrate && selectedMachine.flatrateAmount) {
+        creditOrFlatrateCost = selectedMachine.flatrateAmount;
+      } else {
+        const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
+        creditOrFlatrateCost = creditsPerTreatment * treatmentsPerMonth * creditPrice;
+      }
+      
+      // Total driftskostnad = kredit/flatrate + SLA
+      const totalCost = creditOrFlatrateCost + slaCost;
+      
       setOperatingCost({
-        costPerMonth: monthlyCost,
-        useFlatrate: shouldUseFlatrate
+        costPerMonth: creditOrFlatrateCost,
+        useFlatrate: shouldUseFlatrate,
+        slaCost: slaCost,
+        totalCost: totalCost
       });
       
       console.log(`Driftskostnad beräknad för ${selectedMachine.name}:
+        Betalningsalternativ: ${paymentOption}
         Behandlingar per dag: ${treatmentsPerDay}
         Behandlingar per månad: ${treatmentsPerMonth}
         Kreditpris: ${creditPrice}
         Använder flatrate: ${shouldUseFlatrate}
-        Månadskostnad: ${monthlyCost} kr
+        Kredit/Flatrate-kostnad: ${creditOrFlatrateCost} kr
+        SLA-nivå: ${selectedSlaLevel}
+        SLA-kostnad: ${slaCost} kr
+        Total driftskostnad: ${totalCost} kr
       `);
     } else {
-      setOperatingCost({ costPerMonth: 0, useFlatrate: false });
+      // För maskiner utan credits är driftskostnaden bara SLA-kostnaden
+      setOperatingCost({ 
+        costPerMonth: 0, 
+        useFlatrate: false,
+        slaCost: slaCost,
+        totalCost: slaCost
+      });
       setCalculatedCreditPrice(0);
+      
+      console.log(`Driftskostnad beräknad för ${selectedMachine.name} (utan credits):
+        SLA-nivå: ${selectedSlaLevel}
+        SLA-kostnad: ${slaCost} kr
+        Total driftskostnad: ${slaCost} kr
+      `);
     }
-  }, [selectedMachine, treatmentsPerDay, useFlatrateOption, leaseAdjustmentFactor, leasingCost]);
+  }, [selectedMachine, treatmentsPerDay, useFlatrateOption, leaseAdjustmentFactor, leasingCost, selectedSlaLevel, paymentOption, allowBelowFlatrate]);
 
   return { 
     operatingCost,

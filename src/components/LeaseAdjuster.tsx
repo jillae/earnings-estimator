@@ -76,11 +76,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const handleSliderChange = (values: number[]) => {
     let newValue = values[0] / 100;
     
-    // Om flatrate är aktivt (showFlatrateIndicator) och inte tillåter under 80%, begränsa till minst 0.8
-    if (showFlatrateIndicator && !allowBelowFlatrate) {
-      newValue = Math.max(0.8, newValue);
-    }
-    
+    // Låt slidern röra sig fritt oavsett om vi är över eller under flatrate-tröskeln
     const exactCost = exactMinCost + (newValue * costRange);
     
     let roundedCost = Math.round(exactCost / stepSize) * stepSize;

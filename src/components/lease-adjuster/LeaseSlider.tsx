@@ -32,7 +32,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
     setSliderValue(values[0]);
     
     // Skicka värdet uppåt i komponenthierarkin
-    // Eftersom allowBelowFlatrate alltid är true, tillåt slidern gå överallt
+    // Tillåt slidern att gå överallt och låt förälder hantera eventuella begränsningar
     console.log(`Slider förflyttning till: ${values[0]}%`);
     onSliderChange(values);
   };
@@ -42,7 +42,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
       <FlatrateIndicator 
         thresholdPosition={thresholdPosition} 
         showFlatrateIndicator={showFlatrateIndicator}
-        allowBelowFlatrate={true} // Alltid tillåta att gå under flatrate tröskeln
+        allowBelowFlatrate={allowBelowFlatrate}
       />
       
       <Slider

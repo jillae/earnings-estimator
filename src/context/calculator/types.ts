@@ -5,9 +5,15 @@ export interface CalculatorState {
   clinicSize: any;
   selectedMachineId: string;
   
+  // Payment option
+  paymentOption: 'leasing' | 'cash';
+  
   // Leasing options
   selectedLeasingPeriodId: string;
   selectedInsuranceId: string;
+  
+  // SLA options
+  selectedSlaLevel: 'Brons' | 'Silver' | 'Guld';
   
   // Adjustment settings
   leaseAdjustmentFactor: number;
@@ -19,13 +25,19 @@ export interface CalculatorState {
   // Calculations
   exchangeRate: number;
   machinePriceSEK: number;
+  cashPriceSEK: number;
   leasingRange: { min: number, max: number, default: number };
   leasingCost: number;
   creditPrice: number;
   flatrateThreshold: number;
   
   // Operating cost
-  operatingCost: { costPerMonth: number, useFlatrate: boolean };
+  operatingCost: { 
+    costPerMonth: number, 
+    useFlatrate: boolean, 
+    slaCost: number,
+    totalCost: number 
+  };
   
   // Results
   revenue: {
@@ -57,11 +69,20 @@ export interface CalculatorContextType {
   setSelectedMachineId: (id: string) => void;
   selectedMachine: any;
   
+  // Payment option
+  paymentOption: 'leasing' | 'cash';
+  setPaymentOption: (option: 'leasing' | 'cash') => void;
+  cashPriceSEK: number;
+  
   // Leasing options
   selectedLeasingPeriodId: string;
   setSelectedLeasingPeriodId: (id: string) => void;
   selectedInsuranceId: string;
   setSelectedInsuranceId: (id: string) => void;
+  
+  // SLA options
+  selectedSlaLevel: 'Brons' | 'Silver' | 'Guld';
+  setSlaLevel: (level: 'Brons' | 'Silver' | 'Guld') => void;
   
   // Treatment settings
   treatmentsPerDay: number;
@@ -89,7 +110,12 @@ export interface CalculatorContextType {
   setUseFlatrateOption: (value: 'perCredit' | 'flatrate') => void;
   
   // Operating costs
-  operatingCost: { costPerMonth: number, useFlatrate: boolean };
+  operatingCost: { 
+    costPerMonth: number, 
+    useFlatrate: boolean, 
+    slaCost: number, 
+    totalCost: number 
+  };
   
   // Results
   revenue: any;

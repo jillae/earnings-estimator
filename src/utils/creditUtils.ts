@@ -17,18 +17,26 @@ export function calculateTreatmentsPerMonth(treatmentsPerDay: number): number {
 export function calculateCreditPrice(
   machine: Machine, 
   leasingCost: number,
+  paymentOption: 'leasing' | 'cash' = 'leasing',
   selectedLeasingPeriodId?: string,
   machinePriceSEK?: number
 ): number {
   if (!machine || !machine.usesCredits) return 0;
   
   console.log(`Beräknar kreditpris för ${machine.name}:
+    - paymentOption: ${paymentOption}
     - leasingCost: ${leasingCost}
     - machine.leasingMin: ${machine.leasingMin}
     - machine.leasingMax: ${machine.leasingMax}
     - machine.creditMin: ${machine.creditMin}
     - machine.creditMax: ${machine.creditMax}
   `);
+  
+  // Om kontantbetalning, returnera machine.creditMin
+  if (paymentOption === 'cash') {
+    console.log(`Kontantbetalning vald, använder creditMin: ${machine.creditMin}`);
+    return machine.creditMin || 149;
+  }
   
   // Om vi har leasingMin, leasingMax, creditMin, creditMax - beräkna dynamiskt
   if (machine.leasingMin !== undefined && 
@@ -42,7 +50,10 @@ export function calculateCreditPrice(
     
     let calculatedCreditPrice = 0;
     
-    // Ny logik för direkt linjär interpolation i två steg
+    // Trepunktsinterpolation:
+    // 1. MinLease -> CreditMax
+    // 2. MidPoint -> CreditMin
+    // 3. MaxLease -> 0
     if (leasingCost <= oldLeasingMax) {
       // Mellan leasingMin och oldLeasingMax (mittpunkten)
       // Här går vi från creditMax till creditMin
@@ -55,7 +66,7 @@ export function calculateCreditPrice(
       calculatedCreditPrice = machine.creditMin * (1 - factorInSecondHalf);
     }
     
-    console.log(`Ny linjär interpolation av kreditpris för ${machine.name}:
+    console.log(`Trepunktsinterpolation av kreditpris för ${machine.name}:
       Leasingkostnad: ${leasingCost}
       LeasingMin: ${machine.leasingMin}
       Gamla leasingMax (mittpunkt): ${oldLeasingMax}
@@ -164,6 +175,7 @@ export function shouldUseFlatrate(
   leasingCost: number,
   treatmentsPerDay: number,
   allowBelowFlatrate: boolean,
+  paymentOption: 'leasing' | 'cash' = 'leasing',
   selectedLeasingPeriodId?: string,
   machinePriceSEK?: number
 ): boolean {
@@ -175,14 +187,19 @@ export function shouldUseFlatrate(
   const safeLeasingCost = Math.max(0, isNaN(leasingCost) ? 0 : leasingCost);
   const safetreatmentsPerDay = isNaN(treatmentsPerDay) ? 0 : treatmentsPerDay;
   
-  // Beräkna det gamla leasingMax värdet (mittpunkten i den nya skalan)
+  // Minst 3 behandlingar per dag krävs för flatrate
+  const minTreatments = safetreatmentsPerDay >= 3;
+  
+  // För kontantbetalning kräver vi bara minst 3 behandlingar
+  if (paymentOption === 'cash') {
+    return minTreatments;
+  }
+  
+  // För leasing, beräkna det gamla leasingMax värdet (mittpunkten i den nya skalan)
   const oldLeasingMax = (machine.leasingMin + machine.leasingMax) / 2;
   
   // Leasingkostnad måste vara minst 80% av gamla max för att kvalificera för flatrate
   const leasingPercent = oldLeasingMax > 0 ? safeLeasingCost / oldLeasingMax : 0;
-  
-  // Minst 3 behandlingar per dag krävs för flatrate
-  const minTreatments = safetreatmentsPerDay >= 3;
   
   // Om allowBelowFlatrate är true, behöver vi inte uppfylla leasingkravet
   const meetsLeasingRequirement = allowBelowFlatrate || leasingPercent >= 0.8;
@@ -191,6 +208,7 @@ export function shouldUseFlatrate(
   const canUseFlatrate = meetsLeasingRequirement && minTreatments;
   
   console.log(`shouldUseFlatrate för ${machine.name}:
+    paymentOption: ${paymentOption}
     leasingCost: ${safeLeasingCost}
     oldLeasingMax: ${oldLeasingMax}
     leasingPercent: ${(leasingPercent * 100).toFixed(1)}%

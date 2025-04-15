@@ -18,10 +18,14 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     selectedMachineId,
     setSelectedMachineId,
     selectedMachine,
+    paymentOption,
+    setPaymentOption,
     selectedLeasingPeriodId,
     setSelectedLeasingPeriodId,
     selectedInsuranceId,
     setSelectedInsuranceId,
+    selectedSlaLevel,
+    setSlaLevel,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     allowBelowFlatrate,
@@ -54,14 +58,17 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const { 
     leasingRange, 
     leasingCost, 
-    flatrateThreshold
+    flatrateThreshold,
+    cashPriceSEK
   } = useLeasingCalculations({
     selectedMachineId,
     machinePriceSEK,
     selectedLeasingPeriodId,
     selectedInsuranceId,
     leaseAdjustmentFactor,
-    treatmentsPerDay
+    treatmentsPerDay,
+    paymentOption,
+    exchangeRate
   });
 
   // Beräkna leasingkostnaden som en procentandel av max (0-100%)
@@ -89,14 +96,18 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     machinePriceSEK,
     allowBelowFlatrate,
     useFlatrateOption,
-    leaseAdjustmentFactor // Lägg till denna parameter
+    leaseAdjustmentFactor,
+    selectedSlaLevel,
+    paymentOption
   });
 
   // Get revenue calculations
   const { revenue, occupancyRevenues, netResults } = useRevenueCalculations({
     customerPrice,
     treatmentsPerDay,
+    paymentOption,
     leasingCost,
+    cashPriceSEK,
     operatingCost
   });
 
@@ -107,10 +118,15 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     selectedMachineId,
     setSelectedMachineId,
     selectedMachine,
+    paymentOption,
+    setPaymentOption,
+    cashPriceSEK,
     selectedLeasingPeriodId,
     setSelectedLeasingPeriodId,
     selectedInsuranceId,
     setSelectedInsuranceId,
+    selectedSlaLevel,
+    setSlaLevel,
     treatmentsPerDay,
     setTreatmentsPerDay,
     customerPrice,

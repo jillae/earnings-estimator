@@ -2,15 +2,17 @@
 import { useState, useEffect, useMemo } from 'react';
 import { machineData } from '@/data/machines';
 import { Machine } from '@/data/machines/types';
-import { FlatrateOption } from '@/utils/constants';
+import { FlatrateOption, PaymentOption, SlaLevel } from '@/utils/constants';
 
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [selectedMachineId, setSelectedMachineId] = useState<string>('select-machine');
+  const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60');
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
+  const [selectedSlaLevel, setSlaLevel] = useState<SlaLevel>('Brons');
   const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(0.5); // Använd 0.5 (50%) som default
-  const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(false); // Ändras till false så att användaren inte kan dra under 80% i flatrate-läge
+  const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true); // Ändrat till true för att tillåta slidern att röra sig fritt
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
   const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit'); // Använd FlatrateOption typ från constants
@@ -50,8 +52,11 @@ export function useStateSelections() {
       // Sätt alltid leaseAdjustmentFactor till 0.5 (50%) när en ny maskin väljs
       setLeaseAdjustmentFactor(0.5);
       
-      // Sätt alltid allowBelowFlatrate till false för att förhindra justering under 80%
-      setAllowBelowFlatrate(false);
+      // Återställ alltid SLA till Brons
+      setSlaLevel('Brons');
+      
+      // Återställ betalningsalternativ till leasing
+      setPaymentOption('leasing');
       
       // Återställ flatrate-valet till perCredit
       setUseFlatrateOption('perCredit');
@@ -75,10 +80,14 @@ export function useStateSelections() {
     selectedMachineId,
     setSelectedMachineId,
     selectedMachine,
+    paymentOption,
+    setPaymentOption,
     selectedLeasingPeriodId,
     setSelectedLeasingPeriodId,
     selectedInsuranceId,
     setSelectedInsuranceId,
+    selectedSlaLevel,
+    setSlaLevel,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     allowBelowFlatrate,
