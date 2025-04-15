@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
 import { FlatrateOption } from '@/utils/constants';
+import { calculateCreditPrice } from '@/utils/creditUtils';
+import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 
 export function useOperatingCosts({
   selectedMachineId,
@@ -11,7 +13,7 @@ export function useOperatingCosts({
   machinePriceSEK,
   allowBelowFlatrate,
   useFlatrateOption = 'perCredit',
-  leaseAdjustmentFactor = 1 // Lägg till adjustmentFactor för att beräkna kreditpriset korrekt
+  leaseAdjustmentFactor = 1 // Adjustmentfaktor för att beräkna kreditpriset korrekt
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
@@ -43,30 +45,34 @@ export function useOperatingCosts({
 
     // Om maskinen använder krediter, beräkna driftskostnad
     if (selectedMachine.usesCredits) {
-      let creditPrice: number;
+      let creditPrice: number = 0;
       
-      // Implementera trepunktsinterpolation för kreditpris
-      if (selectedMachine.creditMin && selectedMachine.creditMax) {
-        // Trepunktsinterpolation:
-        // 0% (Min Lease) => creditMax
-        // 50% (Mitten) => creditMin
-        // 100% (Max Lease) => 0
+      // Implementera korrekt interpolation för kreditpris
+      if (selectedMachine.creditMin && selectedMachine.creditMax && 
+          selectedMachine.leasingMin && selectedMachine.leasingMax) {
         
-        if (leaseAdjustmentFactor <= 0.5) {
-          // Mellan 0% och 50%: Linjär interpolation från creditMax till creditMin
-          const normalizedFactor = leaseAdjustmentFactor / 0.5; // Omvandla till 0-1 range för denna region
-          creditPrice = selectedMachine.creditMax - normalizedFactor * (selectedMachine.creditMax - selectedMachine.creditMin);
+        // Beräkna gamla leasingMax (mittpunkten i nya skalan)
+        const oldLeasingMax = (selectedMachine.leasingMin + selectedMachine.leasingMax) / 2;
+        
+        // Avancerad interpolation baserad på leasingCost
+        if (leasingCost <= oldLeasingMax) {
+          // Mellan leasingMin och oldLeasingMax: Linjär interpolation från creditMax till creditMin
+          const factor = (leasingCost - selectedMachine.leasingMin) / (oldLeasingMax - selectedMachine.leasingMin);
+          creditPrice = selectedMachine.creditMax - factor * (selectedMachine.creditMax - selectedMachine.creditMin);
         } else {
-          // Mellan 50% och 100%: Linjär interpolation från creditMin till 0
-          const normalizedFactor = (leaseAdjustmentFactor - 0.5) / 0.5; // Omvandla till 0-1 range för denna region
-          creditPrice = selectedMachine.creditMin * (1 - normalizedFactor);
+          // Mellan oldLeasingMax och leasingMax: Linjär interpolation från creditMin till 0
+          const factor = (leasingCost - oldLeasingMax) / (selectedMachine.leasingMax - oldLeasingMax);
+          creditPrice = selectedMachine.creditMin * (1 - factor);
         }
         
         console.log(`Kreditpris interpolation för ${selectedMachine.name}:
-          AdjustmentFactor: ${leaseAdjustmentFactor}
+          LeasingCost: ${leasingCost}
+          LeasingMin: ${selectedMachine.leasingMin}
+          OldLeasingMax (mittpunkt): ${oldLeasingMax}
+          LeasingMax: ${selectedMachine.leasingMax}
           CreditMin: ${selectedMachine.creditMin}
           CreditMax: ${selectedMachine.creditMax}
-          Beräknat kreditpris: ${creditPrice}
+          Interpolerat kreditpris: ${creditPrice}
         `);
       } else {
         // Fallback om maskinspecifika värden saknas
@@ -78,7 +84,7 @@ export function useOperatingCosts({
       setCalculatedCreditPrice(creditPrice);
       
       // Beräkna antalet behandlingar per månad
-      const treatmentsPerMonth = treatmentsPerDay * 22; // 22 arbetsdagar per månad
+      const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH; // 22 arbetsdagar per månad
       
       // Avgör om vi ska använda flatrate baserat på användarens val
       const shouldUseFlatrate = useFlatrateOption === 'flatrate';

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useCalculator } from '@/context/CalculatorContext';
@@ -14,7 +14,10 @@ const OperatingCosts: React.FC = () => {
     treatmentsPerDay, 
     creditPrice,
     leasingCost,
-    flatrateThreshold
+    leasingRange,
+    flatrateThreshold,
+    leaseAdjustmentFactor,
+    setLeaseAdjustmentFactor
   } = useCalculator();
 
   // Om ingen maskin är vald eller maskinen inte använder krediter, visa inget
@@ -28,9 +31,27 @@ const OperatingCosts: React.FC = () => {
   const creditsCostPerMonth = treatmentsPerMonth * creditsPerTreatment * (creditPrice || 0);
   const flatrateAmount = selectedMachine.flatrateAmount || 0;
 
-  // Hantera flatrate-switch
+  // Hantera flatrate-switch med automatisk justering av slider
   const handleFlatrateChange = (checked: boolean) => {
+    // Först, ändra flatrate-alternativet
     setUseFlatrateOption(checked ? 'flatrate' : 'perCredit');
+    
+    // Om användaren aktiverar flatrate och är under tröskelvärdet, justera slidern automatiskt
+    if (checked && flatrateThreshold && leasingCost < flatrateThreshold) {
+      // Beräkna den nya justeringsfaktorn för att nå tröskelvärdet
+      const thresholdFactor = leasingRange.max > leasingRange.min
+        ? (flatrateThreshold - leasingRange.min) / (leasingRange.max - leasingRange.min)
+        : 0.8; // Fallback till 80% om beräkningen misslyckas
+      
+      console.log(`Justerar slider automatiskt till flatrate-tröskelvärdet:
+        Nuvarande leasingkostnad: ${leasingCost}
+        Tröskelvärde: ${flatrateThreshold}
+        Beräknad justeringsfaktor: ${thresholdFactor}
+      `);
+      
+      // Uppdatera slidern till tröskelvärdet (minst 80%)
+      setLeaseAdjustmentFactor(Math.max(0.8, thresholdFactor));
+    }
   };
 
   // Beräkna vid vilken punkt flatrate blir mer kostnadseffektivt
