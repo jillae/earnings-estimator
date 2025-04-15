@@ -1,3 +1,5 @@
+import { LeasingPeriod } from '../data/machines/types';
+
 // Viktiga konstanter för kalkylatorn
 export const VAT_RATE = 0.25;
 export const WORKING_DAYS_PER_MONTH = 22;
