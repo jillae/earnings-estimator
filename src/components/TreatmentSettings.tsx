@@ -90,6 +90,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
                 onClick={incrementTreatments} 
                 className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
                 aria-label="Öka antal behandlingar"
+                type="button"
               >
                 <ChevronUp className="h-4 w-4 text-gray-600" />
               </button>
@@ -97,6 +98,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
                 onClick={decrementTreatments} 
                 className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
                 aria-label="Minska antal behandlingar"
+                type="button"
               >
                 <ChevronDown className="h-4 w-4 text-gray-600" />
               </button>
@@ -128,6 +130,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
                 onClick={incrementPrice} 
                 className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
                 aria-label="Öka pris"
+                type="button"
               >
                 <ChevronUp className="h-4 w-4 text-gray-600" />
               </button>
@@ -135,6 +138,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
                 onClick={decrementPrice} 
                 className="h-6 w-6 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
                 aria-label="Minska pris"
+                type="button"
               >
                 <ChevronDown className="h-4 w-4 text-gray-600" />
               </button>

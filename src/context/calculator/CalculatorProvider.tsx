@@ -77,7 +77,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     allowBelowFlatrate
   });
 
-  // Get operating costs - skicka med useFlatrateOption
+  // Get operating costs - skicka med leaseAdjustmentFactor för kreditprisberäkning
   const { 
     operatingCost,
     calculatedCreditPrice
@@ -88,7 +88,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     selectedLeasingPeriodId,
     machinePriceSEK,
     allowBelowFlatrate,
-    useFlatrateOption
+    useFlatrateOption,
+    leaseAdjustmentFactor // Lägg till denna parameter
   });
 
   // Get revenue calculations
