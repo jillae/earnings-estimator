@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
@@ -46,8 +45,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMaxCost = maxLeaseCost;
   const costRange = exactMaxCost - exactMinCost;
 
-  const oldMaxCost = (exactMinCost + exactMaxCost) / 2;
-  const defaultCost = exactMinCost + (0.5 * costRange); // 50% av vägen - rekommenderat pris
+  const defaultCost = exactMinCost + (0.5 * costRange);
   
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
@@ -68,7 +66,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const handleSliderChange = (values: number[]) => {
     let newValue = values[0] / 100;
     
-    // Låt slidern röra sig fritt oavsett om vi är över eller under flatrate-tröskeln
     const exactCost = exactMinCost + (newValue * costRange);
     
     let roundedCost = Math.round(exactCost / stepSize) * stepSize;
