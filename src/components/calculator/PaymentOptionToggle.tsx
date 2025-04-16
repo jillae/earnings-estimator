@@ -23,7 +23,7 @@ const PaymentOptionToggle: React.FC = () => {
           <span className="mr-2">Leasing</span>
         </ToggleGroupItem>
         <ToggleGroupItem value="cash" className="w-full rounded-l-none">
-          <span className="mr-2">Kontant ({formatCurrency(cashPriceSEK)})</span>
+          <span className="mr-2">Kontant (exkl. moms och ev. tull, inkl. frakt & handhavandeutbildning)</span>
         </ToggleGroupItem>
       </ToggleGroup>
     </div>
@@ -31,3 +31,4 @@ const PaymentOptionToggle: React.FC = () => {
 };
 
 export default PaymentOptionToggle;
+
