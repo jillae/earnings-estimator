@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
+import InfoTooltip from './ui/info-tooltip';
 import { Info } from 'lucide-react';
 
 interface LeaseAdjusterProps {
@@ -104,9 +105,14 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
-      <label className="input-label">
-        Justera leasingkostnad
-      </label>
+      <div className="flex items-center justify-between mb-2">
+        <label className="input-label flex items-center gap-2">
+          Justera leasingkostnad
+          <InfoTooltip 
+            content="Leasingkostnaden påverkar kreditpriset omvänt för att balansera totalkostnaden. Alla priser avrundas till närmaste hundrating som slutar på 6." 
+          />
+        </label>
+      </div>
 
       <CostDisplay 
         minLeaseCost={exactMinCost}
@@ -114,10 +120,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         leaseCost={actualLeasingCost}
       />
 
-      {/* Rekommenderad pris indikator */}
-      <div className="flex items-center justify-center mb-2 text-sm bg-blue-50 p-2 rounded-md">
-        <Info className="w-4 h-4 mr-2 text-blue-600" />
-        <span>Rekommenderat pris: <span className="font-medium">{defaultCost.toLocaleString('sv-SE')} kr</span></span>
+      <div className="flex items-center justify-between mb-4 py-2 px-3 bg-blue-50 rounded-md">
+        <span className="text-sm text-blue-700">Rekommenderat pris: </span>
+        <span className="font-medium text-blue-700">{defaultCost.toLocaleString('sv-SE')} kr</span>
       </div>
 
       <LeaseSlider 
