@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
 import { FlatrateOption, SlaLevel } from '@/utils/constants';
-import { calculateCreditPrice } from '@/utils/creditUtils';
+import { calculateCreditPrice } from '@/utils/credits/creditPricing';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 import { calculateSlaCost } from '@/utils/pricingUtils';
 
@@ -71,18 +70,16 @@ export function useOperatingCosts({
       // Beräkna kreditpris baserat på betalningsalternativ
       if (paymentOption === 'leasing') {
         // För leasing, använd trepunktsinterpolation
-        if (selectedMachine.creditMin && selectedMachine.creditMax && 
-            selectedMachine.leasingMin && selectedMachine.leasingMax) {
+        if (selectedMachine.leasingMin && selectedMachine.leasingMax && 
+            selectedMachine.creditMin && selectedMachine.creditMax) {
           
-          const oldLeasingMax = (selectedMachine.leasingMin + selectedMachine.leasingMax) / 2;
-          
-          if (leasingCost <= oldLeasingMax) {
-            const factor = (leasingCost - selectedMachine.leasingMin) / (oldLeasingMax - selectedMachine.leasingMin);
-            creditPrice = selectedMachine.creditMax - factor * (selectedMachine.creditMax - selectedMachine.creditMin);
-          } else {
-            const factor = (leasingCost - oldLeasingMax) / (selectedMachine.leasingMax - oldLeasingMax);
-            creditPrice = Math.max(0, selectedMachine.creditMin * (1 - factor));
-          }
+          creditPrice = calculateCreditPrice(
+            selectedMachine, 
+            leasingCost, 
+            paymentOption, 
+            selectedLeasingPeriodId, 
+            machinePriceSEK
+          );
         } else {
           creditPrice = 149;
         }
