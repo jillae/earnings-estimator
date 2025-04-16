@@ -4,7 +4,7 @@ import { CalculatorState } from './types';
 
 // Initial state values for the calculator
 export const initialState: CalculatorState = {
-  clinicSize: 2,
+  clinicSize: 'medium',
   selectedMachineId: "select-machine", // Default to "select-machine"
   paymentOption: "leasing", // Default till leasing
   selectedLeasingPeriodId: "48", // Default to 48 months
@@ -12,7 +12,7 @@ export const initialState: CalculatorState = {
   selectedSlaLevel: "Brons", // Default till Brons (ingår)
   leaseAdjustmentFactor: 0.5, // Sätt default till 50%
   treatmentsPerDay: 4, // Default to medium clinic
-  customerPrice: machineData[0].defaultCustomerPrice || 1990,
+  customerPrice: machineData[0]?.defaultCustomerPrice || 1990,
   exchangeRate: 11.49260,
   machinePriceSEK: 0,
   cashPriceSEK: 0,

@@ -1,30 +1,43 @@
 
 import { useEffect } from 'react';
 
-// Konstant för versionsnummer - uppdaterad till version 3.0
-const VERSION = "3.0";
-
 export function useDebugLogging({
   leasingRange,
   leasingCost,
   leaseAdjustmentFactor,
-  allowBelowFlatrate
+  allowBelowFlatrate,
+  slaCosts,
+  leasingMax60mRef
 }: {
-  leasingRange: { min: number, max: number, default: number, flatrateThreshold?: number };
+  leasingRange: { min: number; max: number; default: number; flatrateThreshold?: number };
   leasingCost: number;
   leaseAdjustmentFactor: number;
   allowBelowFlatrate?: boolean;
+  slaCosts?: { Brons: number; Silver: number; Guld: number };
+  leasingMax60mRef?: number;
 }) {
-  // Utökad loggning för att se beräkningarna och inställningarna
   useEffect(() => {
+    // Logga nuvarande inställningar för lättare debugging
     console.log(`
       ----- LEASING CALCULATIONS DIAGNOSTICS -----
-      Version: ${VERSION}
+      Version: 3.0
       Range: ${leasingRange.min} - ${leasingRange.max} (default: ${leasingRange.default})
       Current: ${leasingCost} (factor: ${leaseAdjustmentFactor})
-      Flatrate threshold: ${leasingRange.flatrateThreshold || "N/A"}
-      Allow below flatrate: ${allowBelowFlatrate} (Flatrate ${allowBelowFlatrate ? 'INAKTIVERAD' : 'AKTIVERAD'})
+      Flatrate threshold: ${leasingRange.flatrateThreshold || 'N/A'}
+      Allow below flatrate: ${allowBelowFlatrate} (Flatrate ${allowBelowFlatrate ? 'aktiverad' : 'INAKTIVERAD'})
       ---------------------------------------
     `);
-  }, [leasingRange, leasingCost, leaseAdjustmentFactor, allowBelowFlatrate]);
+
+    if (slaCosts) {
+      console.log(`
+        ----- SLA COSTS -----
+        Reference value (leasingMax60mRef): ${leasingMax60mRef}
+        Brons: ${slaCosts.Brons}
+        Silver: ${slaCosts.Silver}
+        Guld: ${slaCosts.Guld}
+        ---------------------------------------
+      `);
+    }
+
+  }, [leasingRange, leasingCost, leaseAdjustmentFactor, allowBelowFlatrate, slaCosts, leasingMax60mRef]);
 }

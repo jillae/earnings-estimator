@@ -83,3 +83,52 @@ export interface CalculatorContextType {
     netPerYearExVat: number;
   };
 }
+
+// Definiera en separat typ för state (utan metoder)
+export interface CalculatorState {
+  clinicSize: 'small' | 'medium' | 'large';
+  selectedMachineId: string;
+  paymentOption: PaymentOption;
+  selectedLeasingPeriodId: string;
+  selectedInsuranceId: string;
+  selectedSlaLevel: SlaLevel;
+  leaseAdjustmentFactor: number;
+  treatmentsPerDay: number;
+  customerPrice: number;
+  exchangeRate: number;
+  machinePriceSEK: number;
+  cashPriceSEK: number;
+  leasingRange: {
+    min: number;
+    max: number;
+    default: number;
+    flatrateThreshold?: number;
+  };
+  leasingCost: number;
+  creditPrice: number;
+  flatrateThreshold: number;
+  operatingCost: {
+    costPerMonth: number;
+    useFlatrate: boolean;
+    slaCost: number;
+    totalCost: number;
+  };
+  revenue: {
+    revenuePerTreatmentExVat: number;
+    dailyRevenueIncVat: number;
+    weeklyRevenueIncVat: number;
+    monthlyRevenueIncVat: number;
+    yearlyRevenueIncVat: number;
+    monthlyRevenueExVat: number;
+    yearlyRevenueExVat: number;
+  };
+  occupancyRevenues: {
+    occupancy50: number;
+    occupancy75: number;
+    occupancy100: number;
+  };
+  netResults: {
+    netPerMonthExVat: number;
+    netPerYearExVat: number;
+  };
+}
