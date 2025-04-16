@@ -18,6 +18,14 @@ export function calculateOperatingCost(
   const safetreatmentsPerDay = Math.max(0, isNaN(treatmentsPerDay) ? 0 : treatmentsPerDay);
   const safeCreditPrice = Math.max(0, isNaN(creditPrice) ? 0 : creditPrice);
   
+  console.log(`OPERATING COST CALCULATION:
+    Machine: ${machine.name}
+    Treatments per day: ${safetreatmentsPerDay}
+    Credit price: ${safeCreditPrice}
+    Use flatrate: ${useFlatrate}
+    Flatrate amount: ${machine.flatrateAmount || 0}
+  `);
+  
   let costPerMonth = 0;
   
   if (useFlatrate) {

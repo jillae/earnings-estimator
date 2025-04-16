@@ -47,14 +47,16 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMaxCost = maxLeaseCost;
   const costRange = exactMaxCost - exactMinCost;
 
-  // Beräknar det rekommenderade priset vid exakt 50% av leasingområdet
+  // Det rekommenderade priset är exakt mitten av intervallet (gamla leasingMax)
   const defaultCost = exactMinCost + (0.5 * costRange);
   
   // Beräknar faktorn för att placera slidern vid rekommenderat pris (exakt 50%)
-  const recommendedFactor = 0.5; // Förenklat till exakt 50% istället för att beräkna
+  const recommendedFactor = 0.5; // Exakt 50% är alltid defaultvärdet
   
+  // Beräkna exakt leasingkostnad baserat på justeringsfaktorn
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
+  // Avrunda till närmaste 100 och sedan till närmaste hundra slutande på 6
   const stepSize = 100;
   let roundedLeasingCost = Math.round(calculatedLeasingCost / stepSize) * stepSize;
   
@@ -63,6 +65,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     roundedLeasingCost = roundedLeasingCost - lastDigit + 6;
   }
   
+  // Beräkna flatrate-indikatorposition
   let flatratePosition = null;
   if (flatrateThreshold) {
     flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, costRange)) * 100;
@@ -77,6 +80,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     // För att säkerställa exakt 0.5 när slidern är vid 50%
     if (Math.abs(newValue - 0.5) < 0.01) {
       newValue = 0.5;
+      console.log("Justerar till exakt 0.5 (50%)");
     }
     
     // Beräkna exakt kostnad baserat på slider-position
@@ -95,33 +99,32 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       Avrundad kostnad: ${roundedCost}
     `);
     
-    // Beräkna den nya faktorn baserat på den avrundade kostnaden
-    const newFactor = (roundedCost - exactMinCost) / Math.max(0.001, costRange);
-    const clampedFactor = Math.max(0, Math.min(1, newFactor));
-    
+    // Om vi är under flatrate-tröskeln och flatrate inte ska tillåtas under tröskeln
     if (flatrateThreshold && roundedCost < flatrateThreshold && onAllowBelowFlatrateChange) {
       onAllowBelowFlatrateChange(false);
     }
     
-    onAdjustmentChange(newValue); // Använd den ursprungliga, exakta värdet
+    // Skicka upp det nya faktiska värdet (inte det avrundade)
+    onAdjustmentChange(newValue);
   };
 
-  let actualLeasingCost = leaseCost;
-  if (leaseCost > exactMaxCost) {
+  // Begränsa leasingCost till giltiga värden
+  let actualLeasingCost = leasingCost;
+  if (leasingCost > exactMaxCost) {
     actualLeasingCost = exactMaxCost;
-  } else if (leaseCost < exactMinCost) {
+  } else if (leasingCost < exactMinCost) {
     actualLeasingCost = exactMinCost;
   }
 
-  const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
+  const isAboveFlatrateThreshold = flatrateThreshold ? leasingCost >= flatrateThreshold : false;
   
   useEffect(() => {
     console.log(`FLATRATE INFO:
-      Leasingkostnad (${leaseCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold})
+      Leasingkostnad (${leasingCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold})
       Antal behandlingar per dag: ${treatmentsPerDay}
       AllowBelowFlatrate: ${allowBelowFlatrate}
     `);
-  }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, allowBelowFlatrate]);
+  }, [leasingCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, allowBelowFlatrate]);
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>

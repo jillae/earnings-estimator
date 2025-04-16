@@ -11,11 +11,14 @@ export function useStateSelections() {
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60');
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
   const [selectedSlaLevel, setSlaLevel] = useState<SlaLevel>('Brons');
-  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(0.5); // Använd 0.5 (50%) som default
-  const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true); // Ändrat till true för att tillåta slidern att röra sig fritt
+  
+  // Säkerställ att vi alltid startar på exakt 0.5 (50%)
+  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(0.5);
+  
+  const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true);
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
-  const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit'); // Använd FlatrateOption typ från constants
+  const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit');
 
   // Härled den valda maskinen från maskin-ID
   const selectedMachine = useMemo(() => {
@@ -39,6 +42,8 @@ export function useStateSelections() {
   // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen
   useEffect(() => {
     if (selectedMachine && selectedMachine.id !== 'null-machine') {
+      console.log(`Maskin valdes: ${selectedMachine.name}, återställer standardvärden`);
+      
       // Sätt standard-leasingperiod från maskinen om den är definierad
       if (selectedMachine.defaultLeasingPeriod) {
         setSelectedLeasingPeriodId(selectedMachine.defaultLeasingPeriod);
@@ -49,7 +54,7 @@ export function useStateSelections() {
         setCustomerPrice(selectedMachine.defaultCustomerPrice);
       }
       
-      // Sätt alltid leaseAdjustmentFactor till 0.5 (50%) när en ny maskin väljs
+      // Sätt ALLTID leaseAdjustmentFactor till EXAKT 0.5 (50%) när en ny maskin väljs
       setLeaseAdjustmentFactor(0.5);
       
       // Återställ alltid SLA till Brons

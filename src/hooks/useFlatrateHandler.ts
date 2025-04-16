@@ -28,6 +28,8 @@ export const useFlatrateHandler = () => {
   const canEnableFlatrate = meetsMinTreatments && meetsLeasingRequirement;
 
   const handleFlatrateChange = (checked: boolean) => {
+    console.log(`Flatrate toggle ändrad till: ${checked}, kan aktiveras: ${canEnableFlatrate}`);
+    
     // Om användaren försöker aktivera flatrate men inte uppfyller kriterierna, visa ett felmeddelande
     if (checked && !canEnableFlatrate) {
       if (!meetsMinTreatments) {
@@ -46,7 +48,7 @@ export const useFlatrateHandler = () => {
       return; // Avbryt aktiveringen av flatrate
     }
     
-    // Först, ändra flatrate-alternativet
+    // Ändra flatrate-alternativet
     setUseFlatrateOption(checked ? 'flatrate' : 'perCredit');
     
     // Om användaren aktiverar flatrate och är under tröskelvärdet, justera slidern automatiskt
@@ -62,7 +64,7 @@ export const useFlatrateHandler = () => {
         Beräknad justeringsfaktor: ${thresholdFactor}
       `);
       
-      // Uppdatera slidern till tröskelvärdet (minst 50%)
+      // Uppdatera slidern till tröskelvärdet (minst 0.5)
       setLeaseAdjustmentFactor(Math.max(0.5, thresholdFactor));
     }
   };

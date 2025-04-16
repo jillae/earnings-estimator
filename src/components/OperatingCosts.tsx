@@ -27,6 +27,15 @@ const OperatingCosts: React.FC = () => {
   if (!selectedMachine) {
     return null;
   }
+  
+  console.log(`OperatingCosts Rendering:
+    Machine: ${selectedMachine.name}
+    SLA Level: ${selectedSlaLevel}
+    Credit Price: ${creditPrice}
+    Uses Credits: ${selectedMachine.usesCredits}
+    Flatrate Option: ${useFlatrateOption}
+    Can Enable Flatrate: ${canEnableFlatrate}
+  `);
 
   // För maskiner utan credits eller med Silver/Guld SLA visar vi förenklade kostnader
   if (!selectedMachine.usesCredits || selectedSlaLevel !== 'Brons') {
@@ -57,10 +66,11 @@ const OperatingCosts: React.FC = () => {
     );
   }
 
-  // För maskiner med credits och Brons SLA visa detaljerad vy med kreditpris/flatrate
+  // För maskiner med credits och Brons SLA, visa detaljerad vy med kreditpris/flatrate
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
   const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
-  const creditsCostPerMonth = treatmentsPerMonth * creditsPerTreatment * (creditPrice || 0);
+  const totalCreditsPerMonth = treatmentsPerMonth * creditsPerTreatment;
+  const creditsCostPerMonth = totalCreditsPerMonth * (creditPrice || 0);
   const flatrateAmount = selectedMachine.flatrateAmount || 0;
 
   // Beräkna vid vilken punkt flatrate blir mer kostnadseffektivt
@@ -113,6 +123,10 @@ const OperatingCosts: React.FC = () => {
             <span className="text-lg font-semibold">{formatCurrency(creditPrice || 0)}</span>
           </div>
           <div className="flex justify-between items-center mb-2">
+            <span className="text-sm">Credits per månad</span>
+            <span className="text-sm text-gray-600">{totalCreditsPerMonth} credits</span>
+          </div>
+          <div className="flex justify-between items-center mb-2">
             <span className="text-sm">Credit-kostnad per månad</span>
             <span className="text-lg font-semibold">{formatCurrency(creditsCostPerMonth)}</span>
           </div>
@@ -134,7 +148,7 @@ const OperatingCosts: React.FC = () => {
         <span className="text-lg font-semibold text-blue-600">{formatCurrency(operatingCost.totalCost)}</span>
       </div>
 
-      {flatrateAmount > 0 && useFlatrateOption === 'perCredit' && (
+      {flatrateAmount > 0 && useFlatrateOption === 'perCredit' && creditPrice > 0 && (
         <p className="text-xs text-blue-500 mt-2">
           Vid {calculateBreakEven()} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt.
         </p>

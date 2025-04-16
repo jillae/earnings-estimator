@@ -14,7 +14,7 @@ export function useOperatingCosts({
   machinePriceSEK,
   allowBelowFlatrate,
   useFlatrateOption = 'perCredit',
-  leaseAdjustmentFactor = 1,
+  leaseAdjustmentFactor = 0.5,
   selectedSlaLevel = 'Brons',
   paymentOption = 'leasing',
   leasingMax60mRef = 0
@@ -66,7 +66,7 @@ export function useOperatingCosts({
     
     // Om maskinen använder credits OCH vi är på Brons-nivå, beräkna credit/flatrate-kostnad
     if (selectedMachine.usesCredits && selectedSlaLevel === 'Brons') {
-      // Beräkna kreditpris baserat på betalningsalternativ och uppdaterad logik
+      // Beräkna kreditpris baserat på betalningsalternativ och leasingkostnad
       const creditPrice = calculateCreditPrice(
         selectedMachine, 
         leasingCost, 
@@ -100,7 +100,7 @@ export function useOperatingCosts({
         creditOrFlatrateCost = creditsPerTreatment * treatmentsPerMonth * safeCreditPrice;
       }
       
-      // För Brons SLA, är totalCost = creditOrFlatrateCost (eftersom slaCost = 0)
+      // För Brons SLA, totalCost = creditOrFlatrateCost (eftersom slaCost = 0)
       setOperatingCost({
         costPerMonth: creditOrFlatrateCost,
         useFlatrate: shouldUseFlatrate,
@@ -109,7 +109,7 @@ export function useOperatingCosts({
       });
     } else {
       // För maskiner utan credits ELLER Silver/Guld SLA, 
-      // är driftskostnaden bara SLA-kostnaden (som nu inkluderar Flatrate för Silver/Guld)
+      // är driftskostnaden bara SLA-kostnaden (som inkluderar Flatrate för Silver/Guld)
       setOperatingCost({ 
         costPerMonth: 0, 
         useFlatrate: false,
@@ -118,12 +118,19 @@ export function useOperatingCosts({
       });
       
       // För maskiner utan credits eller nivåer med Flatrate ingår (Silver/Guld), 
-      // har vi inget kreditpris
+      // behåll kreditpriset som beräknats ovan om det finns
       if (!selectedMachine.usesCredits || selectedSlaLevel !== 'Brons') {
         setCalculatedCreditPrice(0);
       } else {
-        // För Brons, behåll kreditpriset som beräknats ovan
-        setCalculatedCreditPrice(selectedMachine.creditMin || 149);
+        // För Brons, använd det beräknade kreditpriset
+        const creditPrice = calculateCreditPrice(
+          selectedMachine, 
+          leasingCost, 
+          paymentOption, 
+          selectedLeasingPeriodId, 
+          machinePriceSEK
+        );
+        setCalculatedCreditPrice(Math.max(0, Math.round(creditPrice)));
       }
     }
     

@@ -32,24 +32,13 @@ export function calculateLeasingRange(
   if (machine.leasingMin && machine.leasingMax) {
     // Om maskinen har fördefinierade leasingMin/Max värden
     minLeasingCost = machine.leasingMin;
-    maxLeasingCost = machine.leasingMax;
     
-    // Beräkna default baserat på maskinens defaultLeaseMultiplier
-    const defaultMultiplier = machine.defaultLeaseMultiplier || 0.025;
+    // KORRIGERAT: Beräkna maxLeasingCost som (2 * leasingMax - leasingMin)
+    // för att expandera intervallet på rätt sätt
+    maxLeasingCost = (2 * machine.leasingMax) - machine.leasingMin;
     
-    // Använd linjär interpolation för default, baserat på maskinens defaultLeaseMultiplier
-    // defaultLeaseMultiplier ska ligga mellan minLeaseMultiplier och maxLeaseMultiplier
-    // och används för att beräkna defaultLeasingCost mellan min och max
-    if (machine.minLeaseMultiplier !== undefined && machine.maxLeaseMultiplier !== undefined) {
-      const normalizedDefaultMultiplier = 
-        (defaultMultiplier - machine.minLeaseMultiplier) / 
-        (machine.maxLeaseMultiplier - machine.minLeaseMultiplier);
-        
-      defaultLeasingCost = minLeasingCost + normalizedDefaultMultiplier * (maxLeasingCost - minLeasingCost);
-    } else {
-      // Om saknas, använd 50% mellan min och max
-      defaultLeasingCost = minLeasingCost + 0.5 * (maxLeasingCost - minLeasingCost);
-    }
+    // Beräkna default som exakt mittpunkt (gamla leasingMax)
+    defaultLeasingCost = machine.leasingMax;
   } else {
     // Beräkna baserat på maskinpris, leasingränta och multiplikatorer
     minLeasingCost = machinePriceSEK * leasingRate * (machine.minLeaseMultiplier || 0.018);
@@ -74,16 +63,13 @@ export function calculateLeasingRange(
   // Beräkna flatrate-tröskelvärdet för maskiner som använder krediter
   let flatrateThreshold;
   if (machine.usesCredits) {
-    // Beräkna det gamla max-värdet (mittpunkten mellan min och max)
-    const oldMax = (minLeasingCost + maxLeasingCost) / 2;
-    
-    // Sätt tröskeln vid 80% av vägen från min till oldMax (mittpunkten)
-    flatrateThreshold = minLeasingCost + (oldMax - minLeasingCost) * 0.8;
+    // Sätt tröskeln vid 80% av vägen från min till default (gamla leasingMax)
+    flatrateThreshold = minLeasingCost + (defaultLeasingCost - minLeasingCost) * 0.8;
     console.log(`Beräknar flatrate-tröskelvärde:
       minLeasingCost: ${minLeasingCost}
-      oldMax (mittpunkt): ${oldMax}
-      maxLeasingCost: ${maxLeasingCost}
-      flatrateThreshold (80% mellan min och mittpunkt): ${flatrateThreshold}
+      defaultLeasingCost (gamla leasingMax): ${defaultLeasingCost}
+      maxLeasingCost (nya expanderade max): ${maxLeasingCost}
+      flatrateThreshold (80% mellan min och default): ${flatrateThreshold}
     `);
   }
 

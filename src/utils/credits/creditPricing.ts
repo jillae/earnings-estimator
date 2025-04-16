@@ -38,11 +38,27 @@ export function calculateCreditPrice(
       machine.creditMax !== undefined &&
       leasingCost >= machine.leasingMin) {
       
-    // Viktigt: För att 50% på slidern ska använda exakt creditMin,
-    // måste vi använda det faktiska värdet från machine.creditMin
-    const midLeasingCost = (machine.leasingMin + machine.leasingMax) / 2;
+    // Viktigt: För exakt trepunktsinterpolation
+    // Punkterna är: 
+    // 1. Vid leasingMin: creditMax
+    // 2. Vid leasingMax (mittpunkt): creditMin
+    // 3. Vid expanderade max (2*leasingMax-leasingMin): 0
+    
+    // Mittpunkt (gamla leasingMax)
+    const midLeasingCost = machine.leasingMax;
+    
+    // Expanderade max (2*leasingMax-leasingMin)
+    const expandedMaxLeasingCost = (2 * machine.leasingMax) - machine.leasingMin;
     
     let calculatedCreditPrice = 0;
+    
+    // Logga viktiga punkter för interpolation
+    console.log(`CREDIT PRICE INTERPOLATION POINTS:
+      Point 1 (Min): leasingCost=${machine.leasingMin}, creditPrice=${machine.creditMax}
+      Point 2 (Mid): leasingCost=${midLeasingCost}, creditPrice=${machine.creditMin}
+      Point 3 (Max): leasingCost=${expandedMaxLeasingCost}, creditPrice=0
+      Current: leasingCost=${leasingCost}
+    `);
     
     if (leasingCost <= midLeasingCost) {
       // Från leasingMin (0%) till midLeasingCost (50%)
@@ -50,14 +66,14 @@ export function calculateCreditPrice(
       const factorInFirstHalf = (leasingCost - machine.leasingMin) / (midLeasingCost - machine.leasingMin);
       calculatedCreditPrice = machine.creditMax - factorInFirstHalf * (machine.creditMax - machine.creditMin);
       
-      // Direkt justering: Om vi är nära 50%, använd exakt creditMin
+      // Direkt justering: Om vi är exakt vid mittpunkten, använd exakt creditMin
       if (Math.abs(leasingCost - midLeasingCost) < 10) {
         calculatedCreditPrice = machine.creditMin;
       }
     } else {
-      // Från midLeasingCost (50%) till leasingMax (100%)
+      // Från midLeasingCost (50%) till expandedMaxLeasingCost (100%)
       // Från creditMin till 0
-      const factorInSecondHalf = (leasingCost - midLeasingCost) / (machine.leasingMax - midLeasingCost);
+      const factorInSecondHalf = (leasingCost - midLeasingCost) / (expandedMaxLeasingCost - midLeasingCost);
       calculatedCreditPrice = machine.creditMin * (1 - factorInSecondHalf);
     }
     
@@ -67,6 +83,7 @@ export function calculateCreditPrice(
         - Using leasingCost: ${leasingCost}
         - First Half: ${leasingCost <= midLeasingCost}
         - Mid Leasing Cost: ${midLeasingCost}
+        - Expanded Max: ${expandedMaxLeasingCost}
         - Expected creditMin at 50%: ${machine.creditMin}
         - Final Credit Price: ${Math.max(0, Math.round(calculatedCreditPrice))}
     `);
