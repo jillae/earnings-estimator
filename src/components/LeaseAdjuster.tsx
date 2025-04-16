@@ -26,7 +26,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   showFlatrateIndicator = false,
   treatmentsPerDay = 0,
   onAdjustmentChange,
-  allowBelowFlatrate = true
+  allowBelowFlatrate = true,
+  onAllowBelowFlatrateChange
 }) => {
   const { toast } = useToast();
   
@@ -75,8 +76,16 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     }
     
     const newFactor = (roundedCost - exactMinCost) / Math.max(0.001, costRange);
-    
     const clampedFactor = Math.max(0, Math.min(1, newFactor));
+    
+    if (flatrateThreshold && roundedCost < flatrateThreshold && onAllowBelowFlatrateChange) {
+      onAllowBelowFlatrateChange(false);
+      toast({
+        title: "Flatrate inaktiverad",
+        description: "Leasingkostnaden är nu under 80% av maxvärdet",
+        variant: "default"
+      });
+    }
     
     onAdjustmentChange(clampedFactor);
   };
@@ -91,13 +100,12 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
   
   useEffect(() => {
-    console.log(`FLATRATE INFO SYNLIGHET: 
+    console.log(`FLATRATE INFO:
       Leasingkostnad (${leaseCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold})
-      Gamla Max (mittpunkt): ${oldMaxCost}
       Antal behandlingar per dag: ${treatmentsPerDay}
       AllowBelowFlatrate: ${allowBelowFlatrate}
     `);
-  }, [leaseCost, flatrateThreshold, oldMaxCost, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, allowBelowFlatrate]);
+  }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, allowBelowFlatrate]);
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
@@ -111,7 +119,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         leaseCost={actualLeasingCost}
       />
 
-      {/* Rekommenderad pris indikator */}
       <div className="flex items-center justify-center mb-2 text-sm bg-blue-50 p-2 rounded-md">
         <Info className="w-4 h-4 mr-2 text-blue-600" />
         <span>Rekommenderat pris: <span className="font-medium">{defaultCost.toLocaleString('sv-SE')} kr</span></span>
