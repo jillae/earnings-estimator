@@ -140,7 +140,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 
       <div className="flex items-center justify-center mb-2 text-sm bg-blue-50 p-2 rounded-md">
         <Info className="w-4 h-4 mr-2 text-blue-600" />
-        <span>Rekommenderat pris: <span className="font-medium">{defaultCost.toLocaleString('sv-SE')} kr</span></span>
+        <span>Rekommenderat pris: <span className="font-medium">{Math.round(defaultCost).toLocaleString('sv-SE')} kr</span></span>
       </div>
 
       <LeaseSlider 

@@ -35,6 +35,12 @@ export function calculateLeasingMax60mRef(
     return 0;
   }
 
+  // Om vi har fördefinierade leasingMax för 60m, använd det direkt
+  if (machine.leasingMax) {
+    console.log(`Använder fördefinierat leasingMax60mRef för ${machine.name}: ${machine.leasingMax}`);
+    return machine.leasingMax;
+  }
+
   // Hitta 60-månaders tariff
   const tariff60m = LEASING_TARIFFS.find(t => t.id === "60");
   if (!tariff60m) {

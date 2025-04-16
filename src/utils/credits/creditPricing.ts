@@ -66,9 +66,10 @@ export function calculateCreditPrice(
       const factorInFirstHalf = (leasingCost - machine.leasingMin) / (midLeasingCost - machine.leasingMin);
       calculatedCreditPrice = machine.creditMax - factorInFirstHalf * (machine.creditMax - machine.creditMin);
       
-      // Direkt justering: Om vi är exakt vid mittpunkten, använd exakt creditMin
+      // Om vi är exakt vid mittpunkten (eller väldigt nära), använd exakt creditMin
       if (Math.abs(leasingCost - midLeasingCost) < 10) {
         calculatedCreditPrice = machine.creditMin;
+        console.log(`Exakt vid mittpunkt (${midLeasingCost}), sätter pris till exact creditMin: ${machine.creditMin}`);
       }
     } else {
       // Från midLeasingCost (50%) till expandedMaxLeasingCost (100%)

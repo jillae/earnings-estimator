@@ -65,6 +65,9 @@ export function useStateSelections() {
       
       // Återställ flatrate-valet till perCredit
       setUseFlatrateOption('perCredit');
+      
+      // Återställ allowBelowFlatrate till true
+      setAllowBelowFlatrate(true);
     }
   }, [selectedMachine]);
 
