@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
@@ -85,11 +84,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     
     if (flatrateThreshold && roundedCost < flatrateThreshold && onAllowBelowFlatrateChange) {
       onAllowBelowFlatrateChange(false);
-      toast({
-        title: "Flatrate inaktiverad",
-        description: "Leasingkostnaden är nu under 80% av maxvärdet",
-        variant: "default"
-      });
     }
     
     onAdjustmentChange(clampedFactor);
