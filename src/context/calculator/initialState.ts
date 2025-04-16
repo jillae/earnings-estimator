@@ -19,6 +19,7 @@ export const initialState: CalculatorState = {
   leasingRange: { min: 0, max: 0, default: 0 },
   leasingCost: 0,
   creditPrice: 0,
+  calculatedCreditPrice: 0, // Lägg till denna rad för att fixa TypeScript-felet
   flatrateThreshold: 0,
   operatingCost: { 
     costPerMonth: 0, 
