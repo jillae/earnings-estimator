@@ -66,32 +66,18 @@ export function useOperatingCosts({
     
     // Om maskinen använder credits OCH vi är på Brons-nivå, beräkna credit/flatrate-kostnad
     if (selectedMachine.usesCredits && selectedSlaLevel === 'Brons') {
-      let creditPrice: number = 0;
-      
-      // Beräkna kreditpris baserat på betalningsalternativ
-      if (paymentOption === 'leasing') {
-        // För leasing, använd trepunktsinterpolation
-        if (selectedMachine.leasingMin && selectedMachine.leasingMax && 
-            selectedMachine.creditMin && selectedMachine.creditMax) {
-          
-          creditPrice = calculateCreditPrice(
-            selectedMachine, 
-            leasingCost, 
-            paymentOption, 
-            selectedLeasingPeriodId, 
-            machinePriceSEK
-          );
-        } else {
-          creditPrice = 149;
-        }
-      } else {
-        // För kontant, använd creditMin
-        creditPrice = selectedMachine.creditMin || 149;
-      }
+      // Beräkna kreditpris baserat på betalningsalternativ och uppdaterad logik
+      const creditPrice = calculateCreditPrice(
+        selectedMachine, 
+        leasingCost, 
+        paymentOption, 
+        selectedLeasingPeriodId, 
+        machinePriceSEK
+      );
       
       // Säkerställ att kreditpriset aldrig blir negativt
-      creditPrice = Math.max(0, Math.round(creditPrice));
-      setCalculatedCreditPrice(creditPrice);
+      const safeCreditPrice = Math.max(0, Math.round(creditPrice));
+      setCalculatedCreditPrice(safeCreditPrice);
       
       const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
       
@@ -103,7 +89,7 @@ export function useOperatingCosts({
         shouldUseFlatrate = shouldUseFlatrate && treatmentsPerDay >= 3;
       } else {
         // För leasing, kräver vi både minst 3 behandlingar och 80% av leasingMax
-        const meetsLeasingRequirement = allowBelowFlatrate || (leasingCost >= selectedMachine.leasingMin * 0.8);
+        const meetsLeasingRequirement = allowBelowFlatrate || (selectedMachine.leasingMin && leasingCost >= selectedMachine.leasingMin * 0.8);
         shouldUseFlatrate = shouldUseFlatrate && treatmentsPerDay >= 3 && meetsLeasingRequirement;
       }
       
@@ -111,7 +97,7 @@ export function useOperatingCosts({
         creditOrFlatrateCost = selectedMachine.flatrateAmount;
       } else {
         const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
-        creditOrFlatrateCost = creditsPerTreatment * treatmentsPerMonth * creditPrice;
+        creditOrFlatrateCost = creditsPerTreatment * treatmentsPerMonth * safeCreditPrice;
       }
       
       // För Brons SLA, är totalCost = creditOrFlatrateCost (eftersom slaCost = 0)
@@ -149,17 +135,19 @@ export function useOperatingCosts({
       Behandlingar per dag: ${treatmentsPerDay}
       Credit/Flatrate-kostnad (om Brons): ${creditOrFlatrateCost} kr
       Total driftskostnad: ${operatingCost.totalCost} kr
+      Kreditpris: ${calculatedCreditPrice} kr
     `);
   }, [
     selectedMachine, 
     treatmentsPerDay, 
     useFlatrateOption, 
-    leaseAdjustmentFactor, 
     leasingCost, 
+    selectedLeasingPeriodId,
     selectedSlaLevel, 
     paymentOption, 
     allowBelowFlatrate, 
-    leasingMax60mRef
+    leasingMax60mRef,
+    machinePriceSEK
   ]);
 
   return { 
