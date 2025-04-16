@@ -173,6 +173,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     leasingCost,
     leasingCostPercentage,
     creditPrice: calculatedCreditPrice,
+    calculatedCreditPrice, // Lägg till detta explicit för att fixa felet
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     allowBelowFlatrate,

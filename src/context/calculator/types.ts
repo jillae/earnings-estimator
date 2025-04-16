@@ -39,6 +39,7 @@ export interface CalculatorContextType {
   leasingCost: number;
   leasingCostPercentage: number;
   creditPrice: number;
+  calculatedCreditPrice: number; // Ny egenskap som behövs i LeaseAdjuster
   leaseAdjustmentFactor: number;
   setLeaseAdjustmentFactor: (factor: number) => void;
   allowBelowFlatrate: boolean;
@@ -106,6 +107,7 @@ export interface CalculatorState {
   };
   leasingCost: number;
   creditPrice: number;
+  calculatedCreditPrice: number; // Lägg till även här
   flatrateThreshold: number;
   operatingCost: {
     costPerMonth: number;

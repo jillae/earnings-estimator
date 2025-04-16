@@ -11,10 +11,33 @@ import LeasingOptions from '../LeasingOptions';
 import PaymentOptionToggle from './PaymentOptionToggle';
 import SlaSelector from './SlaSelector';
 import { formatCurrency } from '@/utils/formatUtils';
+import { leasingPeriods, insuranceOptions } from '@/data/machines'; // Importera leasingPeriods och insuranceOptions
 
 const CalculatorInputs: React.FC = () => {
   const {
-    // ... befintliga states
+    clinicSize,
+    setClinicSize,
+    selectedMachineId,
+    setSelectedMachineId,
+    selectedMachine,
+    paymentOption,
+    treatmentsPerDay,
+    customerPrice,
+    setTreatmentsPerDay,
+    setCustomerPrice,
+    leasingCost,
+    leasingRange,
+    leaseAdjustmentFactor,
+    setLeaseAdjustmentFactor,
+    flatrateThreshold,
+    allowBelowFlatrate,
+    setAllowBelowFlatrate,
+    cashPriceSEK,
+    selectedLeasingPeriodId,
+    selectedInsuranceId,
+    setSelectedLeasingPeriodId,
+    setSelectedInsuranceId,
+    netResults
   } = useCalculator();
   
   return (
