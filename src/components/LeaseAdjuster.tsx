@@ -47,11 +47,11 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMaxCost = maxLeaseCost;
   const costRange = exactMaxCost - exactMinCost;
 
-  // Beräknar det rekommenderade priset vid 50% av leasingområdet
+  // Beräknar det rekommenderade priset vid exakt 50% av leasingområdet
   const defaultCost = exactMinCost + (0.5 * costRange);
   
-  // Beräknar faktorn för att placera slidern vid rekommenderat pris
-  const recommendedFactor = (defaultCost - exactMinCost) / Math.max(0.001, costRange);
+  // Beräknar faktorn för att placera slidern vid rekommenderat pris (exakt 50%)
+  const recommendedFactor = 0.5; // Förenklat till exakt 50% istället för att beräkna
   
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
@@ -72,14 +72,30 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const handleSliderChange = (values: number[]) => {
     let newValue = values[0] / 100;
     
+    console.log(`Slider flyttad till: ${newValue * 100}% (råvärde)`);
+    
+    // För att säkerställa exakt 0.5 när slidern är vid 50%
+    if (Math.abs(newValue - 0.5) < 0.01) {
+      newValue = 0.5;
+    }
+    
+    // Beräkna exakt kostnad baserat på slider-position
     const exactCost = exactMinCost + (newValue * costRange);
     
+    // Avrunda till närmaste stepSize
     let roundedCost = Math.round(exactCost / stepSize) * stepSize;
     const lastDigit = roundedCost % 10;
     if (lastDigit !== 6) {
       roundedCost = roundedCost - lastDigit + 6;
     }
     
+    console.log(`Beräknad leasingkostnad:
+      Slider position: ${newValue * 100}%
+      Exakt kostnad: ${exactCost}
+      Avrundad kostnad: ${roundedCost}
+    `);
+    
+    // Beräkna den nya faktorn baserat på den avrundade kostnaden
     const newFactor = (roundedCost - exactMinCost) / Math.max(0.001, costRange);
     const clampedFactor = Math.max(0, Math.min(1, newFactor));
     
@@ -87,7 +103,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       onAllowBelowFlatrateChange(false);
     }
     
-    onAdjustmentChange(clampedFactor);
+    onAdjustmentChange(newValue); // Använd den ursprungliga, exakta värdet
   };
 
   let actualLeasingCost = leaseCost;
