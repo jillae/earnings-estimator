@@ -1,12 +1,12 @@
+
 import React from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useFlatrateHandler } from '@/hooks/useFlatrateHandler';
-import { AlertTriangle } from 'lucide-react';
-import InfoTooltip from './ui/info-tooltip';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
+import { AlertTriangle } from 'lucide-react';
 
 const OperatingCosts: React.FC = () => {
   const { 
@@ -25,10 +25,12 @@ const OperatingCosts: React.FC = () => {
 
   const { handleFlatrateChange, canEnableFlatrate } = useFlatrateHandler();
 
+  // Om ingen maskin är vald, visa inget
   if (!selectedMachine) {
     return null;
   }
 
+  // För maskiner utan credits eller med Silver/Guld SLA visar vi förenklade kostnader
   if (!selectedMachine.usesCredits || selectedSlaLevel !== 'Brons') {
     const includesFlatrate = selectedMachine.usesCredits && selectedSlaLevel !== 'Brons';
     
@@ -57,49 +59,43 @@ const OperatingCosts: React.FC = () => {
     );
   }
 
+  // För maskiner med credits och Brons SLA visa detaljerad vy med kreditpris/flatrate
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
   const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
   const creditsCostPerMonth = treatmentsPerMonth * creditsPerTreatment * (creditPrice || 0);
   const flatrateAmount = selectedMachine.flatrateAmount || 0;
 
+  // Beräkna vid vilken punkt flatrate blir mer kostnadseffektivt
   const calculateBreakEven = () => {
     if (!creditPrice || creditPrice <= 0) return 0;
     const breakEvenTreatmentsPerMonth = flatrateAmount / (creditPrice * creditsPerTreatment);
     return Math.ceil(breakEvenTreatmentsPerMonth / WORKING_DAYS_PER_MONTH);
   };
 
+  // Visa recommendation baserat på leasingkostnad och flatrate-tröskelvärde
   const showFlatrateRecommendation = flatrateThreshold && 
     (paymentOption === 'cash' || (paymentOption === 'leasing' && leasingCost >= flatrateThreshold));
 
   return (
-    <div className="glass-card mt-4 animate-slide-in sticky top-4" style={{ animationDelay: '300ms' }}>
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">Driftskostnader</h3>
-        {selectedMachine?.usesCredits && selectedSlaLevel === 'Brons' && (
-          <InfoTooltip 
-            content="Flatrate ger obegränsad användning av credits. Kräver minst 3 behandlingar per dag och vid leasing minst 80% av rekommenderat leasingpris." 
-          />
-        )}
-      </div>
+    <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
+      <h3 className="text-lg font-semibold mb-4">Driftskostnader</h3>
 
-      {selectedMachine?.usesCredits && selectedSlaLevel === 'Brons' && (
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="flatrate-switch"
-              checked={useFlatrateOption === 'flatrate'}
-              onCheckedChange={handleFlatrateChange}
-              disabled={!canEnableFlatrate}
-            />
-            <Label htmlFor="flatrate-switch" className="text-sm font-medium flex items-center gap-2">
-              Använd Flatrate
-            </Label>
-          </div>
-          <span className="text-sm text-gray-500">
-            {useFlatrateOption === 'flatrate' ? 'Flatrate' : 'Per Credit'}
-          </span>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="flatrate-switch"
+            checked={useFlatrateOption === 'flatrate'}
+            onCheckedChange={handleFlatrateChange}
+            disabled={!canEnableFlatrate}
+          />
+          <Label htmlFor="flatrate-switch" className="text-sm font-medium">
+            Använd Flatrate
+          </Label>
         </div>
-      )}
+        <span className="text-sm text-gray-500">
+          {useFlatrateOption === 'flatrate' ? 'Flatrate' : 'Per Credit'}
+        </span>
+      </div>
 
       {!canEnableFlatrate && (
         <div className="flex items-center gap-2 p-2 mb-4 bg-amber-50 border border-amber-200 rounded text-amber-700 text-sm">
