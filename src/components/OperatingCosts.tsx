@@ -1,28 +1,27 @@
-
 import React from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
+import { useFlatrateHandler } from '@/hooks/useFlatrateHandler';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 
 const OperatingCosts: React.FC = () => {
   const { 
     selectedMachine, 
     useFlatrateOption, 
-    setUseFlatrateOption, 
     treatmentsPerDay, 
     creditPrice,
     leasingCost,
     leasingRange,
     flatrateThreshold,
     leaseAdjustmentFactor,
-    setLeaseAdjustmentFactor,
     paymentOption,
     selectedSlaLevel,
-    operatingCost,
-    slaCosts
+    operatingCost
   } = useCalculator();
+
+  const { handleFlatrateChange } = useFlatrateHandler();
 
   // Om ingen maskin är vald, visa inget
   if (!selectedMachine) {
