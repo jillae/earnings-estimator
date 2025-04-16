@@ -15,9 +15,7 @@ const OperatingCosts: React.FC = () => {
     treatmentsPerDay, 
     creditPrice,
     leasingCost,
-    leasingRange,
     flatrateThreshold,
-    leaseAdjustmentFactor,
     paymentOption,
     selectedSlaLevel,
     operatingCost

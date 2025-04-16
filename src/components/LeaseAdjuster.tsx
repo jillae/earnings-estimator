@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
@@ -52,7 +53,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Beräknar faktorn för att placera slidern vid rekommenderat pris
   const recommendedFactor = (defaultCost - exactMinCost) / Math.max(0.001, costRange);
   
-  const calculatedLeasingCost = exactMinCost + (recommendedFactor * costRange);
+  const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
   const stepSize = 100;
   let roundedLeasingCost = Math.round(calculatedLeasingCost / stepSize) * stepSize;
@@ -124,7 +125,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       </div>
 
       <LeaseSlider 
-        adjustmentFactor={recommendedFactor * 100}
+        adjustmentFactor={adjustmentFactor * 100}
         onSliderChange={handleSliderChange}
         thresholdPosition={flatratePosition}
         showFlatrateIndicator={showFlatrateIndicator}

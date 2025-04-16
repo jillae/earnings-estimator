@@ -41,7 +41,7 @@ export function calculateCreditPrice(
     
     let calculatedCreditPrice = 0;
     
-    // Ny interpolationslogik:
+    // Korrigerad interpolationslogik:
     // 1. Vid leasingMin (slider 0%) -> creditMax
     // 2. Vid midLeasingCost (slider 50%) -> creditMin 
     // 3. Vid leasingMax (slider 100%) -> 0
@@ -58,7 +58,7 @@ export function calculateCreditPrice(
       calculatedCreditPrice = machine.creditMin * (1 - factorInSecondHalf);
     }
     
-    console.log(`Ny kreditprisberäkning för ${machine.name}:
+    console.log(`Kreditprisberäkning för ${machine.name}:
       Leasingkostnad: ${leasingCost}
       LeasingMin (0%): ${machine.leasingMin}
       MidLeasingCost (50%): ${midLeasingCost}
@@ -68,7 +68,8 @@ export function calculateCreditPrice(
       Beräknat kreditpris: ${Math.round(calculatedCreditPrice)} kr/credit
     `);
     
-    return Math.round(calculatedCreditPrice);
+    // Avrunda och säkerställ att vi aldrig returnerar ett negativt värde
+    return Math.max(0, Math.round(calculatedCreditPrice));
   }
   
   // Fallback till standardvärde om inget annat fungerar
