@@ -1,8 +1,8 @@
-
 import { roundToHundredEndingSix } from './formatUtils';
 import { SHIPPING_COST_EUR_CREDITS, SHIPPING_COST_EUR_NO_CREDITS } from './constants';
 import { Machine } from '../data/machines/types';
 import { SLA_PERCENT_NO_CREDITS, SLA_PERCENT_GULD, SlaLevel } from './constants';
+import { LEASING_TARIFFS } from './constants';
 
 /**
  * Beräknar kontantpris för en maskin baserat på EUR-pris, fraktkostnad och växelkurs
