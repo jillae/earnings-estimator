@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { FlatrateOption } from '@/types/calculator';
+import { useToast } from '@/hooks/use-toast';
 
 export const useFlatrateHandler = () => {
   const { 
@@ -10,10 +11,35 @@ export const useFlatrateHandler = () => {
     paymentOption,
     leasingRange,
     setLeaseAdjustmentFactor,
-    setUseFlatrateOption
+    setUseFlatrateOption,
+    treatmentsPerDay
   } = useCalculator();
 
+  const { toast } = useToast();
+
+  const meetsMinTreatments = treatmentsPerDay >= 3;
+  const meetsLeasingRequirement = flatrateThreshold && leasingCost >= flatrateThreshold;
+  const canEnableFlatrate = meetsMinTreatments && (paymentOption === 'cash' || meetsLeasingRequirement);
+
   const handleFlatrateChange = (checked: boolean) => {
+    // Om användaren försöker aktivera flatrate men inte uppfyller kriterierna, visa ett felmeddelande
+    if (checked && !canEnableFlatrate) {
+      if (!meetsMinTreatments) {
+        toast({
+          title: "Kan inte aktivera Flatrate",
+          description: "Du behöver minst 3 behandlingar per dag för att kunna använda Flatrate.",
+          variant: "destructive"
+        });
+      } else if (paymentOption === 'leasing' && !meetsLeasingRequirement) {
+        toast({
+          title: "Kan inte aktivera Flatrate",
+          description: "Du behöver öka leasingkostnaden till minst 80% av ordinarie pris för att använda Flatrate.",
+          variant: "destructive"
+        });
+      }
+      return; // Avbryt aktiveringen av flatrate
+    }
+    
     // Först, ändra flatrate-alternativet
     setUseFlatrateOption(checked ? 'flatrate' : 'perCredit');
     
@@ -36,6 +62,7 @@ export const useFlatrateHandler = () => {
   };
 
   return {
-    handleFlatrateChange
+    handleFlatrateChange,
+    canEnableFlatrate
   };
 };

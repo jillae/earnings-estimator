@@ -74,8 +74,17 @@ export function calculateLeasingRange(
   // Beräkna flatrate-tröskelvärdet för maskiner som använder krediter
   let flatrateThreshold;
   if (machine.usesCredits) {
-    // Sätt tröskeln vid 80% av vägen från min till max
-    flatrateThreshold = minLeasingCost + (maxLeasingCost - minLeasingCost) * 0.8;
+    // Beräkna det gamla max-värdet (mittpunkten mellan min och max)
+    const oldMax = (minLeasingCost + maxLeasingCost) / 2;
+    
+    // Sätt tröskeln vid 80% av vägen från min till oldMax (mittpunkten)
+    flatrateThreshold = minLeasingCost + (oldMax - minLeasingCost) * 0.8;
+    console.log(`Beräknar flatrate-tröskelvärde:
+      minLeasingCost: ${minLeasingCost}
+      oldMax (mittpunkt): ${oldMax}
+      maxLeasingCost: ${maxLeasingCost}
+      flatrateThreshold (80% mellan min och mittpunkt): ${flatrateThreshold}
+    `);
   }
 
   return {

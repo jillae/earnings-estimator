@@ -6,6 +6,7 @@ import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useFlatrateHandler } from '@/hooks/useFlatrateHandler';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
+import { AlertTriangle } from 'lucide-react';
 
 const OperatingCosts: React.FC = () => {
   const { 
@@ -22,7 +23,7 @@ const OperatingCosts: React.FC = () => {
     operatingCost
   } = useCalculator();
 
-  const { handleFlatrateChange } = useFlatrateHandler();
+  const { handleFlatrateChange, canEnableFlatrate } = useFlatrateHandler();
 
   // Om ingen maskin är vald, visa inget
   if (!selectedMachine) {
@@ -85,6 +86,7 @@ const OperatingCosts: React.FC = () => {
             id="flatrate-switch"
             checked={useFlatrateOption === 'flatrate'}
             onCheckedChange={handleFlatrateChange}
+            disabled={!canEnableFlatrate}
           />
           <Label htmlFor="flatrate-switch" className="text-sm font-medium">
             Använd Flatrate
@@ -95,15 +97,22 @@ const OperatingCosts: React.FC = () => {
         </span>
       </div>
 
+      {!canEnableFlatrate && (
+        <div className="flex items-center gap-2 p-2 mb-4 bg-amber-50 border border-amber-200 rounded text-amber-700 text-sm">
+          <AlertTriangle className="h-4 w-4" />
+          <span>
+            {treatmentsPerDay < 3 
+              ? "Minst 3 behandlingar per dag krävs för Flatrate" 
+              : "Leasingkostnaden behöver ökas för att aktivera Flatrate"}
+          </span>
+        </div>
+      )}
+
       {useFlatrateOption === 'perCredit' ? (
         <>
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm">Pris per credit</span>
             <span className="text-lg font-semibold">{formatCurrency(creditPrice || 0)}</span>
-          </div>
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm">Credits per behandling</span>
-            <span className="text-lg font-semibold">{creditsPerTreatment}</span>
           </div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm">Credit-kostnad per månad</span>

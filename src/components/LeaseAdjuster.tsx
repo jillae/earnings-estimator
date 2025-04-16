@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
+import { Info } from 'lucide-react';
 
 interface LeaseAdjusterProps {
   minLeaseCost: number;
@@ -46,6 +47,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const costRange = exactMaxCost - exactMinCost;
 
   const oldMaxCost = (exactMinCost + exactMaxCost) / 2;
+  const defaultCost = exactMinCost + (0.5 * costRange); // 50% av vägen - rekommenderat pris
   
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
@@ -63,16 +65,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     flatratePosition = Math.max(0, Math.min(100, flatratePosition));
   }
   
-  useEffect(() => {
-    const isAtDefaultPosition = Math.abs(adjustmentFactor - 0.5) < 0.01;
-    if (isAtDefaultPosition) {
-      toast({
-        title: "Rekommenderat pris",
-        description: "Detta är listpriset för maskinen",
-      });
-    }
-  }, [adjustmentFactor, toast]);
-
   const handleSliderChange = (values: number[]) => {
     let newValue = values[0] / 100;
     
@@ -121,6 +113,12 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         maxLeaseCost={exactMaxCost}
         leaseCost={actualLeasingCost}
       />
+
+      {/* Rekommenderad pris indikator */}
+      <div className="flex items-center justify-center mb-2 text-sm bg-blue-50 p-2 rounded-md">
+        <Info className="w-4 h-4 mr-2 text-blue-600" />
+        <span>Rekommenderat pris: <span className="font-medium">{defaultCost.toLocaleString('sv-SE')} kr</span></span>
+      </div>
 
       <LeaseSlider 
         adjustmentFactor={adjustmentFactor * 100}

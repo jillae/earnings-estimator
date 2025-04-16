@@ -24,16 +24,19 @@ export function shouldUseFlatrate(
     return minTreatments;
   }
   
+  // Beräkna tröskelvärdet som är 80% mellan min och mittpunkt (inte max)
   const oldLeasingMax = (machine.leasingMin + machine.leasingMax) / 2;
-  const leasingPercent = oldLeasingMax > 0 ? safeLeasingCost / oldLeasingMax : 0;
-  const meetsLeasingRequirement = allowBelowFlatrate || leasingPercent >= 0.8;
+  const thresholdValue = machine.leasingMin + (oldLeasingMax - machine.leasingMin) * 0.8;
+  
+  const meetsLeasingRequirement = allowBelowFlatrate || safeLeasingCost >= thresholdValue;
   const canUseFlatrate = meetsLeasingRequirement && minTreatments;
   
   console.log(`shouldUseFlatrate för ${machine.name}:
     paymentOption: ${paymentOption}
     leasingCost: ${safeLeasingCost}
-    oldLeasingMax: ${oldLeasingMax}
-    leasingPercent: ${(leasingPercent * 100).toFixed(1)}%
+    leasingMin: ${machine.leasingMin}
+    oldLeasingMax (mittpunkt): ${oldLeasingMax}
+    thresholdValue (80%): ${thresholdValue}
     treatmentsPerDay: ${safetreatmentsPerDay}
     allowBelowFlatrate: ${allowBelowFlatrate}
     meetsLeasingRequirement: ${meetsLeasingRequirement}
