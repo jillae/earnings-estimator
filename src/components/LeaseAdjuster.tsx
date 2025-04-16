@@ -1,9 +1,10 @@
-
 import React, { useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
-import { Info } from 'lucide-react';
+import { Info, CreditCard } from 'lucide-react';
+import { formatCurrency } from '@/utils/formatUtils';
+import { useCalculator } from '@/context/CalculatorContext';
 
 interface LeaseAdjusterProps {
   minLeaseCost: number;
@@ -31,6 +32,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   onAllowBelowFlatrateChange
 }) => {
   const { toast } = useToast();
+  const { calculatedCreditPrice, selectedMachine } = useCalculator();
   
   console.log("LeaseAdjuster rendering with:", {
     minLeaseCost,
@@ -47,16 +49,12 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMaxCost = maxLeaseCost;
   const costRange = exactMaxCost - exactMinCost;
 
-  // Det rekommenderade priset är exakt mitten av intervallet (gamla leasingMax)
   const defaultCost = exactMinCost + (0.5 * costRange);
   
-  // Beräknar faktorn för att placera slidern vid rekommenderat pris (exakt 50%)
-  const recommendedFactor = 0.5; // Exakt 50% är alltid defaultvärdet
+  const recommendedFactor = 0.5;
   
-  // Beräkna exakt leasingkostnad baserat på justeringsfaktorn
   const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
   
-  // Avrunda till närmaste 100 och sedan till närmaste hundra slutande på 6
   const stepSize = 100;
   let roundedLeasingCost = Math.round(calculatedLeasingCost / stepSize) * stepSize;
   
@@ -65,7 +63,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     roundedLeasingCost = roundedLeasingCost - lastDigit + 6;
   }
   
-  // Beräkna flatrate-indikatorposition
   let flatratePosition = null;
   if (flatrateThreshold) {
     flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, costRange)) * 100;
@@ -77,16 +74,13 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     
     console.log(`Slider flyttad till: ${newValue * 100}% (råvärde)`);
     
-    // För att säkerställa exakt 0.5 när slidern är vid 50%
     if (Math.abs(newValue - 0.5) < 0.01) {
       newValue = 0.5;
       console.log("Justerar till exakt 0.5 (50%)");
     }
     
-    // Beräkna exakt kostnad baserat på slider-position
     const exactCost = exactMinCost + (newValue * costRange);
     
-    // Avrunda till närmaste stepSize
     let roundedCost = Math.round(exactCost / stepSize) * stepSize;
     const lastDigit = roundedCost % 10;
     if (lastDigit !== 6) {
@@ -99,16 +93,13 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       Avrundad kostnad: ${roundedCost}
     `);
     
-    // Om vi är under flatrate-tröskeln och flatrate inte ska tillåtas under tröskeln
     if (flatrateThreshold && roundedCost < flatrateThreshold && onAllowBelowFlatrateChange) {
       onAllowBelowFlatrateChange(false);
     }
     
-    // Skicka upp det nya faktiska värdet (inte det avrundade)
     onAdjustmentChange(newValue);
   };
 
-  // Begränsa leaseCost till giltiga värden
   let actualLeasingCost = leaseCost;
   if (leaseCost > exactMaxCost) {
     actualLeasingCost = exactMaxCost;
@@ -138,9 +129,18 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         leaseCost={actualLeasingCost}
       />
 
-      <div className="flex items-center justify-center mb-2 text-sm bg-blue-50 p-2 rounded-md">
-        <Info className="w-4 h-4 mr-2 text-blue-600" />
-        <span>Rekommenderat pris: <span className="font-medium">{Math.round(defaultCost).toLocaleString('sv-SE')} kr</span></span>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-center text-sm bg-blue-50 p-2 rounded-md">
+          <Info className="w-4 h-4 mr-2 text-blue-600" />
+          <span>Rekommenderat pris: <span className="font-medium">{Math.round(defaultCost).toLocaleString('sv-SE')} kr</span></span>
+        </div>
+        
+        {selectedMachine?.usesCredits && (
+          <div className="flex items-center justify-center text-sm bg-green-50 p-2 rounded-md">
+            <CreditCard className="w-4 h-4 mr-2 text-green-600" />
+            <span>Krediter per behandling: <span className="font-medium">{formatCurrency(calculatedCreditPrice)} kr/credit</span></span>
+          </div>
+        )}
       </div>
 
       <LeaseSlider 

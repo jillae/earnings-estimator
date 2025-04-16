@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { useCalculator } from '@/context/CalculatorContext';
+import { machineData } from '@/data/machines';
 import ClinicSizeSelector from '../ClinicSizeSelector';
 import TreatmentSettings from '../TreatmentSettings';
 import MachineSelector from '../MachineSelector';
@@ -8,37 +10,11 @@ import LeaseAdjuster from '../LeaseAdjuster';
 import LeasingOptions from '../LeasingOptions';
 import PaymentOptionToggle from './PaymentOptionToggle';
 import SlaSelector from './SlaSelector';
-import { useCalculator } from '@/context/CalculatorContext';
-import { machineData, leasingPeriods, insuranceOptions } from '@/data/machines';
 import { formatCurrency } from '@/utils/formatUtils';
 
 const CalculatorInputs: React.FC = () => {
   const {
-    clinicSize,
-    setClinicSize,
-    selectedMachineId,
-    setSelectedMachineId,
-    treatmentsPerDay,
-    setTreatmentsPerDay,
-    customerPrice,
-    setCustomerPrice,
-    netResults,
-    selectedMachine,
-    paymentOption,
-    cashPriceSEK,
-    selectedLeasingPeriodId,
-    setSelectedLeasingPeriodId,
-    selectedInsuranceId,
-    setSelectedInsuranceId,
-    leasingRange,
-    leasingCost,
-    leaseAdjustmentFactor,
-    setLeaseAdjustmentFactor,
-    allowBelowFlatrate,
-    setAllowBelowFlatrate,
-    flatrateThreshold,
-    useFlatrateOption,
-    setUseFlatrateOption
+    // ... befintliga states
   } = useCalculator();
   
   return (
@@ -110,7 +86,9 @@ const CalculatorInputs: React.FC = () => {
             )}
           </div>
           
-          <SlaSelector />
+          <div className="mt-4">
+            <SlaSelector />
+          </div>
           
           <OperatingCosts />
         </>
