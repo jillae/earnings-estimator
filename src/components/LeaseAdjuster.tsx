@@ -108,23 +108,23 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     onAdjustmentChange(newValue);
   };
 
-  // Begränsa leasingCost till giltiga värden
-  let actualLeasingCost = leasingCost;
-  if (leasingCost > exactMaxCost) {
+  // Begränsa leaseCost till giltiga värden
+  let actualLeasingCost = leaseCost;
+  if (leaseCost > exactMaxCost) {
     actualLeasingCost = exactMaxCost;
-  } else if (leasingCost < exactMinCost) {
+  } else if (leaseCost < exactMinCost) {
     actualLeasingCost = exactMinCost;
   }
 
-  const isAboveFlatrateThreshold = flatrateThreshold ? leasingCost >= flatrateThreshold : false;
+  const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
   
   useEffect(() => {
     console.log(`FLATRATE INFO:
-      Leasingkostnad (${leasingCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold})
+      Leasingkostnad (${leaseCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold})
       Antal behandlingar per dag: ${treatmentsPerDay}
       AllowBelowFlatrate: ${allowBelowFlatrate}
     `);
-  }, [leasingCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, allowBelowFlatrate]);
+  }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, allowBelowFlatrate]);
 
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
