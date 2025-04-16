@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
@@ -46,8 +47,10 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMaxCost = maxLeaseCost;
   const costRange = exactMaxCost - exactMinCost;
 
+  // Beräknar det rekommenderade priset vid 50% av leasingområdet
   const defaultCost = exactMinCost + (0.5 * costRange);
   
+  // Beräknar faktorn för att placera slidern vid rekommenderat pris
   const recommendedFactor = (defaultCost - exactMinCost) / Math.max(0.001, costRange);
   
   const calculatedLeasingCost = exactMinCost + (recommendedFactor * costRange);

@@ -36,34 +36,35 @@ export function calculateCreditPrice(
       machine.creditMax !== undefined &&
       leasingCost >= machine.leasingMin) {
       
-    // Beräkna det gamla leasingMax värdet (mittpunkten i den nya skalan)
-    const oldLeasingMax = (machine.leasingMin + machine.leasingMax) / 2;
+    // Vi behöver veta vad som är 50% av leasingrange
+    const midLeasingCost = (machine.leasingMin + machine.leasingMax) / 2;
     
     let calculatedCreditPrice = 0;
     
-    // Trepunktsinterpolation:
-    // 1. MinLease -> CreditMax
-    // 2. MidPoint -> CreditMin
-    // 3. MaxLease -> 0
-    if (leasingCost <= oldLeasingMax) {
-      // Mellan leasingMin och oldLeasingMax (mittpunkten)
+    // Ny interpolationslogik:
+    // 1. Vid leasingMin (slider 0%) -> creditMax
+    // 2. Vid midLeasingCost (slider 50%) -> creditMin 
+    // 3. Vid leasingMax (slider 100%) -> 0
+    
+    if (leasingCost <= midLeasingCost) {
+      // Mellan leasingMin (0%) och midLeasingCost (50%)
       // Här går vi från creditMax till creditMin
-      const factorInFirstHalf = (leasingCost - machine.leasingMin) / (oldLeasingMax - machine.leasingMin);
+      const factorInFirstHalf = (leasingCost - machine.leasingMin) / (midLeasingCost - machine.leasingMin);
       calculatedCreditPrice = machine.creditMax - factorInFirstHalf * (machine.creditMax - machine.creditMin);
     } else {
-      // Mellan oldLeasingMax (mittpunkten) och leasingMax
+      // Mellan midLeasingCost (50%) och leasingMax (100%)
       // Här går vi från creditMin till 0
-      const factorInSecondHalf = (leasingCost - oldLeasingMax) / (machine.leasingMax - oldLeasingMax);
+      const factorInSecondHalf = (leasingCost - midLeasingCost) / (machine.leasingMax - midLeasingCost);
       calculatedCreditPrice = machine.creditMin * (1 - factorInSecondHalf);
     }
     
-    console.log(`Trepunktsinterpolation av kreditpris för ${machine.name}:
+    console.log(`Ny kreditprisberäkning för ${machine.name}:
       Leasingkostnad: ${leasingCost}
-      LeasingMin: ${machine.leasingMin}
-      Gamla leasingMax (mittpunkt): ${oldLeasingMax}
-      LeasingMax: ${machine.leasingMax}
-      CreditMin: ${machine.creditMin}
-      CreditMax: ${machine.creditMax}
+      LeasingMin (0%): ${machine.leasingMin}
+      MidLeasingCost (50%): ${midLeasingCost}
+      LeasingMax (100%): ${machine.leasingMax}
+      CreditMin (vid 50%): ${machine.creditMin}
+      CreditMax (vid 0%): ${machine.creditMax}
       Beräknat kreditpris: ${Math.round(calculatedCreditPrice)} kr/credit
     `);
     
