@@ -39,7 +39,7 @@ export function useLeasingCalculations({
     if (selectedMachine?.priceEur) {
       const refValue = calculateLeasingMax60mRef(selectedMachine, exchangeRate);
       setLeasingMax60mRef(refValue);
-      console.log(`Beräknat leasingMax60mRef för ${machine.name}: ${refValue} SEK`);
+      console.log(`Beräknat leasingMax60mRef för ${selectedMachine.name}: ${refValue} SEK`);
     } else {
       setLeasingMax60mRef(0);
     }
