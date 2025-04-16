@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CalculatorContext } from '../CalculatorContext';
 import { useStateSelections } from './useStateSelections';
 import { useClinicSettings } from './useClinicSettings';
@@ -101,6 +101,23 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     slaCosts,
     leasingMax60mRef
   });
+
+  // Automatiskt återställ flatrate till perCredit om togglens villkor inte uppfylls längre
+  useEffect(() => {
+    if (useFlatrateOption === 'flatrate') {
+      const meetsMinTreatments = treatmentsPerDay >= 3;
+      const meetsLeasingRequirement = 
+        paymentOption === 'cash' || 
+        (flatrateThreshold && leasingCost >= flatrateThreshold);
+      
+      const canEnableFlatrate = meetsMinTreatments && meetsLeasingRequirement;
+      
+      if (!canEnableFlatrate) {
+        console.log("Villkor för flatrate uppfylls inte längre, återställer till perCredit");
+        setUseFlatrateOption('perCredit');
+      }
+    }
+  }, [treatmentsPerDay, leasingCost, flatrateThreshold, paymentOption, useFlatrateOption, setUseFlatrateOption]);
 
   // Get operating costs - skicka med leaseAdjustmentFactor för kreditprisberäkning
   const { 

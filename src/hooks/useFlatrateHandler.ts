@@ -1,7 +1,7 @@
 
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useCalculator } from '@/context/CalculatorContext';
-import { FlatrateOption } from '@/types/calculator';
+import { FlatrateOption } from '@/utils/constants';
 import { useToast } from '@/hooks/use-toast';
 
 export const useFlatrateHandler = () => {
@@ -11,8 +11,10 @@ export const useFlatrateHandler = () => {
     paymentOption,
     leasingRange,
     setLeaseAdjustmentFactor,
+    useFlatrateOption,
     setUseFlatrateOption,
-    treatmentsPerDay
+    treatmentsPerDay,
+    selectedSlaLevel
   } = useCalculator();
 
   const { toast } = useToast();
@@ -26,6 +28,36 @@ export const useFlatrateHandler = () => {
     (flatrateThreshold && leasingCost >= flatrateThreshold); // Vid leasing måste vi nå tröskelvärdet
   
   const canEnableFlatrate = meetsMinTreatments && meetsLeasingRequirement;
+
+  // Automatiskt återställ flatrate-läget när villkoren inte längre uppfylls
+  useEffect(() => {
+    if (useFlatrateOption === 'flatrate' && !canEnableFlatrate) {
+      console.log(`Återställer automatiskt Flatrate till 'perCredit' eftersom villkoren inte uppfylls:
+        treatmentsPerDay: ${treatmentsPerDay} (min 3 krävs)
+        leasingCost: ${leasingCost}
+        flatrateThreshold: ${flatrateThreshold}
+        paymentOption: ${paymentOption}
+        canEnableFlatrate: ${canEnableFlatrate}
+      `);
+      setUseFlatrateOption('perCredit');
+      
+      toast({
+        title: "Flatrate har inaktiverats",
+        description: meetsMinTreatments 
+          ? "Leasingkostnaden är för låg för att aktivera Flatrate." 
+          : "Minst 3 behandlingar per dag krävs för Flatrate.",
+        variant: "default"
+      });
+    }
+  }, [treatmentsPerDay, leasingCost, flatrateThreshold, paymentOption, canEnableFlatrate, useFlatrateOption, setUseFlatrateOption]);
+
+  // Automatiskt återställ flatrate-läget när SLA-nivån ändras från Brons
+  useEffect(() => {
+    if (selectedSlaLevel !== 'Brons' && useFlatrateOption === 'flatrate') {
+      console.log(`Återställer automatiskt Flatrate till 'perCredit' eftersom SLA-nivån ändrades till ${selectedSlaLevel}`);
+      setUseFlatrateOption('perCredit');
+    }
+  }, [selectedSlaLevel, useFlatrateOption, setUseFlatrateOption]);
 
   const handleFlatrateChange = (checked: boolean) => {
     console.log(`Flatrate toggle ändrad till: ${checked}, kan aktiveras: ${canEnableFlatrate}`);
