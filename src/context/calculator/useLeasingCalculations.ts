@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { machineData } from '@/data/machines';
+import { machineData, leasingPeriods } from '@/data/machines';
 import { calculateLeasingRange } from '@/utils/leasingRangeUtils';
 import { calculateLeasingCost } from '@/utils/leasingCostUtils';
 import { calculateCashPrice } from '@/utils/pricingUtils';
@@ -74,15 +74,15 @@ export function useLeasingCalculations({
       return;
     }
     
-    // Konvertera leasingRate från string till number
-    const leasingRateObj = machineData
-      .flatMap(m => m.leasingTariffs || [])
-      .find(tariff => tariff?.id === selectedLeasingPeriodId);
+    // Hämta leasingRate baserat på vald period
+    const selectedPeriod = leasingPeriods.find(period => period.id === selectedLeasingPeriodId);
+    const leasingRate = selectedPeriod?.rate || 0.02504; // Default till 48 månader
     
-    const leasingRate = leasingRateObj?.rate || 0.02504; // Default till 48 månader
+    console.log(`Använder leasingperiod: ${selectedLeasingPeriodId} med rate: ${leasingRate}`);
     
     // Beräkna om försäkring ska inkluderas
     const includeInsurance = selectedInsuranceId === 'yes';
+    console.log(`Försäkring inkluderad: ${includeInsurance}`);
     
     // Beräkna möjligt leasingintervall
     const range = calculateLeasingRange(selectedMachine, machinePriceSEK, leasingRate, includeInsurance);

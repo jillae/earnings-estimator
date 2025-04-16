@@ -17,9 +17,15 @@ export const useFlatrateHandler = () => {
 
   const { toast } = useToast();
 
+  // Kontrollera om Flatrate kan aktiveras
   const meetsMinTreatments = treatmentsPerDay >= 3;
-  const meetsLeasingRequirement = flatrateThreshold && leasingCost >= flatrateThreshold;
-  const canEnableFlatrate = meetsMinTreatments && (paymentOption === 'cash' || meetsLeasingRequirement);
+  
+  // Leasing-kravet gäller bara vid leasingbetalning, inte vid kontant
+  const meetsLeasingRequirement = 
+    paymentOption === 'cash' || // Vid kontant är kravet alltid uppfyllt
+    (flatrateThreshold && leasingCost >= flatrateThreshold); // Vid leasing måste vi nå tröskelvärdet
+  
+  const canEnableFlatrate = meetsMinTreatments && meetsLeasingRequirement;
 
   const handleFlatrateChange = (checked: boolean) => {
     // Om användaren försöker aktivera flatrate men inte uppfyller kriterierna, visa ett felmeddelande
@@ -33,7 +39,7 @@ export const useFlatrateHandler = () => {
       } else if (paymentOption === 'leasing' && !meetsLeasingRequirement) {
         toast({
           title: "Kan inte aktivera Flatrate",
-          description: "Du behöver öka leasingkostnaden till minst 80% av ordinarie pris för att använda Flatrate.",
+          description: "Du behöver öka leasingkostnaden till rekommenderat pris för att använda Flatrate.",
           variant: "destructive"
         });
       }
@@ -48,7 +54,7 @@ export const useFlatrateHandler = () => {
       // Beräkna den nya justeringsfaktorn för att nå tröskelvärdet
       const thresholdFactor = leasingRange.max > leasingRange.min
         ? (flatrateThreshold - leasingRange.min) / (leasingRange.max - leasingRange.min)
-        : 0.8; // Fallback till 80% om beräkningen misslyckas
+        : 0.5; // Fallback till 50% om beräkningen misslyckas
       
       console.log(`Justerar slider automatiskt till flatrate-tröskelvärdet:
         Nuvarande leasingkostnad: ${leasingCost}
@@ -56,8 +62,8 @@ export const useFlatrateHandler = () => {
         Beräknad justeringsfaktor: ${thresholdFactor}
       `);
       
-      // Uppdatera slidern till tröskelvärdet (minst 80%)
-      setLeaseAdjustmentFactor(Math.max(0.8, thresholdFactor));
+      // Uppdatera slidern till tröskelvärdet (minst 50%)
+      setLeaseAdjustmentFactor(Math.max(0.5, thresholdFactor));
     }
   };
 

@@ -88,7 +88,7 @@ export function useOperatingCosts({
       if (paymentOption === 'cash') {
         shouldUseFlatrate = shouldUseFlatrate && treatmentsPerDay >= 3;
       } else {
-        // För leasing, kräver vi både minst 3 behandlingar och 80% av leasingMax
+        // För leasing, kräver vi både minst 3 behandlingar och 80% av leasingMin
         const meetsLeasingRequirement = allowBelowFlatrate || (selectedMachine.leasingMin && leasingCost >= selectedMachine.leasingMin * 0.8);
         shouldUseFlatrate = shouldUseFlatrate && treatmentsPerDay >= 3 && meetsLeasingRequirement;
       }
