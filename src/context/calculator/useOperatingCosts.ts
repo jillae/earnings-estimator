@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { machineData } from '@/data/machines';
 import { FlatrateOption, SlaLevel } from '@/utils/constants';
