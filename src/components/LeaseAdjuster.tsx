@@ -48,7 +48,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 
   const defaultCost = exactMinCost + (0.5 * costRange);
   
-  const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
+  const recommendedFactor = (defaultCost - exactMinCost) / Math.max(0.001, costRange);
+  
+  const calculatedLeasingCost = exactMinCost + (recommendedFactor * costRange);
   
   const stepSize = 100;
   let roundedLeasingCost = Math.round(calculatedLeasingCost / stepSize) * stepSize;
@@ -125,7 +127,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       </div>
 
       <LeaseSlider 
-        adjustmentFactor={adjustmentFactor * 100}
+        adjustmentFactor={recommendedFactor * 100}
         onSliderChange={handleSliderChange}
         thresholdPosition={flatratePosition}
         showFlatrateIndicator={showFlatrateIndicator}
