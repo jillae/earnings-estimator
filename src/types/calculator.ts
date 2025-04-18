@@ -5,6 +5,7 @@ export type ClinicSize = 'small' | 'medium' | 'large';
 export type PaymentOption = 'leasing' | 'cash';
 export type FlatrateOption = 'flatrate' | 'perCredit';
 export type SlaLevel = 'Brons' | 'Silver' | 'Guld';
+export type DriftpaketType = 'Bas' | 'Silver' | 'Guld';
 
 export interface OperatingCost {
   costPerMonth: number;
@@ -41,6 +42,7 @@ export interface CalculatorState {
   selectedLeasingPeriodId: string;
   selectedInsuranceId: string;
   selectedSlaLevel: SlaLevel;
+  selectedDriftpaket: DriftpaketType;
   leaseAdjustmentFactor: number;
   treatmentsPerDay: number;
   customerPrice: number;
@@ -55,10 +57,12 @@ export interface CalculatorState {
   };
   leasingCost: number;
   creditPrice: number;
+  calculatedCreditPrice: number;
+  calculatedSlaCostSilver: number;
+  calculatedSlaCostGuld: number;
   flatrateThreshold: number;
   operatingCost: OperatingCost;
   revenue: Revenue;
   occupancyRevenues: OccupancyRevenues;
   netResults: NetResults;
 }
-

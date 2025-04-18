@@ -28,6 +28,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setSelectedInsuranceId,
     selectedSlaLevel,
     setSlaLevel,
+    selectedDriftpaket,
+    setSelectedDriftpaket,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     allowBelowFlatrate,
@@ -119,10 +121,12 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   }, [treatmentsPerDay, leasingCost, flatrateThreshold, paymentOption, useFlatrateOption, setUseFlatrateOption]);
 
-  // Get operating costs - skicka med leaseAdjustmentFactor för kreditprisberäkning
+  // Get operating costs - skicka med även selectedDriftpaket
   const { 
     operatingCost,
-    calculatedCreditPrice
+    calculatedCreditPrice,
+    calculatedSlaCostSilver,
+    calculatedSlaCostGuld
   } = useOperatingCosts({
     selectedMachineId,
     treatmentsPerDay,
@@ -133,6 +137,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     useFlatrateOption,
     leaseAdjustmentFactor,
     selectedSlaLevel,
+    selectedDriftpaket,
     paymentOption,
     leasingMax60mRef
   });
@@ -163,6 +168,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setSelectedInsuranceId,
     selectedSlaLevel,
     setSlaLevel,
+    selectedDriftpaket,
+    setSelectedDriftpaket,
     treatmentsPerDay,
     setTreatmentsPerDay,
     customerPrice,
@@ -173,7 +180,9 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     leasingCost,
     leasingCostPercentage,
     creditPrice: calculatedCreditPrice,
-    calculatedCreditPrice, // Lägg till detta explicit för att fixa felet
+    calculatedCreditPrice,
+    calculatedSlaCostSilver,
+    calculatedSlaCostGuld,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     allowBelowFlatrate,

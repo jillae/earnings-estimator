@@ -6,7 +6,7 @@ import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useFlatrateHandler } from '@/hooks/useFlatrateHandler';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Info } from 'lucide-react';
 
 const OperatingCosts: React.FC = () => {
   const { 
@@ -17,7 +17,7 @@ const OperatingCosts: React.FC = () => {
     leasingCost,
     flatrateThreshold,
     paymentOption,
-    selectedSlaLevel,
+    selectedDriftpaket,
     operatingCost
   } = useCalculator();
 
@@ -30,43 +30,50 @@ const OperatingCosts: React.FC = () => {
   
   console.log(`OperatingCosts Rendering:
     Machine: ${selectedMachine.name}
-    SLA Level: ${selectedSlaLevel}
+    Driftpaket: ${selectedDriftpaket}
     Credit Price: ${creditPrice}
     Uses Credits: ${selectedMachine.usesCredits}
     Flatrate Option: ${useFlatrateOption}
     Can Enable Flatrate: ${canEnableFlatrate}
   `);
 
-  // För maskiner utan credits eller med Silver/Guld SLA visar vi förenklade kostnader
-  if (!selectedMachine.usesCredits || selectedSlaLevel !== 'Brons') {
-    const includesFlatrate = selectedMachine.usesCredits && selectedSlaLevel !== 'Brons';
-    
+  // Om maskinen inte använder credits
+  if (!selectedMachine.usesCredits) {
     return (
       <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
-        <h3 className="text-lg font-semibold mb-4">Driftskostnader</h3>
+        <h3 className="text-lg font-semibold mb-4">Detaljer Driftskostnad</h3>
         
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm">
-            Serviceavtal ({selectedSlaLevel})
-            {includesFlatrate && ' inkl. Flatrate Credits'}
-          </span>
-          <span className="text-lg font-semibold text-blue-600">
-            {formatCurrency(operatingCost.totalCost)}
-          </span>
+        <div className="flex items-center justify-center p-4 bg-gray-50 border border-gray-200 rounded-md">
+          <p className="text-sm text-gray-600">
+            Inga kreditkostnader för denna maskin.
+          </p>
         </div>
-        
-        {includesFlatrate && (
-          <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded-md">
-            <p className="text-xs text-blue-700">
-              Obegränsat antal credits ingår i detta SLA-abonnemang.
-            </p>
-          </div>
-        )}
       </div>
     );
   }
 
-  // För maskiner med credits och Brons SLA, visa detaljerad vy med kreditpris/flatrate
+  // Om Silver eller Guld driftpaket är valt (och maskinen använder credits)
+  if (selectedDriftpaket !== 'Bas') {
+    return (
+      <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
+        <h3 className="text-lg font-semibold mb-4">Detaljer Driftskostnad</h3>
+        
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+          <div className="flex items-center gap-2 mb-2">
+            <Info className="h-5 w-5 text-blue-600" />
+            <p className="text-blue-700 font-medium">
+              Flatrate Credits Ingår i ditt valda {selectedDriftpaket}-paket
+            </p>
+          </div>
+          <p className="text-sm text-blue-600 pl-7">
+            Du får obegränsad användning av credits utan extra kostnader.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // För Bas-paketet med credits, visa detaljerad vy med kreditpris/flatrate
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
   const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
   const totalCreditsPerMonth = treatmentsPerMonth * creditsPerTreatment;
@@ -86,7 +93,7 @@ const OperatingCosts: React.FC = () => {
 
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
-      <h3 className="text-lg font-semibold mb-4">Driftskostnader</h3>
+      <h3 className="text-lg font-semibold mb-4">Detaljer Driftskostnad</h3>
 
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
@@ -137,11 +144,6 @@ const OperatingCosts: React.FC = () => {
           <span className="text-lg font-semibold">{formatCurrency(flatrateAmount)}</span>
         </div>
       )}
-      
-      <div className="flex justify-between items-center mb-2 pt-2 mt-2 border-t border-gray-200">
-        <span className="text-sm">Serviceavtal ({selectedSlaLevel})</span>
-        <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost)}</span>
-      </div>
       
       <div className="flex justify-between items-center mb-2 pt-2 border-t border-gray-200">
         <span className="text-sm font-semibold">Total driftskostnad per månad</span>

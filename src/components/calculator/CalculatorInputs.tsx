@@ -9,9 +9,9 @@ import OperatingCosts from '../OperatingCosts';
 import LeaseAdjuster from '../LeaseAdjuster';
 import LeasingOptions from '../LeasingOptions';
 import PaymentOptionToggle from './PaymentOptionToggle';
-import SlaSelector from './SlaSelector';
+import DriftpaketSelector from './DriftpaketSelector';
 import { formatCurrency } from '@/utils/formatUtils';
-import { leasingPeriods, insuranceOptions } from '@/data/machines'; // Importera leasingPeriods och insuranceOptions
+import { leasingPeriods, insuranceOptions } from '@/data/machines'; 
 
 const CalculatorInputs: React.FC = () => {
   const {
@@ -110,7 +110,7 @@ const CalculatorInputs: React.FC = () => {
           </div>
           
           <div className="mt-4">
-            <SlaSelector />
+            <DriftpaketSelector />
           </div>
           
           <OperatingCosts />

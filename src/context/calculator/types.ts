@@ -1,6 +1,7 @@
 
 import { FlatrateOption, PaymentOption, SlaLevel } from "@/utils/constants";
 import { Machine } from "@/data/machines/types";
+import { DriftpaketType } from "@/types/calculator";
 
 export interface CalculatorContextType {
   // State selections and data
@@ -11,6 +12,7 @@ export interface CalculatorContextType {
   selectedLeasingPeriodId: string;
   selectedInsuranceId: string;
   selectedSlaLevel: SlaLevel;
+  selectedDriftpaket: DriftpaketType;
   treatmentsPerDay: number;
   customerPrice: number;
   
@@ -21,6 +23,7 @@ export interface CalculatorContextType {
   setSelectedLeasingPeriodId: (id: string) => void;
   setSelectedInsuranceId: (id: string) => void;
   setSlaLevel: (level: SlaLevel) => void;
+  setSelectedDriftpaket: (paket: DriftpaketType) => void;
   setTreatmentsPerDay: (treatments: number) => void;
   setCustomerPrice: (price: number) => void;
   
@@ -39,7 +42,7 @@ export interface CalculatorContextType {
   leasingCost: number;
   leasingCostPercentage: number;
   creditPrice: number;
-  calculatedCreditPrice: number; // Ny egenskap som behövs i LeaseAdjuster
+  calculatedCreditPrice: number;
   leaseAdjustmentFactor: number;
   setLeaseAdjustmentFactor: (factor: number) => void;
   allowBelowFlatrate: boolean;
@@ -62,6 +65,8 @@ export interface CalculatorContextType {
     Silver: number;
     Guld: number;
   };
+  calculatedSlaCostSilver: number;
+  calculatedSlaCostGuld: number;
   leasingMax60mRef: number;
   
   // Revenue & results
@@ -93,6 +98,7 @@ export interface CalculatorState {
   selectedLeasingPeriodId: string;
   selectedInsuranceId: string;
   selectedSlaLevel: SlaLevel;
+  selectedDriftpaket: DriftpaketType;
   leaseAdjustmentFactor: number;
   treatmentsPerDay: number;
   customerPrice: number;
@@ -107,7 +113,9 @@ export interface CalculatorState {
   };
   leasingCost: number;
   creditPrice: number;
-  calculatedCreditPrice: number; // Lägg till även här
+  calculatedCreditPrice: number;
+  calculatedSlaCostSilver: number;
+  calculatedSlaCostGuld: number;
   flatrateThreshold: number;
   operatingCost: {
     costPerMonth: number;

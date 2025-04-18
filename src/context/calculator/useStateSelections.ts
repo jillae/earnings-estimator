@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { machineData } from '@/data/machines';
 import { Machine } from '@/data/machines/types';
 import { FlatrateOption, PaymentOption, SlaLevel } from '@/utils/constants';
+import { DriftpaketType } from '@/types/calculator';
 
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
@@ -11,6 +12,7 @@ export function useStateSelections() {
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60');
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
   const [selectedSlaLevel, setSlaLevel] = useState<SlaLevel>('Brons');
+  const [selectedDriftpaket, setSelectedDriftpaket] = useState<DriftpaketType>('Bas');
   
   // Säkerställ att vi alltid startar på exakt 0.5 (50%)
   const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(0.5);
@@ -60,6 +62,9 @@ export function useStateSelections() {
       // Återställ alltid SLA till Brons
       setSlaLevel('Brons');
       
+      // Återställ alltid driftpaket till Bas
+      setSelectedDriftpaket('Bas');
+      
       // Återställ betalningsalternativ till leasing
       setPaymentOption('leasing');
       
@@ -82,6 +87,17 @@ export function useStateSelections() {
     }
   }, [clinicSize]);
 
+  // När driftpaket ändras, uppdatera även SLA nivå
+  useEffect(() => {
+    if (selectedDriftpaket === 'Bas') {
+      setSlaLevel('Brons');
+    } else if (selectedDriftpaket === 'Silver') {
+      setSlaLevel('Silver');
+    } else if (selectedDriftpaket === 'Guld') {
+      setSlaLevel('Guld');
+    }
+  }, [selectedDriftpaket]);
+
   return {
     clinicSize,
     setClinicSize,
@@ -96,6 +112,8 @@ export function useStateSelections() {
     setSelectedInsuranceId,
     selectedSlaLevel,
     setSlaLevel,
+    selectedDriftpaket,
+    setSelectedDriftpaket,
     leaseAdjustmentFactor,
     setLeaseAdjustmentFactor,
     allowBelowFlatrate,

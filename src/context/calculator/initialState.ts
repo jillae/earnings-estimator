@@ -10,6 +10,7 @@ export const initialState: CalculatorState = {
   selectedLeasingPeriodId: "48", // Default to 48 months
   selectedInsuranceId: "yes", // Default to include insurance
   selectedSlaLevel: "Brons", // Default till Brons (ingår)
+  selectedDriftpaket: "Bas", // Default till Bas (ingår)
   leaseAdjustmentFactor: 0.5, // Sätt default till 50%
   treatmentsPerDay: 4, // Default to medium clinic
   customerPrice: machineData[0]?.defaultCustomerPrice || 1990,
@@ -19,7 +20,9 @@ export const initialState: CalculatorState = {
   leasingRange: { min: 0, max: 0, default: 0 },
   leasingCost: 0,
   creditPrice: 0,
-  calculatedCreditPrice: 0, // Lägg till denna rad för att fixa TypeScript-felet
+  calculatedCreditPrice: 0,
+  calculatedSlaCostSilver: 0,
+  calculatedSlaCostGuld: 0,
   flatrateThreshold: 0,
   operatingCost: { 
     costPerMonth: 0, 
