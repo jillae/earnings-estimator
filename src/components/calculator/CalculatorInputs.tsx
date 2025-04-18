@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
@@ -12,6 +11,7 @@ import PaymentOptionToggle from './PaymentOptionToggle';
 import DriftpaketSelector from './DriftpaketSelector';
 import { formatCurrency } from '@/utils/formatUtils';
 import { leasingPeriods, insuranceOptions } from '@/data/machines'; 
+import FloatingResultsSummary from './FloatingResultsSummary';
 
 const CalculatorInputs: React.FC = () => {
   const {
@@ -116,6 +116,8 @@ const CalculatorInputs: React.FC = () => {
           <OperatingCosts />
         </>
       )}
+      
+      <FloatingResultsSummary />
     </div>
   );
 };
