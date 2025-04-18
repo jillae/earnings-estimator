@@ -24,26 +24,20 @@ const DriftpaketSelector: React.FC = () => {
     return null;
   }
 
-  console.log('Rendering DriftpaketSelector with:', {
-    selectedDriftpaket,
-    calculatedSlaCostSilver,
-    calculatedSlaCostGuld,
-    usesCredits: selectedMachine?.usesCredits
-  });
-
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
       <h3 className="text-lg font-semibold mb-4">Välj Service & Driftpaket</h3>
       
-      {/* Bas-paket (visas alltid men inte valbart i RadioGroup) */}
+      {/* Bas-paket (alltid synligt men inte valbart i RadioGroup) */}
       <div className={`p-3 border rounded-md mb-4 ${selectedDriftpaket === 'Bas' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <RadioGroupItem 
-              value="Bas" 
+            <input 
+              type="radio" 
               id="driftpaket-bas" 
               checked={selectedDriftpaket === 'Bas'}
-              onClick={() => setSelectedDriftpaket('Bas')}
+              onChange={() => setSelectedDriftpaket('Bas')}
+              className="form-radio"
             />
             <label htmlFor="driftpaket-bas" className="font-medium cursor-pointer">
               Bas (Ingår)
@@ -68,7 +62,7 @@ const DriftpaketSelector: React.FC = () => {
       </div>
       
       <RadioGroup 
-        value={selectedDriftpaket} 
+        value={selectedDriftpaket === 'Bas' ? '' : selectedDriftpaket} 
         onValueChange={handleDriftpaketChange}
         className="space-y-4"
       >
@@ -161,3 +155,4 @@ const DriftpaketSelector: React.FC = () => {
 };
 
 export default DriftpaketSelector;
+
