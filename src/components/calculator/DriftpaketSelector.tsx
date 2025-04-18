@@ -4,7 +4,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { DriftpaketType } from '@/types/calculator';
-import { Check, Shield, ShieldCheck, Clock } from 'lucide-react';
+import { Check, Shield, ShieldCheck, Clock, CreditCard } from 'lucide-react';
 
 const DriftpaketSelector: React.FC = () => {
   const { 
@@ -12,23 +12,27 @@ const DriftpaketSelector: React.FC = () => {
     selectedDriftpaket, 
     setSelectedDriftpaket,
     calculatedSlaCostSilver,
-    calculatedSlaCostGuld
+    calculatedSlaCostGuld,
+    creditPrice,
+    useFlatrateOption
   } = useCalculator();
 
   const handleDriftpaketChange = (value: string) => {
     setSelectedDriftpaket(value as DriftpaketType);
   };
 
-  // Om ingen maskin är vald, visa inget
   if (!selectedMachine) {
     return null;
   }
+
+  // Visa kreditmodelinformation för Bas-paketet om det är valt och maskinen använder credits
+  const showCreditInfo = selectedDriftpaket === 'Bas' && selectedMachine.usesCredits;
 
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
       <h3 className="text-lg font-semibold mb-4">Välj Service & Driftpaket</h3>
       
-      {/* Bas-paket (alltid synligt men inte valbart i RadioGroup) */}
+      {/* Bas-paket med integrerad kreditinformation */}
       <div className={`p-3 border rounded-md mb-4 ${selectedDriftpaket === 'Bas' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -57,6 +61,12 @@ const DriftpaketSelector: React.FC = () => {
               <Shield className="w-4 h-4 text-blue-600" />
               <span>Grundsupport (vardagar)</span>
             </li>
+            {showCreditInfo && (
+              <li className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200">
+                <CreditCard className="w-4 h-4 text-blue-600" />
+                <span>Credits: {useFlatrateOption === 'flatrate' ? 'Flatrate' : `${formatCurrency(creditPrice)} per credit`}</span>
+              </li>
+            )}
           </ul>
         </div>
       </div>
@@ -95,7 +105,7 @@ const DriftpaketSelector: React.FC = () => {
               </li>
               {selectedMachine?.usesCredits && (
                 <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" />
+                  <CreditCard className="w-4 h-4 text-green-600" />
                   <span className="font-medium text-green-700">Flatrate Credits Ingår</span>
                 </li>
               )}
@@ -132,7 +142,7 @@ const DriftpaketSelector: React.FC = () => {
               </li>
               {selectedMachine?.usesCredits && (
                 <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" />
+                  <CreditCard className="w-4 h-4 text-green-600" />
                   <span className="font-medium text-green-700">Flatrate Credits Ingår</span>
                 </li>
               )}
@@ -155,4 +165,3 @@ const DriftpaketSelector: React.FC = () => {
 };
 
 export default DriftpaketSelector;
-
