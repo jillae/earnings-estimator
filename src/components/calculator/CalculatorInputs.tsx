@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
@@ -12,6 +13,7 @@ import DriftpaketSelector from './DriftpaketSelector';
 import { formatCurrency } from '@/utils/formatUtils';
 import { leasingPeriods, insuranceOptions } from '@/data/machines'; 
 import FloatingResultsSummary from './FloatingResultsSummary';
+import { SliderStep } from '@/utils/sliderSteps';
 
 const CalculatorInputs: React.FC = () => {
   const {
@@ -27,8 +29,8 @@ const CalculatorInputs: React.FC = () => {
     setCustomerPrice,
     leasingCost,
     leasingRange,
-    leaseAdjustmentFactor,
-    setLeaseAdjustmentFactor,
+    currentSliderStep,
+    setCurrentSliderStep,
     flatrateThreshold,
     allowBelowFlatrate,
     setAllowBelowFlatrate,
@@ -91,11 +93,11 @@ const CalculatorInputs: React.FC = () => {
                   minLeaseCost={leasingRange.min}
                   maxLeaseCost={leasingRange.max}
                   leaseCost={leasingCost}
-                  adjustmentFactor={leaseAdjustmentFactor}
+                  currentSliderStep={currentSliderStep}
                   flatrateThreshold={flatrateThreshold}
                   showFlatrateIndicator={selectedMachine?.usesCredits}
                   treatmentsPerDay={treatmentsPerDay}
-                  onAdjustmentChange={setLeaseAdjustmentFactor}
+                  onSliderStepChange={setCurrentSliderStep}
                   allowBelowFlatrate={allowBelowFlatrate}
                   onAllowBelowFlatrateChange={setAllowBelowFlatrate}
                 />

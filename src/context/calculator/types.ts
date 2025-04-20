@@ -1,38 +1,46 @@
 
-import { FlatrateOption, PaymentOption, SlaLevel } from "@/utils/constants";
-import { Machine } from "@/data/machines/types";
-import { DriftpaketType } from "@/types/calculator";
+import { Machine, LeasingPeriod, InsuranceOption } from '@/data/machines/types';
+import { ClinicSize, PaymentOption, FlatrateOption, SlaLevel, DriftpaketType } from '@/types/calculator';
+import { SliderStep, StepValues } from '@/utils/sliderSteps';
 
 export interface CalculatorContextType {
-  // State selections and data
-  clinicSize: 'small' | 'medium' | 'large';
+  // Clinic settings
+  clinicSize: ClinicSize;
+  setClinicSize: (size: ClinicSize) => void;
+  
+  // Machine selection
   selectedMachineId: string;
-  selectedMachine: Machine | null;
-  paymentOption: PaymentOption;
-  selectedLeasingPeriodId: string;
-  selectedInsuranceId: string;
-  selectedSlaLevel: SlaLevel;
-  selectedDriftpaket: DriftpaketType;
-  treatmentsPerDay: number;
-  customerPrice: number;
-  
-  // Setters
-  setClinicSize: (size: 'small' | 'medium' | 'large') => void;
   setSelectedMachineId: (id: string) => void;
-  setPaymentOption: (option: PaymentOption) => void;
-  setSelectedLeasingPeriodId: (id: string) => void;
-  setSelectedInsuranceId: (id: string) => void;
-  setSlaLevel: (level: SlaLevel) => void;
-  setSelectedDriftpaket: (paket: DriftpaketType) => void;
-  setTreatmentsPerDay: (treatments: number) => void;
-  setCustomerPrice: (price: number) => void;
+  selectedMachine: Machine | undefined;
   
-  // Machine pricing
-  exchangeRate: number;
-  machinePriceSEK: number;
+  // Payment options
+  paymentOption: PaymentOption;
+  setPaymentOption: (option: PaymentOption) => void;
   cashPriceSEK: number;
   
-  // Leasing calculations
+  // Leasing options
+  selectedLeasingPeriodId: string;
+  setSelectedLeasingPeriodId: (id: string) => void;
+  selectedInsuranceId: string;
+  setSelectedInsuranceId: (id: string) => void;
+  
+  // SLA/Driftpaket options
+  selectedSlaLevel: SlaLevel;
+  setSlaLevel: (level: SlaLevel) => void;
+  selectedDriftpaket: DriftpaketType;
+  setSelectedDriftpaket: (type: DriftpaketType) => void;
+  
+  // Treatment settings
+  treatmentsPerDay: number;
+  setTreatmentsPerDay: (count: number) => void;
+  customerPrice: number;
+  setCustomerPrice: (price: number) => void;
+  
+  // Exchange rate and pricing
+  exchangeRate: number;
+  machinePriceSEK: number;
+  
+  // Leasing calculation
   leasingRange: {
     min: number;
     max: number;
@@ -40,105 +48,57 @@ export interface CalculatorContextType {
     flatrateThreshold?: number;
   };
   leasingCost: number;
-  leasingCostPercentage: number;
+  
+  // 5-step slider
+  currentSliderStep: SliderStep;
+  setCurrentSliderStep: (step: SliderStep) => void;
+  stepValues: Record<SliderStep, StepValues>;
+  currentStepValues: StepValues;
+  
+  // Credit and flatrate
   creditPrice: number;
   calculatedCreditPrice: number;
-  leaseAdjustmentFactor: number;
-  setLeaseAdjustmentFactor: (factor: number) => void;
+  calculatedSlaCostSilver: number;
+  calculatedSlaCostGuld: number;
   allowBelowFlatrate: boolean;
   setAllowBelowFlatrate: (allow: boolean) => void;
   flatrateThreshold: number;
-  
-  // Flatrate options
   useFlatrateOption: FlatrateOption;
   setUseFlatrateOption: (option: FlatrateOption) => void;
   
-  // Operating costs & SLA
+  // Operating costs
   operatingCost: {
     costPerMonth: number;
     useFlatrate: boolean;
     slaCost: number;
     totalCost: number;
   };
+  
+  // Revenue and net results
+  revenue: {
+    revenuePerTreatmentExVat: number;
+    dailyRevenueIncVat: number;
+    weeklyRevenueIncVat: number;
+    monthlyRevenueIncVat: number;
+    yearlyRevenueIncVat: number;
+    monthlyRevenueExVat: number;
+    yearlyRevenueExVat: number;
+  };
+  occupancyRevenues: {
+    occupancy50: number;
+    occupancy75: number;
+    occupancy100: number;
+  };
+  netResults: {
+    netPerMonthExVat: number;
+    netPerYearExVat: number;
+  };
+  
+  // Reference values
   slaCosts: {
     Brons: number;
     Silver: number;
     Guld: number;
   };
-  calculatedSlaCostSilver: number;
-  calculatedSlaCostGuld: number;
   leasingMax60mRef: number;
-  
-  // Revenue & results
-  revenue: {
-    revenuePerTreatmentExVat: number;
-    dailyRevenueIncVat: number;
-    weeklyRevenueIncVat: number;
-    monthlyRevenueIncVat: number;
-    yearlyRevenueIncVat: number;
-    monthlyRevenueExVat: number;
-    yearlyRevenueExVat: number;
-  };
-  occupancyRevenues: {
-    occupancy50: number;
-    occupancy75: number;
-    occupancy100: number;
-  };
-  netResults: {
-    netPerMonthExVat: number;
-    netPerYearExVat: number;
-  };
-}
-
-// Definiera en separat typ för state (utan metoder)
-export interface CalculatorState {
-  clinicSize: 'small' | 'medium' | 'large';
-  selectedMachineId: string;
-  paymentOption: PaymentOption;
-  selectedLeasingPeriodId: string;
-  selectedInsuranceId: string;
-  selectedSlaLevel: SlaLevel;
-  selectedDriftpaket: DriftpaketType;
-  leaseAdjustmentFactor: number;
-  treatmentsPerDay: number;
-  customerPrice: number;
-  exchangeRate: number;
-  machinePriceSEK: number;
-  cashPriceSEK: number;
-  leasingRange: {
-    min: number;
-    max: number;
-    default: number;
-    flatrateThreshold?: number;
-  };
-  leasingCost: number;
-  creditPrice: number;
-  calculatedCreditPrice: number;
-  calculatedSlaCostSilver: number;
-  calculatedSlaCostGuld: number;
-  flatrateThreshold: number;
-  operatingCost: {
-    costPerMonth: number;
-    useFlatrate: boolean;
-    slaCost: number;
-    totalCost: number;
-  };
-  revenue: {
-    revenuePerTreatmentExVat: number;
-    dailyRevenueIncVat: number;
-    weeklyRevenueIncVat: number;
-    monthlyRevenueIncVat: number;
-    yearlyRevenueIncVat: number;
-    monthlyRevenueExVat: number;
-    yearlyRevenueExVat: number;
-  };
-  occupancyRevenues: {
-    occupancy50: number;
-    occupancy75: number;
-    occupancy100: number;
-  };
-  netResults: {
-    netPerMonthExVat: number;
-    netPerYearExVat: number;
-  };
 }

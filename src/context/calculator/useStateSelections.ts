@@ -4,6 +4,7 @@ import { machineData } from '@/data/machines';
 import { Machine } from '@/data/machines/types';
 import { FlatrateOption, PaymentOption, SlaLevel } from '@/utils/constants';
 import { DriftpaketType } from '@/types/calculator';
+import { SliderStep } from '@/utils/sliderSteps';
 
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
@@ -14,8 +15,8 @@ export function useStateSelections() {
   const [selectedSlaLevel, setSlaLevel] = useState<SlaLevel>('Brons');
   const [selectedDriftpaket, setSelectedDriftpaket] = useState<DriftpaketType>('Bas');
   
-  // Säkerställ att vi alltid startar på exakt 0.5 (50%)
-  const [leaseAdjustmentFactor, setLeaseAdjustmentFactor] = useState<number>(0.5);
+  // Ersätt kontinuerliga leaseAdjustmentFactor med diskreta steg
+  const [currentSliderStep, setCurrentSliderStep] = useState<SliderStep>(1); // Standard är 1 (mitten)
   
   const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true);
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
@@ -56,8 +57,8 @@ export function useStateSelections() {
         setCustomerPrice(selectedMachine.defaultCustomerPrice);
       }
       
-      // Sätt ALLTID leaseAdjustmentFactor till EXAKT 0.5 (50%) när en ny maskin väljs
-      setLeaseAdjustmentFactor(0.5);
+      // Återställ ALLTID till standard värden för en ny maskin
+      setCurrentSliderStep(1); // Standard steg (mitten)
       
       // Återställ alltid SLA till Brons
       setSlaLevel('Brons');
@@ -114,8 +115,8 @@ export function useStateSelections() {
     setSlaLevel,
     selectedDriftpaket,
     setSelectedDriftpaket,
-    leaseAdjustmentFactor,
-    setLeaseAdjustmentFactor,
+    currentSliderStep,
+    setCurrentSliderStep,
     allowBelowFlatrate,
     setAllowBelowFlatrate,
     treatmentsPerDay,

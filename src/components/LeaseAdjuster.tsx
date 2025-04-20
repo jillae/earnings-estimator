@@ -1,21 +1,22 @@
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
 import { Info, CreditCard } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useCalculator } from '@/context/CalculatorContext';
+import { SliderStep } from '@/utils/sliderSteps';
 
 interface LeaseAdjusterProps {
   minLeaseCost: number;
   maxLeaseCost: number;
   leaseCost: number;
-  adjustmentFactor: number;
+  currentSliderStep: SliderStep;
   flatrateThreshold?: number;
   showFlatrateIndicator?: boolean;
   treatmentsPerDay?: number;
-  onAdjustmentChange: (value: number) => void;
+  onSliderStepChange: (step: SliderStep) => void;
   allowBelowFlatrate?: boolean;
   onAllowBelowFlatrateChange?: (allow: boolean) => void;
 }
@@ -24,116 +25,84 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   minLeaseCost,
   maxLeaseCost,
   leaseCost,
-  adjustmentFactor,
+  currentSliderStep,
   flatrateThreshold,
   showFlatrateIndicator = false,
   treatmentsPerDay = 0,
-  onAdjustmentChange,
+  onSliderStepChange,
   allowBelowFlatrate = true,
   onAllowBelowFlatrateChange
 }) => {
   const { toast } = useToast();
-  const { calculatedCreditPrice, selectedMachine } = useCalculator();
+  const { calculatedCreditPrice, selectedMachine, stepValues } = useCalculator();
+  
+  // State för att hantera om användaren har aktiverat slider-justering
+  const [isAdjustmentEnabled, setIsAdjustmentEnabled] = useState(false);
   
   console.log("LeaseAdjuster rendering with:", {
     minLeaseCost,
     maxLeaseCost,
     leaseCost,
-    adjustmentFactor,
+    currentSliderStep,
     flatrateThreshold,
     showFlatrateIndicator,
     treatmentsPerDay,
-    allowBelowFlatrate
+    allowBelowFlatrate,
+    isAdjustmentEnabled
   });
 
   const exactMinCost = minLeaseCost;
   const exactMaxCost = maxLeaseCost;
-  const costRange = exactMaxCost - exactMinCost;
-
-  const defaultCost = exactMinCost + (0.5 * costRange);
   
-  const recommendedFactor = 0.5;
-  
-  const calculatedLeasingCost = exactMinCost + (adjustmentFactor * costRange);
-  
-  const stepSize = 100;
-  let roundedLeasingCost = Math.round(calculatedLeasingCost / stepSize) * stepSize;
-  
-  const lastDigit = roundedLeasingCost % 10;
-  if (lastDigit !== 6) {
-    roundedLeasingCost = roundedLeasingCost - lastDigit + 6;
-  }
+  const defaultCost = stepValues[1]?.leasingCost || ((exactMinCost + exactMaxCost) / 2);
   
   let flatratePosition = null;
   if (flatrateThreshold) {
-    flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, costRange)) * 100;
+    flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
     flatratePosition = Math.max(0, Math.min(100, flatratePosition));
   }
   
-  const handleSliderChange = (values: number[]) => {
-    let newValue = values[0] / 100;
+  const handleSliderStepChange = (step: SliderStep) => {
+    console.log(`Slider flyttad till steg: ${step}`);
+    onSliderStepChange(step);
     
-    console.log(`Slider flyttad till: ${newValue * 100}% (råvärde)`);
-    
-    if (Math.abs(newValue - 0.5) < 0.01) {
-      newValue = 0.5;
-      console.log("Justerar till exakt 0.5 (50%)");
-    }
-    
-    const exactCost = exactMinCost + (newValue * costRange);
-    
-    let roundedCost = Math.round(exactCost / stepSize) * stepSize;
-    const lastDigit = roundedCost % 10;
-    if (lastDigit !== 6) {
-      roundedCost = roundedCost - lastDigit + 6;
-    }
-    
-    console.log(`Beräknad leasingkostnad:
-      Slider position: ${newValue * 100}%
-      Exakt kostnad: ${exactCost}
-      Avrundad kostnad: ${roundedCost}
-    `);
-    
-    if (flatrateThreshold && roundedCost < flatrateThreshold && onAllowBelowFlatrateChange) {
+    // Uppdatera flatrate-tillåtelse baserat på nytt steg
+    if (step < 1 && onAllowBelowFlatrateChange) {
       onAllowBelowFlatrateChange(false);
     }
-    
-    onAdjustmentChange(newValue);
   };
-
-  let actualLeasingCost = leaseCost;
-  if (leaseCost > exactMaxCost) {
-    actualLeasingCost = exactMaxCost;
-  } else if (leaseCost < exactMinCost) {
-    actualLeasingCost = exactMinCost;
-  }
+  
+  const handleToggleAdjustment = (checked: boolean) => {
+    setIsAdjustmentEnabled(checked);
+    
+    // Om användaren inaktiverar justering, återställ till standardläge (steg 1)
+    if (!checked) {
+      handleSliderStepChange(1);
+    }
+  };
 
   const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
   
-  useEffect(() => {
-    console.log(`FLATRATE INFO:
-      Leasingkostnad (${leaseCost}) ${isAboveFlatrateThreshold ? '>=' : '<'} Tröskelvärde (${flatrateThreshold})
-      Antal behandlingar per dag: ${treatmentsPerDay}
-      AllowBelowFlatrate: ${allowBelowFlatrate}
-    `);
-  }, [leaseCost, flatrateThreshold, isAboveFlatrateThreshold, showFlatrateIndicator, treatmentsPerDay, allowBelowFlatrate]);
-
+  // För visa nuvarande sliderstegets label/namn
+  const currentStepLabel = stepValues[currentSliderStep]?.label || 'Standard';
+  
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
-      <label className="input-label">
-        Justera leasingkostnad
+      <label className="input-label flex items-center justify-between">
+        <span>Justera leasingkostnad</span>
+        <span className="text-sm font-medium text-blue-600">{currentStepLabel}</span>
       </label>
 
       <CostDisplay 
         minLeaseCost={exactMinCost}
         maxLeaseCost={exactMaxCost}
-        leaseCost={actualLeasingCost}
+        leaseCost={leaseCost}
       />
 
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center justify-center text-sm bg-blue-50 p-2 rounded-md">
           <Info className="w-4 h-4 mr-2 text-blue-600" />
-          <span>Rekommenderat pris: <span className="font-medium">{Math.round(defaultCost).toLocaleString('sv-SE')} kr</span></span>
+          <span>Rekommenderat pris: <span className="font-medium">{formatCurrency(defaultCost)}</span></span>
         </div>
         
         {selectedMachine?.usesCredits && (
@@ -145,11 +114,13 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       </div>
 
       <LeaseSlider 
-        adjustmentFactor={adjustmentFactor * 100}
-        onSliderChange={handleSliderChange}
+        currentStep={currentSliderStep}
+        onStepChange={handleSliderStepChange}
         thresholdPosition={flatratePosition}
         showFlatrateIndicator={showFlatrateIndicator}
         allowBelowFlatrate={allowBelowFlatrate}
+        isAdjustmentEnabled={isAdjustmentEnabled}
+        onToggleAdjustment={handleToggleAdjustment}
       />
     </div>
   );
