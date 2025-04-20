@@ -33,6 +33,7 @@ export function calculateStepValues(
   }
 
   // Hämta kreditvärden från maskinen eller använd standardvärden
+  // VIKTIGT: Använd exakt de värden som definierats i maskindatat
   const machineMinCredit = machine.creditMin || creditMin;
   const machineMaxCredit = machine.creditMax || creditMax;
 
@@ -46,6 +47,7 @@ export function calculateStepValues(
   const leasing75Percent = safeMaxOld + (safeMaxNew - safeMaxOld) * 0.5;
 
   // Beräkna mellanliggande kreditvärden med korrekt interpolation
+  // VIKTIGT: Ingen avrundning här!
   const credit25Percent = machineMaxCredit - (machineMaxCredit - machineMinCredit) * 0.5;
   const credit75Percent = machineMinCredit * 0.5; // Halvvägs mellan min och 0
 
@@ -56,12 +58,12 @@ export function calculateStepValues(
   const roundedHigh = roundToHundredEndingSix(leasing75Percent);
   const roundedMax = roundToHundredEndingSix(safeMaxNew);
 
-  // Ta bort Math.round för kreditpriserna för att bevara exakta värden
+  // VIKTIGT: Lägg till en tydlig logg för att visa exakt vilka kreditsvärdena blir för varje maskin
   console.log(`Beräknade stegvärden för ${machine.name}:
-    Min (0): ${roundedMin} kr / ${machineMaxCredit} kr per credit
-    Låg (0.5): ${roundedLow} kr / ${credit25Percent} kr per credit
-    Standard (1): ${roundedStandard} kr / ${machineMinCredit} kr per credit
-    Hög (1.5): ${roundedHigh} kr / ${credit75Percent} kr per credit
+    Min (0): ${roundedMin} kr / ${machineMaxCredit} kr per credit (exakt värde)
+    Låg (0.5): ${roundedLow} kr / ${credit25Percent} kr per credit (exakt värde)
+    Standard (1): ${roundedStandard} kr / ${machineMinCredit} kr per credit (exakt värde)
+    Hög (1.5): ${roundedHigh} kr / ${credit75Percent} kr per credit (exakt värde)
     Max (2): ${roundedMax} kr / 0 kr per credit
   `);
 

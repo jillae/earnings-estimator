@@ -31,7 +31,7 @@ const OperatingCosts: React.FC = () => {
   console.log(`OperatingCosts Rendering:
     Machine: ${selectedMachine.name}
     Driftpaket: ${selectedDriftpaket}
-    Credit Price: ${creditPrice}
+    Credit Price: ${creditPrice} (exakt värde)
     Uses Credits: ${selectedMachine.usesCredits}
     Flatrate Option: ${useFlatrateOption}
     Can Enable Flatrate: ${canEnableFlatrate}

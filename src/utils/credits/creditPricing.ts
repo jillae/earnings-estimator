@@ -19,15 +19,15 @@ export function calculateCreditPrice(
     Leasing Cost: ${leasingCost}
     Payment Option: ${paymentOption}
     Machine Data:
-      - creditMin: ${machine.creditMin}
-      - creditMax: ${machine.creditMax}
+      - creditMin: ${machine.creditMin} (exakt originalvärde)
+      - creditMax: ${machine.creditMax} (exakt originalvärde)
       - leasingMin: ${machine.leasingMin}
       - leasingMax: ${machine.leasingMax}
   `);
   
   // Om kontantbetalning, returnera machine.creditMin
   if (paymentOption === 'cash') {
-    console.log(`CASH PAYMENT: Returning creditMin: ${machine.creditMin || 149}`);
+    console.log(`CASH PAYMENT: Returning exact creditMin: ${machine.creditMin || 149}`);
     return machine.creditMin || 149;
   }
   
@@ -54,8 +54,8 @@ export function calculateCreditPrice(
     
     // Logga viktiga punkter för interpolation
     console.log(`CREDIT PRICE INTERPOLATION POINTS:
-      Point 1 (Min): leasingCost=${machine.leasingMin}, creditPrice=${machine.creditMax}
-      Point 2 (Mid): leasingCost=${midLeasingCost}, creditPrice=${machine.creditMin}
+      Point 1 (Min): leasingCost=${machine.leasingMin}, creditPrice=${machine.creditMax} (exakt originalvärde)
+      Point 2 (Mid): leasingCost=${midLeasingCost}, creditPrice=${machine.creditMin} (exakt originalvärde)
       Point 3 (Max): leasingCost=${expandedMaxLeasingCost}, creditPrice=0
       Current: leasingCost=${leasingCost}
     `);
@@ -69,7 +69,7 @@ export function calculateCreditPrice(
       // Om vi är exakt vid mittpunkten (eller väldigt nära), använd exakt creditMin
       if (Math.abs(leasingCost - midLeasingCost) < 10) {
         calculatedCreditPrice = machine.creditMin;
-        console.log(`Exakt vid mittpunkt (${midLeasingCost}), sätter pris till exact creditMin: ${machine.creditMin}`);
+        console.log(`Exakt vid mittpunkt (${midLeasingCost}), sätter pris till exakt creditMin: ${machine.creditMin}`);
       }
     } else {
       // Från midLeasingCost (50%) till expandedMaxLeasingCost (100%)
@@ -79,7 +79,7 @@ export function calculateCreditPrice(
     }
     
     console.log(`INTERPOLATION RESULT:
-      Calculated Credit Price: ${calculatedCreditPrice} kr/credit
+      Calculated Credit Price: ${calculatedCreditPrice} kr/credit (exakt värde utan avrundning)
       Interpolation Details:
         - Using leasingCost: ${leasingCost}
         - First Half: ${leasingCost <= midLeasingCost}
@@ -89,12 +89,12 @@ export function calculateCreditPrice(
         - Final Credit Price: ${Math.max(0, calculatedCreditPrice)}
     `);
     
-    // TA BORT AVRUNDNING (Math.round) så att exakta värden som 149, 299 etc. behålls
+    // VIKTIGT: Ingen avrundning här!
     return Math.max(0, calculatedCreditPrice);
   }
   
   // Fallback till standardvärde om inget annat fungerar
-  console.log(`FALLBACK: Returning default credit price of ${machine.creditMin || 149}`);
+  console.log(`FALLBACK: Returning exact default credit price of ${machine.creditMin || 149}`);
   return machine.creditMin || 149;
 }
 
@@ -105,6 +105,6 @@ export function calculateCreditPriceWithDirectInterpolation(
 ): number {
   const clampedFactor = Math.max(0, Math.min(1, adjustmentFactor));
   const creditValue = creditMin + clampedFactor * (creditMax - creditMin);
-  // TA BORT AVRUNDNING (Math.round) så att exakta värden bibehålls
+  // VIKTIGT: Ingen avrundning här!
   return creditValue;
 }

@@ -48,7 +48,12 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     showFlatrateIndicator,
     treatmentsPerDay,
     allowBelowFlatrate,
-    isAdjustmentEnabled
+    isAdjustmentEnabled,
+    creditPrice: calculatedCreditPrice,
+    machineId: selectedMachine?.id,
+    machineName: selectedMachine?.name,
+    machineOriginalCreditMin: selectedMachine?.creditMin,
+    machineOriginalCreditMax: selectedMachine?.creditMax
   });
 
   const exactMinCost = minLeaseCost;
@@ -85,6 +90,11 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   
   // För visa nuvarande sliderstegets label/namn
   const currentStepLabel = stepValues[currentSliderStep]?.label || 'Standard';
+
+  // Logga vilket kredivärde som visas för aktuellt steg
+  console.log(`Nuvarande steg: ${currentSliderStep} (${currentStepLabel})`);
+  console.log(`Credit-pris som visas: ${calculatedCreditPrice} kr/credit (exakt värde)`);
+  console.log(`Step values för detta steg:`, stepValues[currentSliderStep]);
   
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
