@@ -90,8 +90,8 @@ export function useOperatingCosts({
         machinePriceSEK
       );
       
-      // Säkerställ att kreditpriset aldrig blir negativt
-      const safeCreditPrice = Math.max(0, Math.round(effectiveCreditPrice));
+      // Använd exakt creditPrice utan avrundning
+      const safeCreditPrice = Math.max(0, effectiveCreditPrice);
       setCalculatedCreditPrice(safeCreditPrice);
       
       const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;

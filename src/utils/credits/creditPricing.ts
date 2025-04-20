@@ -79,17 +79,18 @@ export function calculateCreditPrice(
     }
     
     console.log(`INTERPOLATION RESULT:
-      Calculated Credit Price: ${Math.round(calculatedCreditPrice)} kr/credit
+      Calculated Credit Price: ${calculatedCreditPrice} kr/credit
       Interpolation Details:
         - Using leasingCost: ${leasingCost}
         - First Half: ${leasingCost <= midLeasingCost}
         - Mid Leasing Cost: ${midLeasingCost}
         - Expanded Max: ${expandedMaxLeasingCost}
         - Expected creditMin at 50%: ${machine.creditMin}
-        - Final Credit Price: ${Math.max(0, Math.round(calculatedCreditPrice))}
+        - Final Credit Price: ${Math.max(0, calculatedCreditPrice)}
     `);
     
-    return Math.max(0, Math.round(calculatedCreditPrice));
+    // TA BORT AVRUNDNING (Math.round) så att exakta värden som 149, 299 etc. behålls
+    return Math.max(0, calculatedCreditPrice);
   }
   
   // Fallback till standardvärde om inget annat fungerar
@@ -104,5 +105,6 @@ export function calculateCreditPriceWithDirectInterpolation(
 ): number {
   const clampedFactor = Math.max(0, Math.min(1, adjustmentFactor));
   const creditValue = creditMin + clampedFactor * (creditMax - creditMin);
-  return Math.round(creditValue);
+  // TA BORT AVRUNDNING (Math.round) så att exakta värden bibehålls
+  return creditValue;
 }

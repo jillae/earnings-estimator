@@ -56,19 +56,20 @@ export function calculateStepValues(
   const roundedHigh = roundToHundredEndingSix(leasing75Percent);
   const roundedMax = roundToHundredEndingSix(safeMaxNew);
 
+  // Ta bort Math.round för kreditpriserna för att bevara exakta värden
   console.log(`Beräknade stegvärden för ${machine.name}:
     Min (0): ${roundedMin} kr / ${machineMaxCredit} kr per credit
-    Låg (0.5): ${roundedLow} kr / ${Math.round(credit25Percent)} kr per credit
+    Låg (0.5): ${roundedLow} kr / ${credit25Percent} kr per credit
     Standard (1): ${roundedStandard} kr / ${machineMinCredit} kr per credit
-    Hög (1.5): ${roundedHigh} kr / ${Math.round(credit75Percent)} kr per credit
+    Hög (1.5): ${roundedHigh} kr / ${credit75Percent} kr per credit
     Max (2): ${roundedMax} kr / 0 kr per credit
   `);
 
   return {
     0: { leasingCost: roundedMin, creditPrice: machineMaxCredit, label: 'Min' },
-    0.5: { leasingCost: roundedLow, creditPrice: Math.round(credit25Percent), label: 'Låg' },
+    0.5: { leasingCost: roundedLow, creditPrice: credit25Percent, label: 'Låg' },
     1: { leasingCost: roundedStandard, creditPrice: machineMinCredit, label: 'Standard' },
-    1.5: { leasingCost: roundedHigh, creditPrice: Math.round(credit75Percent), label: 'Hög' },
+    1.5: { leasingCost: roundedHigh, creditPrice: credit75Percent, label: 'Hög' },
     2: { leasingCost: roundedMax, creditPrice: 0, label: 'Max' }
   };
 }
