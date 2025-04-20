@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { CalculatorContext } from '../CalculatorContext';
 import { useCalculatorValues } from './useCalculatorValues';
 import { useSlaCosts } from './useSlaCosts';
 import { useFlatrateGuard } from './useFlatrateGuard';
+import { useContextualInfo } from './useContextualInfo';
 import { buildContextValue } from './contextValue';
 
 export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -16,6 +18,17 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     currentSliderStep: base.currentSliderStep,
     useFlatrateOption: base.useFlatrateOption,
     setUseFlatrateOption: base.setUseFlatrateOption,
+  });
+  
+  // Hantera kontextuell info
+  useContextualInfo({
+    selectedMachine: base.selectedMachine,
+    selectedDriftpaket: base.selectedDriftpaket,
+    paymentOption: base.paymentOption,
+    currentSliderStep: base.currentSliderStep,
+    treatmentsPerDay: base.treatmentsPerDay,
+    useFlatrateOption: base.useFlatrateOption,
+    setCurrentInfoText: base.setCurrentInfoText
   });
 
   // Bygg det färdiga context-värdet (samma struktur som förut)

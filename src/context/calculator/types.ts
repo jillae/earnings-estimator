@@ -1,7 +1,7 @@
-
 import { Machine, LeasingPeriod, InsuranceOption } from '@/data/machines/types';
 import { ClinicSize, PaymentOption, FlatrateOption, SlaLevel, DriftpaketType, OperatingCost, Revenue, OccupancyRevenues, NetResults } from '@/types/calculator';
 import { SliderStep, StepValues } from '@/utils/sliderSteps';
+import { InfoText } from '@/data/infoTexts';
 
 export interface CalculatorState {
   clinicSize: ClinicSize;
@@ -36,43 +36,35 @@ export interface CalculatorState {
 }
 
 export interface CalculatorContextType {
-  // Clinic settings
   clinicSize: ClinicSize;
   setClinicSize: (size: ClinicSize) => void;
   
-  // Machine selection
   selectedMachineId: string;
   setSelectedMachineId: (id: string) => void;
   selectedMachine: Machine | undefined;
   
-  // Payment options
   paymentOption: PaymentOption;
   setPaymentOption: (option: PaymentOption) => void;
   cashPriceSEK: number;
   
-  // Leasing options
   selectedLeasingPeriodId: string;
   setSelectedLeasingPeriodId: (id: string) => void;
   selectedInsuranceId: string;
   setSelectedInsuranceId: (id: string) => void;
   
-  // SLA/Driftpaket options
   selectedSlaLevel: SlaLevel;
   setSlaLevel: (level: SlaLevel) => void;
   selectedDriftpaket: DriftpaketType;
   setSelectedDriftpaket: (type: DriftpaketType) => void;
   
-  // Treatment settings
   treatmentsPerDay: number;
   setTreatmentsPerDay: (count: number) => void;
   customerPrice: number;
   setCustomerPrice: (price: number) => void;
   
-  // Exchange rate and pricing
   exchangeRate: number;
   machinePriceSEK: number;
   
-  // Leasing calculation
   leasingRange: {
     min: number;
     max: number;
@@ -81,13 +73,11 @@ export interface CalculatorContextType {
   };
   leasingCost: number;
   
-  // 5-step slider
   currentSliderStep: SliderStep;
   setCurrentSliderStep: (step: SliderStep) => void;
   stepValues: Record<SliderStep, StepValues>;
   currentStepValues: StepValues;
   
-  // Credit and flatrate
   creditPrice: number;
   calculatedCreditPrice: number;
   calculatedSlaCostSilver: number;
@@ -98,7 +88,6 @@ export interface CalculatorContextType {
   useFlatrateOption: FlatrateOption;
   setUseFlatrateOption: (option: FlatrateOption) => void;
   
-  // Operating costs
   operatingCost: {
     costPerMonth: number;
     useFlatrate: boolean;
@@ -106,7 +95,6 @@ export interface CalculatorContextType {
     totalCost: number;
   };
   
-  // Revenue and net results
   revenue: {
     revenuePerTreatmentExVat: number;
     dailyRevenueIncVat: number;
@@ -126,7 +114,9 @@ export interface CalculatorContextType {
     netPerYearExVat: number;
   };
   
-  // Reference values
+  currentInfoText: InfoText | null;
+  setCurrentInfoText: (infoText: InfoText | null) => void;
+  
   slaCosts: {
     Brons: number;
     Silver: number;

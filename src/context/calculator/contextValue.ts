@@ -1,8 +1,11 @@
+import { CalculatorContextType } from './types';
 
-export function buildContextValue(base: any, slaCosts: any) {
+export function buildContextValue(base: any, slaCosts: any): CalculatorContextType {
   return {
     ...base,
-    slaCosts
-    // ev. fler framtida extrafält här
+    currentInfoText: base.currentInfoText,
+    setCurrentInfoText: base.setCurrentInfoText,
+    slaCosts,
+    leasingMax60mRef: base.leasingMax60mRef
   };
 }

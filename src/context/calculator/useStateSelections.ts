@@ -1,10 +1,10 @@
-
 import { useState, useEffect, useMemo } from 'react';
 import { machineData } from '@/data/machines';
 import { Machine } from '@/data/machines/types';
 import { FlatrateOption, PaymentOption, SlaLevel } from '@/utils/constants';
 import { DriftpaketType } from '@/types/calculator';
 import { SliderStep } from '@/utils/sliderSteps';
+import { InfoText } from '@/data/infoTexts';
 
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
@@ -22,6 +22,9 @@ export function useStateSelections() {
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
   const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit');
+  
+  // Nytt state för info-rutan
+  const [currentInfoText, setCurrentInfoText] = useState<InfoText | null>(null);
 
   // Härled den valda maskinen från maskin-ID
   const selectedMachine = useMemo(() => {
@@ -124,6 +127,8 @@ export function useStateSelections() {
     customerPrice,
     setCustomerPrice,
     useFlatrateOption,
-    setUseFlatrateOption
+    setUseFlatrateOption,
+    currentInfoText,
+    setCurrentInfoText
   };
 }

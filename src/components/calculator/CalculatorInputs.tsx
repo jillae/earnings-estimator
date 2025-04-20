@@ -10,6 +10,7 @@ import LeaseAdjuster from '../LeaseAdjuster';
 import LeasingOptions from '../LeasingOptions';
 import PaymentOptionToggle from './PaymentOptionToggle';
 import DriftpaketSelector from './DriftpaketSelector';
+import ContextualInfoBox from './ContextualInfoBox';
 import { formatCurrency } from '@/utils/formatUtils';
 import { leasingPeriods, insuranceOptions } from '@/data/machines'; 
 import FloatingResultsSummary from './FloatingResultsSummary';
@@ -113,6 +114,11 @@ const CalculatorInputs: React.FC = () => {
           
           <div className="mt-4">
             <DriftpaketSelector />
+            
+            {/* Lägg till ContextualInfoBox här i driftssektionen */}
+            <div className="mt-2">
+              <ContextualInfoBox />
+            </div>
           </div>
           
           <OperatingCosts />
