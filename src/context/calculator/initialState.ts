@@ -1,6 +1,6 @@
 
 import { machineData } from '@/data/machines';
-import { CalculatorState } from './types';
+import { CalculatorState } from '@/context/calculator/types';
 
 // Initial state values for the calculator
 export const initialState: CalculatorState = {

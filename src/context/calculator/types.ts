@@ -1,7 +1,39 @@
 
 import { Machine, LeasingPeriod, InsuranceOption } from '@/data/machines/types';
-import { ClinicSize, PaymentOption, FlatrateOption, SlaLevel, DriftpaketType } from '@/types/calculator';
+import { ClinicSize, PaymentOption, FlatrateOption, SlaLevel, DriftpaketType, OperatingCost, Revenue, OccupancyRevenues, NetResults } from '@/types/calculator';
 import { SliderStep, StepValues } from '@/utils/sliderSteps';
+
+export interface CalculatorState {
+  clinicSize: ClinicSize;
+  selectedMachineId: string;
+  paymentOption: PaymentOption;
+  selectedLeasingPeriodId: string;
+  selectedInsuranceId: string;
+  selectedSlaLevel: SlaLevel;
+  selectedDriftpaket: DriftpaketType;
+  leaseAdjustmentFactor: number;
+  treatmentsPerDay: number;
+  customerPrice: number;
+  exchangeRate: number;
+  machinePriceSEK: number;
+  cashPriceSEK: number;
+  leasingRange: {
+    min: number;
+    max: number;
+    default: number;
+    flatrateThreshold?: number;
+  };
+  leasingCost: number;
+  creditPrice: number;
+  calculatedCreditPrice: number;
+  calculatedSlaCostSilver: number;
+  calculatedSlaCostGuld: number;
+  flatrateThreshold: number;
+  operatingCost: OperatingCost;
+  revenue: Revenue;
+  occupancyRevenues: OccupancyRevenues;
+  netResults: NetResults;
+}
 
 export interface CalculatorContextType {
   // Clinic settings

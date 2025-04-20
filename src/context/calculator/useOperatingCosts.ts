@@ -19,7 +19,8 @@ export function useOperatingCosts({
   selectedSlaLevel = 'Brons',
   selectedDriftpaket = 'Bas',
   paymentOption = 'leasing',
-  leasingMax60mRef = 0
+  leasingMax60mRef = 0,
+  creditPrice = 0
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
@@ -33,6 +34,7 @@ export function useOperatingCosts({
   selectedDriftpaket?: DriftpaketType;
   paymentOption?: 'leasing' | 'cash';
   leasingMax60mRef?: number;
+  creditPrice?: number;
 }) {
   const [operatingCost, setOperatingCost] = useState<{ 
     costPerMonth: number,
@@ -79,8 +81,8 @@ export function useOperatingCosts({
     
     // Beräkna kreditpris och kredit/flatrate-kostnad för Bas-paketet
     if (selectedMachine.usesCredits && selectedDriftpaket === 'Bas') {
-      // Beräkna kreditpris baserat på betalningsalternativ och leasingkostnad
-      const creditPrice = calculateCreditPrice(
+      // Använd det tillhandahållna kreditpriset, eller beräkna om det inte finns
+      const effectiveCreditPrice = creditPrice || calculateCreditPrice(
         selectedMachine, 
         leasingCost, 
         paymentOption, 
@@ -89,7 +91,7 @@ export function useOperatingCosts({
       );
       
       // Säkerställ att kreditpriset aldrig blir negativt
-      const safeCreditPrice = Math.max(0, Math.round(creditPrice));
+      const safeCreditPrice = Math.max(0, Math.round(effectiveCreditPrice));
       setCalculatedCreditPrice(safeCreditPrice);
       
       const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
@@ -156,7 +158,8 @@ export function useOperatingCosts({
     paymentOption, 
     allowBelowFlatrate, 
     leasingMax60mRef,
-    machinePriceSEK
+    machinePriceSEK,
+    creditPrice
   ]);
 
   return { 

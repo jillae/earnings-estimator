@@ -158,7 +158,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     selectedDriftpaket,
     paymentOption,
     leasingMax60mRef,
-    creditPrice // Skicka med den nya, exakta creditPrice från stepValues
+    creditPrice // Skicka den exakta creditPrice från stepValues
   });
 
   // Get revenue calculations
