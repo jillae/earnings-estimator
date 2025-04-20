@@ -1,11 +1,12 @@
 
 import { useEffect } from 'react';
+import { FlatrateOption } from '@/utils/constants';
 
 export function useFlatrateGuard({ treatmentsPerDay, currentSliderStep, useFlatrateOption, setUseFlatrateOption }: {
   treatmentsPerDay: number;
   currentSliderStep: number;
   useFlatrateOption: string;
-  setUseFlatrateOption: (option: string) => void;
+  setUseFlatrateOption: (option: FlatrateOption) => void;
 }) {
   useEffect(() => {
     if (useFlatrateOption === 'flatrate') {
