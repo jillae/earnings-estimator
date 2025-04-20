@@ -127,7 +127,7 @@ const OperatingCosts: React.FC = () => {
         <>
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm">Pris per credit</span>
-            <span className="text-lg font-semibold">{formatCurrency(creditPrice || 0)}</span>
+            <span className="text-lg font-semibold">{formatCurrency(creditPrice || 0, false)}</span>
           </div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm">Credits per månad</span>

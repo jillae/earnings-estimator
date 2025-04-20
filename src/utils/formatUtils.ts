@@ -19,6 +19,15 @@ export function formatCurrency(amount: number | undefined, addVAT: boolean = fal
   // Lägg till moms om det behövs
   const finalAmount = addVAT ? amount * (1 + VAT_RATE) : amount;
   
+  // För kreditpriser, visa med decimaler om värdet inte är ett heltal
+  if (!endWith6 && finalAmount % 1 !== 0) {
+    // Formatera med en decimal för kreditpriser som inte är heltal
+    return finalAmount.toLocaleString('sv-SE', { 
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1 
+    }) + ' kr';
+  }
+  
   // Avrunda till heltal
   let roundedAmount = Math.round(finalAmount);
   
@@ -29,11 +38,8 @@ export function formatCurrency(amount: number | undefined, addVAT: boolean = fal
       roundedAmount = roundedAmount - lastDigit + 6;
     }
   } else {
-    // Annars, se till att kundpriser slutar med 0
-    const lastDigit = roundedAmount % 10;
-    if (lastDigit !== 0) {
-      roundedAmount = roundedAmount - lastDigit;
-    }
+    // För andra belopp än leasingkostnader, behåll det exakta värdet
+    // Vi avrundar inte kreditpriser
   }
   
   // Formatera med tusentalsavgränsare
