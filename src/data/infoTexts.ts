@@ -1,71 +1,81 @@
-// Fil: src/data/infoTexts.ts
 
-export interface InfoText {
-  title: string;
-  body: string;
-  link?: { text: string; href: string }; // Optional link
+// Fil: src/data/infoTexts.ts (v19 - Ovillkorlig Flatrate vid Kontant)
+export interface InfoText { 
+  title: string; 
+  body: string; 
+  link?: { text: string; href: string }; 
 }
 
-// Definierar nycklarna för olika informationskontexter
 export type InfoTextKey =
-  | 'DEFAULT' // Standard, ingen specifik info visas
-  | 'CREDITS_MACHINE_SELECTED' // När en maskin MED credits väljs
-  | 'NON_CREDITS_MACHINE_SELECTED' // När en maskin UTAN credits väljs
-  | 'BAS_PACKAGE_CREDITS_LEASING' // När Paket Bas är valt + Leasing + Credits-maskin
-  | 'BAS_PACKAGE_CREDITS_CASH' // När Paket Bas är valt + Kontant + Credits-maskin
-  | 'SILVER_PACKAGE_SELECTED' // När Paket Silver är valt
-  | 'GULD_PACKAGE_SELECTED' // När Paket Guld är valt
-  | 'FLATRATE_UNLOCKED_OFF' // När Paket Bas + Credits + Flatrate är tillgängligt men AV
-  | 'FLATRATE_LOCKED'; // När Paket Bas + Credits + Flatrate INTE är tillgängligt
+  | 'DEFAULT' 
+  | 'CREDITS_MACHINE_SELECTED' 
+  | 'NON_CREDITS_MACHINE_SELECTED'
+  | 'BAS_PACKAGE_CREDITS_LEASING' 
+  | 'BAS_PACKAGE_CREDITS_CASH' // Skillnad här
+  | 'SILVER_PACKAGE_LEASING_FLATRATE_ACTIVE' 
+  | 'SILVER_PACKAGE_LEASING_FLATRATE_INACTIVE'
+  | 'SILVER_PACKAGE_CASH' // Ny för kontant
+  | 'GULD_PACKAGE_LEASING_FLATRATE_ACTIVE' 
+  | 'GULD_PACKAGE_LEASING_FLATRATE_INACTIVE'
+  | 'GULD_PACKAGE_CASH'   // Ny för kontant
+  | 'FLATRATE_NEEDS_HIGHER_LEASE'; // Bara för Leasing
 
-// Mappar nycklar till specifika texter (eller null för att dölja rutan)
 export const infoTexts: Record<InfoTextKey, InfoText | null> = {
   DEFAULT: null,
-
-  CREDITS_MACHINE_SELECTED: {
-    title: "Info: Credits & Driftpaket",
-    body: "Denna maskin använder credits. Välj ett Driftpaket för att se din totala driftskostnad för service, garanti och användning.",
-    // Uppdatera href till er faktiska info-sida/PDF
-    link: { text: "Jämför Driftpaketen", href: "/link-to-sla-details" }
+  CREDITS_MACHINE_SELECTED: { 
+    title: "Info: Credits & Driftpaket", 
+    body: "Denna maskin använder credits. Välj Driftpaket för service, garanti och anpassad användningskostnad.", 
+    link: { text: "Jämför Driftpaketen", href: "/link-to-sla-details" } 
   },
-
-  NON_CREDITS_MACHINE_SELECTED: {
-    title: "Info: Service & Driftpaket",
-    body: "Denna maskin har inga kreditkostnader. Välj ett Driftpaket för att se din fasta månadskostnad för service och garanti.",
-    link: { text: "Jämför Driftpaketen", href: "/link-to-sla-details" } // Uppdatera href
+  NON_CREDITS_MACHINE_SELECTED: { 
+    title: "Info: Service & Driftpaket", 
+    body: "Denna maskin har inga kreditkostnader. Välj Driftpaket för service & garanti.", 
+    link: { text: "Jämför Driftpaketen", href: "/link-to-sla-details" } 
   },
-
-  BAS_PACKAGE_CREDITS_LEASING: {
-    title: "Info: Paket Bas (Leasing)",
-    body: "Styckepris per credit gäller (priset påverkas av vald leasingnivå). Ger kontroll över användning. Credits beställs separat i 25-pack. Flatrate (3 mån uppsägning) kan väljas nedan om villkor uppfylls.",
-    link: { text: "Läs mer om Credits", href: "/link-to-credits-info" } // Uppdatera href
+  BAS_PACKAGE_CREDITS_LEASING: { 
+    title: "Info: Paket Bas (Leasing)", 
+    body: "Styckepris per credit gäller (påverkas av valt leasingpaket via slidern). Credits beställs i 25-pack. Flatrate (obegr. användning, 3 mån uppsägning) kan väljas via reglaget om du valt leasingpaket Standard eller högre.", 
+    link: { text: "Läs mer om Credits", href: "/link-to-credits-info" } 
   },
-
-  BAS_PACKAGE_CREDITS_CASH: {
-    title: "Info: Paket Bas (Kontant)",
-    body: "Fast styckepris per credit gäller. Ger kontroll över användning. Credits beställs separat i 25-pack. Flatrate (3 mån uppsägning) kan väljas nedan vid minst 3 beh/dag.",
-    link: { text: "Läs mer om Credits", href: "/link-to-credits-info" } // Uppdatera href
+  BAS_PACKAGE_CREDITS_CASH: { 
+    title: "Info: Paket Bas (Kontant)", 
+    body: "Fast styckepris per credit (creditMin) gäller. Credits beställs i 25-pack. Flatrate (obegr. användning, 3 mån uppsägning) kan väljas fritt via reglaget nedan.", 
+    link: { text: "Läs mer om Credits", href: "/link-to-credits-info" } 
   },
-
-  SILVER_PACKAGE_SELECTED: {
-    title: "Info: Paket Silver",
-    body: "Utökad service (24m Garanti, Utökad Support, Lånemaskin) ingår. För kreditmaskiner ingår även Flatrate Credits (obegränsad användning, 3 mån uppsägningstid) i paketpriset.",
-    link: { text: "Se fullständiga villkor", href: "/link-to-sla-details" } // Uppdatera href
+  // Uppdaterade för Silver/Guld - skilj på Leasing och Kontant
+  SILVER_PACKAGE_LEASING_FLATRATE_ACTIVE: { 
+    title: "Info: Paket Silver (Leasing)", 
+    body: "Utökad service (...) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår i paketpriset vid denna högre leasingnivå (Standard+).", 
+    link: { text: "Se villkor", href: "/link-to-sla-details" } 
   },
-
-  GULD_PACKAGE_SELECTED: {
-    title: "Info: Paket Guld",
-    body: "Premium service (24m Garanti, Premium Support, Lånemaskin etc.) ingår. För kreditmaskiner ingår även Flatrate Credits (obegränsad användning, 3 mån uppsägningstid) i paketpriset.",
-    link: { text: "Se fullständiga villkor", href: "/link-to-sla-details" } // Uppdatera href
+  SILVER_PACKAGE_LEASING_FLATRATE_INACTIVE: { 
+    title: "Info: Paket Silver (Leasing)", 
+    body: "Utökad service ingår. OBS! För att Flatrate ska ingå krävs leasingpaket Standard eller högre (slider >= 50%). Styckepris för credits tillkommer nu utöver paketpriset.", 
+    link: { text: "Se villkor", href: "/link-to-sla-details" } 
   },
-
-  FLATRATE_UNLOCKED_OFF: {
-    title: "Info: Välj Flatrate?",
-    body: "Du kan nu välja Flatrate via togglen för att få obegränsade credits till en fast månadskostnad (3 mån uppsägningstid)."
+  SILVER_PACKAGE_CASH: { 
+    title: "Info: Paket Silver (Kontant)", 
+    body: "Utökad service (...) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår automatiskt i paketpriset vid kontantköp.", 
+    link: { text: "Se villkor", href: "/link-to-sla-details" } 
   },
-
-  FLATRATE_LOCKED: {
-    title: "Info: Flatrate Ej Tillgängligt",
-    body: "För att kunna välja Flatrate behöver du ha minst 3 behandlingar per dag och valt leasingpaket 'Standard' eller högre (slider på minst 50%)."
+  GULD_PACKAGE_LEASING_FLATRATE_ACTIVE: { 
+    title: "Info: Paket Guld (Leasing)", 
+    body: "Premium service (...) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår i paketpriset vid denna högre leasingnivå (Standard+).", 
+    link: { text: "Se villkor", href: "/link-to-sla-details" } 
+  },
+  GULD_PACKAGE_LEASING_FLATRATE_INACTIVE: { 
+    title: "Info: Paket Guld (Leasing)", 
+    body: "Premium service ingår. OBS! För att Flatrate ska ingå krävs leasingpaket Standard eller högre (slider >= 50%). Styckepris för credits tillkommer nu utöver paketpriset.", 
+    link: { text: "Se villkor", href: "/link-to-sla-details" } 
+  },
+  GULD_PACKAGE_CASH: { 
+    title: "Info: Paket Guld (Kontant)", 
+    body: "Premium service (...) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår automatiskt i paketpriset vid kontantköp.", 
+    link: { text: "Se villkor", href: "/link-to-sla-details" } 
+  },
+  // Förklarar varför Flatrate toggle/benefit kan vara inaktiv (endast Leasing-fall)
+  FLATRATE_NEEDS_HIGHER_LEASE: { 
+    title: "Info: Välj Flatrate?", 
+    body: "För att kunna välja/inkludera Flatrate behöver du välja ett högre leasingpaket (Standard eller högre via slidern)." 
   }
 };

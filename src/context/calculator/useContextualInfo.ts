@@ -34,6 +34,7 @@ export function useContextualInfo({
     }
     
     const usesCredits = selectedMachine.usesCredits;
+    const isLeasingFlatrateViable = currentSliderStep >= 1;
     
     // Visa maskin-specifik info när en maskin först väljs
     if (usesCredits) {
@@ -45,27 +46,41 @@ export function useContextualInfo({
     // Info baserad på driftpaket för maskiner som använder credits
     if (usesCredits) {
       if (selectedDriftpaket === 'Silver') {
-        setCurrentInfoText(infoTexts.SILVER_PACKAGE_CREDITS);
+        if (paymentOption === 'cash') {
+          // Kontant + Silver: Flatrate alltid inkluderat
+          setCurrentInfoText(infoTexts.SILVER_PACKAGE_CASH);
+        } else {
+          // Leasing + Silver: Villkorad Flatrate
+          if (isLeasingFlatrateViable) {
+            setCurrentInfoText(infoTexts.SILVER_PACKAGE_LEASING_FLATRATE_ACTIVE);
+          } else {
+            setCurrentInfoText(infoTexts.SILVER_PACKAGE_LEASING_FLATRATE_INACTIVE);
+          }
+        }
       } else if (selectedDriftpaket === 'Guld') {
-        setCurrentInfoText(infoTexts.GULD_PACKAGE_CREDITS);
+        if (paymentOption === 'cash') {
+          // Kontant + Guld: Flatrate alltid inkluderat
+          setCurrentInfoText(infoTexts.GULD_PACKAGE_CASH);
+        } else {
+          // Leasing + Guld: Villkorad Flatrate
+          if (isLeasingFlatrateViable) {
+            setCurrentInfoText(infoTexts.GULD_PACKAGE_LEASING_FLATRATE_ACTIVE);
+          } else {
+            setCurrentInfoText(infoTexts.GULD_PACKAGE_LEASING_FLATRATE_INACTIVE);
+          }
+        }
       } else if (selectedDriftpaket === 'Bas') {
-        // Info baserad på betalningsalternativ för Bas-paketet
+        // Bas paket: Skilda info-texter för Leasing vs Kontant
         if (paymentOption === 'leasing') {
           setCurrentInfoText(infoTexts.BAS_PACKAGE_CREDITS_LEASING);
+          
+          // Visa info om flatrate endast vid leasing + slider < 1
+          if (currentSliderStep < 1) {
+            setCurrentInfoText(infoTexts.FLATRATE_NEEDS_HIGHER_LEASE);
+          }
         } else {
           setCurrentInfoText(infoTexts.BAS_PACKAGE_CREDITS_CASH);
         }
-      }
-    }
-    
-    // Flatrate info (endast för kreditmaskiner med Bas-paket)
-    if (usesCredits && selectedDriftpaket === 'Bas') {
-      const isFlatrateUnlocked = treatmentsPerDay >= 3 && currentSliderStep >= 1;
-      
-      if (isFlatrateUnlocked && useFlatrateOption === 'perCredit') {
-        setCurrentInfoText(infoTexts.FLATRATE_UNLOCKED_OFF);
-      } else if (!isFlatrateUnlocked && useFlatrateOption === 'perCredit') {
-        setCurrentInfoText(infoTexts.FLATRATE_LOCKED);
       }
     }
     

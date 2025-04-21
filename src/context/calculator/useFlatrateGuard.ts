@@ -1,21 +1,31 @@
 
 import { useEffect } from 'react';
 import { FlatrateOption } from '@/utils/constants';
+import { SliderStep } from '@/utils/sliderSteps';
 
-export function useFlatrateGuard({ treatmentsPerDay, currentSliderStep, useFlatrateOption, setUseFlatrateOption }: {
+/**
+ * En guard-hook som säkerställer att flatrate-inställningen är korrekt baserat på villkor
+ */
+export function useFlatrateGuard({
+  treatmentsPerDay,
+  currentSliderStep,
+  useFlatrateOption,
+  setUseFlatrateOption,
+  paymentOption
+}: {
   treatmentsPerDay: number;
-  currentSliderStep: number;
-  useFlatrateOption: string;
+  currentSliderStep: SliderStep;
+  useFlatrateOption: FlatrateOption;
   setUseFlatrateOption: (option: FlatrateOption) => void;
+  paymentOption: 'leasing' | 'cash';
 }) {
+  // När slider-steget ändras (eller andra dependencies), säkerställ korrekt flatrate-option
   useEffect(() => {
-    if (useFlatrateOption === 'flatrate') {
-      const meetsMinTreatments = treatmentsPerDay >= 3;
-      const meetsSliderRequirement = currentSliderStep >= 1;
-      const canEnableFlatrate = meetsMinTreatments && meetsSliderRequirement;
-      if (!canEnableFlatrate) {
-        setUseFlatrateOption('perCredit');
-      }
+    // NYTT VILLKOR:
+    // Bara vid leasing och step < 1 ska vi tvinga per-credit
+    if (paymentOption === 'leasing' && currentSliderStep < 1 && useFlatrateOption === 'flatrate') {
+      console.log('Återställer flatrate-val till perCredit då slider < 1 och leasing');
+      setUseFlatrateOption('perCredit');
     }
-  }, [treatmentsPerDay, currentSliderStep, useFlatrateOption, setUseFlatrateOption]);
+  }, [currentSliderStep, useFlatrateOption, setUseFlatrateOption, paymentOption]);
 }

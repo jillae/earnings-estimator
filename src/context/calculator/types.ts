@@ -1,3 +1,4 @@
+
 import { Machine, LeasingPeriod, InsuranceOption } from '@/data/machines/types';
 import { ClinicSize, PaymentOption, FlatrateOption, SlaLevel, DriftpaketType, OperatingCost, Revenue, OccupancyRevenues, NetResults } from '@/types/calculator';
 import { SliderStep, StepValues } from '@/utils/sliderSteps';
@@ -123,4 +124,8 @@ export interface CalculatorContextType {
     Guld: number;
   };
   leasingMax60mRef: number;
+  
+  // Nya egenskaper
+  isFlatrateViable: boolean;
+  isLeasingFlatrateViable: boolean;
 }

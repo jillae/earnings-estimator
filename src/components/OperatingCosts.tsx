@@ -18,7 +18,8 @@ const OperatingCosts: React.FC = () => {
     flatrateThreshold,
     paymentOption,
     selectedDriftpaket,
-    operatingCost
+    operatingCost,
+    currentSliderStep
   } = useCalculator();
 
   const { handleFlatrateChange, canEnableFlatrate } = useFlatrateHandler();
@@ -28,6 +29,13 @@ const OperatingCosts: React.FC = () => {
     return null;
   }
   
+  // Beräkna om flatrate är inkluderat för Silver/Guld
+  const isLeasingFlatrateViable = currentSliderStep >= 1;
+  const isFlatrateIncluded = 
+    selectedMachine.usesCredits && 
+    (selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld') &&
+    (paymentOption === 'cash' || (paymentOption === 'leasing' && isLeasingFlatrateViable));
+  
   console.log(`OperatingCosts Rendering:
     Machine: ${selectedMachine.name}
     Driftpaket: ${selectedDriftpaket}
@@ -35,6 +43,9 @@ const OperatingCosts: React.FC = () => {
     Uses Credits: ${selectedMachine.usesCredits}
     Flatrate Option: ${useFlatrateOption}
     Can Enable Flatrate: ${canEnableFlatrate}
+    Is Flatrate Included (Silver/Guld): ${isFlatrateIncluded}
+    Payment Option: ${paymentOption}
+    Current Slider Step: ${currentSliderStep}
   `);
 
   // Om maskinen inte använder credits
@@ -52,8 +63,8 @@ const OperatingCosts: React.FC = () => {
     );
   }
 
-  // Om Silver eller Guld driftpaket är valt (och maskinen använder credits)
-  if (selectedDriftpaket !== 'Bas') {
+  // Om Silver eller Guld driftpaket är valt OCH flatrate är inkluderat
+  if ((selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld') && isFlatrateIncluded) {
     return (
       <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
         <h3 className="text-lg font-semibold mb-4">Detaljer Driftskostnad</h3>
@@ -73,6 +84,51 @@ const OperatingCosts: React.FC = () => {
     );
   }
 
+  // Om Silver eller Guld driftpaket är valt men flatrate INTE är inkluderat (bara vid leasing + lågt slider-värde)
+  if ((selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld') && !isFlatrateIncluded) {
+    const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
+    const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
+    const totalCreditsPerMonth = treatmentsPerMonth * creditsPerTreatment;
+    const creditsCostPerMonth = totalCreditsPerMonth * (creditPrice || 0);
+    
+    return (
+      <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
+        <h3 className="text-lg font-semibold mb-4">Detaljer Driftskostnad</h3>
+        
+        <div className="p-4 mb-4 bg-amber-50 border border-amber-200 rounded-md">
+          <div className="flex items-center gap-2 mb-2">
+            <AlertTriangle className="h-5 w-5 text-amber-600" />
+            <p className="text-amber-700 font-medium">
+              OBS! Flatrate ingår ej i {selectedDriftpaket}-paketet vid denna leasingnivå
+            </p>
+          </div>
+          <p className="text-sm text-amber-600 pl-7">
+            För att inkludera Flatrate (obegränsad användning) behöver du välja leasingpaket Standard eller högre.
+            Styckepris för credits tillkommer därför nu utöver paketpriset.
+          </p>
+        </div>
+
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm">Pris per credit</span>
+          <span className="text-lg font-semibold">{formatCurrency(creditPrice || 0, false)}</span>
+        </div>
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm">Credits per månad</span>
+          <span className="text-sm text-gray-600">{totalCreditsPerMonth} credits</span>
+        </div>
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm">Credit-kostnad per månad</span>
+          <span className="text-lg font-semibold">{formatCurrency(creditsCostPerMonth)}</span>
+        </div>
+        
+        <div className="flex justify-between items-center mb-2 pt-2 border-t border-gray-200">
+          <span className="text-sm font-semibold">Total driftskostnad per månad</span>
+          <span className="text-lg font-semibold text-blue-600">{formatCurrency(operatingCost.totalCost)}</span>
+        </div>
+      </div>
+    );
+  }
+
   // För Bas-paketet med credits, visa detaljerad vy med kreditpris/flatrate
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
   const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
@@ -86,10 +142,6 @@ const OperatingCosts: React.FC = () => {
     const breakEvenTreatmentsPerMonth = flatrateAmount / (creditPrice * creditsPerTreatment);
     return Math.ceil(breakEvenTreatmentsPerMonth / WORKING_DAYS_PER_MONTH);
   };
-
-  // Visa recommendation baserat på leasingkostnad och flatrate-tröskelvärde
-  const showFlatrateRecommendation = flatrateThreshold && 
-    (paymentOption === 'cash' || (paymentOption === 'leasing' && leasingCost >= flatrateThreshold));
 
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
@@ -112,13 +164,11 @@ const OperatingCosts: React.FC = () => {
         </span>
       </div>
 
-      {!canEnableFlatrate && useFlatrateOption !== 'flatrate' && (
+      {!canEnableFlatrate && useFlatrateOption !== 'flatrate' && paymentOption === 'leasing' && (
         <div className="flex items-center gap-2 p-2 mb-4 bg-amber-50 border border-amber-200 rounded text-amber-700 text-sm">
           <AlertTriangle className="h-4 w-4" />
           <span>
-            {treatmentsPerDay < 3 
-              ? "Minst 3 behandlingar per dag krävs för Flatrate" 
-              : "Leasingkostnaden behöver ökas för att aktivera Flatrate"}
+            Leasingpaketet behöver vara Standard eller högre för att aktivera Flatrate
           </span>
         </div>
       )}
@@ -154,16 +204,6 @@ const OperatingCosts: React.FC = () => {
         <p className="text-xs text-blue-500 mt-2">
           Vid {calculateBreakEven()} eller fler behandlingar per dag kan flatrate vara mer kostnadseffektivt.
         </p>
-      )}
-      
-      {showFlatrateRecommendation && useFlatrateOption !== 'flatrate' && (
-        <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded-md">
-          <p className="text-xs text-blue-700">
-            {paymentOption === 'cash' 
-              ? 'Vid kontantköp rekommenderar vi flatrate för obegränsad användning av credits.'
-              : 'Baserat på din leasingkostnad rekommenderar vi att du använder flatrate för obegränsad användning av credits.'}
-          </p>
-        </div>
       )}
     </div>
   );

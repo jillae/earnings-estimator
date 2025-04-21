@@ -15,12 +15,16 @@ export function useFlatrateHandler() {
     currentSliderStep
   } = useCalculator();
 
-  // Nytt villkor: treatmentsPerDay >= 3 OCH currentSliderStep >= 1 (alltså Standard eller högre)
+  // NYTT VILLKOR: 
+  // - Vid kontantköp är flatrate ALLTID valbart
+  // - Vid leasing krävs att currentSliderStep >= 1 (Standard eller högre)
   const canEnableFlatrate = Boolean(
     selectedMachine?.usesCredits && 
-    treatmentsPerDay >= 3 && 
-    currentSliderStep >= 1 &&
-    selectedDriftpaket === 'Bas'  // Bara i Bas-paketet som flatrate-toggle är relevant
+    selectedDriftpaket === 'Bas' && // Bara i Bas-paketet som flatrate-toggle är relevant
+    (
+      paymentOption === 'cash' || // Vid kontant: alltid tillåtet
+      (paymentOption === 'leasing' && currentSliderStep >= 1) // Vid leasing: kräver Standard+
+    )
   );
 
   const handleFlatrateChange = useCallback((checked: boolean) => {

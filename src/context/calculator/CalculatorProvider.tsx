@@ -18,6 +18,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     currentSliderStep: base.currentSliderStep,
     useFlatrateOption: base.useFlatrateOption,
     setUseFlatrateOption: base.setUseFlatrateOption,
+    paymentOption: base.paymentOption // Skicka med paymentOption
   });
   
   // Hantera kontextuell info

@@ -6,6 +6,7 @@ import { calculateCreditPrice } from '@/utils/credits/creditPricing';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 import { calculateSlaCost } from '@/utils/pricingUtils';
 import { DriftpaketType } from '@/types/calculator';
+import { SliderStep } from '@/utils/sliderSteps';
 
 export function useOperatingCosts({
   selectedMachineId,
@@ -20,7 +21,8 @@ export function useOperatingCosts({
   selectedDriftpaket = 'Bas',
   paymentOption = 'leasing',
   leasingMax60mRef = 0,
-  creditPrice = 0
+  creditPrice = 0,
+  currentSliderStep = 1
 }: {
   selectedMachineId: string;
   treatmentsPerDay: number;
@@ -35,6 +37,7 @@ export function useOperatingCosts({
   paymentOption?: 'leasing' | 'cash';
   leasingMax60mRef?: number;
   creditPrice?: number;
+  currentSliderStep?: SliderStep;
 }) {
   const [operatingCost, setOperatingCost] = useState<{ 
     costPerMonth: number,
@@ -76,61 +79,99 @@ export function useOperatingCosts({
     setCalculatedSlaCostSilver(silverCost);
     setCalculatedSlaCostGuld(guldCost);
 
+    // NYTT VILLKOR:
+    // - Vid kontantköp är flatrate ALLTID valbart i Bas-paket och ingår ALLTID i Silver/Guld
+    // - Vid leasing krävs currentSliderStep >= 1 (Standard+)
+    const isLeasingFlatrateViable = currentSliderStep >= 1;
+    const isFlatrateViable = paymentOption === 'cash' || (paymentOption === 'leasing' && isLeasingFlatrateViable);
+
+    // Beräkna credit/flatrate-kostnader
     let creditOrFlatrateCost = 0;
     let shouldUseFlatrate = false;
-    
-    // Beräkna kreditpris och kredit/flatrate-kostnad för Bas-paketet
-    if (selectedMachine.usesCredits && selectedDriftpaket === 'Bas') {
-      // Använd det tillhandahållna kreditpriset, eller beräkna om det inte finns
-      const effectiveCreditPrice = creditPrice || calculateCreditPrice(
-        selectedMachine, 
-        leasingCost, 
-        paymentOption, 
-        selectedLeasingPeriodId, 
-        machinePriceSEK
-      );
-      
-      // Använd exakt creditPrice utan avrundning
-      const safeCreditPrice = Math.max(0, effectiveCreditPrice);
-      setCalculatedCreditPrice(safeCreditPrice);
-      
-      const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
-      
-      // Avgör om flatrate ska användas baserat på betalningsalternativ
-      shouldUseFlatrate = useFlatrateOption === 'flatrate';
-      
-      // För kontantalternativ, kräver vi bara minst 3 behandlingar per dag
-      if (paymentOption === 'cash') {
-        shouldUseFlatrate = shouldUseFlatrate && treatmentsPerDay >= 3;
-      } else {
-        // För leasing, kräver vi både minst 3 behandlingar och 80% av leasingMin
-        const meetsLeasingRequirement = allowBelowFlatrate || (selectedMachine.leasingMin && leasingCost >= selectedMachine.leasingMin * 0.8);
-        shouldUseFlatrate = shouldUseFlatrate && treatmentsPerDay >= 3 && meetsLeasingRequirement;
-      }
-      
-      if (shouldUseFlatrate && selectedMachine.flatrateAmount) {
-        creditOrFlatrateCost = selectedMachine.flatrateAmount;
-      } else {
-        const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
-        creditOrFlatrateCost = creditsPerTreatment * treatmentsPerMonth * safeCreditPrice;
-      }
-    } else {
-      // För maskiner utan credits eller för Silver/Guld-paket sätt creditprice till 0
-      setCalculatedCreditPrice(0);
-    }
-    
-    // Bestäm total driftskostnad baserat på valt paket
     let totalCost = 0;
     
-    if (selectedDriftpaket === 'Bas') {
-      totalCost = creditOrFlatrateCost; // Bas innehåller inga SLA-kostnader
-    } else if (selectedDriftpaket === 'Silver') {
-      totalCost = silverCost; // Silver inkluderar Flatrate för kreditmaskiner
-    } else if (selectedDriftpaket === 'Guld') {
-      totalCost = guldCost; // Guld inkluderar Flatrate för kreditmaskiner
+    // Beräkna kreditpris
+    // Använd det tillhandahållna kreditpriset, eller beräkna om det inte finns
+    const effectiveCreditPrice = creditPrice || calculateCreditPrice(
+      selectedMachine, 
+      leasingCost, 
+      paymentOption, 
+      selectedLeasingPeriodId, 
+      machinePriceSEK
+    );
+    
+    // Använd exakt creditPrice utan avrundning
+    const safeCreditPrice = Math.max(0, effectiveCreditPrice);
+    setCalculatedCreditPrice(safeCreditPrice);
+    
+    // Beräkna grundläggande info om krediter/behandlingar
+    const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
+    const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
+    const totalCreditsPerMonth = treatmentsPerMonth * creditsPerTreatment;
+    
+    // Beräkna styckepris-kostnader
+    const styckeprisCost_Leasing = totalCreditsPerMonth * safeCreditPrice;
+    const styckeprisCost_Cash = totalCreditsPerMonth * (selectedMachine.creditMin || safeCreditPrice);
+    const flatrateAmount = selectedMachine.flatrateAmount || 0;
+
+    // UPPDATERAD LOGIK för driftskostnad:
+    if (!selectedMachine.usesCredits) {
+      // För maskiner utan credits, använd enbart SLA-kostnaden baserat på paket
+      if (selectedDriftpaket === 'Bas') {
+        totalCost = 0; // Bas = 0 för icke-kreditmaskiner
+      } else if (selectedDriftpaket === 'Silver') {
+        totalCost = silverCost;
+      } else {
+        totalCost = guldCost;
+      }
+      
+      shouldUseFlatrate = false;
+      creditOrFlatrateCost = 0;
+    } 
+    else {
+      // För kreditmaskiner - implementera logiken enligt instruktionen
+      if (selectedDriftpaket === 'Bas') {
+        if (paymentOption === 'cash') {
+          // KONTANT + BAS: Flatrate alltid valbart
+          shouldUseFlatrate = useFlatrateOption === 'flatrate';
+          creditOrFlatrateCost = shouldUseFlatrate ? flatrateAmount : styckeprisCost_Cash;
+        } else { // leasing
+          // LEASING + BAS: Flatrate villkorat
+          shouldUseFlatrate = useFlatrateOption === 'flatrate' && isLeasingFlatrateViable;
+          creditOrFlatrateCost = shouldUseFlatrate ? flatrateAmount : styckeprisCost_Leasing;
+        }
+        
+        totalCost = creditOrFlatrateCost; // Bas innehåller inga SLA-kostnader
+      } 
+      else if (selectedDriftpaket === 'Silver') {
+        if (paymentOption === 'cash') {
+          // KONTANT + SILVER: Flatrate alltid inkluderat
+          shouldUseFlatrate = true;
+          creditOrFlatrateCost = 0; // Redan inkluderat i SLA
+          totalCost = silverCost;
+        } else { // leasing
+          // LEASING + SILVER: Flatrate villkorat
+          shouldUseFlatrate = isLeasingFlatrateViable;
+          creditOrFlatrateCost = shouldUseFlatrate ? 0 : styckeprisCost_Leasing;
+          totalCost = silverCost + (shouldUseFlatrate ? 0 : styckeprisCost_Leasing);
+        }
+      } 
+      else if (selectedDriftpaket === 'Guld') {
+        if (paymentOption === 'cash') {
+          // KONTANT + GULD: Flatrate alltid inkluderat
+          shouldUseFlatrate = true;
+          creditOrFlatrateCost = 0; // Redan inkluderat i SLA
+          totalCost = guldCost;
+        } else { // leasing
+          // LEASING + GULD: Flatrate villkorat
+          shouldUseFlatrate = isLeasingFlatrateViable;
+          creditOrFlatrateCost = shouldUseFlatrate ? 0 : styckeprisCost_Leasing;
+          totalCost = guldCost + (shouldUseFlatrate ? 0 : styckeprisCost_Leasing);
+        }
+      }
     }
     
-    // Uppdatera operatingCost state
+    // Uppdatera operatingCost state med detaljerad information
     setOperatingCost({
       costPerMonth: creditOrFlatrateCost,
       useFlatrate: shouldUseFlatrate,
@@ -142,7 +183,10 @@ export function useOperatingCosts({
       Betalningsalternativ: ${paymentOption}
       Driftpaket: ${selectedDriftpaket}
       Behandlingar per dag: ${treatmentsPerDay}
-      Credit/Flatrate-kostnad (om Bas): ${creditOrFlatrateCost} kr
+      Current Slider Step: ${currentSliderStep}
+      isFlatrateViable: ${isFlatrateViable}
+      Flatrate aktiv: ${shouldUseFlatrate}
+      Credit/Flatrate-kostnad: ${creditOrFlatrateCost} kr
       SLA Silver kostnad: ${silverCost} kr
       SLA Guld kostnad: ${guldCost} kr
       Total driftskostnad: ${totalCost} kr
@@ -159,7 +203,8 @@ export function useOperatingCosts({
     allowBelowFlatrate, 
     leasingMax60mRef,
     machinePriceSEK,
-    creditPrice
+    creditPrice,
+    currentSliderStep
   ]);
 
   return { 
