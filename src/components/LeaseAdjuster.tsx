@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
@@ -35,30 +35,31 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 }) => {
   const { toast } = useToast();
   const { calculatedCreditPrice, selectedMachine, stepValues } = useCalculator();
-  
-  // State för att hantera om användaren har aktiverat slider-justering
   const [isAdjustmentEnabled, setIsAdjustmentEnabled] = useState(false);
-  
+
   // Säkra mina/max värden så att när det inte finns maskin, sätt till 0
   const exactMinCost = selectedMachine ? minLeaseCost : 0;
   const exactMaxCost = selectedMachine ? maxLeaseCost : 0;
-  
-  const defaultCost = stepValues[1]?.leasingCost || ( (exactMinCost + exactMaxCost) / 2);
-  
+
+  // Om ingen maskin är vald - visa alltid 0 kr och nollställ slider och andra infofält
+  const displayLeaseCost = selectedMachine ? leaseCost : 0;
+  const defaultCost = selectedMachine
+    ? stepValues[1]?.leasingCost || ((exactMinCost + exactMaxCost) / 2)
+    : 0;
+
   let flatratePosition = null;
-  if (flatrateThreshold) {
+  if (flatrateThreshold && selectedMachine) {
     flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
     flatratePosition = Math.max(0, Math.min(100, flatratePosition));
   }
-  
+
   const handleSliderStepChange = (step: SliderStep) => {
     onSliderStepChange(step);
-    
     if (step < 1 && onAllowBelowFlatrateChange) {
       onAllowBelowFlatrateChange(false);
     }
   };
-  
+
   const handleToggleAdjustment = (checked: boolean) => {
     setIsAdjustmentEnabled(checked);
     if (!checked) {
@@ -69,44 +70,50 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const currentStepLabel = stepValues[currentSliderStep]?.label || 'Standard';
 
   return (
-    <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
-      <label className="input-label flex items-center justify-between gap-2">
-        <span>Månadskostnad leasing</span>
-        <span className="text-sm font-medium text-blue-600">{currentStepLabel}</span>
-      </label>
-
-      <CostDisplay 
-        minLeaseCost={exactMinCost}
-        maxLeaseCost={exactMaxCost}
-        leaseCost={leaseCost}
-      />
-
-      <div className="flex items-center justify-between mb-2 gap-2">
-        <div className="flex items-center text-sm bg-blue-50 p-2 rounded-md gap-1">
-          <Info className="w-4 h-4 text-blue-600 shrink-0" />
-          <span>Rekommenderat pris: <span className="font-semibold">{formatCurrency(defaultCost)}</span></span>
+    <section className="bg-white rounded-2xl border border-blue-100 shadow-subtle p-5 flex flex-col gap-6 animate-slide-in" style={{ animationDelay: '150ms' }}>
+      <div>
+        <label className="flex items-center justify-between text-base font-semibold mb-2">
+          <span>Månadskostnad leasing</span>
+          <span className="text-sm font-medium text-blue-600">{currentStepLabel}</span>
+        </label>
+        <CostDisplay 
+          minLeaseCost={exactMinCost}
+          maxLeaseCost={exactMaxCost}
+          leaseCost={displayLeaseCost}
+        />
+      </div>
+      <div className="flex flex-col md:flex-row items-stretch gap-3 w-full">
+        {/* Rekommenderat pris */}
+        <div className="flex flex-1 items-center text-sm bg-blue-50 p-2 rounded-md gap-2 shadow-inner border border-blue-100">
+          <Info className="w-5 h-5 text-blue-600 shrink-0" />
+          <span>
+            Rekommenderat pris:
+            <span className="font-semibold ml-1">{formatCurrency(defaultCost)}</span>
+          </span>
         </div>
-        
+        {/* Krediter per behandling, endast om selectedMachine använder credits */}
         {selectedMachine?.usesCredits && (
-          <div className="flex items-center text-sm bg-green-50 p-2 rounded-md gap-1">
-            <CreditCard className="w-4 h-4 text-green-600 shrink-0" />
-            <span>Krediter per behandling: <span className="font-semibold">{formatCurrency(calculatedCreditPrice)} kr/credit</span></span>
+          <div className="flex flex-1 items-center text-sm bg-green-50 p-2 rounded-md gap-2 shadow-inner border border-emerald-100">
+            <CreditCard className="w-5 h-5 text-green-600 shrink-0" />
+            <span>
+              Krediter per behandling:&nbsp;
+              <span className="font-semibold">{formatCurrency(calculatedCreditPrice)} kr/credit</span>
+            </span>
           </div>
         )}
       </div>
-
+      {/* Slider */}
       <LeaseSlider 
         currentStep={currentSliderStep}
         onStepChange={handleSliderStepChange}
         thresholdPosition={flatratePosition}
-        showFlatrateIndicator={showFlatrateIndicator}
+        showFlatrateIndicator={showFlatrateIndicator && !!selectedMachine}
         allowBelowFlatrate={allowBelowFlatrate}
         isAdjustmentEnabled={isAdjustmentEnabled}
         onToggleAdjustment={handleToggleAdjustment}
       />
-    </div>
+    </section>
   );
 };
 
 export default LeaseAdjuster;
-

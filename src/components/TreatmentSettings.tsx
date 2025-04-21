@@ -9,22 +9,6 @@ interface TreatmentSettingsProps {
   onCustomerPriceChange: (value: number) => void;
 }
 
-// Ny modern input styles
-const inputGroupStyle =
-  "flex-1 flex flex-col justify-between bg-white rounded-xl border border-slate-200 px-4 py-4 transition-shadow duration-200 shadow-sm hover:shadow-elevated";
-const labelStyle =
-  "text-sm font-semibold text-slate-600 mb-2";
-const inputRowStyle =
-  "relative flex items-center gap-2";
-const inputFieldStyle =
-  "w-full text-base font-medium rounded-md border border-blue-100 focus:border-blue-400 bg-slate-50 py-2 px-3 pr-16 transition-all focus:ring-2 focus:ring-blue-200 outline-none h-12";
-const stepperStyle =
-  "absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-1";
-const stepButtonStyle =
-  "w-7 h-7 flex items-center justify-center rounded hover:bg-blue-100 active:bg-blue-200 transition-colors cursor-pointer";
-const unitTextStyle =
-  "ml-2 text-xs text-gray-500";
-
 const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   treatmentsPerDay,
   customerPrice,
@@ -64,13 +48,13 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   };
 
   return (
-    <div className="w-full flex gap-4 md:gap-6 flex-row">
+    <section className="w-full flex flex-row gap-4 md:gap-6">
       {/* Antal behandlingar */}
-      <div className={inputGroupStyle}>
-        <label htmlFor="treatments-per-day" className={labelStyle}>
+      <div className="flex-1 flex flex-col justify-between bg-white rounded-2xl border border-blue-100 px-5 py-6 shadow-subtle min-h-[164px]">
+        <label htmlFor="treatments-per-day" className="text-sm font-semibold text-slate-600 mb-3">
           Antal behandlingar per dag
         </label>
-        <div className={inputRowStyle}>
+        <div className="relative flex items-center gap-2">
           <input
             id="treatments-per-day"
             type="number"
@@ -79,14 +63,14 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             step="1"
             value={treatmentsPerDay}
             onChange={handleTreatmentsChange}
-            className={inputFieldStyle}
+            className="w-full text-base font-medium rounded-md border border-blue-100 focus:border-blue-400 bg-slate-50 py-2 px-3 pr-16 transition-all focus:ring-2 focus:ring-blue-200 outline-none h-12"
             aria-label="Behandlingar per dag"
           />
-          <span className={unitTextStyle}>st</span>
-          <div className={stepperStyle}>
+          <span className="ml-2 text-xs text-gray-500">st</span>
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-1">
             <button
               onClick={incrementTreatments}
-              className={stepButtonStyle}
+              className="w-7 h-7 flex items-center justify-center rounded hover:bg-blue-100 active:bg-blue-200 transition-colors cursor-pointer"
               aria-label="Öka antal behandlingar"
               type="button"
             >
@@ -94,7 +78,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             </button>
             <button
               onClick={decrementTreatments}
-              className={stepButtonStyle}
+              className="w-7 h-7 flex items-center justify-center rounded hover:bg-blue-100 active:bg-blue-200 transition-colors cursor-pointer"
               aria-label="Minska antal behandlingar"
               type="button"
             >
@@ -105,11 +89,11 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
         <p className="mt-2 text-xs text-gray-400">Justeras med pilar eller tangentbord</p>
       </div>
       {/* Kundpris */}
-      <div className={inputGroupStyle}>
-        <label htmlFor="customer-price" className={labelStyle}>
+      <div className="flex-1 flex flex-col justify-between bg-white rounded-2xl border border-blue-100 px-5 py-6 shadow-subtle min-h-[164px]">
+        <label htmlFor="customer-price" className="text-sm font-semibold text-slate-600 mb-3">
           Kundpris per behandling (kr, inkl moms)
         </label>
-        <div className={inputRowStyle}>
+        <div className="relative flex items-center gap-2">
           <input
             id="customer-price"
             type="number"
@@ -118,14 +102,14 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             value={customerPrice}
             onChange={handleCustomerPriceChange}
             onBlur={handleCustomerPriceBlur}
-            className={inputFieldStyle}
+            className="w-full text-base font-medium rounded-md border border-blue-100 focus:border-blue-400 bg-slate-50 py-2 px-3 pr-16 transition-all focus:ring-2 focus:ring-blue-200 outline-none h-12"
             aria-label="Kundpris per behandling"
           />
-          <span className={unitTextStyle}>kr</span>
-          <div className={stepperStyle}>
+          <span className="ml-2 text-xs text-gray-500">kr</span>
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-1">
             <button
               onClick={incrementPrice}
-              className={stepButtonStyle}
+              className="w-7 h-7 flex items-center justify-center rounded hover:bg-blue-100 active:bg-blue-200 transition-colors cursor-pointer"
               aria-label="Öka pris"
               type="button"
             >
@@ -133,7 +117,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             </button>
             <button
               onClick={decrementPrice}
-              className={stepButtonStyle}
+              className="w-7 h-7 flex items-center justify-center rounded hover:bg-blue-100 active:bg-blue-200 transition-colors cursor-pointer"
               aria-label="Minska pris"
               type="button"
             >
@@ -143,7 +127,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
         </div>
         <p className="mt-2 text-xs text-gray-400">Justeras med pilar eller tangentbord</p>
       </div>
-    </div>
+    </section>
   );
 };
 
