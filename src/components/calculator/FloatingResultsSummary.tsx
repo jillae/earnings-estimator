@@ -11,14 +11,14 @@ const FloatingResultsSummary = () => {
       <div className="p-4">
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <h3 className="text-sm font-medium text-slate-600 mb-1">Nettoresultat per månad</h3>
+            <h3 className="text-sm font-medium text-slate-600 mb-1">Netto per månad</h3>
             <div className="text-xl font-bold text-blue-600">
               {formatCurrency(netResults.netPerMonthExVat)}
             </div>
             <div className="text-xs text-slate-500">exkl. moms</div>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-slate-600 mb-1">Nettoresultat per år</h3>
+            <h3 className="text-sm font-medium text-slate-600 mb-1">Netto per år</h3>
             <div className="text-2xl font-bold text-emerald-600">
               {formatCurrency(netResults.netPerYearExVat)}
             </div>
