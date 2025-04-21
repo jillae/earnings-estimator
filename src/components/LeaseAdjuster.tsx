@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
@@ -37,18 +37,18 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const { calculatedCreditPrice, selectedMachine, stepValues } = useCalculator();
   const [isAdjustmentEnabled, setIsAdjustmentEnabled] = useState(false);
 
-  // Säkra mina/max värden så att när det inte finns maskin, sätt till 0
-  const exactMinCost = selectedMachine ? minLeaseCost : 0;
-  const exactMaxCost = selectedMachine ? maxLeaseCost : 0;
+  // Säkerställ att kostnadsvärden alltid är 0 när ingen maskin är vald
+  const exactMinCost = selectedMachine?.id !== 'null-machine' ? minLeaseCost : 0;
+  const exactMaxCost = selectedMachine?.id !== 'null-machine' ? maxLeaseCost : 0;
 
   // Om ingen maskin är vald - visa alltid 0 kr och nollställ slider och andra infofält
-  const displayLeaseCost = selectedMachine ? leaseCost : 0;
-  const defaultCost = selectedMachine
+  const displayLeaseCost = selectedMachine?.id !== 'null-machine' ? leaseCost : 0;
+  const defaultCost = selectedMachine?.id !== 'null-machine'
     ? stepValues[1]?.leasingCost || ((exactMinCost + exactMaxCost) / 2)
     : 0;
 
   let flatratePosition = null;
-  if (flatrateThreshold && selectedMachine) {
+  if (flatrateThreshold && selectedMachine?.id !== 'null-machine') {
     flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
     flatratePosition = Math.max(0, Math.min(100, flatratePosition));
   }
@@ -66,6 +66,17 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       handleSliderStepChange(1);
     }
   };
+
+  // Logga värdena för felsökning
+  useEffect(() => {
+    console.log(`LeaseAdjuster värden:
+      selectedMachine: ${selectedMachine?.name || 'Ingen maskin vald'}
+      minLeaseCost: ${minLeaseCost}, exactMinCost: ${exactMinCost}
+      maxLeaseCost: ${maxLeaseCost}, exactMaxCost: ${exactMaxCost}
+      leaseCost: ${leaseCost}, displayLeaseCost: ${displayLeaseCost}
+      defaultCost: ${defaultCost}
+    `);
+  }, [selectedMachine, minLeaseCost, maxLeaseCost, leaseCost, exactMinCost, exactMaxCost, displayLeaseCost, defaultCost]);
 
   const currentStepLabel = stepValues[currentSliderStep]?.label || 'Standard';
 
@@ -107,7 +118,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         currentStep={currentSliderStep}
         onStepChange={handleSliderStepChange}
         thresholdPosition={flatratePosition}
-        showFlatrateIndicator={showFlatrateIndicator && !!selectedMachine}
+        showFlatrateIndicator={showFlatrateIndicator && !!selectedMachine && selectedMachine.id !== 'null-machine'}
         allowBelowFlatrate={allowBelowFlatrate}
         isAdjustmentEnabled={isAdjustmentEnabled}
         onToggleAdjustment={handleToggleAdjustment}

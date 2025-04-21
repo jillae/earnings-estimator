@@ -16,6 +16,7 @@ export function buildContextValue(base: any, slaCosts: any): CalculatorContextTy
     leasingMax60mRef: base.leasingMax60mRef,
     // Lägg till nya egenskaper
     isFlatrateViable: isFlatrateViable,
-    isLeasingFlatrateViable: isLeasingFlatrateViable
+    isLeasingFlatrateViable: isLeasingFlatrateViable,
+    setCurrentSliderStep: base.setCurrentSliderStep
   };
 }
