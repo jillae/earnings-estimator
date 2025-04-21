@@ -8,8 +8,19 @@ export function buildContextValue(base: any, slaCosts: any): CalculatorContextTy
     (base.paymentOption === 'cash') || // Vid kontant: alltid tillgängligt
     (base.paymentOption === 'leasing' && isLeasingFlatrateViable); // Vid leasing: kräver steg >= 1
   
-  return {
+  // Säkerställ att alla värden är 0 när ingen maskin är vald
+  const noMachineSelected = !base.selectedMachine || 
+                           base.selectedMachine.id === 'null-machine' || 
+                           base.selectedMachine.id === 'select-machine';
+  
+  const safeValues = {
     ...base,
+    leasingCost: noMachineSelected ? 0 : base.leasingCost,
+    leasingRange: noMachineSelected ? { min: 0, max: 0, default: 0 } : base.leasingRange
+  };
+  
+  return {
+    ...safeValues,
     currentInfoText: base.currentInfoText,
     setCurrentInfoText: base.setCurrentInfoText,
     slaCosts,

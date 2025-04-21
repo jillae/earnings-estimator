@@ -9,10 +9,10 @@ interface CostDisplayProps {
 }
 
 const CostDisplay: React.FC<CostDisplayProps> = ({ minLeaseCost, maxLeaseCost, leaseCost }) => {
-  // Validera värden
-  const safeMinCost = isNaN(minLeaseCost) ? 0 : minLeaseCost;
-  const safeMaxCost = isNaN(maxLeaseCost) ? 0 : maxLeaseCost;
-  const safeLeaseCost = isNaN(leaseCost) ? 0 : leaseCost;
+  // Validera värden och säkerställ att de är 0 om de är ogiltiga
+  const safeMinCost = isNaN(minLeaseCost) || minLeaseCost < 0 ? 0 : minLeaseCost;
+  const safeMaxCost = isNaN(maxLeaseCost) || maxLeaseCost < 0 ? 0 : maxLeaseCost;
+  const safeLeaseCost = isNaN(leaseCost) || leaseCost < 0 ? 0 : leaseCost;
   
   return (
     <div className="flex justify-between items-center mt-1 mb-4">

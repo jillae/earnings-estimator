@@ -14,7 +14,9 @@ export function useFlatrateHandler() {
     paymentOption,
     selectedDriftpaket,
     currentSliderStep,
-    setCurrentSliderStep
+    setCurrentSliderStep,
+    isFlatrateViable,
+    isLeasingFlatrateViable
   } = useCalculator();
 
   const { toast } = useToast();
@@ -27,7 +29,7 @@ export function useFlatrateHandler() {
     selectedDriftpaket === 'Bas' && // Bara i Bas-paketet som flatrate-toggle är relevant
     (
       paymentOption === 'cash' || // Vid kontant: alltid tillåtet
-      (paymentOption === 'leasing' && currentSliderStep >= 1) // Vid leasing: kräver Standard+
+      (paymentOption === 'leasing' && isLeasingFlatrateViable) // Vid leasing: kräver Standard+
     )
   );
 

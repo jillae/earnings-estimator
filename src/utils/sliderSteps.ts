@@ -22,7 +22,7 @@ export function calculateStepValues(
   creditMax: number = 299
 ): Record<SliderStep, StepValues> {
   // Defaultvärden för null-maskin
-  if (!machine) {
+  if (!machine || machine.id === 'null-machine' || machine.id === 'select-machine') {
     return {
       0: { leasingCost: 0, creditPrice: 0, label: 'Min' },
       0.5: { leasingCost: 0, creditPrice: 0, label: 'Låg' },
