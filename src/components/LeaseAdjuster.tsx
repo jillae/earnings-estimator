@@ -39,27 +39,11 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // State för att hantera om användaren har aktiverat slider-justering
   const [isAdjustmentEnabled, setIsAdjustmentEnabled] = useState(false);
   
-  console.log("LeaseAdjuster rendering with:", {
-    minLeaseCost,
-    maxLeaseCost,
-    leaseCost,
-    currentSliderStep,
-    flatrateThreshold,
-    showFlatrateIndicator,
-    treatmentsPerDay,
-    allowBelowFlatrate,
-    isAdjustmentEnabled,
-    creditPrice: calculatedCreditPrice,
-    machineId: selectedMachine?.id,
-    machineName: selectedMachine?.name,
-    machineOriginalCreditMin: selectedMachine?.creditMin,
-    machineOriginalCreditMax: selectedMachine?.creditMax
-  });
-
-  const exactMinCost = minLeaseCost;
-  const exactMaxCost = maxLeaseCost;
+  // Säkra mina/max värden så att när det inte finns maskin, sätt till 0
+  const exactMinCost = selectedMachine ? minLeaseCost : 0;
+  const exactMaxCost = selectedMachine ? maxLeaseCost : 0;
   
-  const defaultCost = stepValues[1]?.leasingCost || ((exactMinCost + exactMaxCost) / 2);
+  const defaultCost = stepValues[1]?.leasingCost || ( (exactMinCost + exactMaxCost) / 2);
   
   let flatratePosition = null;
   if (flatrateThreshold) {
@@ -68,10 +52,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   }
   
   const handleSliderStepChange = (step: SliderStep) => {
-    console.log(`Slider flyttad till steg: ${step}`);
     onSliderStepChange(step);
     
-    // Uppdatera flatrate-tillåtelse baserat på nytt steg
     if (step < 1 && onAllowBelowFlatrateChange) {
       onAllowBelowFlatrateChange(false);
     }
@@ -79,27 +61,17 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   
   const handleToggleAdjustment = (checked: boolean) => {
     setIsAdjustmentEnabled(checked);
-    
-    // Om användaren inaktiverar justering, återställ till standardläge (steg 1)
     if (!checked) {
       handleSliderStepChange(1);
     }
   };
 
-  const isAboveFlatrateThreshold = flatrateThreshold ? leaseCost >= flatrateThreshold : false;
-  
-  // För visa nuvarande sliderstegets label/namn
   const currentStepLabel = stepValues[currentSliderStep]?.label || 'Standard';
 
-  // Logga vilket kredivärde som visas för aktuellt steg
-  console.log(`Nuvarande steg: ${currentSliderStep} (${currentStepLabel})`);
-  console.log(`Credit-pris som visas: ${calculatedCreditPrice} kr/credit (exakt värde)`);
-  console.log(`Step values för detta steg:`, stepValues[currentSliderStep]);
-  
   return (
     <div className="input-group animate-slide-in" style={{ animationDelay: '300ms' }}>
-      <label className="input-label flex items-center justify-between">
-        <span>Justera leasingkostnad</span>
+      <label className="input-label flex items-center justify-between gap-2">
+        <span>Månadskostnad leasing</span>
         <span className="text-sm font-medium text-blue-600">{currentStepLabel}</span>
       </label>
 
@@ -109,16 +81,16 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         leaseCost={leaseCost}
       />
 
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center justify-center text-sm bg-blue-50 p-2 rounded-md">
-          <Info className="w-4 h-4 mr-2 text-blue-600" />
-          <span>Rekommenderat pris: <span className="font-medium">{formatCurrency(defaultCost)}</span></span>
+      <div className="flex items-center justify-between mb-2 gap-2">
+        <div className="flex items-center text-sm bg-blue-50 p-2 rounded-md gap-1">
+          <Info className="w-4 h-4 text-blue-600 shrink-0" />
+          <span>Rekommenderat pris: <span className="font-semibold">{formatCurrency(defaultCost)}</span></span>
         </div>
         
         {selectedMachine?.usesCredits && (
-          <div className="flex items-center justify-center text-sm bg-green-50 p-2 rounded-md">
-            <CreditCard className="w-4 h-4 mr-2 text-green-600" />
-            <span>Krediter per behandling: <span className="font-medium">{formatCurrency(calculatedCreditPrice)} kr/credit</span></span>
+          <div className="flex items-center text-sm bg-green-50 p-2 rounded-md gap-1">
+            <CreditCard className="w-4 h-4 text-green-600 shrink-0" />
+            <span>Krediter per behandling: <span className="font-semibold">{formatCurrency(calculatedCreditPrice)} kr/credit</span></span>
           </div>
         )}
       </div>
@@ -137,3 +109,4 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 };
 
 export default LeaseAdjuster;
+
