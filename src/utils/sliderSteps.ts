@@ -16,8 +16,8 @@ export interface StepValues {
 export function calculateStepValues(
   machine: Machine | undefined,
   leasingMin: number,
-  leasingMaxOld: number,
-  leasingMaxNew: number,
+  leasingDefault: number, // Ändrat from leasingMaxOld till leasingDefault för tydlighet
+  leasingMax: number, // Ändrat från leasingMaxNew till leasingMax för tydlighet
   creditMin: number = 149,
   creditMax: number = 299
 ): Record<SliderStep, StepValues> {
@@ -39,12 +39,12 @@ export function calculateStepValues(
 
   // Säkerställ att leasingvärden är giltiga
   const safeMin = Math.max(0, leasingMin || 0);
-  const safeMaxOld = Math.max(safeMin, leasingMaxOld || 0);
-  const safeMaxNew = Math.max(safeMaxOld, leasingMaxNew || 0);
+  const safeDefault = Math.max(safeMin, leasingDefault || 0);
+  const safeMax = Math.max(safeDefault, leasingMax || 0);
 
-  // Beräkna mellanliggande leasingvärden (25% och 75%)
-  const leasing25Percent = safeMin + (safeMaxOld - safeMin) * 0.5;
-  const leasing75Percent = safeMaxOld + (safeMaxNew - safeMaxOld) * 0.5;
+  // Beräkna mellanliggande leasingvärden (25% och 75% av vägen)
+  const leasing25Percent = safeMin + (safeDefault - safeMin) * 0.5;
+  const leasing75Percent = safeDefault + (safeMax - safeDefault) * 0.5;
 
   // Beräkna mellanliggande kreditvärden med korrekt interpolation
   // VIKTIGT: Ingen avrundning här!
@@ -54,9 +54,9 @@ export function calculateStepValues(
   // Avrunda leasingvärden till närmaste hundra slutande på 6
   const roundedMin = roundToHundredEndingSix(safeMin);
   const roundedLow = roundToHundredEndingSix(leasing25Percent);
-  const roundedStandard = roundToHundredEndingSix(safeMaxOld);
+  const roundedStandard = roundToHundredEndingSix(safeDefault);
   const roundedHigh = roundToHundredEndingSix(leasing75Percent);
-  const roundedMax = roundToHundredEndingSix(safeMaxNew);
+  const roundedMax = roundToHundredEndingSix(safeMax);
 
   // VIKTIGT: Lägg till en tydlig logg för att visa exakt vilka kreditsvärdena blir för varje maskin
   console.log(`Beräknade stegvärden för ${machine.name}:
@@ -65,6 +65,13 @@ export function calculateStepValues(
     Standard (1): ${roundedStandard} kr / ${machineMinCredit} kr per credit (exakt värde)
     Hög (1.5): ${roundedHigh} kr / ${credit75Percent} kr per credit (exakt värde)
     Max (2): ${roundedMax} kr / 0 kr per credit
+    
+    Detaljer:
+    - leasingMin from input: ${leasingMin}
+    - leasingDefault from input: ${leasingDefault}
+    - leasingMax from input: ${leasingMax}
+    - creditMin for machine: ${machineMinCredit}
+    - creditMax for machine: ${machineMaxCredit}
   `);
 
   return {

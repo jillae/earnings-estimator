@@ -36,13 +36,8 @@ export function calculateLeasingMax60mRef(
     return 0;
   }
 
-  // Om vi har fördefinierade leasingMax för 60m, använd det direkt
-  if (machine.leasingMax) {
-    console.log(`Använder fördefinierat leasingMax60mRef för ${machine.name}: ${machine.leasingMax}`);
-    return machine.leasingMax;
-  }
-
   // Använd den centrala tariffbaserade beräkningen för 60 månader
+  // Vi tar bort specialfall och använder enhetlig beräkning för alla maskiner
   const shippingCostEur = machine.usesCredits ? SHIPPING_COST_EUR_CREDITS : SHIPPING_COST_EUR_NO_CREDITS;
   
   // Beräkna leasingMax för 60 månader

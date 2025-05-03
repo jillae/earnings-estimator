@@ -29,45 +29,17 @@ export function calculateLeasingRange(
   let maxLeasingCost: number;
   let defaultLeasingCost: number;
 
-  // Specialhantering för vissa maskiner med felaktiga leasingvärden
-  if (machine.id === 'gvl' || machine.id === 'evrl' || machine.id === 'xlr8') {
-    // För handheld-maskiner, sätt specifika värden baserat på leasingRate
-    const baseFactor = leasingRate / 0.02095; // Förhållande till 60m rate
-    
-    // GVL specifika justeringar
-    if (machine.id === 'gvl') {
-      minLeasingCost = 2500 * baseFactor;
-      defaultLeasingCost = 3500 * baseFactor;
-      maxLeasingCost = 4500 * baseFactor;
-    } 
-    // EVRL specifika justeringar
-    else if (machine.id === 'evrl') {
-      minLeasingCost = 2300 * baseFactor;
-      defaultLeasingCost = 3200 * baseFactor;
-      maxLeasingCost = 4100 * baseFactor;
-    }
-    // XLR8 specifika justeringar
-    else {
-      minLeasingCost = 1900 * baseFactor;
-      defaultLeasingCost = 2600 * baseFactor;
-      maxLeasingCost = 3300 * baseFactor;
-    }
-    
-    console.log(`Justerade leasingvärden för ${machine.name} med rate ${leasingRate}:
-      Specifika värden: min=${minLeasingCost}, default=${defaultLeasingCost}, max=${maxLeasingCost}
-      Basfaktor: ${baseFactor}
-    `);
-  } 
-  else if (machine.leasingMin !== undefined && 
+  // VIKTIGT: Ta bort specialhanteringen för handhållna enheter
+  // Vi använder nu standardberäkningen för alla maskiner
+  
+  // Om maskinen har fördefinierade leasingMin/Max värden
+  if (machine.leasingMin !== undefined && 
       machine.leasingMax !== undefined) {
-    // Om maskinen har fördefinierade leasingMin/Max värden
     // Justera för aktuell leasingperiod relativt 60 månader (defaultperiod)
     const leasingMin60m = machine.leasingMin;
     const leasingMax60m = machine.leasingMax;
     
     // Skalfaktor baserat på vald leasingperiod vs 60 månader (defaultperiod)
-    // Om leasingRate är t.ex. 0.04566 (24m) och defaultperiod är 0.02095 (60m)
-    // blir skalfaktorn 2.18 (ungefär)
     const defaultRate60m = 0.02095; // 60 månaders ränta
     const scaleFactor = leasingRate / defaultRate60m;
     

@@ -42,6 +42,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMinCost = noMachineSelected ? 0 : minLeaseCost;
   const exactMaxCost = noMachineSelected ? 0 : maxLeaseCost;
   const displayLeaseCost = noMachineSelected ? 0 : leaseCost;
+  
+  // Beräkna defaultCost korrekt baserat på tillgänglig data
   const defaultCost = noMachineSelected 
     ? 0 
     : (stepValues[1]?.leasingCost || ((exactMinCost + exactMaxCost) / 2));
@@ -55,6 +57,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Bara visa min/max för maskiner som använder credits
   const showMinMax = usesCredits;
 
+  // Beräkna position för flatrate-indikatorn (om den ska visas)
   let flatratePosition = null;
   if (flatrateThreshold && !noMachineSelected && usesCredits) {
     flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
@@ -87,8 +90,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       usesCredits: ${usesCredits}
       showSlider: ${showSlider}
       showMinMax: ${showMinMax}
+      currentSliderStep: ${currentSliderStep}
     `);
-  }, [selectedMachine, minLeaseCost, maxLeaseCost, leaseCost, exactMinCost, exactMaxCost, displayLeaseCost, defaultCost, noMachineSelected, usesCredits, showSlider, showMinMax]);
+  }, [selectedMachine, minLeaseCost, maxLeaseCost, leaseCost, exactMinCost, exactMaxCost, displayLeaseCost, defaultCost, noMachineSelected, usesCredits, showSlider, showMinMax, currentSliderStep]);
 
   const currentStepLabel = stepValues[currentSliderStep]?.label || 'Standard';
 

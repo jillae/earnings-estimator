@@ -1,7 +1,6 @@
 
 import { getExchangeRate } from './exchangeRateUtils';
 import { Machine } from '../data/machines/types';
-import { calculateLeasingRange } from './leasingRangeUtils';
 import { calculateTariffBasedLeasingMax } from './leasingTariffUtils';
 
 export async function calculateLeasingCost(
@@ -23,15 +22,23 @@ export async function calculateLeasingCost(
     }
   }
 
-  const machinePriceSek = machinePrice * exchangeRate;
-
-  // För att garantera korrekt beräkning, använd funktionen som är specificerad för tariffer
+  // Beräkna leasingkostnad med hjälp av tariff-baserad kalkyl
+  // Detta ger garanterat korrekt beräkning för alla maskiner
   const leasingCost = calculateTariffBasedLeasingMax(
     machine.priceEur,
-    leasingPeriod, // Använd direkt leasingPeriod (månader, inte tariff)
+    leasingPeriod, // Använd direkt leasingPeriod (månader)
     machine.usesCredits,
     exchangeRate
   );
+
+  // Logga detaljerad information för felsökning
+  console.log(`Leasingkostnad beräknad för ${machine.name}:
+    Pris EUR: ${machine.priceEur} 
+    Leasingperiod: ${leasingPeriod} månader
+    Använder krediter: ${machine.usesCredits}
+    Växelkurs: ${exchangeRate}
+    Beräknad kostnad: ${leasingCost} SEK
+  `);
 
   return leasingCost;
 }
