@@ -7,6 +7,7 @@ import { calculateCashPrice } from '@/utils/pricingUtils';
 import { SHIPPING_COST_EUR_CREDITS, SHIPPING_COST_EUR_NO_CREDITS } from '@/utils/constants';
 import { calculateLeasingMax60mRef } from '@/utils/pricingUtils';
 import { calculateTariffBasedLeasingMax } from '@/utils/leasingTariffUtils';
+import { isInsuranceEnabled } from '@/utils/insuranceUtils';
 
 export function useLeasingCalculations({
   selectedMachineId,
@@ -106,8 +107,8 @@ export function useLeasingCalculations({
     console.log(`Använder leasingperiod: ${selectedLeasingPeriodId} med rate: ${leasingRate}`);
     
     // Beräkna om försäkring ska inkluderas
-    const includeInsurance = selectedInsuranceId === 'yes';
-    console.log(`Försäkring inkluderad: ${includeInsurance}`);
+    const includeInsurance = isInsuranceEnabled(selectedInsuranceId);
+    console.log(`Försäkring inkluderad: ${includeInsurance} (selectedInsuranceId: ${selectedInsuranceId})`);
     
     // VIKTIGT: För alla maskiner, inklusive handhållna, beräkna leasingkostnad med den direkta tariff-baserade metoden
     // Handhållna beräknas tidigare på ett fel sätt
@@ -130,20 +131,21 @@ export function useLeasingCalculations({
         totalPriceSEK: ${totalPriceSEK}
         leasingRate: ${leasingRate}
         Calculated: ${defaultLeasingCost}
+        Include insurance: ${includeInsurance}
       `);
       
       // Sätt range baserat på detta värde
       const minLeasingCost = defaultLeasingCost * 0.9;
       const maxLeasingCost = defaultLeasingCost * 1.1;
       
-      setLeasingRange({
-        min: Math.round(minLeasingCost),
-        default: Math.round(defaultLeasingCost),
-        max: Math.round(maxLeasingCost)
-      });
+      // Beräkna leasingintervall med hänsyn till försäkring
+      const range = calculateLeasingRange(selectedMachine, machinePriceSEK, leasingRate, includeInsurance);
+      setLeasingRange(range);
       
-      // Sätt leasingCost till defaultvärdet
-      setLeasingCost(Math.round(defaultLeasingCost));
+      // Spara flatrate threshold för UI om det finns
+      if (range.flatrateThreshold) {
+        setFlatrateThreshold(range.flatrateThreshold);
+      }
     } else {
       // För övriga maskiner, använd normal beräkningsmetod
       // Beräkna möjligt leasingintervall
@@ -154,30 +156,30 @@ export function useLeasingCalculations({
       if (range.flatrateThreshold) {
         setFlatrateThreshold(range.flatrateThreshold);
       }
-      
-      // Beräkna aktuell leasingkostnad baserat på justeringsfaktor
-      // FIX: Här anropar vi calculateLeasingCost asynkront och hanterar resultatet
-      const calculateCostForMachine = async () => {
-        try {
-          const cost = await calculateLeasingCost(
-            selectedMachine,
-            leasingRate,
-            includeInsurance
-          );
-          
-          // Nu kan vi uppdatera state med värdet vi fått
-          setLeasingCost(cost);
-          
-          console.log(`Leasingkostnad asynkront beräknad för ${selectedMachine.name}: ${cost} SEK`);
-        } catch (error) {
-          console.error("Fel vid beräkning av leasingkostnad:", error);
-          setLeasingCost(0);
-        }
-      };
-      
-      // Starta den asynkrona beräkningen
-      calculateCostForMachine();
     }
+    
+    // Beräkna aktuell leasingkostnad baserat på justeringsfaktor
+    // FIX: Här anropar vi calculateLeasingCost asynkront och hanterar resultatet
+    const calculateCostForMachine = async () => {
+      try {
+        const cost = await calculateLeasingCost(
+          selectedMachine,
+          leasingRate,
+          includeInsurance
+        );
+        
+        // Nu kan vi uppdatera state med värdet vi fått
+        setLeasingCost(cost);
+        
+        console.log(`Leasingkostnad asynkront beräknad för ${selectedMachine.name}: ${cost} SEK (med försäkring: ${includeInsurance})`);
+      } catch (error) {
+        console.error("Fel vid beräkning av leasingkostnad:", error);
+        setLeasingCost(0);
+      }
+    };
+    
+    // Starta den asynkrona beräkningen
+    calculateCostForMachine();
     
     console.log(`Leasing calculations updated:
       Machine: ${selectedMachine.name}

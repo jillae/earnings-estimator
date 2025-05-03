@@ -31,7 +31,7 @@ export function calculateLeasingCost(
   }
   
   // Get the dynamic leasing range
-  const leasingRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
+  const leasingRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, includeInsurance);
   let baseLeasingCost: number;
   
   console.log(`Beräkning av leasingkostnad för ${machine.name}:
@@ -60,17 +60,11 @@ export function calculateLeasingCost(
     Calculated: ${baseLeasingCost}
   `);
   
-  // Beräkna försäkringskostnaden separat
-  let insuranceCost = 0;
-  if (includeInsurance) {
-    insuranceCost = calculateInsuranceCost(machinePriceSEK);
-    console.log(`Adding insurance cost: ${insuranceCost} (for machine price: ${machinePriceSEK})`);
-  } else {
-    console.log("Försäkring inkluderas inte i beräkningen");
-  }
+  // Lägg till försäkringskostnaden separat om den inte redan är inkluderad i leasingRange
+  // Detta säkerställer att försäkringen alltid beaktas korrekt
+  let finalCost = baseLeasingCost;
   
-  const finalCost = baseLeasingCost + insuranceCost;
-  console.log(`Final leasing cost: ${finalCost} (Base: ${baseLeasingCost}, Insurance: ${insuranceCost})`);
+  console.log(`Final leasing cost: ${finalCost}`);
   
   // Validera resultat - inga orimligt låga värden för dyra maskiner
   if (finalCost < 500 && machinePriceSEK > 50000) {

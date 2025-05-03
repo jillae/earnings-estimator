@@ -44,6 +44,7 @@ export async function calculateLeasingCost(
       Exchange rate: ${exchangeRate}
       Månadspris i SEK (utan tariff): ${machine.priceEur * exchangeRate}
       LeasingRate: ${leasingRate}
+      includeInsurance: ${includeInsurance}
     `);
   }
 
@@ -63,6 +64,7 @@ export async function calculateLeasingCost(
     Använder krediter: ${machine.usesCredits}
     Växelkurs: ${exchangeRate}
     Beräknad kostnad: ${leasingCost} SEK
+    Inkludera försäkring: ${includeInsurance}
   `);
 
   return leasingCost;

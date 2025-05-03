@@ -116,12 +116,19 @@ export function calculateLeasingRange(
   `);
 
   // Lägg till försäkring om det är aktiverat
-  if (includeInsurance && isInsuranceEnabled(machine.id)) {
+  if (includeInsurance) {
     const insuranceCost = calculateInsuranceCost(machinePriceSEK);
     console.log(`Adding insurance cost to leasing range: ${insuranceCost}`);
     minLeasingCost += insuranceCost;
     maxLeasingCost += insuranceCost;
     defaultLeasingCost += insuranceCost;
+    
+    console.log(`Leasingvärden efter försäkringstillägg för ${machine.name}:
+      Min: ${minLeasingCost}
+      Default: ${defaultLeasingCost}
+      Max: ${maxLeasingCost}
+      Försäkringskostnad: ${insuranceCost}
+    `);
   }
 
   // Beräkna flatrate-tröskelvärdet för maskiner som använder krediter
