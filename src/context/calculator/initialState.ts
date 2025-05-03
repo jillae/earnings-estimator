@@ -7,7 +7,7 @@ export const initialState: CalculatorState = {
   clinicSize: 'medium',
   selectedMachineId: "select-machine", // Default to "select-machine"
   paymentOption: "leasing", // Default till leasing
-  selectedLeasingPeriodId: "48", // Default to 48 months
+  selectedLeasingPeriodId: "60", // Default to 60 months
   selectedInsuranceId: "yes", // Default to include insurance
   selectedSlaLevel: "Brons", // Default till Brons (ingår)
   selectedDriftpaket: "Bas", // Default till Bas (ingår)

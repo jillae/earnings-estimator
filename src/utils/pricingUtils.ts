@@ -2,7 +2,7 @@
 import { roundToHundredEndingSix } from './formatUtils';
 import { SHIPPING_COST_EUR_CREDITS, SHIPPING_COST_EUR_NO_CREDITS } from './constants';
 import { Machine } from '../data/machines/types';
-import { SLA_PERCENT_NO_CREDITS, SLA_PERCENT_GULD, SlaLevel } from './constants';
+import { SLA_PERCENT_SILVER, SLA_PERCENT_GULD, SlaLevel } from './constants';
 import { LEASING_TARIFFS } from './constants';
 
 /**
@@ -63,80 +63,35 @@ export function calculateLeasingMax60mRef(
 }
 
 /**
- * Beräknar SLA-kostnad baserat på maskin, vald SLA-nivå och referensvärdet
+ * Beräknar SLA-kostnad baserat på maskin och leasingMax60mRef
+ * 
+ * Standardregler:
+ * - Brons: 0 kr (alltid gratis)
+ * - Silver: 25% av leasingMax60mRef (hälften av Guld)
+ * - Guld: 50% av leasingMax60mRef
  */
 export function calculateSlaCost(
   machine: Machine,
   selectedSlaLevel: SlaLevel,
   leasingMax60mRef: number
 ): number {
-  // För handhållna maskiner (GVL, EVRL, XLR8), använd specifierade värden
-  if (machine.id === 'gvl' || machine.id === 'evrl' || machine.id === 'xlr8') {
-    console.log(`Beräknar SLA-kostnad för handhållen maskin ${machine.name}`);
-    
-    // Brons är alltid 0
-    if (selectedSlaLevel === 'Brons') return 0;
-    
-    // Silver är 500 kr/mån för handhållna
-    if (selectedSlaLevel === 'Silver') {
-      console.log(`Fixed Silver SLA cost for ${machine.name}: 500 kr`);
-      return 500;
-    }
-    
-    // Guld är 800 kr/mån för handhållna
-    if (selectedSlaLevel === 'Guld') {
-      console.log(`Fixed Guld SLA cost for ${machine.name}: 800 kr`);
-      return 800;
-    }
-  }
-  
-  // Special machines - lägre fasta SLA-kostnader
-  if (machine.id === 'base-station' || machine.id === 'lunula') {
-    console.log(`Beräknar SLA-kostnad för specialmaskin ${machine.name}`);
-    
-    // Brons är alltid 0
-    if (selectedSlaLevel === 'Brons') return 0;
-    
-    // Silver är 700 kr/mån för specialmaskiner
-    if (selectedSlaLevel === 'Silver') {
-      console.log(`Fixed Silver SLA cost for ${machine.name}: 700 kr`);
-      return 700;
-    }
-    
-    // Guld är 1000 kr/mån för specialmaskiner
-    if (selectedSlaLevel === 'Guld') {
-      console.log(`Fixed Guld SLA cost for ${machine.name}: 1000 kr`);
-      return 1000;
-    }
-  }
-  
-  // För alla andra maskiner (de som använder credits), fortsätt med dynamisk beräkning
-  console.log(`Beräknar SLA-kostnad för ${machine.name}:
-    SLA-nivå: ${selectedSlaLevel}
-    LeasingMax60mRef: ${leasingMax60mRef}
-    Flatrate Amount: ${machine.flatrateAmount}
-    UsesCredits: ${machine.usesCredits}
-  `);
-
   // Brons är alltid gratis
   if (selectedSlaLevel === 'Brons') {
     return 0;
   }
   
-  // För maskiner som använder credits
-  if (machine.usesCredits) {
-    // För Silver, använd exakt flatrateAmount
-    if (selectedSlaLevel === 'Silver' && machine.flatrateAmount) {
-      console.log(`Använder exakt flatrateAmount för Silver SLA: ${machine.flatrateAmount}`);
-      return machine.flatrateAmount;
-    }
-    
-    // För Guld, använd alltid samma procent av leasingMax60mRef
-    if (selectedSlaLevel === 'Guld') {
-      const goldCost = Math.round(leasingMax60mRef * SLA_PERCENT_GULD);
-      console.log(`Beräknad Guld SLA-kostnad: ${goldCost}`);
-      return goldCost;
-    }
+  // För Silver, använd 25% av leasingMax60mRef
+  if (selectedSlaLevel === 'Silver') {
+    const silverCost = Math.round(leasingMax60mRef * SLA_PERCENT_SILVER);
+    console.log(`Beräknad Silver SLA-kostnad för ${machine.name}: ${silverCost} (25% av ${leasingMax60mRef})`);
+    return silverCost;
+  }
+  
+  // För Guld, använd 50% av leasingMax60mRef
+  if (selectedSlaLevel === 'Guld') {
+    const goldCost = Math.round(leasingMax60mRef * SLA_PERCENT_GULD);
+    console.log(`Beräknad Guld SLA-kostnad för ${machine.name}: ${goldCost} (50% av ${leasingMax60mRef})`);
+    return goldCost;
   }
   
   // Fallback - ska aldrig nås om ovanstående logik är korrekt
