@@ -68,14 +68,8 @@ export function calculateTariffBasedLeasingMax(
     const calculatedValue = Math.round(totalPriceSEK * factor);
     
     // FELSÖKNING: Rikare loggning för handhållna enheter
-    if (['gvl', 'evrl', 'xlr8'].includes(machinePriceEur.toString())) {
-      console.log(`DETALJERAD BERÄKNING för handhållen enhet:
-        machinePriceEur: ${machinePriceEur}
-        shippingCost: ${shippingCost}
-        totalPriceSEK: ${totalPriceSEK}
-        factor: ${factor}
-        Faktisk beräkning: ${totalPriceSEK} * ${factor} = ${calculatedValue}
-      `);
+    if (['gvl', 'evrl', 'xlr8'].includes(String(machinePriceEur)) || typeof machinePriceEur === 'object') {
+      console.log(`VARNING: machinePriceEur har ett oväntat värde för en handhållen enhet: ${machinePriceEur}, typeof: ${typeof machinePriceEur}`);
     }
     
     // Säkerställ att vi inte returnerar låga felaktiga värden
