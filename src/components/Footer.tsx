@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
       <div className="container">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-slate-500 text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} Emerald Sweden. Alla rättigheter förbehållna.
+            © {new Date().getFullYear()} Erchonia Nordics. Alla rättigheter förbehållna.
           </div>
           <div className="flex space-x-6">
             <a href="#" className="text-slate-500 hover:text-emerald-600 transition-colors">
