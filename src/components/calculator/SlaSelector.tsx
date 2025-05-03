@@ -17,8 +17,17 @@ const SlaSelector: React.FC = () => {
     setSlaLevel(value);
   };
 
-  const showCreditsIncluded = selectedMachine?.usesCredits && 
-    (selectedSlaLevel === 'Silver' || selectedSlaLevel === 'Guld');
+  // Beräkna om Flatrate ska visas i Silver/Guld beskrivningen
+  const showCreditsIncludedSilver = selectedMachine?.usesCredits && selectedSlaLevel === 'Silver';
+  const showCreditsIncludedGuld = selectedMachine?.usesCredits && selectedSlaLevel === 'Guld';
+
+  // För felsökning, logga de aktuella SLA-kostnaderna
+  console.log(`SlaSelector Rendering:
+    Machine: ${selectedMachine?.name}
+    SLA Level: ${selectedSlaLevel}
+    SLA Costs: Brons=${slaCosts.Brons}, Silver=${slaCosts.Silver}, Guld=${slaCosts.Guld}
+    Uses Credits: ${selectedMachine?.usesCredits}
+  `);
 
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '350ms' }}>
@@ -63,7 +72,7 @@ const SlaSelector: React.FC = () => {
         </div>
       </RadioGroup>
       
-      {showCreditsIncluded && (
+      {(showCreditsIncludedSilver || showCreditsIncludedGuld) && (
         <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded-md">
           <p className="text-xs text-blue-700">
             Obegränsat antal credits ingår i detta SLA-abonnemang.

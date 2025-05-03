@@ -22,11 +22,11 @@ export type SlaLevel = 'Brons' | 'Silver' | 'Guld';
 
 // SLA procentsatser för maskiner utan credits
 export const SLA_PERCENT_NO_CREDITS = {
-  Silver: 0.25,  // 25% av leasingMax_60m_ref
-  Guld: 0.50     // 50% av leasingMax_60m_ref
+  Silver: 0.02,  // 2% av leasingMax_60m_ref för handhållna maskiner
+  Guld: 0.03     // 3% av leasingMax_60m_ref för handhållna maskiner
 };
 
-// SLA procentsats för Guld (för alla maskiner)
+// SLA procentsats för Guld (för maskiner med credits)
 export const SLA_PERCENT_GULD = 0.50;
 
 // Flatrate konstanter

@@ -49,6 +49,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   // Kontrollera om maskinen använder credits (för att visa/dölja slider och anpassningskontroll)
   const usesCredits = selectedMachine?.usesCredits || false;
   const showSlider = usesCredits;
+  const showMinMax = usesCredits;
 
   let flatratePosition = null;
   if (flatrateThreshold && !noMachineSelected) {
@@ -81,8 +82,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       noMachineSelected: ${noMachineSelected}
       usesCredits: ${usesCredits}
       showSlider: ${showSlider}
+      showMinMax: ${showMinMax}
     `);
-  }, [selectedMachine, minLeaseCost, maxLeaseCost, leaseCost, exactMinCost, exactMaxCost, displayLeaseCost, defaultCost, noMachineSelected, usesCredits, showSlider]);
+  }, [selectedMachine, minLeaseCost, maxLeaseCost, leaseCost, exactMinCost, exactMaxCost, displayLeaseCost, defaultCost, noMachineSelected, usesCredits, showSlider, showMinMax]);
 
   const currentStepLabel = stepValues[currentSliderStep]?.label || 'Standard';
 
@@ -97,10 +99,11 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           minLeaseCost={exactMinCost}
           maxLeaseCost={exactMaxCost}
           leaseCost={displayLeaseCost}
+          showMinMax={showMinMax}
         />
       </div>
       <div className="flex flex-col md:flex-row items-stretch gap-3 w-full">
-        {/* Rekommenderat pris */}
+        {/* Rekommenderat pris - vi visar alltid detta oavsett maskintyp */}
         <div className="flex flex-1 items-center text-sm bg-blue-50 p-2 rounded-md gap-2 shadow-inner border border-blue-100">
           <Info className="w-5 h-5 text-blue-600 shrink-0" />
           <span>
@@ -119,7 +122,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           </div>
         )}
       </div>
-      {/* Slider */}
+      {/* Slider - visas endast för maskiner som använder credits */}
       <LeaseSlider 
         currentStep={currentSliderStep}
         onStepChange={handleSliderStepChange}

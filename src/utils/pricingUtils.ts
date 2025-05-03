@@ -110,8 +110,8 @@ export function calculateSlaCost(
     
     // För Guld, använd högre procent av leasingMax60mRef
     if (selectedSlaLevel === 'Guld') {
-      const goldCost = Math.round(leasingMax60mRef * SLA_PERCENT_GULD);
-      console.log(`Beräknad Guld SLA-kostnad: ${goldCost}`);
+      const goldCost = Math.round(leasingMax60mRef * SLA_PERCENT_NO_CREDITS.Guld || SLA_PERCENT_GULD);
+      console.log(`Beräknad Guld SLA-kostnad (utan credits): ${goldCost}`);
       return goldCost;
     }
   }
