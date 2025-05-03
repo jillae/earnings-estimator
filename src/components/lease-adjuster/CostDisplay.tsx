@@ -16,9 +16,9 @@ const CostDisplay: React.FC<CostDisplayProps> = ({ minLeaseCost, maxLeaseCost, l
   
   return (
     <div className="flex justify-between items-center mt-1 mb-4">
-      <span className="text-xs text-slate-600">Min: {formatCurrency(safeMinCost, false, true)}</span>
-      <span className="text-md font-semibold text-slate-700">{formatCurrency(safeLeaseCost, false, true)}/månad</span>
-      <span className="text-xs text-slate-600">Max: {formatCurrency(safeMaxCost, false, true)}</span>
+      <span className="text-xs text-slate-600">Min: {formatCurrency(safeMinCost)}</span>
+      <span className="text-md font-semibold text-slate-700">{formatCurrency(safeLeaseCost)}/månad</span>
+      <span className="text-xs text-slate-600">Max: {formatCurrency(safeMaxCost)}</span>
     </div>
   );
 };

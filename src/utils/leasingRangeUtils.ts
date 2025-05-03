@@ -29,7 +29,37 @@ export function calculateLeasingRange(
   let maxLeasingCost: number;
   let defaultLeasingCost: number;
 
-  if (machine.leasingMin && machine.leasingMax) {
+  // Specialhantering för vissa maskiner med felaktiga leasingvärden
+  if (machine.id === 'gvl' || machine.id === 'evrl' || machine.id === 'xlr8') {
+    // För handheld-maskiner, sätt specifika värden baserat på leasingRate
+    const baseFactor = leasingRate / 0.02095; // Förhållande till 60m rate
+    
+    // GVL specifika justeringar
+    if (machine.id === 'gvl') {
+      minLeasingCost = 2500 * baseFactor;
+      defaultLeasingCost = 3500 * baseFactor;
+      maxLeasingCost = 4500 * baseFactor;
+    } 
+    // EVRL specifika justeringar
+    else if (machine.id === 'evrl') {
+      minLeasingCost = 2300 * baseFactor;
+      defaultLeasingCost = 3200 * baseFactor;
+      maxLeasingCost = 4100 * baseFactor;
+    }
+    // XLR8 specifika justeringar
+    else {
+      minLeasingCost = 1900 * baseFactor;
+      defaultLeasingCost = 2600 * baseFactor;
+      maxLeasingCost = 3300 * baseFactor;
+    }
+    
+    console.log(`Justerade leasingvärden för ${machine.name} med rate ${leasingRate}:
+      Specifika värden: min=${minLeasingCost}, default=${defaultLeasingCost}, max=${maxLeasingCost}
+      Basfaktor: ${baseFactor}
+    `);
+  } 
+  else if (machine.leasingMin !== undefined && 
+      machine.leasingMax !== undefined) {
     // Om maskinen har fördefinierade leasingMin/Max värden
     // Justera för aktuell leasingperiod relativt 60 månader (defaultperiod)
     const leasingMin60m = machine.leasingMin;
@@ -45,11 +75,8 @@ export function calculateLeasingRange(
     
     // Skala värdena baserat på vald leasingperiod
     minLeasingCost = leasingMin60m * scaleFactor;
-    defaultLeasingCost = leasingMax60m * scaleFactor; // defaultLeasingCost är gamla leasingMax
-    
-    // KORRIGERAT: Beräkna maxLeasingCost som (2 * defaultLeasingCost - minLeasingCost)
-    // för att expandera intervallet på rätt sätt
-    maxLeasingCost = (2 * defaultLeasingCost) - minLeasingCost;
+    defaultLeasingCost = (leasingMin60m + leasingMax60m) / 2 * scaleFactor; // defaultLeasingCost är mitten av min och max
+    maxLeasingCost = leasingMax60m * scaleFactor;
     
     console.log(`Beräknade leasingvärden för ${machine.name} med rate ${leasingRate}:
       60m värden: min=${leasingMin60m}, max=${leasingMax60m}
@@ -79,12 +106,12 @@ export function calculateLeasingRange(
   // Beräkna flatrate-tröskelvärdet för maskiner som använder krediter
   let flatrateThreshold;
   if (machine.usesCredits) {
-    // Sätt tröskeln vid 80% av vägen från min till default (gamla leasingMax)
+    // Sätt tröskeln vid 80% av vägen från min till default
     flatrateThreshold = minLeasingCost + (defaultLeasingCost - minLeasingCost) * 0.8;
     console.log(`Beräknar flatrate-tröskelvärde:
       minLeasingCost: ${minLeasingCost}
-      defaultLeasingCost (gamla leasingMax): ${defaultLeasingCost}
-      maxLeasingCost (nya expanderade max): ${maxLeasingCost}
+      defaultLeasingCost: ${defaultLeasingCost}
+      maxLeasingCost: ${maxLeasingCost}
       flatrateThreshold (80% mellan min och default): ${flatrateThreshold}
     `);
   }
