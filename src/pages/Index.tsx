@@ -2,6 +2,7 @@
 import React from 'react';
 import Header from '@/components/Header';
 import Calculator from '@/components/Calculator';
+import WhitePaperLibrary from '@/components/WhitePaperLibrary';
 import Footer from '@/components/Footer';
 import { Helmet } from 'react-helmet-async';
 
@@ -16,6 +17,7 @@ const Index = () => {
       <Header />
       <main className="flex-grow py-6">
         <Calculator />
+        <WhitePaperLibrary />
       </main>
       <Footer />
     </div>
