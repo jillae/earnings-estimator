@@ -44,7 +44,7 @@ export const INSURANCE_RATES = {
   RATE_ABOVE_50K: 0.015  // 1.5% för maskiner > 50 000 SEK
 };
 
-// Leasing tariff-värden 2024 (Värdena är nu i decimalform, inte procent)
+// Leasing tariff-värden 2024 (Värdena är i decimalform, inte procent)
 export const LEASING_TARIFFS_2024: LeasingPeriod[] = [
   { id: "24", name: "24 månader", rate: 0.04566, Löptid: 24, Faktor: 0.04566 },
   { id: "36", name: "36 månader", rate: 0.03189, Löptid: 36, Faktor: 0.03189 },
@@ -52,7 +52,7 @@ export const LEASING_TARIFFS_2024: LeasingPeriod[] = [
   { id: "60", name: "60 månader", rate: 0.02095, Löptid: 60, Faktor: 0.02095 }
 ];
 
-// Leasing tariff-värden 2025 (Värdena är nu i decimalform, inte procent)
+// Leasing tariff-värden 2025 (Värdena är i decimalform, inte procent)
 export const LEASING_TARIFFS_2025: LeasingPeriod[] = [
   { id: "24", name: "24 månader", rate: 0.045136, Löptid: 24, Faktor: 0.045136 },
   { id: "36", name: "36 månader", rate: 0.031346, Löptid: 36, Faktor: 0.031346 },

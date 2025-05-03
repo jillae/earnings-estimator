@@ -29,6 +29,7 @@ const SlaSelector: React.FC = () => {
     LeasingMax60mRef: ${leasingMax60mRef}
     SLA Costs: Brons=${slaCosts.Brons}, Silver=${slaCosts.Silver}, Guld=${slaCosts.Guld}
     Uses Credits: ${selectedMachine?.usesCredits}
+    Machine Price EUR: ${selectedMachine?.priceEur || 'N/A'}
   `);
 
   return (

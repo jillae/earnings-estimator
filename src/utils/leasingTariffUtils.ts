@@ -24,7 +24,12 @@ export function setActiveTariffYear(use2025: boolean) {
  * Gets the leasing factor based on leasing duration in months
  */
 export function getLeasingFactor(leaseDurationMonths: number): number | undefined {
+  // Kontrollera först exakt match på id eller Löptid
   const tariffEntry = currentTariffs.find(entry => entry.id === leaseDurationMonths.toString() || entry.Löptid === leaseDurationMonths);
+  
+  // Säkerställ att vi loggar vad vi hittar för debugging
+  console.log(`Leasing factor för ${leaseDurationMonths} månader: ${tariffEntry?.rate || 'HITTADES INTE!'}`);
+  
   return tariffEntry?.rate;
 }
 
@@ -54,7 +59,7 @@ export function calculateTariffBasedLeasingMax(
     // Apply tariff percentage - factor is already in decimal form, no need to divide by 100
     const calculatedValue = Math.round(totalPriceSEK * factor);
     
-    console.log(`Tariff calculation: ${totalPriceSEK} SEK * ${factor} = ${calculatedValue}`);
+    console.log(`Tariff calculation: ${machinePriceEur} EUR + ${shippingCost} EUR shipping = ${totalPriceSEK} SEK * ${factor} = ${calculatedValue}`);
     return roundToHundredEndingSix(calculatedValue);
   } else {
     console.error(`No factor found for leasing duration ${leaseDurationMonths} months.`);

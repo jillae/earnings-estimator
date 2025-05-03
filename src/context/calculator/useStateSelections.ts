@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useMemo } from 'react';
 import { machineData } from '@/data/machines';
 import { Machine } from '@/data/machines/types';
@@ -10,7 +11,7 @@ export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [selectedMachineId, setSelectedMachineId] = useState<string>('select-machine');
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
-  const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60');
+  const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60'); // Default till 60 månader
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
   const [selectedSlaLevel, setSlaLevel] = useState<SlaLevel>('Brons');
   const [selectedDriftpaket, setSelectedDriftpaket] = useState<DriftpaketType>('Bas');
@@ -50,9 +51,12 @@ export function useStateSelections() {
     if (selectedMachine && selectedMachine.id !== 'null-machine') {
       console.log(`Maskin valdes: ${selectedMachine.name}, återställer standardvärden`);
       
-      // Sätt standard-leasingperiod från maskinen om den är definierad
+      // Sätt standard-leasingperiod från maskinen om den är definierad,
+      // annars använd 60 månader som standard
       if (selectedMachine.defaultLeasingPeriod) {
         setSelectedLeasingPeriodId(selectedMachine.defaultLeasingPeriod);
+      } else {
+        setSelectedLeasingPeriodId('60');
       }
       
       // Sätt standard-kundpris från maskinen om det är definierat
@@ -101,6 +105,17 @@ export function useStateSelections() {
       setSlaLevel('Guld');
     }
   }, [selectedDriftpaket]);
+
+  // Logga nuvarande tillstånd för att underlätta debugging
+  useEffect(() => {
+    console.log(`
+      Current state:
+      - Selected Machine: ${selectedMachine?.name || 'None'} (ID: ${selectedMachineId})
+      - Leasing Period: ${selectedLeasingPeriodId} months
+      - SLA Level: ${selectedSlaLevel}
+      - Payment Option: ${paymentOption}
+    `);
+  }, [selectedMachine, selectedLeasingPeriodId, selectedSlaLevel, paymentOption]);
 
   return {
     clinicSize,

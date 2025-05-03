@@ -3,7 +3,7 @@ import { roundToHundredEndingSix } from './formatUtils';
 import { SHIPPING_COST_EUR_CREDITS, SHIPPING_COST_EUR_NO_CREDITS } from './constants';
 import { Machine } from '../data/machines/types';
 import { SLA_PERCENT_SILVER, SLA_PERCENT_GULD, SlaLevel } from './constants';
-import { LEASING_TARIFFS } from './constants';
+import { calculateTariffBasedLeasingMax } from './leasingTariffUtils';
 
 /**
  * Beräknar kontantpris för en maskin baserat på EUR-pris, fraktkostnad och växelkurs
@@ -42,37 +42,25 @@ export function calculateLeasingMax60mRef(
     return machine.leasingMax;
   }
 
-  // Hitta 60-månaders tariff
-  const tariff60m = LEASING_TARIFFS.find(t => t.id === "60");
-  if (!tariff60m) {
-    console.error("60-månaders tariff hittades inte");
-    return 0;
-  }
-
-  // Bestäm frakt baserat på om maskinen använder credits
+  // Använd den centrala tariffbaserade beräkningen för 60 månader
   const shippingCostEur = machine.usesCredits ? SHIPPING_COST_EUR_CREDITS : SHIPPING_COST_EUR_NO_CREDITS;
   
-  // Beräkna totalt SEK-pris
-  const totalPriceSEK = (machine.priceEur + shippingCostEur) * exchangeRate;
-  
-  // Applicera tariff för att få leasingMax
-  // VIKTIGT: Konvertera tariff.rate från procent till decimalform (dividera med 100)
-  const leasingMax60m = totalPriceSEK * tariff60m.rate;
-  
-  // Avrunda till närmaste hundra slutande på 6
-  const roundedValue = roundToHundredEndingSix(leasingMax60m);
+  // Beräkna leasingMax för 60 månader
+  const leasingMax60m = calculateTariffBasedLeasingMax(
+    machine.priceEur,
+    60, // Använd alltid 60 månader för SLA-beräkningar
+    machine.usesCredits,
+    exchangeRate
+  );
   
   console.log(`Beräkning av leasingMax60mRef för ${machine.name}:
     - Pris EUR: ${machine.priceEur}
     - Frakt EUR: ${shippingCostEur}
     - Växelkurs: ${exchangeRate}
-    - Totalt SEK: ${totalPriceSEK}
-    - Tariff: ${tariff60m.rate}
-    - leasingMax60m (före avrundning): ${leasingMax60m}
-    - leasingMax60mRef (efter avrundning): ${roundedValue}
+    - leasingMax60mRef: ${leasingMax60m}
   `);
   
-  return roundedValue;
+  return leasingMax60m;
 }
 
 /**

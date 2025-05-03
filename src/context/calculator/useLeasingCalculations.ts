@@ -6,6 +6,7 @@ import { calculateLeasingCost } from '@/utils/leasingCostUtils';
 import { calculateCashPrice } from '@/utils/pricingUtils';
 import { SHIPPING_COST_EUR_CREDITS, SHIPPING_COST_EUR_NO_CREDITS } from '@/utils/constants';
 import { calculateLeasingMax60mRef } from '@/utils/pricingUtils';
+import { calculateTariffBasedLeasingMax } from '@/utils/leasingTariffUtils';
 
 export function useLeasingCalculations({
   selectedMachineId,
@@ -34,12 +35,26 @@ export function useLeasingCalculations({
   
   const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
   
+  // Logga i konsolen vilket id som söks och vilken maskin som hittas
+  console.log(`Looking for machine with id: ${selectedMachineId}, Found: ${selectedMachine ? selectedMachine.name : 'none'}`);
+  
   // Beräkna leasingMax60mRef-referensvärdet när maskinen ändras
   useEffect(() => {
     if (selectedMachine?.priceEur) {
       const refValue = calculateLeasingMax60mRef(selectedMachine, exchangeRate);
       setLeasingMax60mRef(refValue);
       console.log(`Beräknat leasingMax60mRef för ${selectedMachine.name}: ${refValue} SEK`);
+      
+      // Logga direkt beräkning för att verifiera
+      if (selectedMachine.id === "gvl") {
+        const directCalcValue = calculateTariffBasedLeasingMax(
+          selectedMachine.priceEur,
+          60,
+          selectedMachine.usesCredits,
+          exchangeRate
+        );
+        console.log(`Direkt beräkning för GVL med 60 månader: ${directCalcValue} SEK`);
+      }
     } else {
       setLeasingMax60mRef(0);
     }
@@ -117,10 +132,10 @@ export function useLeasingCalculations({
   }, [
     selectedMachine,
     machinePriceSEK,
-    selectedLeasingPeriodId, // Säkerställer att beräkningar uppdateras vid ändring av leasingperiod
+    selectedLeasingPeriodId,
     selectedInsuranceId,
     leaseAdjustmentFactor,
-    leasingMax60mRef // Lägg till beroende för att säkerställa korrekt beräkningsordning
+    leasingMax60mRef
   ]);
 
   return {

@@ -24,6 +24,14 @@ export function calculateLeasingCost(
   const leasingRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
   let baseLeasingCost: number;
   
+  console.log(`Beräkning av leasingkostnad för ${machine.name}:
+    machinePriceSEK: ${machinePriceSEK}
+    leasingRate: ${leasingRateNum}
+    includeInsurance: ${includeInsurance}
+    leaseMultiplier: ${leaseMultiplier}
+    leasingRange: min=${leasingRange.min}, max=${leasingRange.max}
+  `);
+  
   // Använd linjär interpolation mellan min och max baserat på leaseMultiplier
   // leaseMultiplier ska vara mellan 0 och 1, där:
   // - 0 representerar leasingRange.min

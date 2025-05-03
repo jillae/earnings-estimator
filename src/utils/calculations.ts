@@ -2,6 +2,7 @@
 import { getExchangeRate } from './exchangeRateUtils';
 import { Machine } from '../data/machines/types';
 import { calculateLeasingRange } from './leasingRangeUtils';
+import { calculateTariffBasedLeasingMax } from './leasingTariffUtils';
 
 export async function calculateLeasingCost(
   machine: Machine,
@@ -24,14 +25,13 @@ export async function calculateLeasingCost(
 
   const machinePriceSek = machinePrice * exchangeRate;
 
-  // Get the leasing range using the dynamically calculated values
-  const leasingRange = calculateLeasingRange(
-    machine,
-    machinePriceSek,
-    leasingPeriod / 100, // Convert to decimal format
-    includeInsurance
+  // För att garantera korrekt beräkning, använd funktionen som är specificerad för tariffer
+  const leasingCost = calculateTariffBasedLeasingMax(
+    machine.priceEur,
+    leasingPeriod, // Använd direkt leasingPeriod (månader, inte tariff)
+    machine.usesCredits,
+    exchangeRate
   );
 
-  // Use the default value from the range calculation
-  return leasingRange.default;
+  return leasingCost;
 }
