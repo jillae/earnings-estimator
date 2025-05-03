@@ -156,14 +156,27 @@ export function useLeasingCalculations({
       }
       
       // Beräkna aktuell leasingkostnad baserat på justeringsfaktor
-      // FIX: Här är felet - funktionen tar bara 3 argument men vi skickar 5
-      const cost = calculateLeasingCost(
-        selectedMachine,
-        leasingRate,
-        includeInsurance
-      );
+      // FIX: Här anropar vi calculateLeasingCost asynkront och hanterar resultatet
+      const calculateCostForMachine = async () => {
+        try {
+          const cost = await calculateLeasingCost(
+            selectedMachine,
+            leasingRate,
+            includeInsurance
+          );
+          
+          // Nu kan vi uppdatera state med värdet vi fått
+          setLeasingCost(cost);
+          
+          console.log(`Leasingkostnad asynkront beräknad för ${selectedMachine.name}: ${cost} SEK`);
+        } catch (error) {
+          console.error("Fel vid beräkning av leasingkostnad:", error);
+          setLeasingCost(0);
+        }
+      };
       
-      setLeasingCost(cost);
+      // Starta den asynkrona beräkningen
+      calculateCostForMachine();
     }
     
     console.log(`Leasing calculations updated:
