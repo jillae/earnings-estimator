@@ -2,6 +2,11 @@
 import { CalculatorContextType } from './types';
 
 export function buildContextValue(base: any, slaCosts: any): CalculatorContextType {
+  // Kontrollera om vi har en giltig maskin vald
+  const noMachineSelected = !base.selectedMachine || 
+                           base.selectedMachine.id === 'null-machine' || 
+                           base.selectedMachine.id === 'select-machine';
+  
   // Beräkna om Flatrate är tillgängligt baserat på betalningsoption och slidersteg
   const isLeasingFlatrateViable = base.currentSliderStep >= 1;
   const isFlatrateViable = 
@@ -9,10 +14,6 @@ export function buildContextValue(base: any, slaCosts: any): CalculatorContextTy
     (base.paymentOption === 'leasing' && isLeasingFlatrateViable); // Vid leasing: kräver steg >= 1
   
   // Säkerställ att alla värden är 0 när ingen maskin är vald
-  const noMachineSelected = !base.selectedMachine || 
-                           base.selectedMachine.id === 'null-machine' || 
-                           base.selectedMachine.id === 'select-machine';
-  
   const safeValues = {
     ...base,
     leasingCost: noMachineSelected ? 0 : base.leasingCost,

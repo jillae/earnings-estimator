@@ -14,6 +14,7 @@ interface LeaseSliderProps {
   allowBelowFlatrate: boolean;
   isAdjustmentEnabled: boolean;
   onToggleAdjustment: (enabled: boolean) => void;
+  showAdjustmentCheckbox: boolean;
 }
 
 const LeaseSlider: React.FC<LeaseSliderProps> = ({
@@ -23,7 +24,8 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   showFlatrateIndicator,
   allowBelowFlatrate,
   isAdjustmentEnabled,
-  onToggleAdjustment
+  onToggleAdjustment,
+  showAdjustmentCheckbox
 }) => {
   // Hantera slider förändring
   const handleSliderChange = (values: number[]) => {
@@ -35,16 +37,18 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   
   return (
     <div className="mb-6">
-      <div className="flex items-center space-x-2 mb-4">
-        <Checkbox 
-          id="adjustmentEnabled" 
-          checked={isAdjustmentEnabled}
-          onCheckedChange={onToggleAdjustment}
-        />
-        <Label htmlFor="adjustmentEnabled" className="text-sm text-slate-600">
-          Jag vill anpassa balansen mellan leasingkostnad och kreditpris
-        </Label>
-      </div>
+      {showAdjustmentCheckbox && (
+        <div className="flex items-center space-x-2 mb-4">
+          <Checkbox 
+            id="adjustmentEnabled" 
+            checked={isAdjustmentEnabled}
+            onCheckedChange={onToggleAdjustment}
+          />
+          <Label htmlFor="adjustmentEnabled" className="text-sm text-slate-600">
+            Jag vill anpassa balansen mellan leasingkostnad och kreditpris
+          </Label>
+        </div>
+      )}
       
       <div className="slider-container relative">
         <FlatrateIndicator 

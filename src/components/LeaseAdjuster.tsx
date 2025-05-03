@@ -66,6 +66,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     }
   };
 
+  // Kontrollera om maskinen använder credits (för att visa/dölja anpassningskontrollen)
+  const usesCredits = selectedMachine?.usesCredits || false;
+
   // Logga värdena för felsökning
   useEffect(() => {
     console.log(`LeaseAdjuster värden:
@@ -75,8 +78,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       leaseCost: ${leaseCost}, displayLeaseCost: ${displayLeaseCost}
       defaultCost: ${defaultCost}
       noMachineSelected: ${noMachineSelected}
+      usesCredits: ${usesCredits}
     `);
-  }, [selectedMachine, minLeaseCost, maxLeaseCost, leaseCost, exactMinCost, exactMaxCost, displayLeaseCost, defaultCost, noMachineSelected]);
+  }, [selectedMachine, minLeaseCost, maxLeaseCost, leaseCost, exactMinCost, exactMaxCost, displayLeaseCost, defaultCost, noMachineSelected, usesCredits]);
 
   const currentStepLabel = stepValues[currentSliderStep]?.label || 'Standard';
 
@@ -120,8 +124,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         thresholdPosition={flatratePosition}
         showFlatrateIndicator={showFlatrateIndicator && !!selectedMachine && !noMachineSelected}
         allowBelowFlatrate={allowBelowFlatrate}
-        isAdjustmentEnabled={isAdjustmentEnabled}
+        isAdjustmentEnabled={usesCredits ? isAdjustmentEnabled : true}
         onToggleAdjustment={handleToggleAdjustment}
+        showAdjustmentCheckbox={usesCredits}
       />
     </section>
   );

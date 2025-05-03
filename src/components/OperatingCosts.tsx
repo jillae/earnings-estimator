@@ -48,16 +48,37 @@ const OperatingCosts: React.FC = () => {
     Current Slider Step: ${currentSliderStep}
   `);
 
-  // Om maskinen inte använder credits
+  // Om maskinen inte använder credits, visa endast SLA-kostnad om den finns
   if (!selectedMachine.usesCredits) {
+    const hasOperatingCosts = operatingCost && operatingCost.totalCost > 0;
+
+    if (!hasOperatingCosts) {
+      return (
+        <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
+          <h3 className="text-lg font-semibold mb-4">Detaljer Driftskostnad</h3>
+          
+          <div className="flex items-center justify-center p-4 bg-gray-50 border border-gray-200 rounded-md">
+            <p className="text-sm text-gray-600">
+              Inga driftskostnader för denna maskin.
+            </p>
+          </div>
+        </div>
+      );
+    }
+    
+    // Visa bara SLA-information för icke-kredit-maskiner
     return (
       <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
         <h3 className="text-lg font-semibold mb-4">Detaljer Driftskostnad</h3>
         
-        <div className="flex items-center justify-center p-4 bg-gray-50 border border-gray-200 rounded-md">
-          <p className="text-sm text-gray-600">
-            Inga kreditkostnader för denna maskin.
-          </p>
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm">SLA-kostnad för {selectedDriftpaket}-paket</span>
+          <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost)}</span>
+        </div>
+        
+        <div className="flex justify-between items-center mb-2 pt-2 border-t border-gray-200">
+          <span className="text-sm font-semibold">Total driftskostnad per månad</span>
+          <span className="text-lg font-semibold text-blue-600">{formatCurrency(operatingCost.totalCost)}</span>
         </div>
       </div>
     );
@@ -79,6 +100,19 @@ const OperatingCosts: React.FC = () => {
           <p className="text-sm text-blue-600 pl-7">
             Du får obegränsad användning av credits utan extra kostnader.
           </p>
+        </div>
+        
+        {/* Visa även SLA-kostnaden för Guld-paketet om det finns */}
+        {selectedDriftpaket === 'Guld' && operatingCost.slaCost > 0 && (
+          <div className="flex justify-between items-center mt-4 mb-2">
+            <span className="text-sm">Extra SLA-kostnad för Guld-paket</span>
+            <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost)}</span>
+          </div>
+        )}
+        
+        <div className="flex justify-between items-center mb-2 pt-2 border-t border-gray-200">
+          <span className="text-sm font-semibold">Total driftskostnad per månad</span>
+          <span className="text-lg font-semibold text-blue-600">{formatCurrency(operatingCost.totalCost)}</span>
         </div>
       </div>
     );
@@ -120,6 +154,14 @@ const OperatingCosts: React.FC = () => {
           <span className="text-sm">Credit-kostnad per månad</span>
           <span className="text-lg font-semibold">{formatCurrency(creditsCostPerMonth)}</span>
         </div>
+        
+        {/* Visa även SLA-kostnaden för Guld-paketet om det finns */}
+        {selectedDriftpaket === 'Guld' && operatingCost.slaCost > 0 && (
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm">Extra SLA-kostnad för Guld-paket</span>
+            <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost)}</span>
+          </div>
+        )}
         
         <div className="flex justify-between items-center mb-2 pt-2 border-t border-gray-200">
           <span className="text-sm font-semibold">Total driftskostnad per månad</span>

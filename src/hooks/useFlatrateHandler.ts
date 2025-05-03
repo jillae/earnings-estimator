@@ -24,6 +24,7 @@ export function useFlatrateHandler() {
   // NYTT VILLKOR: 
   // - Vid kontantköp är flatrate ALLTID valbart
   // - Vid leasing krävs att currentSliderStep >= 1 (Standard eller högre)
+  // - Kräver också att maskinen använder credits och är i Bas-paketet
   const canEnableFlatrate = Boolean(
     selectedMachine?.usesCredits && 
     selectedDriftpaket === 'Bas' && // Bara i Bas-paketet som flatrate-toggle är relevant
