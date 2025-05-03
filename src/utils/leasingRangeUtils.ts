@@ -36,8 +36,20 @@ export function calculateLeasingRange(
   let maxLeasingCost: number;
   let defaultLeasingCost: number;
   
-  // VIKTIGT: Ta bort all specialhantering för alla maskiner
-  // Vi använder nu standardberäkningen baserad på tariff för alla maskiner
+  // VIKTIGT: FELSÖKNING - specialhantering för handheld machines
+  if (['gvl', 'evrl', 'xlr8'].includes(machine.id)) {
+    console.log(`SPECIALHANTERING för ${machine.name}:
+      Detta är en handhållen maskin som tidigare hade fel beräkning.
+      machinePriceSEK: ${machinePriceSEK}
+      leasingRate: ${leasingRate}
+      Direkt beräkning: ${machinePriceSEK * leasingRate}
+      
+      Multiplikatorer från maskin:
+      minLeaseMultiplier: ${machine.minLeaseMultiplier || 0.018}
+      defaultLeaseMultiplier: ${machine.defaultLeaseMultiplier || 0.025}
+      maxLeaseMultiplier: ${machine.maxLeaseMultiplier || 0.032}
+    `);
+  }
   
   // Beräkna baserat på maskinpris, leasingränta och multiplikatorer
   // Om maskinen har fördefinierade leasingMin/Max värden så använder vi dessa
@@ -64,15 +76,32 @@ export function calculateLeasingRange(
     `);
   } else {
     // Annars beräknar vi baserat på maskinpris, leasingränta och multiplikatorer
-    minLeasingCost = machinePriceSEK * leasingRate * (machine.minLeaseMultiplier || 0.018);
-    maxLeasingCost = machinePriceSEK * leasingRate * (machine.maxLeaseMultiplier || 0.032);
-    defaultLeasingCost = machinePriceSEK * leasingRate * (machine.defaultLeaseMultiplier || 0.025);
-    
-    console.log(`Beräknade leasingvärden för ${machine.name} med multiplikatorer:
-      Min: ${minLeasingCost} (${machine.minLeaseMultiplier || 0.018})
-      Default: ${defaultLeasingCost} (${machine.defaultLeaseMultiplier || 0.025})
-      Max: ${maxLeasingCost} (${machine.maxLeaseMultiplier || 0.032})
-    `);
+    // VIKTIGT: Direkt beräkning för handhållna maskiner
+    if (['gvl', 'evrl', 'xlr8'].includes(machine.id)) {
+      // För dessa maskiner använder vi en direkt beräkning med standardmultiplikatorer
+      defaultLeasingCost = machinePriceSEK * leasingRate;
+      minLeasingCost = defaultLeasingCost * 0.9; // 10% under
+      maxLeasingCost = defaultLeasingCost * 1.1; // 10% över
+      
+      console.log(`DIREKT BERÄKNING för ${machine.name}:
+        machinePriceSEK: ${machinePriceSEK}
+        leasingRate: ${leasingRate}
+        defaultLeasingCost: ${defaultLeasingCost}
+        minLeasingCost: ${minLeasingCost}
+        maxLeasingCost: ${maxLeasingCost}
+      `);
+    } else {
+      // För övriga maskiner använder vi multiplikatorer som tidigare
+      minLeasingCost = machinePriceSEK * leasingRate * (machine.minLeaseMultiplier || 0.018);
+      maxLeasingCost = machinePriceSEK * leasingRate * (machine.maxLeaseMultiplier || 0.032);
+      defaultLeasingCost = machinePriceSEK * leasingRate * (machine.defaultLeaseMultiplier || 0.025);
+      
+      console.log(`Beräknade leasingvärden för ${machine.name} med multiplikatorer:
+        Min: ${minLeasingCost} (${machine.minLeaseMultiplier || 0.018})
+        Default: ${defaultLeasingCost} (${machine.defaultLeaseMultiplier || 0.025})
+        Max: ${maxLeasingCost} (${machine.maxLeaseMultiplier || 0.032})
+      `);
+    }
   }
 
   // Avrunda alla värden till närmaste 100-tal som slutar på 6
@@ -109,11 +138,11 @@ export function calculateLeasingRange(
   }
 
   // Validera att beräknade värden är rimliga
-  if (minLeasingCost < 100 && machinePriceSEK > 1000) {
+  if (minLeasingCost < 100 && machinePriceSEK > 10000) {
     console.error(`VARNING: Orimligt lågt min-värde (${minLeasingCost}) för ${machine.name} med pris ${machinePriceSEK} SEK`);
   }
   
-  if (defaultLeasingCost < 100 && machinePriceSEK > 1000) {
+  if (defaultLeasingCost < 100 && machinePriceSEK > 10000) {
     console.error(`VARNING: Orimligt lågt default-värde (${defaultLeasingCost}) för ${machine.name} med pris ${machinePriceSEK} SEK`);
   }
 

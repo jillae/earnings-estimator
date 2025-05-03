@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { machineData, leasingPeriods } from '@/data/machines';
 import { calculateLeasingRange } from '@/utils/leasingRangeUtils';
-import { calculateLeasingCost } from '@/utils/leasingCostUtils';
+import { calculateLeasingCost } from '@/utils/calculationUtils';
 import { calculateCashPrice } from '@/utils/pricingUtils';
 import { SHIPPING_COST_EUR_CREDITS, SHIPPING_COST_EUR_NO_CREDITS } from '@/utils/constants';
 import { calculateLeasingMax60mRef } from '@/utils/pricingUtils';
@@ -50,6 +50,17 @@ export function useLeasingCalculations({
       );
       setLeasingMax60mRef(refValue);
       console.log(`Beräknat leasingMax60mRef för ${selectedMachine.name}: ${refValue} SEK (direkt beräkning)`);
+      
+      // FELSÖKNING: Extra loggning för handheld machines
+      if (['gvl', 'evrl', 'xlr8'].includes(selectedMachine.id)) {
+        console.log(`FELSÖKNING ${selectedMachine.name}:
+          priceEur: ${selectedMachine.priceEur}
+          usesCredits: ${selectedMachine.usesCredits}
+          exchangeRate: ${exchangeRate}
+          Calculated leasingMax60mRef: ${refValue}
+          Raw value before rounding: ${selectedMachine.priceEur * exchangeRate * 0.02095}
+        `);
+      }
     } else {
       setLeasingMax60mRef(0);
     }
@@ -94,25 +105,63 @@ export function useLeasingCalculations({
     const includeInsurance = selectedInsuranceId === 'yes';
     console.log(`Försäkring inkluderad: ${includeInsurance}`);
     
-    // Beräkna möjligt leasingintervall
-    const range = calculateLeasingRange(selectedMachine, machinePriceSEK, leasingRate, includeInsurance);
-    setLeasingRange(range);
+    // VIKTIGT: För alla maskiner, inklusive handhållna, beräkna leasingkostnad med den direkta tariff-baserade metoden
+    // Handhållna beräknas tidigare på ett fel sätt
+    let defaultLeasingCost = 0;
     
-    // Spara flatrate threshold för UI
-    if (range.flatrateThreshold) {
-      setFlatrateThreshold(range.flatrateThreshold);
+    // För handhållna maskiner, beräkna direkt med tariff
+    if (['gvl', 'evrl', 'xlr8'].includes(selectedMachine.id)) {
+      const shippingCost = SHIPPING_COST_EUR_NO_CREDITS; // Handhållna använder inte krediter
+      
+      // Konvertera först till SEK
+      const totalPriceSEK = (selectedMachine.priceEur + shippingCost) * exchangeRate;
+      
+      // Beräkna med tariff-faktor
+      defaultLeasingCost = totalPriceSEK * leasingRate;
+      
+      console.log(`FELSÖKNING handhållen maskin ${selectedMachine.name}:
+        priceEur: ${selectedMachine.priceEur}
+        shippingCost: ${shippingCost}
+        exchangeRate: ${exchangeRate}
+        totalPriceSEK: ${totalPriceSEK}
+        leasingRate: ${leasingRate}
+        Calculated: ${defaultLeasingCost}
+      `);
+      
+      // Sätt range baserat på detta värde
+      const minLeasingCost = defaultLeasingCost * 0.9;
+      const maxLeasingCost = defaultLeasingCost * 1.1;
+      
+      setLeasingRange({
+        min: Math.round(minLeasingCost),
+        default: Math.round(defaultLeasingCost),
+        max: Math.round(maxLeasingCost)
+      });
+      
+      // Sätt leasingCost till defaultvärdet
+      setLeasingCost(Math.round(defaultLeasingCost));
+    } else {
+      // För övriga maskiner, använd normal beräkningsmetod
+      // Beräkna möjligt leasingintervall
+      const range = calculateLeasingRange(selectedMachine, machinePriceSEK, leasingRate, includeInsurance);
+      setLeasingRange(range);
+      
+      // Spara flatrate threshold för UI
+      if (range.flatrateThreshold) {
+        setFlatrateThreshold(range.flatrateThreshold);
+      }
+      
+      // Beräkna aktuell leasingkostnad baserat på justeringsfaktor
+      const cost = calculateLeasingCost(
+        selectedMachine,
+        machinePriceSEK,
+        leasingRate,
+        includeInsurance,
+        leaseAdjustmentFactor
+      );
+      
+      setLeasingCost(cost);
     }
-    
-    // Beräkna aktuell leasingkostnad baserat på justeringsfaktor
-    const cost = calculateLeasingCost(
-      selectedMachine,
-      machinePriceSEK,
-      leasingRate,
-      includeInsurance,
-      leaseAdjustmentFactor
-    );
-    
-    setLeasingCost(cost);
     
     console.log(`Leasing calculations updated:
       Machine: ${selectedMachine.name}
@@ -120,8 +169,8 @@ export function useLeasingCalculations({
       Leasing period: ${selectedLeasingPeriodId} (rate: ${leasingRate})
       Include insurance: ${includeInsurance}
       Adjustment factor: ${leaseAdjustmentFactor}
-      Range: ${range.min} - ${range.max} (default: ${range.default})
-      Calculated cost: ${cost}
+      Range: ${leasingRange.min} - ${leasingRange.max} (default: ${leasingRange.default})
+      Calculated cost: ${leasingCost}
       LeasingMax60mRef: ${leasingMax60mRef}
     `);
   }, [
@@ -130,7 +179,8 @@ export function useLeasingCalculations({
     selectedLeasingPeriodId,
     selectedInsuranceId,
     leaseAdjustmentFactor,
-    leasingMax60mRef
+    leasingMax60mRef,
+    exchangeRate
   ]);
 
   return {

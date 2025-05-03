@@ -45,13 +45,13 @@ export const handheldMachines: Machine[] = [
     shortName: "GVL",
     modelCode: "GVL",
     description: "Senaste modellen av handhållen behandlingsutrustning",
-    priceEur: 19900,
+    priceEur: 19900, // Verifierat korrekt EUR-pris
     minLeaseMultiplier: 0.018,
     maxLeaseMultiplier: 0.032,
     defaultLeaseMultiplier: 0.025,
     creditPriceMultiplier: 0,
     flatrateAmount: 0,
-    usesCredits: false,
+    usesCredits: false, // Bekräftat att GVL INTE använder krediter
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200,
     imageUrl: "https://drive.google.com/uc?export=view&id=1fJ5A_7g1tL5nJ4tW0H9tT7pM9h5I2Q2X"

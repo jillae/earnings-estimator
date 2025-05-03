@@ -67,6 +67,17 @@ export function calculateTariffBasedLeasingMax(
     // Apply tariff percentage - factor is already in decimal form, no need to divide by 100
     const calculatedValue = Math.round(totalPriceSEK * factor);
     
+    // FELSÖKNING: Rikare loggning för handhållna enheter
+    if (['gvl', 'evrl', 'xlr8'].includes(machinePriceEur.toString())) {
+      console.log(`DETALJERAD BERÄKNING för handhållen enhet:
+        machinePriceEur: ${machinePriceEur}
+        shippingCost: ${shippingCost}
+        totalPriceSEK: ${totalPriceSEK}
+        factor: ${factor}
+        Faktisk beräkning: ${totalPriceSEK} * ${factor} = ${calculatedValue}
+      `);
+    }
+    
     // Säkerställ att vi inte returnerar låga felaktiga värden
     if (calculatedValue < 500 && machinePriceEur > 1000) {
       console.error(`VARNING: Orimligt lågt beräknat värde (${calculatedValue}) för maskin med pris ${machinePriceEur} EUR`);

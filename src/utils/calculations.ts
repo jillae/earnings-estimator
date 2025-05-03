@@ -37,6 +37,16 @@ export async function calculateLeasingCost(
     }
   }
 
+  // FELSÖKNING: Logga värden för handheld machines tydligt
+  if (machine.id === 'gvl' || machine.id === 'evrl' || machine.id === 'xlr8') {
+    console.log(`SPECIALLOGGNING för handhållen maskin ${machine.name}:
+      EUR pris: ${machine.priceEur}
+      Exchange rate: ${exchangeRate}
+      Månadspris i SEK (utan tariff): ${machine.priceEur * exchangeRate}
+      Leasingperiod: ${leasingPeriod}
+    `);
+  }
+
   // Beräkna leasingkostnad med hjälp av tariff-baserad kalkyl
   // Detta ger garanterat korrekt beräkning för alla maskiner
   const leasingCost = calculateTariffBasedLeasingMax(
