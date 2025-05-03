@@ -10,7 +10,8 @@ const SlaSelector: React.FC = () => {
     selectedSlaLevel, 
     setSlaLevel, 
     slaCosts,
-    selectedMachine 
+    selectedMachine,
+    leasingMax60mRef
   } = useCalculator();
 
   const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
@@ -25,6 +26,7 @@ const SlaSelector: React.FC = () => {
   console.log(`SlaSelector Rendering:
     Machine: ${selectedMachine?.name}
     SLA Level: ${selectedSlaLevel}
+    LeasingMax60mRef: ${leasingMax60mRef}
     SLA Costs: Brons=${slaCosts.Brons}, Silver=${slaCosts.Silver}, Guld=${slaCosts.Guld}
     Uses Credits: ${selectedMachine?.usesCredits}
   `);

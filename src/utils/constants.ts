@@ -21,8 +21,8 @@ export type PaymentOption = 'leasing' | 'cash';
 export type SlaLevel = 'Brons' | 'Silver' | 'Guld';
 
 // SLA procentsatser (i förhållande till leasingMax_60m_ref)
-export const SLA_PERCENT_SILVER = 0.25;  // 25% av leasingMax_60m_ref
-export const SLA_PERCENT_GULD = 0.50;     // 50% av leasingMax_60m_ref
+export const SLA_PERCENT_SILVER = 0.25;  // 25% av leasingMax60mRef
+export const SLA_PERCENT_GULD = 0.50;     // 50% av leasingMax60mRef
 
 // Flatrate konstanter
 export const FLATRATE_THRESHOLD = 4; // Antal behandlingar per dag där flatrate aktiveras
@@ -44,20 +44,20 @@ export const INSURANCE_RATES = {
   RATE_ABOVE_50K: 0.015  // 1.5% för maskiner > 50 000 SEK
 };
 
-// Leasing tariff-värden 2024
+// Leasing tariff-värden 2024 (Värdena är nu i decimalform, inte procent)
 export const LEASING_TARIFFS_2024: LeasingPeriod[] = [
-  { id: "24", name: "24 månader", rate: 0.04566, Löptid: 24, Faktor: 4.566 },
-  { id: "36", name: "36 månader", rate: 0.03189, Löptid: 36, Faktor: 3.189 },
-  { id: "48", name: "48 månader", rate: 0.02504, Löptid: 48, Faktor: 2.504 },
-  { id: "60", name: "60 månader", rate: 0.02095, Löptid: 60, Faktor: 2.095 }
+  { id: "24", name: "24 månader", rate: 0.04566, Löptid: 24, Faktor: 0.04566 },
+  { id: "36", name: "36 månader", rate: 0.03189, Löptid: 36, Faktor: 0.03189 },
+  { id: "48", name: "48 månader", rate: 0.02504, Löptid: 48, Faktor: 0.02504 },
+  { id: "60", name: "60 månader", rate: 0.02095, Löptid: 60, Faktor: 0.02095 }
 ];
 
-// Leasing tariff-värden 2025
+// Leasing tariff-värden 2025 (Värdena är nu i decimalform, inte procent)
 export const LEASING_TARIFFS_2025: LeasingPeriod[] = [
-  { id: "24", name: "24 månader", rate: 0.045136, Löptid: 24, Faktor: 4.5136 },
-  { id: "36", name: "36 månader", rate: 0.031346, Löptid: 36, Faktor: 3.1346 },
-  { id: "48", name: "48 månader", rate: 0.024475, Löptid: 48, Faktor: 2.4475 },
-  { id: "60", name: "60 månader", rate: 0.020372, Löptid: 60, Faktor: 2.0372 }
+  { id: "24", name: "24 månader", rate: 0.045136, Löptid: 24, Faktor: 0.045136 },
+  { id: "36", name: "36 månader", rate: 0.031346, Löptid: 36, Faktor: 0.031346 },
+  { id: "48", name: "48 månader", rate: 0.024475, Löptid: 48, Faktor: 0.024475 },
+  { id: "60", name: "60 månader", rate: 0.020372, Löptid: 60, Faktor: 0.020372 }
 ];
 
 // Aktuellt tariffvärde - defaultar till 2024

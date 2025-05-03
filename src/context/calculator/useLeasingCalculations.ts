@@ -76,7 +76,7 @@ export function useLeasingCalculations({
     
     // Hämta leasingRate baserat på vald period
     const selectedPeriod = leasingPeriods.find(period => period.id === selectedLeasingPeriodId);
-    const leasingRate = selectedPeriod?.rate || 0.02504; // Default till 48 månader
+    const leasingRate = selectedPeriod?.rate || 0.02095; // Default till 60 månader
     
     console.log(`Använder leasingperiod: ${selectedLeasingPeriodId} med rate: ${leasingRate}`);
     

@@ -56,10 +56,23 @@ export function calculateLeasingMax60mRef(
   const totalPriceSEK = (machine.priceEur + shippingCostEur) * exchangeRate;
   
   // Applicera tariff för att få leasingMax
-  const leasingMax60m = totalPriceSEK * (tariff60m.rate / 100);
+  // VIKTIGT: Konvertera tariff.rate från procent till decimalform (dividera med 100)
+  const leasingMax60m = totalPriceSEK * tariff60m.rate;
   
   // Avrunda till närmaste hundra slutande på 6
-  return roundToHundredEndingSix(leasingMax60m);
+  const roundedValue = roundToHundredEndingSix(leasingMax60m);
+  
+  console.log(`Beräkning av leasingMax60mRef för ${machine.name}:
+    - Pris EUR: ${machine.priceEur}
+    - Frakt EUR: ${shippingCostEur}
+    - Växelkurs: ${exchangeRate}
+    - Totalt SEK: ${totalPriceSEK}
+    - Tariff: ${tariff60m.rate}
+    - leasingMax60m (före avrundning): ${leasingMax60m}
+    - leasingMax60mRef (efter avrundning): ${roundedValue}
+  `);
+  
+  return roundedValue;
 }
 
 /**
