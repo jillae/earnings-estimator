@@ -15,6 +15,7 @@ interface LeaseSliderProps {
   isAdjustmentEnabled: boolean;
   onToggleAdjustment: (enabled: boolean) => void;
   showAdjustmentCheckbox: boolean;
+  showSlider: boolean; // Ny prop för att styra om slidern visas
 }
 
 const LeaseSlider: React.FC<LeaseSliderProps> = ({
@@ -25,7 +26,8 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   allowBelowFlatrate,
   isAdjustmentEnabled,
   onToggleAdjustment,
-  showAdjustmentCheckbox
+  showAdjustmentCheckbox,
+  showSlider
 }) => {
   // Hantera slider förändring
   const handleSliderChange = (values: number[]) => {
@@ -50,31 +52,33 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
         </div>
       )}
       
-      <div className="slider-container relative">
-        <FlatrateIndicator 
-          thresholdPosition={thresholdPosition} 
-          showFlatrateIndicator={showFlatrateIndicator}
-          allowBelowFlatrate={allowBelowFlatrate}
-        />
-        
-        <Slider
-          value={[currentStep]}
-          min={0}
-          max={2}
-          step={0.5}
-          disabled={!isAdjustmentEnabled}
-          onValueChange={handleSliderChange}
-          className="mt-8"
-        />
-        
-        <div className="flex justify-between text-xs text-slate-500 mt-1 px-1">
-          <span>Min</span>
-          <span>Låg</span>
-          <span>Standard</span>
-          <span>Hög</span>
-          <span>Max</span>
+      {showSlider && (
+        <div className="slider-container relative">
+          <FlatrateIndicator 
+            thresholdPosition={thresholdPosition} 
+            showFlatrateIndicator={showFlatrateIndicator}
+            allowBelowFlatrate={allowBelowFlatrate}
+          />
+          
+          <Slider
+            value={[currentStep]}
+            min={0}
+            max={2}
+            step={0.5}
+            disabled={!isAdjustmentEnabled}
+            onValueChange={handleSliderChange}
+            className="mt-8"
+          />
+          
+          <div className="flex justify-between text-xs text-slate-500 mt-1 px-1">
+            <span>Min</span>
+            <span>Låg</span>
+            <span>Standard</span>
+            <span>Hög</span>
+            <span>Max</span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

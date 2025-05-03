@@ -46,6 +46,10 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     ? 0 
     : (stepValues[1]?.leasingCost || ((exactMinCost + exactMaxCost) / 2));
 
+  // Kontrollera om maskinen använder credits (för att visa/dölja slider och anpassningskontroll)
+  const usesCredits = selectedMachine?.usesCredits || false;
+  const showSlider = usesCredits;
+
   let flatratePosition = null;
   if (flatrateThreshold && !noMachineSelected) {
     flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
@@ -66,9 +70,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     }
   };
 
-  // Kontrollera om maskinen använder credits (för att visa/dölja anpassningskontrollen)
-  const usesCredits = selectedMachine?.usesCredits || false;
-
   // Logga värdena för felsökning
   useEffect(() => {
     console.log(`LeaseAdjuster värden:
@@ -79,8 +80,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       defaultCost: ${defaultCost}
       noMachineSelected: ${noMachineSelected}
       usesCredits: ${usesCredits}
+      showSlider: ${showSlider}
     `);
-  }, [selectedMachine, minLeaseCost, maxLeaseCost, leaseCost, exactMinCost, exactMaxCost, displayLeaseCost, defaultCost, noMachineSelected, usesCredits]);
+  }, [selectedMachine, minLeaseCost, maxLeaseCost, leaseCost, exactMinCost, exactMaxCost, displayLeaseCost, defaultCost, noMachineSelected, usesCredits, showSlider]);
 
   const currentStepLabel = stepValues[currentSliderStep]?.label || 'Standard';
 
@@ -89,7 +91,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       <div>
         <label className="flex items-center justify-between text-base font-semibold mb-2">
           <span>Månadskostnad leasing</span>
-          <span className="text-sm font-medium text-blue-600">{currentStepLabel}</span>
+          {showSlider && <span className="text-sm font-medium text-blue-600">{currentStepLabel}</span>}
         </label>
         <CostDisplay 
           minLeaseCost={exactMinCost}
@@ -127,6 +129,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         isAdjustmentEnabled={usesCredits ? isAdjustmentEnabled : true}
         onToggleAdjustment={handleToggleAdjustment}
         showAdjustmentCheckbox={usesCredits}
+        showSlider={showSlider}
       />
     </section>
   );

@@ -28,7 +28,7 @@ const OperatingCosts: React.FC = () => {
 
   const { handleFlatrateChange, canEnableFlatrate } = useFlatrateHandler();
 
-  // Om ingen maskin är vald, visa inget
+  // Om ingen maskin är vald, visa NoMachineSelected-komponenten
   if (!selectedMachine) {
     return <NoMachineSelected />;
   }

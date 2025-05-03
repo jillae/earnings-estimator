@@ -7,11 +7,15 @@ export function buildContextValue(base: any, slaCosts: any): CalculatorContextTy
                            base.selectedMachine.id === 'null-machine' || 
                            base.selectedMachine.id === 'select-machine';
   
+  // Om maskinen inte använder credits, ska flatrate aldrig vara tillgängligt
+  const usesCredits = base.selectedMachine?.usesCredits || false;
+  
   // Beräkna om Flatrate är tillgängligt baserat på betalningsoption och slidersteg
-  const isLeasingFlatrateViable = base.currentSliderStep >= 1;
-  const isFlatrateViable = 
-    (base.paymentOption === 'cash') || // Vid kontant: alltid tillgängligt
-    (base.paymentOption === 'leasing' && isLeasingFlatrateViable); // Vid leasing: kräver steg >= 1
+  // Bara relevant för maskiner som använder credits
+  const isLeasingFlatrateViable = usesCredits ? (base.currentSliderStep >= 1) : false;
+  const isFlatrateViable = usesCredits && 
+    ((base.paymentOption === 'cash') || // Vid kontant: alltid tillgängligt
+    (base.paymentOption === 'leasing' && isLeasingFlatrateViable)); // Vid leasing: kräver steg >= 1
   
   // Säkerställ att alla värden är 0 när ingen maskin är vald
   const safeValues = {
