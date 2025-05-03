@@ -48,11 +48,15 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 
   // Kontrollera om maskinen använder credits (för att visa/dölja slider och anpassningskontroll)
   const usesCredits = selectedMachine?.usesCredits || false;
+  
+  // Bara visa slidern för maskiner som använder credits
   const showSlider = usesCredits;
+  
+  // Bara visa min/max för maskiner som använder credits
   const showMinMax = usesCredits;
 
   let flatratePosition = null;
-  if (flatrateThreshold && !noMachineSelected) {
+  if (flatrateThreshold && !noMachineSelected && usesCredits) {
     flatratePosition = ((flatrateThreshold - exactMinCost) / Math.max(0.001, exactMaxCost - exactMinCost)) * 100;
     flatratePosition = Math.max(0, Math.min(100, flatratePosition));
   }
@@ -123,17 +127,19 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         )}
       </div>
       {/* Slider - visas endast för maskiner som använder credits */}
-      <LeaseSlider 
-        currentStep={currentSliderStep}
-        onStepChange={handleSliderStepChange}
-        thresholdPosition={flatratePosition}
-        showFlatrateIndicator={showFlatrateIndicator && !!selectedMachine && !noMachineSelected}
-        allowBelowFlatrate={allowBelowFlatrate}
-        isAdjustmentEnabled={usesCredits ? isAdjustmentEnabled : true}
-        onToggleAdjustment={handleToggleAdjustment}
-        showAdjustmentCheckbox={usesCredits}
-        showSlider={showSlider}
-      />
+      {usesCredits && (
+        <LeaseSlider 
+          currentStep={currentSliderStep}
+          onStepChange={handleSliderStepChange}
+          thresholdPosition={flatratePosition}
+          showFlatrateIndicator={showFlatrateIndicator && !!selectedMachine && !noMachineSelected}
+          allowBelowFlatrate={allowBelowFlatrate}
+          isAdjustmentEnabled={usesCredits ? isAdjustmentEnabled : false}
+          onToggleAdjustment={handleToggleAdjustment}
+          showAdjustmentCheckbox={usesCredits}
+          showSlider={showSlider}
+        />
+      )}
     </section>
   );
 };
