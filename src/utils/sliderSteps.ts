@@ -16,8 +16,8 @@ export interface StepValues {
 export function calculateStepValues(
   machine: Machine | undefined,
   leasingMin: number,
-  leasingDefault: number, // Ändrat from leasingMaxOld till leasingDefault för tydlighet
-  leasingMax: number, // Ändrat från leasingMaxNew till leasingMax för tydlighet
+  leasingDefault: number,
+  leasingMax: number,
   creditMin: number = 149,
   creditMax: number = 299
 ): Record<SliderStep, StepValues> {
@@ -31,6 +31,15 @@ export function calculateStepValues(
       2: { leasingCost: 0, creditPrice: 0, label: 'Max' }
     };
   }
+  
+  console.log(`calculateStepValues för ${machine.name} (${machine.id}):
+    leasingMin: ${leasingMin}
+    leasingDefault: ${leasingDefault}
+    leasingMax: ${leasingMax}
+    creditMin: ${creditMin}
+    creditMax: ${creditMax}
+    usesCredits: ${machine.usesCredits}
+  `);
 
   // Hämta kreditvärden från maskinen eller använd standardvärden
   // VIKTIGT: Använd exakt de värden som definierats i maskindatat
@@ -58,12 +67,12 @@ export function calculateStepValues(
   const roundedHigh = roundToHundredEndingSix(leasing75Percent);
   const roundedMax = roundToHundredEndingSix(safeMax);
 
-  // VIKTIGT: Lägg till en tydlig logg för att visa exakt vilka kreditsvärdena blir för varje maskin
-  console.log(`Beräknade stegvärden för ${machine.name}:
-    Min (0): ${roundedMin} kr / ${machineMaxCredit} kr per credit (exakt värde)
-    Låg (0.5): ${roundedLow} kr / ${credit25Percent} kr per credit (exakt värde)
-    Standard (1): ${roundedStandard} kr / ${machineMinCredit} kr per credit (exakt värde)
-    Hög (1.5): ${roundedHigh} kr / ${credit75Percent} kr per credit (exakt värde)
+  // VIKTIGT: Lägg till en tydlig logg för att visa exakt vilka kreditsvärdena blir för varje steg
+  console.log(`Beräknade stegvärden för ${machine.name} (${machine.id}):
+    Min (0): ${roundedMin} kr / ${machineMaxCredit} kr per credit
+    Låg (0.5): ${roundedLow} kr / ${credit25Percent} kr per credit
+    Standard (1): ${roundedStandard} kr / ${machineMinCredit} kr per credit
+    Hög (1.5): ${roundedHigh} kr / ${credit75Percent} kr per credit
     Max (2): ${roundedMax} kr / 0 kr per credit
     
     Detaljer:

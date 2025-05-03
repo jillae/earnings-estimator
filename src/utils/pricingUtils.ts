@@ -36,11 +36,14 @@ export function calculateLeasingMax60mRef(
     return 0;
   }
 
-  // Använd den centrala tariffbaserade beräkningen för 60 månader
-  // Vi tar bort specialfall och använder enhetlig beräkning för alla maskiner
-  const shippingCostEur = machine.usesCredits ? SHIPPING_COST_EUR_CREDITS : SHIPPING_COST_EUR_NO_CREDITS;
+  console.log(`Beräkning av leasingMax60mRef för ${machine.name || 'okänd maskin'}:
+    maskinId: ${machine.id || 'okänt ID'}
+    priceEur: ${machine.priceEur}
+    exchangeRate: ${exchangeRate}
+    usesCredits: ${machine.usesCredits}
+  `);
   
-  // Beräkna leasingMax för 60 månader
+  // Använd den centrala tariffbaserade beräkningen för 60 månader
   const leasingMax60m = calculateTariffBasedLeasingMax(
     machine.priceEur,
     60, // Använd alltid 60 månader för SLA-beräkningar
@@ -48,12 +51,7 @@ export function calculateLeasingMax60mRef(
     exchangeRate
   );
   
-  console.log(`Beräkning av leasingMax60mRef för ${machine.name}:
-    - Pris EUR: ${machine.priceEur}
-    - Frakt EUR: ${shippingCostEur}
-    - Växelkurs: ${exchangeRate}
-    - leasingMax60mRef: ${leasingMax60m}
-  `);
+  console.log(`Beräkningen gav leasingMax60mRef = ${leasingMax60m} SEK för ${machine.name}`);
   
   return leasingMax60m;
 }
@@ -71,26 +69,33 @@ export function calculateSlaCost(
   selectedSlaLevel: SlaLevel,
   leasingMax60mRef: number
 ): number {
+  console.log(`Beräknar SLA-kostnad för ${machine?.name || 'okänd maskin'}:
+    maskinId: ${machine?.id || 'okänt ID'}
+    selectedSlaLevel: ${selectedSlaLevel}
+    leasingMax60mRef: ${leasingMax60mRef} SEK
+  `);
+  
   // Brons är alltid gratis
   if (selectedSlaLevel === 'Brons') {
+    console.log(`SLA Brons är alltid gratis, returnerar 0 SEK`);
     return 0;
   }
   
   // För Silver, använd 25% av leasingMax60mRef
   if (selectedSlaLevel === 'Silver') {
     const silverCost = Math.round(leasingMax60mRef * SLA_PERCENT_SILVER);
-    console.log(`Beräknad Silver SLA-kostnad för ${machine.name}: ${silverCost} (25% av ${leasingMax60mRef})`);
+    console.log(`Beräknad Silver SLA-kostnad för ${machine?.name || 'okänd maskin'}: ${silverCost} (25% av ${leasingMax60mRef})`);
     return silverCost;
   }
   
   // För Guld, använd 50% av leasingMax60mRef
   if (selectedSlaLevel === 'Guld') {
     const goldCost = Math.round(leasingMax60mRef * SLA_PERCENT_GULD);
-    console.log(`Beräknad Guld SLA-kostnad för ${machine.name}: ${goldCost} (50% av ${leasingMax60mRef})`);
+    console.log(`Beräknad Guld SLA-kostnad för ${machine?.name || 'okänd maskin'}: ${goldCost} (50% av ${leasingMax60mRef})`);
     return goldCost;
   }
   
   // Fallback - ska aldrig nås om ovanstående logik är korrekt
-  console.warn(`Fallback i SLA-beräkning - inget matchade för ${machine.name}, ${selectedSlaLevel}`);
+  console.warn(`Fallback i SLA-beräkning - inget matchade för ${machine?.name || 'okänd maskin'}, ${selectedSlaLevel}`);
   return 0;
 }

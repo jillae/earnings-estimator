@@ -41,20 +41,15 @@ export function useLeasingCalculations({
   // Beräkna leasingMax60mRef-referensvärdet när maskinen ändras
   useEffect(() => {
     if (selectedMachine?.priceEur) {
-      const refValue = calculateLeasingMax60mRef(selectedMachine, exchangeRate);
+      // Använd direktberäkning för att få korrekt värde
+      const refValue = calculateTariffBasedLeasingMax(
+        selectedMachine.priceEur,
+        60,
+        selectedMachine.usesCredits,
+        exchangeRate
+      );
       setLeasingMax60mRef(refValue);
-      console.log(`Beräknat leasingMax60mRef för ${selectedMachine.name}: ${refValue} SEK`);
-      
-      // Logga direkt beräkning för att verifiera
-      if (selectedMachine.id === "gvl") {
-        const directCalcValue = calculateTariffBasedLeasingMax(
-          selectedMachine.priceEur,
-          60,
-          selectedMachine.usesCredits,
-          exchangeRate
-        );
-        console.log(`Direkt beräkning för GVL med 60 månader: ${directCalcValue} SEK`);
-      }
+      console.log(`Beräknat leasingMax60mRef för ${selectedMachine.name}: ${refValue} SEK (direkt beräkning)`);
     } else {
       setLeasingMax60mRef(0);
     }

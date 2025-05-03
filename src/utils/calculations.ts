@@ -8,6 +8,19 @@ export async function calculateLeasingCost(
   leasingPeriod: number,
   includeInsurance: boolean
 ): Promise<number> {
+  // Validering - Säkerställ att vi har en giltig maskin
+  if (!machine || !machine.priceEur) {
+    console.error('Försök att beräkna leasingkostnad för ogiltig maskin', machine);
+    return 0;
+  }
+
+  console.log(`BERÄKNAR LEASINGKOSTNAD för ${machine.name} (${machine.id}):
+    pris EUR: ${machine.priceEur}
+    leasingPeriod: ${leasingPeriod} månader
+    includeInsurance: ${includeInsurance}
+    usesCredits: ${machine.usesCredits}
+  `);
+  
   const machinePrice = machine.priceEur;
   const currency = 'EUR'; // Maskinpriser är i EUR från machineData
   let exchangeRate = 1;
@@ -16,9 +29,11 @@ export async function calculateLeasingCost(
   if (currency as string !== 'SEK') {
     try {
       exchangeRate = await getExchangeRate(currency, 'SEK');
+      console.log(`Använder växelkurs: ${exchangeRate} för ${currency} -> SEK`);
     } catch (error) {
       console.error('Error fetching exchange rate:', error);
       exchangeRate = 11.4926; // Fallback to default
+      console.log(`Använder fallback växelkurs: ${exchangeRate}`);
     }
   }
 

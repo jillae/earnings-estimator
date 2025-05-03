@@ -64,6 +64,14 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     flatratePosition = Math.max(0, Math.min(100, flatratePosition));
   }
 
+  // När komponenterna renderas, sätt slidern till 1 (standard/mitten) för credit-maskiner
+  useEffect(() => {
+    if (usesCredits && currentSliderStep !== 1) {
+      console.log(`Återställer slider för ${selectedMachine?.name} till standardposition (1)`);
+      onSliderStepChange(1);
+    }
+  }, [selectedMachine?.id, usesCredits]);
+
   const handleSliderStepChange = (step: SliderStep) => {
     onSliderStepChange(step);
     if (step < 1 && onAllowBelowFlatrateChange) {

@@ -49,6 +49,14 @@ export function calculateTariffBasedLeasingMax(
     return 0;
   }
   
+  // DEBUG: Logga ingångsvärden för att spåra problem med specifika maskiner
+  console.log(`calculateTariffBasedLeasingMax INPUTS:
+    machinePriceEur: ${machinePriceEur}
+    leaseDurationMonths: ${leaseDurationMonths}
+    usesCredits: ${usesCredits}
+    exchangeRate: ${exchangeRate}
+  `);
+  
   const factor = getLeasingFactor(leaseDurationMonths);
   const shippingCost = usesCredits ? SHIPPING_COST_EUR_CREDITS : SHIPPING_COST_EUR_NO_CREDITS;
   
@@ -58,6 +66,11 @@ export function calculateTariffBasedLeasingMax(
     
     // Apply tariff percentage - factor is already in decimal form, no need to divide by 100
     const calculatedValue = Math.round(totalPriceSEK * factor);
+    
+    // Säkerställ att vi inte returnerar låga felaktiga värden
+    if (calculatedValue < 500 && machinePriceEur > 1000) {
+      console.error(`VARNING: Orimligt lågt beräknat värde (${calculatedValue}) för maskin med pris ${machinePriceEur} EUR`);
+    }
     
     console.log(`Tariff calculation: ${machinePriceEur} EUR + ${shippingCost} EUR shipping = ${totalPriceSEK} SEK * ${factor} = ${calculatedValue}`);
     return roundToHundredEndingSix(calculatedValue);

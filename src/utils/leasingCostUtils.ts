@@ -20,6 +20,16 @@ export function calculateLeasingCost(
   // Ensure leasingRate is a number
   const leasingRateNum = typeof leasingRate === 'string' ? parseFloat(leasingRate) : leasingRate || 0;
   
+  // Valideringskontroll
+  if (!machine || !machine.id || machinePriceSEK <= 0) {
+    console.error('Ogiltiga parametrar för leasingkostnadsberäkning', {
+      machine: machine?.id || 'undefined',
+      machinePriceSEK,
+      leasingRate: leasingRateNum
+    });
+    return 0;
+  }
+  
   // Get the dynamic leasing range
   const leasingRange = calculateLeasingRange(machine, machinePriceSEK, leasingRateNum, false);
   let baseLeasingCost: number;
@@ -29,7 +39,7 @@ export function calculateLeasingCost(
     leasingRate: ${leasingRateNum}
     includeInsurance: ${includeInsurance}
     leaseMultiplier: ${leaseMultiplier}
-    leasingRange: min=${leasingRange.min}, max=${leasingRange.max}
+    leasingRange: min=${leasingRange.min}, max=${leasingRange.max}, default=${leasingRange.default}
   `);
   
   // Använd linjär interpolation mellan min och max baserat på leaseMultiplier
@@ -45,6 +55,7 @@ export function calculateLeasingCost(
   console.log(`Interpolated leasing cost for ${machine.name} at factor ${leaseMultiplier}: 
     Min: ${leasingRange.min}, 
     Max: ${leasingRange.max}, 
+    Default: ${leasingRange.default},
     Range: ${leaseRange}, 
     Calculated: ${baseLeasingCost}
   `);
@@ -60,5 +71,11 @@ export function calculateLeasingCost(
   
   const finalCost = baseLeasingCost + insuranceCost;
   console.log(`Final leasing cost: ${finalCost} (Base: ${baseLeasingCost}, Insurance: ${insuranceCost})`);
+  
+  // Validera resultat - inga orimligt låga värden för dyra maskiner
+  if (finalCost < 500 && machinePriceSEK > 50000) {
+    console.error(`VARNING: Orimligt lågt leasingvärde (${finalCost}) beräknat för ${machine.name} med pris ${machinePriceSEK} SEK`);
+  }
+  
   return finalCost;
 }
