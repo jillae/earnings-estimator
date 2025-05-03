@@ -5,7 +5,7 @@ import { calculateTariffBasedLeasingMax } from './leasingTariffUtils';
 
 export async function calculateLeasingCost(
   machine: Machine,
-  leasingPeriod: number,
+  leasingRate: number,
   includeInsurance: boolean
 ): Promise<number> {
   // Validering - Säkerställ att vi har en giltig maskin
@@ -16,7 +16,7 @@ export async function calculateLeasingCost(
 
   console.log(`BERÄKNAR LEASINGKOSTNAD för ${machine.name} (${machine.id}):
     pris EUR: ${machine.priceEur}
-    leasingPeriod: ${leasingPeriod} månader
+    leasingRate: ${leasingRate}
     includeInsurance: ${includeInsurance}
     usesCredits: ${machine.usesCredits}
   `);
@@ -43,7 +43,7 @@ export async function calculateLeasingCost(
       EUR pris: ${machine.priceEur}
       Exchange rate: ${exchangeRate}
       Månadspris i SEK (utan tariff): ${machine.priceEur * exchangeRate}
-      Leasingperiod: ${leasingPeriod}
+      LeasingRate: ${leasingRate}
     `);
   }
 
@@ -51,7 +51,7 @@ export async function calculateLeasingCost(
   // Detta ger garanterat korrekt beräkning för alla maskiner
   const leasingCost = calculateTariffBasedLeasingMax(
     machine.priceEur,
-    leasingPeriod, // Använd direkt leasingPeriod (månader)
+    60, // Använd alltid 60 månader som referens
     machine.usesCredits,
     exchangeRate
   );
@@ -59,7 +59,7 @@ export async function calculateLeasingCost(
   // Logga detaljerad information för felsökning
   console.log(`Leasingkostnad beräknad för ${machine.name}:
     Pris EUR: ${machine.priceEur} 
-    Leasingperiod: ${leasingPeriod} månader
+    LeasingRate: ${leasingRate}
     Använder krediter: ${machine.usesCredits}
     Växelkurs: ${exchangeRate}
     Beräknad kostnad: ${leasingCost} SEK

@@ -40,30 +40,34 @@ export function useLeasingCalculations({
   
   // Beräkna leasingMax60mRef-referensvärdet när maskinen ändras
   useEffect(() => {
-    if (selectedMachine?.priceEur) {
-      // Använd direktberäkning för att få korrekt värde
-      const refValue = calculateTariffBasedLeasingMax(
-        selectedMachine.priceEur,
-        60,
-        selectedMachine.usesCredits,
-        exchangeRate
-      );
-      setLeasingMax60mRef(refValue);
-      console.log(`Beräknat leasingMax60mRef för ${selectedMachine.name}: ${refValue} SEK (direkt beräkning)`);
-      
-      // FELSÖKNING: Extra loggning för handheld machines
-      if (['gvl', 'evrl', 'xlr8'].includes(selectedMachine.id)) {
-        console.log(`FELSÖKNING ${selectedMachine.name}:
-          priceEur: ${selectedMachine.priceEur}
-          usesCredits: ${selectedMachine.usesCredits}
-          exchangeRate: ${exchangeRate}
-          Calculated leasingMax60mRef: ${refValue}
-          Raw value before rounding: ${selectedMachine.priceEur * exchangeRate * 0.02095}
-        `);
+    async function calcValue() {
+      if (selectedMachine?.priceEur) {
+        // Använd direktberäkning för att få korrekt värde
+        const refValue = calculateTariffBasedLeasingMax(
+          selectedMachine.priceEur,
+          60,
+          selectedMachine.usesCredits,
+          exchangeRate
+        );
+        setLeasingMax60mRef(refValue);
+        console.log(`Beräknat leasingMax60mRef för ${selectedMachine.name}: ${refValue} SEK (direkt beräkning)`);
+        
+        // FELSÖKNING: Extra loggning för handheld machines
+        if (['gvl', 'evrl', 'xlr8'].includes(selectedMachine.id)) {
+          console.log(`FELSÖKNING ${selectedMachine.name}:
+            priceEur: ${selectedMachine.priceEur}
+            usesCredits: ${selectedMachine.usesCredits}
+            exchangeRate: ${exchangeRate}
+            Calculated leasingMax60mRef: ${refValue}
+            Raw value before rounding: ${selectedMachine.priceEur * exchangeRate * 0.02095}
+          `);
+        }
+      } else {
+        setLeasingMax60mRef(0);
       }
-    } else {
-      setLeasingMax60mRef(0);
     }
+    
+    calcValue();
   }, [selectedMachine, exchangeRate]);
   
   // Beräkna kontantpris när maskinen ändras
@@ -152,12 +156,11 @@ export function useLeasingCalculations({
       }
       
       // Beräkna aktuell leasingkostnad baserat på justeringsfaktor
+      // FIX: Här är felet - funktionen tar bara 3 argument men vi skickar 5
       const cost = calculateLeasingCost(
         selectedMachine,
-        machinePriceSEK,
         leasingRate,
-        includeInsurance,
-        leaseAdjustmentFactor
+        includeInsurance
       );
       
       setLeasingCost(cost);
