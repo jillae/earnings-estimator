@@ -5,7 +5,6 @@ import { HelmetProvider } from 'react-helmet-async';
 import Index from './pages/Index';
 import Contact from './pages/Contact';
 import Manual from './pages/Manual';
-import DealerRevenue from './pages/DealerRevenue';
 import AdminLogin from './pages/AdminLogin';
 import Admin from './pages/Admin';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
@@ -20,7 +19,6 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/manual" element={<Manual />} />
-          <Route path="/dealer-revenue" element={<DealerRevenue />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route
             path="/admin"

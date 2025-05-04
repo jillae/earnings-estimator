@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, Settings, Phone, FileText, HelpCircle, ExternalLink, Library, BarChart } from 'lucide-react';
+import { Home, Settings, Phone, FileText, HelpCircle, ExternalLink, Library } from 'lucide-react';
 
 const Header = () => {
   return (
@@ -41,12 +41,6 @@ const Header = () => {
             </a>
           </div>
           <div className="flex space-x-2">
-            <Link to="/dealer-revenue">
-              <Button variant="ghost" size="sm" className="text-white hover:text-primary-foreground/80 hover:bg-primary-foreground/10">
-                <BarChart className="h-4 w-4 mr-1" />
-                Återförsäljarintäkt
-              </Button>
-            </Link>
             <Link to="/admin-login">
               <Button variant="ghost" size="sm" className="text-white hover:text-primary-foreground/80 hover:bg-primary-foreground/10">
                 <Settings className="h-4 w-4 mr-1" />
