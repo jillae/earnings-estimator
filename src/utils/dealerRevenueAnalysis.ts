@@ -1,3 +1,4 @@
+
 /**
  * Utility för att analysera återförsäljarens intäkter från olika leasingalternativ
  */
@@ -5,7 +6,7 @@ import { Machine } from '@/data/machines/types';
 import { machineData } from '@/data/machines';
 import { calculateLeasingRange } from './leasingRangeUtils';
 import { formatCurrency } from './formatUtils';
-import { LEASING_TARIFFS_2024 } from './constants';
+import { LEASING_TARIFFS_2024, WORKING_DAYS_PER_MONTH } from './constants';
 
 export interface DealerRevenueAnalysis {
   machineName: string;
@@ -19,6 +20,7 @@ export interface DealerRevenueAnalysis {
   revenue36Month: number; // Total intäkt över 36 månader
   revenue60Month: number; // Total intäkt över 60 månader
   monthlyRevenueDifference: number; // Månatlig skillnad i intäkt
+  differenceComparisonRatio: number; // Jämförelse av skillnad 36/60 månader
 }
 
 /**
@@ -65,8 +67,8 @@ export function calculateDealerRevenue(
       : 0;
     
     // Beräkna intäkt från krediter om maskinen använder credits
-    // Baserat på 2 kunder per dag, 20 arbetsdagar per månad
-    const treatmentsPerMonth = 2 * 20; // 2 kunder/dag * 20 dagar/månad
+    // Baserat på 2 kunder per dag, 22 arbetsdagar per månad (uppdaterat från 20)
+    const treatmentsPerMonth = 2 * WORKING_DAYS_PER_MONTH; // 2 kunder/dag * 22 dagar/månad
     const creditsPerTreatment = machine.creditsPerTreatment || 1;
     const creditRevenue = machine.usesCredits ? 
       treatmentsPerMonth * creditsPerTreatment * (machine.creditMax || 0) : 0;
@@ -83,6 +85,9 @@ export function calculateDealerRevenue(
     const monthlyRevenueDifference = machine.usesCredits ? 
       leasingRange36.max - leasingRange60.max - creditRevenue : 
       leasingRange36.max - leasingRange60.max;
+      
+    // Jämförelsetal: Månatlig skillnad * 36 / 60
+    const differenceComparisonRatio = difference * (36 / 60);
     
     return {
       machineName: machine.name,
@@ -95,7 +100,8 @@ export function calculateDealerRevenue(
       monthlyCreditsRevenue: creditRevenue,
       revenue36Month,
       revenue60Month,
-      monthlyRevenueDifference
+      monthlyRevenueDifference,
+      differenceComparisonRatio
     };
   });
 }

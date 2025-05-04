@@ -44,7 +44,7 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
         <AlertTitle className="text-lg font-bold">Återförsäljarintäkt - Standardleasing vs. Maximal leasing</AlertTitle>
         <AlertDescription>
           Denna rapport visar potentiell intäktsökning genom att erbjuda maximal leasing istället för standardnivå. 
-          Beräkningen inkluderar också total intäkt över 36 och 60 månader, samt kreditintäkter för maskiner som använder krediter (baserat på 2 kunder/dag).
+          Beräkningen inkluderar också total intäkt över 36 och 60 månader, samt kreditintäkter för maskiner som använder krediter (baserat på 2 kunder/dag, 22 dagar/månad).
         </AlertDescription>
       </Alert>
       
@@ -58,7 +58,8 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
               <TableHead className="text-right">Max</TableHead>
               <TableHead className="text-right">Skillnad</TableHead>
               <TableHead className="text-right">Ökning %</TableHead>
-              <TableHead className="text-right">Använder krediter</TableHead>
+              <TableHead className="text-right">Krediter</TableHead>
+              <TableHead className="text-right">36/60 jämf.</TableHead>
               <TableHead className="text-right">Total 36m</TableHead>
               <TableHead className="text-right">Total 60m</TableHead>
             </TableRow>
@@ -76,7 +77,10 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
                   +{item.differencePercent.toFixed(1)}%
                 </TableCell>
                 <TableCell className="text-right">
-                  {item.usesCredits ? "Ja" : "Nej"}
+                  {item.usesCredits ? formatCurrency(item.monthlyCreditsRevenue) : "-"}
+                </TableCell>
+                <TableCell className="text-right font-medium text-amber-600">
+                  {formatCurrency(item.differenceComparisonRatio)}
                 </TableCell>
                 <TableCell className="text-right font-medium text-blue-600">
                   {formatCurrency(item.revenue36Month)}
@@ -92,7 +96,8 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
       
       <div className="text-sm text-slate-500 italic">
         Notera: Denna analys är baserad på standardleasingnivåer och maximum leasingpriser som är konfigurerade i systemet.
-        För maskiner som använder krediter inkluderas potentiell kreditintäkt baserat på 2 kunder per dag (40 behandlingar/månad).
+        För maskiner som använder krediter inkluderas potentiell kreditintäkt baserat på 2 kunder per dag (44 behandlingar/månad).
+        Jämförelsekolumnen visar skillnad mellan standard och max över 36 månader justerat från 60 månader.
         {includeInsurance && " Försäkringskostnad är inkluderad i beräkningen."}
       </div>
     </div>
