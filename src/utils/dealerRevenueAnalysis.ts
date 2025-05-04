@@ -1,4 +1,3 @@
-
 /**
  * Utility för att analysera återförsäljarens intäkter från olika leasingalternativ
  */
@@ -68,13 +67,13 @@ export function calculateDealerRevenue(
     const creditRevenue = machine.usesCredits ? 
       treatmentsPerMonth * creditsPerTreatment * (machine.creditMax || 0) : 0;
     
-    // Total intäkt över 36 och 60 månader
-    // Om maskinen använder krediter, lägg till kreditintäkten
-    const monthlyRevenue = machine.usesCredits ? 
-      leasingRange60.max + creditRevenue : leasingRange60.max;
+    // Total intäkt över 36 och 60 månader - vi måste inkludera krediter för maskiner 
+    // som använder dem i båda perioder
+    const revenue36Month = machine.usesCredits ? 
+      leasingRange36.max * 36 + creditRevenue * 36 : leasingRange36.max * 36;
     
-    const revenue36Month = leasingRange36.max * 36;
-    const revenue60Month = leasingRange60.max * 60;
+    const revenue60Month = machine.usesCredits ? 
+      leasingRange60.max * 60 + creditRevenue * 60 : leasingRange60.max * 60;
     
     // Månatlig skillnad i intäkt (för att täcka förlust av credits vs 36 månader)
     const monthlyRevenueDifference = machine.usesCredits ? 
@@ -169,4 +168,3 @@ export function formatRevenueAnalysis(analyses: DealerRevenueAnalysis[]): string
   
   return result;
 }
-

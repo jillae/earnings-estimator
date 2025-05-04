@@ -85,8 +85,7 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
               <TableHead className="text-right">Max</TableHead>
               <TableHead className="text-right">Skillnad</TableHead>
               <TableHead className="text-right">Ökning %</TableHead>
-              <TableHead className="text-right">Krediter</TableHead>
-              <TableHead className="text-right">Kredit/mån</TableHead>
+              <TableHead className="text-right">Använder krediter</TableHead>
               <TableHead className="text-right">Total 36m</TableHead>
               <TableHead className="text-right">Total 60m</TableHead>
             </TableRow>
@@ -105,9 +104,6 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
                 </TableCell>
                 <TableCell className="text-right">
                   {item.usesCredits ? "Ja" : "Nej"}
-                </TableCell>
-                <TableCell className="text-right">
-                  {item.usesCredits ? formatCurrency(item.monthlyCreditsRevenue) : "-"}
                 </TableCell>
                 <TableCell className="text-right font-medium text-blue-600">
                   {formatCurrency(item.revenue36Month)}
