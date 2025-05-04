@@ -60,6 +60,17 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
               <TableHead className="text-right">Ökning %</TableHead>
               <TableHead className="text-right">Krediter</TableHead>
               <TableHead className="text-right">36/60 jämf.</TableHead>
+              
+              {/* Nya kolumner */}
+              <TableHead className="text-right">Leasing diff 36m</TableHead>
+              <TableHead className="text-right">Credits total 36m</TableHead>
+              <TableHead className="text-right">Diff/Credits 36m</TableHead>
+              
+              <TableHead className="text-right">Leasing diff 60m</TableHead>
+              <TableHead className="text-right">Credits total 60m</TableHead>
+              <TableHead className="text-right">Diff/Credits 60m</TableHead>
+              
+              {/* Befintliga kolumner */}
               <TableHead className="text-right">Total 36m</TableHead>
               <TableHead className="text-right">Total 60m</TableHead>
             </TableRow>
@@ -82,6 +93,37 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
                 <TableCell className="text-right font-medium text-amber-600">
                   {formatCurrency(item.differenceComparisonRatio)}
                 </TableCell>
+                
+                {/* Nya kolumner */}
+                <TableCell className="text-right font-medium text-purple-600">
+                  {formatCurrency(item.totalLeasingDifference36Month)}
+                </TableCell>
+                <TableCell className="text-right font-medium text-teal-600">
+                  {item.usesCredits ? formatCurrency(item.totalCreditsRevenue36Month) : "-"}
+                </TableCell>
+                <TableCell className="text-right font-medium text-orange-600">
+                  {item.usesCredits ? 
+                    (item.totalLeasingDifference36Month > item.totalCreditsRevenue36Month ? 
+                      "+" + formatCurrency(item.totalLeasingDifference36Month - item.totalCreditsRevenue36Month) : 
+                      "-" + formatCurrency(item.totalCreditsRevenue36Month - item.totalLeasingDifference36Month)) : 
+                    "-"}
+                </TableCell>
+                
+                <TableCell className="text-right font-medium text-purple-600">
+                  {formatCurrency(item.totalLeasingDifference60Month)}
+                </TableCell>
+                <TableCell className="text-right font-medium text-teal-600">
+                  {item.usesCredits ? formatCurrency(item.totalCreditsRevenue60Month) : "-"}
+                </TableCell>
+                <TableCell className="text-right font-medium text-orange-600">
+                  {item.usesCredits ? 
+                    (item.totalLeasingDifference60Month > item.totalCreditsRevenue60Month ? 
+                      "+" + formatCurrency(item.totalLeasingDifference60Month - item.totalCreditsRevenue60Month) : 
+                      "-" + formatCurrency(item.totalCreditsRevenue60Month - item.totalLeasingDifference60Month)) : 
+                    "-"}
+                </TableCell>
+                
+                {/* Befintliga kolumner */}
                 <TableCell className="text-right font-medium text-blue-600">
                   {formatCurrency(item.revenue36Month)}
                 </TableCell>
@@ -98,6 +140,12 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
         Notera: Denna analys är baserad på standardleasingnivåer och maximum leasingpriser som är konfigurerade i systemet.
         För maskiner som använder krediter inkluderas potentiell kreditintäkt baserat på 2 kunder per dag (44 behandlingar/månad).
         Jämförelsekolumnen visar skillnad mellan standard och max över 36 månader justerat från 60 månader.
+        <br />
+        <br />
+        <strong>Förklaringar:</strong><br />
+        - Leasing diff: Total skillnad mellan standard och max leasing över hela perioden.<br />
+        - Credits total: Total kreditintäkt över hela perioden.<br />
+        - Diff/Credits: Skillnaden mellan leasing-differens och krediter över hela perioden (+ om leasing är högre, - om krediter är högre).
         {includeInsurance && " Försäkringskostnad är inkluderad i beräkningen."}
       </div>
     </div>
