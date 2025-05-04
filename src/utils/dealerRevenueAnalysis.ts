@@ -21,6 +21,10 @@ export interface DealerRevenueAnalysis {
   revenue60Month: number; // Total intäkt över 60 månader
   monthlyRevenueDifference: number; // Månatlig skillnad i intäkt
   differenceComparisonRatio: number; // Jämförelse av skillnad 36/60 månader
+  totalLeasingDifference36Month: number; // Total leasingskillnad över 36 månader
+  totalLeasingDifference60Month: number; // Total leasingskillnad över 60 månader
+  totalCreditsRevenue36Month: number; // Total kreditintäkt över 36 månader
+  totalCreditsRevenue60Month: number; // Total kreditintäkt över 60 månader
 }
 
 /**
@@ -89,6 +93,12 @@ export function calculateDealerRevenue(
     // Jämförelsetal: Månatlig skillnad * 36 / 60
     const differenceComparisonRatio = difference * (36 / 60);
     
+    // Nya värden för kolumner
+    const totalLeasingDifference36Month = difference * 36; // Total leasingskillnad över 36 månader
+    const totalLeasingDifference60Month = difference * 60; // Total leasingskillnad över 60 månader
+    const totalCreditsRevenue36Month = creditRevenue * 36; // Total kreditintäkt över 36 månader
+    const totalCreditsRevenue60Month = creditRevenue * 60; // Total kreditintäkt över 60 månader
+    
     return {
       machineName: machine.name,
       machineId: machine.id,
@@ -101,7 +111,11 @@ export function calculateDealerRevenue(
       revenue36Month,
       revenue60Month,
       monthlyRevenueDifference,
-      differenceComparisonRatio
+      differenceComparisonRatio,
+      totalLeasingDifference36Month,
+      totalLeasingDifference60Month,
+      totalCreditsRevenue36Month,
+      totalCreditsRevenue60Month
     };
   });
 }
