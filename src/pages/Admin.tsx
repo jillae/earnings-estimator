@@ -1,14 +1,17 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DealerRevenueReport from '@/components/DealerRevenueReport';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const Admin = () => {
   const navigate = useNavigate();
+  const [includeInsurance, setIncludeInsurance] = useState(true);
   
   const handleLogout = () => {
     localStorage.removeItem('adminLoggedIn');
@@ -40,8 +43,20 @@ const Admin = () => {
         </TabsList>
         <TabsContent value="dealer-revenue" className="mt-4">
           <div className="bg-white p-6 rounded-lg border">
-            <h2 className="text-xl font-bold mb-4">Återförsäljarintäkt - Analys</h2>
-            <DealerRevenueReport includeInsurance={true} />
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold">Återförsäljarintäkt - Analys</h2>
+              
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="insurance-toggle"
+                  checked={includeInsurance}
+                  onCheckedChange={setIncludeInsurance}
+                />
+                <Label htmlFor="insurance-toggle">Inkludera försäkring</Label>
+              </div>
+            </div>
+            
+            <DealerRevenueReport includeInsurance={includeInsurance} />
           </div>
         </TabsContent>
         <TabsContent value="settings" className="mt-4">
