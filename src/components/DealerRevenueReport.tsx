@@ -35,8 +35,6 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
   // Filtrera bort maskiner som inte ska visas
   const analyses = allAnalyses.filter(analysis => !EXCLUDED_MACHINE_IDS.includes(analysis.machineId));
   
-  const totals = calculateTotalRevenueDifference(exchangeRate, includeInsurance, EXCLUDED_MACHINE_IDS);
-  
   // Sortera efter högst skillnad
   const sortedAnalyses = [...analyses].sort((a, b) => b.difference - a.difference);
   
@@ -49,38 +47,6 @@ const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
           Beräkningen inkluderar också total intäkt över 36 och 60 månader, samt kreditintäkter för maskiner som använder krediter (baserat på 2 kunder/dag).
         </AlertDescription>
       </Alert>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-        <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-lg">
-          <div className="text-sm text-slate-600">Månadsintäkt standard</div>
-          <div className="text-2xl font-bold text-emerald-600">{formatCurrency(totals.totalStandard)}</div>
-        </div>
-        
-        <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-lg">
-          <div className="text-sm text-slate-600">Månadsintäkt max</div>
-          <div className="text-2xl font-bold text-emerald-600">{formatCurrency(totals.totalMax)}</div>
-        </div>
-        
-        <div className="bg-emerald-100 border border-emerald-200 p-4 rounded-lg">
-          <div className="text-sm text-slate-600">Månatlig skillnad</div>
-          <div className="text-2xl font-bold text-emerald-700">{formatCurrency(totals.totalDifference)}</div>
-        </div>
-        
-        <div className="bg-emerald-100 border border-emerald-200 p-4 rounded-lg">
-          <div className="text-sm text-slate-600">Genomsnittlig ökning</div>
-          <div className="text-2xl font-bold text-emerald-700">+{totals.averagePercentIncrease.toFixed(1)}%</div>
-        </div>
-        
-        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-          <div className="text-sm text-slate-600">Total 36 månader</div>
-          <div className="text-2xl font-bold text-blue-600">{formatCurrency(totals.total36MonthRevenue)}</div>
-        </div>
-        
-        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-          <div className="text-sm text-slate-600">Total 60 månader</div>
-          <div className="text-2xl font-bold text-blue-600">{formatCurrency(totals.total60MonthRevenue)}</div>
-        </div>
-      </div>
       
       <div className="overflow-x-auto">
         <Table>
