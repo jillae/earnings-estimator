@@ -27,14 +27,18 @@ export interface DealerRevenueAnalysis {
  * 
  * @param exchangeRate Växelkurs mot EUR
  * @param includeInsurance Inkludera försäkring i beräkningen
+ * @param excludeMachineIds Array med IDs på maskiner som ska exkluderas
  * @returns Array med analysdata för varje maskin
  */
 export function calculateDealerRevenue(
   exchangeRate: number = 11.49260,
-  includeInsurance: boolean = false
+  includeInsurance: boolean = false,
+  excludeMachineIds: string[] = []
 ): DealerRevenueAnalysis[] {
-  // Filtrera bort maskiner utan prissättning
-  const validMachines = machineData.filter(machine => machine.priceEur && machine.priceEur > 0);
+  // Filtrera bort maskiner utan prissättning och exkluderade maskiner
+  const validMachines = machineData.filter(
+    machine => machine.priceEur && machine.priceEur > 0 && !excludeMachineIds.includes(machine.id)
+  );
   
   // Använd leasingperiod 60 månader för standardberäkning
   const leasingRate60 = LEASING_TARIFFS_2024.find(period => period.id === '60')?.rate || 0.02095;
@@ -101,7 +105,8 @@ export function calculateDealerRevenue(
  */
 export function calculateTotalRevenueDifference(
   exchangeRate: number = 11.49260,
-  includeInsurance: boolean = false
+  includeInsurance: boolean = false,
+  excludeMachineIds: string[] = []
 ): {
   totalStandard: number;
   totalMax: number;
@@ -110,7 +115,7 @@ export function calculateTotalRevenueDifference(
   total36MonthRevenue: number;
   total60MonthRevenue: number;
 } {
-  const analyses = calculateDealerRevenue(exchangeRate, includeInsurance);
+  const analyses = calculateDealerRevenue(exchangeRate, includeInsurance, excludeMachineIds);
   
   const totalStandard = analyses.reduce((sum, item) => sum + item.standardLeasingAmount, 0);
   const totalMax = analyses.reduce((sum, item) => sum + item.maxLeasingAmount, 0);

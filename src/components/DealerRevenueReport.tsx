@@ -22,13 +22,20 @@ interface DealerRevenueReportProps {
   includeInsurance?: boolean;
 }
 
+// Lista över maskiner som ska exkluderas från rapporten
+const EXCLUDED_MACHINE_IDS = ['gvl', 'evrl', 'xlr8', 'base-station', 'lunula'];
+
 const DealerRevenueReport: React.FC<DealerRevenueReportProps> = ({
   exchangeRate = 11.49260,
   includeInsurance = false
 }) => {
   // Beräkna intäktsanalys
-  const analyses = calculateDealerRevenue(exchangeRate, includeInsurance);
-  const totals = calculateTotalRevenueDifference(exchangeRate, includeInsurance);
+  const allAnalyses = calculateDealerRevenue(exchangeRate, includeInsurance);
+  
+  // Filtrera bort maskiner som inte ska visas
+  const analyses = allAnalyses.filter(analysis => !EXCLUDED_MACHINE_IDS.includes(analysis.machineId));
+  
+  const totals = calculateTotalRevenueDifference(exchangeRate, includeInsurance, EXCLUDED_MACHINE_IDS);
   
   // Sortera efter högst skillnad
   const sortedAnalyses = [...analyses].sort((a, b) => b.difference - a.difference);
