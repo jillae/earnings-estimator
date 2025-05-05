@@ -11,6 +11,15 @@ export interface StepValues {
 }
 
 /**
+ * Rundar av ett värde så att det slutar på 9
+ */
+function roundToEndingNine(value: number): number {
+  const rounded = Math.round(value);
+  const lastDigit = rounded % 10;
+  return rounded - lastDigit + 9;
+}
+
+/**
  * Beräknar värdepar för de 5 fasta stegen på slidern för en given maskin
  */
 export function calculateStepValues(
@@ -58,7 +67,12 @@ export function calculateStepValues(
   // Beräkna mellanliggande kreditvärden med korrekt interpolation
   // VIKTIGT: Ingen avrundning här!
   const credit25Percent = machineMaxCredit - (machineMaxCredit - machineMinCredit) * 0.5;
-  const credit75Percent = machineMinCredit * 0.5; // Halvvägs mellan min och 0
+  
+  // Beräkna credit75Percent som halvvägs mellan min och 0
+  let credit75Percent = machineMinCredit * 0.5;
+  
+  // Avrunda credit75Percent ("Hög" nivå) så att det slutar på 9
+  credit75Percent = roundToEndingNine(credit75Percent);
 
   // Avrunda leasingvärden till närmaste hundra slutande på 6
   const roundedMin = roundToHundredEndingSix(safeMin);
@@ -72,7 +86,7 @@ export function calculateStepValues(
     Min (0): ${roundedMin} kr / ${machineMaxCredit} kr per credit
     Låg (0.5): ${roundedLow} kr / ${credit25Percent} kr per credit
     Standard (1): ${roundedStandard} kr / ${machineMinCredit} kr per credit
-    Hög (1.5): ${roundedHigh} kr / ${credit75Percent} kr per credit
+    Hög (1.5): ${roundedHigh} kr / ${credit75Percent} kr per credit (avrundat till att sluta på 9)
     Max (2): ${roundedMax} kr / 0 kr per credit
     
     Detaljer:
