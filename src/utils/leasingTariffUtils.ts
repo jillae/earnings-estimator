@@ -11,15 +11,18 @@ import {
 } from './constants';
 import { roundToHundredEndingSix } from './formatUtils';
 
-// Aktuella tariffvärden som används (kan uppdateras via admin)
-// Använder LEASING_TARIFFS från constants.ts för konsekvent beteende
+// Använder LEASING_TARIFFS från constants.ts som startpunkt för att vara konsekvent
+// Detta värde kommer ändras vid behov via setActiveTariffYear
 let currentTariffs = LEASING_TARIFFS;
 
 /**
  * Uppdaterar vilken tariff som används (2024 eller 2025)
+ * Kan anropas från admin-panelen för att växla mellan åren
  */
 export function setActiveTariffYear(use2025: boolean) {
   currentTariffs = use2025 ? LEASING_TARIFFS_2025 : LEASING_TARIFFS_2024;
+  console.log(`Aktiverade ${use2025 ? '2025' : '2024'} års leasingtariffer:`, 
+    currentTariffs.map(t => `${t.id} månader: ${t.rate}`).join(', '));
 }
 
 /**

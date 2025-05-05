@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, LogOut } from 'lucide-react';
@@ -8,10 +8,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DealerRevenueReport from '@/components/DealerRevenueReport';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { setActiveTariffYear } from '@/utils/leasingTariffUtils';
 
 const Admin = () => {
   const navigate = useNavigate();
   const [includeInsurance, setIncludeInsurance] = useState(true);
+  const [use2025Tariffs, setUse2025Tariffs] = useState(true);
+  
+  // Aktivera vald tariff när komponenten laddas eller när växling sker
+  useEffect(() => {
+    setActiveTariffYear(use2025Tariffs);
+    toast.success(`Använder ${use2025Tariffs ? '2025' : '2024'} års leasingtariffer`);
+  }, [use2025Tariffs]);
   
   const handleLogout = () => {
     localStorage.removeItem('adminLoggedIn');
@@ -62,7 +70,26 @@ const Admin = () => {
         <TabsContent value="settings" className="mt-4">
           <div className="bg-white p-6 rounded-lg border">
             <h2 className="text-xl font-bold mb-4">Administrativa inställningar</h2>
-            <p className="text-gray-500">Här kommer framtida inställningar.</p>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b pb-4">
+                <div>
+                  <h3 className="font-medium">Leasingtariffer</h3>
+                  <p className="text-sm text-gray-500">Välj vilka leasingtariffer som ska användas i kalkylatorn</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="tariff-toggle" className={!use2025Tariffs ? "font-bold" : ""}>2024</Label>
+                  <Switch
+                    id="tariff-toggle"
+                    checked={use2025Tariffs}
+                    onCheckedChange={setUse2025Tariffs}
+                  />
+                  <Label htmlFor="tariff-toggle" className={use2025Tariffs ? "font-bold" : ""}>2025</Label>
+                </div>
+              </div>
+              
+              <p className="text-gray-500">Fler inställningar kommer att läggas till här.</p>
+            </div>
           </div>
         </TabsContent>
       </Tabs>
