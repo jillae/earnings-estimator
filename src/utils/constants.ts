@@ -60,8 +60,8 @@ export const LEASING_TARIFFS_2025: LeasingPeriod[] = [
   { id: "60", name: "60 månader", rate: 0.020372, Löptid: 60, Faktor: 0.020372 }
 ];
 
-// Aktuellt tariffvärde - defaultar till 2024
-export const LEASING_TARIFFS = LEASING_TARIFFS_2024;
+// Aktuellt tariffvärde - använder 2025-värden som standard nu
+export const LEASING_TARIFFS = LEASING_TARIFFS_2025;
 
 // Flatrate-belopp för olika maskintyper (SEK)
 export const FLATRATE_AMOUNTS = {

@@ -6,12 +6,14 @@ import {
   LEASING_TARIFFS_2024, 
   LEASING_TARIFFS_2025, 
   SHIPPING_COST_EUR_CREDITS, 
-  SHIPPING_COST_EUR_NO_CREDITS 
+  SHIPPING_COST_EUR_NO_CREDITS,
+  LEASING_TARIFFS
 } from './constants';
 import { roundToHundredEndingSix } from './formatUtils';
 
 // Aktuella tariffvärden som används (kan uppdateras via admin)
-let currentTariffs = LEASING_TARIFFS_2024;
+// Använder LEASING_TARIFFS från constants.ts för konsekvent beteende
+let currentTariffs = LEASING_TARIFFS;
 
 /**
  * Uppdaterar vilken tariff som används (2024 eller 2025)
