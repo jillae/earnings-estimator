@@ -157,7 +157,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
       </div>
       
       <div className="mt-8 text-sm text-slate-500 italic">
-        Detta är endast ett beräkningsunderlag. Avtal gäller. 
+        Detta är endast ett beräkningsunderlag. Priser och kostnader uppdateras dagligen baserat på aktuell marknad och valutakurser, 
+        vilket innebär att resultaten kan variera från dag till dag. Vid avtal gäller villkor från leasingbolag samt faktura.
         {paymentOption === 'leasing' && ' ' + leasingOffertLink}
       </div>
     </div>;
