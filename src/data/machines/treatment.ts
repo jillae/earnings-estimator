@@ -17,7 +17,7 @@ export const treatmentMachines: Machine[] = [
     flatrateAmount: 3296,
     usesCredits: true,
     leasingMin: 7872,
-    leasingMax: 10500, // Nytt leasingMax (2 * 9186 - 7872)
+    leasingMax: 13893, // Uppdaterat leasingMax från 10500 till 13893
     creditMin: 75,      // Kreditpris vid gamla leasingMax (mitten)
     creditMax: 159,     // Kreditpris vid leasingMin
     leasingTariffs: {
@@ -45,7 +45,7 @@ export const treatmentMachines: Machine[] = [
     flatrateAmount: 4176,
     usesCredits: true,
     leasingMin: 9317,
-    leasingMax: 12425, // Nytt leasingMax (2 * 10871 - 9317)
+    leasingMax: 16673, // Uppdaterat leasingMax från 12425 till 16673
     creditMin: 95,      // Kreditpris vid gamla leasingMax (mitten)
     creditMax: 199,     // Kreditpris vid leasingMin
     leasingTariffs: {
