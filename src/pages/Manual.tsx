@@ -103,7 +103,7 @@ const Manual = () => {
                             <li>Ger obegränsade credits mot en fast månadskostnad</li>
                             <li>Aktiveras när leasingkostnaden når minst 80% av maxvärdet</li>
                             <li>Kräver minst 3 behandlingar per dag för att vara tillgänglig</li>
-                            <li>Ingår automatiskt i Guld-driftpaketet</li>
+                            <li>Ingår automatiskt i både Silver- och Guld-driftpaketet</li>
                           </ul>
                         </AccordionContent>
                       </AccordionItem>
@@ -118,8 +118,6 @@ const Manual = () => {
                             <li><strong>48 månader:</strong> Längre period för lägre månadskostnad</li>
                             <li><strong>60 månader:</strong> Längsta perioden, lägst månadskostnad</li>
                           </ul>
-                          <p className="mt-2 font-medium">Nyhet!</p>
-                          <p>Kalkylatorn använder nu 2025 års leasingtariffer som standard för mest aktuella beräkningar.</p>
                         </AccordionContent>
                       </AccordionItem>
                       
@@ -129,7 +127,7 @@ const Manual = () => {
                           <p className="mb-2">Välj mellan tre olika driftpaket för din utrustning:</p>
                           <ul className="list-disc pl-5 space-y-2">
                             <li><strong>Bas:</strong> Grundläggande support och garanti</li>
-                            <li><strong>Silver:</strong> Utökad support med snabbare responstider</li>
+                            <li><strong>Silver:</strong> Utökad support med snabbare responstider och flatrate-credits inkluderade</li>
                             <li><strong>Guld:</strong> Premium-support med flatrate-credits inkluderade och prioriterad service</li>
                           </ul>
                           <p className="mt-2">För varje driftpaket kan du välja olika SLA-nivåer som påverkar svarstider och servicenivå.</p>
@@ -143,7 +141,7 @@ const Manual = () => {
                           <ul className="list-disc pl-5 space-y-2">
                             <li>Försäkringspremien baseras på maskinens värde</li>
                             <li>Högre värde ger en lägre procentuell premie</li>
-                            <li>Försäkringen täcker oförutsedda skador och driftstopp</li>
+                            <li>Försäkringen täcker oförutsedda skador</li>
                           </ul>
                         </AccordionContent>
                       </AccordionItem>
@@ -239,7 +237,7 @@ const Manual = () => {
                           <CheckCircle className="h-5 w-5 text-blue-600 mt-1 mr-2" />
                           <div>
                             <h3 className="font-medium text-blue-800 mb-1">Driftpaketval</h3>
-                            <p className="text-sm text-blue-700">Överväg Guld-paketet om du har hög behandlingsvolym då flatrate ingår.</p>
+                            <p className="text-sm text-blue-700">Överväg Silver eller Guld-paketet om du har hög behandlingsvolym då flatrate ingår i båda.</p>
                           </div>
                         </div>
                       </div>
