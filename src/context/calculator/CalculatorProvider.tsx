@@ -5,7 +5,7 @@ import { useCalculatorValues } from './useCalculatorValues';
 import { useSlaCosts } from './useSlaCosts';
 import { useFlatrateGuard } from './useFlatrateGuard';
 import { useContextualInfo } from './useContextualInfo';
-import { buildContextValue } from './contextValue';
+import { buildContextValue } from './buildContextValue';
 
 export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Få ut alla kärnvärden (det mesta av gamla logiken från tidigare fil)
