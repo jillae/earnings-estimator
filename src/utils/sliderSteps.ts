@@ -1,4 +1,3 @@
-
 import { Machine } from '@/data/machines/types';
 import { roundToHundredEndingSix } from './formatUtils';
 
@@ -52,8 +51,12 @@ export function calculateStepValues(
 
   // Hämta kreditvärden från maskinen eller använd standardvärden
   // VIKTIGT: Använd exakt de värden som definierats i maskindatat
-  const machineMinCredit = machine.creditMin || creditMin;
-  const machineMaxCredit = machine.creditMax || creditMax;
+  let machineMinCredit = machine.creditMin || creditMin;
+  let machineMaxCredit = machine.creditMax || creditMax;
+
+  // Avrunda krediter till att sluta på 9
+  machineMinCredit = roundToEndingNine(machineMinCredit);
+  machineMaxCredit = roundToEndingNine(machineMaxCredit);
 
   // Säkerställ att leasingvärden är giltiga
   const safeMin = Math.max(0, leasingMin || 0);
@@ -65,8 +68,9 @@ export function calculateStepValues(
   const leasing75Percent = safeDefault + (safeMax - safeDefault) * 0.5;
 
   // Beräkna mellanliggande kreditvärden med korrekt interpolation
-  // VIKTIGT: Ingen avrundning här!
-  const credit25Percent = machineMaxCredit - (machineMaxCredit - machineMinCredit) * 0.5;
+  // VIKTIGT: Avrunda alla krediter till att sluta på 9
+  let credit25Percent = machineMaxCredit - (machineMaxCredit - machineMinCredit) * 0.5;
+  credit25Percent = roundToEndingNine(credit25Percent);
   
   // Beräkna credit75Percent som halvvägs mellan min och 0
   let credit75Percent = machineMinCredit * 0.5;
@@ -83,9 +87,9 @@ export function calculateStepValues(
 
   // VIKTIGT: Lägg till en tydlig logg för att visa exakt vilka kreditsvärdena blir för varje steg
   console.log(`Beräknade stegvärden för ${machine.name} (${machine.id}):
-    Min (0): ${roundedMin} kr / ${machineMaxCredit} kr per credit
-    Låg (0.5): ${roundedLow} kr / ${credit25Percent} kr per credit
-    Standard (1): ${roundedStandard} kr / ${machineMinCredit} kr per credit
+    Min (0): ${roundedMin} kr / ${machineMaxCredit} kr per credit (avrundat till att sluta på 9)
+    Låg (0.5): ${roundedLow} kr / ${credit25Percent} kr per credit (avrundat till att sluta på 9)
+    Standard (1): ${roundedStandard} kr / ${machineMinCredit} kr per credit (avrundat till att sluta på 9)
     Hög (1.5): ${roundedHigh} kr / ${credit75Percent} kr per credit (avrundat till att sluta på 9)
     Max (2): ${roundedMax} kr / 0 kr per credit
     
@@ -93,8 +97,8 @@ export function calculateStepValues(
     - leasingMin from input: ${leasingMin}
     - leasingDefault from input: ${leasingDefault}
     - leasingMax from input: ${leasingMax}
-    - creditMin for machine: ${machineMinCredit}
-    - creditMax for machine: ${machineMaxCredit}
+    - creditMin for machine (original): ${machine.creditMin || creditMin}, avrundat: ${machineMinCredit}
+    - creditMax for machine (original): ${machine.creditMax || creditMax}, avrundat: ${machineMaxCredit}
   `);
 
   return {
