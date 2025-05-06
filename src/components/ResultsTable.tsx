@@ -50,16 +50,6 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   // Calculate total costs per month
   const totalCostPerMonth = safeLeasingCost + safeOperatingCost;
 
-  // Lägg till länk för leasingoffert
-  const leasingOffertLink = (
-    <a href="https://bit.ly/leasingeen" 
-       target="_blank" 
-       rel="noopener noreferrer" 
-       className="text-primary hover:underline font-medium">
-      För leasing offert ansök här
-    </a>
-  );
-
   return <div className="glass-card mt-8 animate-slide-in" style={{
     animationDelay: '600ms'
   }}>
@@ -106,7 +96,12 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             {paymentOption === 'leasing' && (
               <tr>
                 <td colSpan={5} className="text-center py-2">
-                  {leasingOffertLink}
+                  <a href="https://bit.ly/leasingeen" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-primary hover:underline font-medium">
+                    För leasing offert ansök här
+                  </a>
                 </td>
               </tr>
             )}
@@ -131,8 +126,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <td className="py-3 px-4 text-slate-700">Netto (ex moms)</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-emerald-600">{formatCurrency(safeNetMonth)}</td>
-              <td className="py-3 px-4 text-right text-emerald-600">{formatCurrency(safeNetYear)}</td>
+              <td className="py-3 px-4 text-right text-slate-700 text-emerald-600">{formatCurrency(safeNetMonth)}</td>
+              <td className="py-3 px-4 text-right text-slate-700 text-emerald-600">{formatCurrency(safeNetYear)}</td>
             </tr>
           </tbody>
         </table>
@@ -159,7 +154,14 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
       <div className="mt-8 text-sm text-slate-500 italic">
         Detta är endast ett beräkningsunderlag. Priser och kostnader uppdateras dagligen baserat på aktuell marknad och valutakurser, 
         vilket innebär att resultaten kan variera från dag till dag. Vid avtal gäller villkor från leasingbolag samt faktura.
-        {paymentOption === 'leasing' ? ' ' + leasingOffertLink : ''}
+        {paymentOption === 'leasing' && (
+          <span> <a href="https://bit.ly/leasingeen" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-primary hover:underline font-medium">
+            För leasing offert ansök här
+          </a></span>
+        )}
       </div>
     </div>;
 };
