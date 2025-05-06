@@ -55,7 +55,7 @@ const whitePapers: WhitePaper[] = [{
 
 const WhitePaperLibrary: React.FC = () => {
   return (
-    <div id="whitepapers" className="container max-w-7xl mx-auto px-4 sm:px-6 py-12 mt-8 animate-fade-in">
+    <section id="whitepapers" className="container max-w-7xl mx-auto px-4 sm:px-6 py-12 mt-8 animate-fade-in">
       <div className="glass-card">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-slate-800">Resurser och Whitepapers</h2>
@@ -102,7 +102,7 @@ const WhitePaperLibrary: React.FC = () => {
           <p className="text-sm text-slate-600 mt-4">Erchonia är världsledande med icke-termisk medicinsklaser och driver idag forskningen bakom tekniken. Kontakta oss för mer information om våra produkter och tjänster.</p>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

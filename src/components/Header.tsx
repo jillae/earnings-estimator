@@ -5,6 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Home, Settings, Phone, FileText, HelpCircle, ExternalLink, Library } from 'lucide-react';
 
 const Header = () => {
+  const scrollToWhitepapers = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const element = document.getElementById('whitepapers');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <div className="bg-primary text-white py-2 px-4">
@@ -22,10 +30,14 @@ const Header = () => {
               <FileText className="h-4 w-4 mr-1" />
               <span className="text-sm">Manual</span>
             </Link>
-            <Link to="/#whitepapers" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+            <a 
+              href="#whitepapers" 
+              onClick={scrollToWhitepapers}
+              className="flex items-center hover:text-primary-foreground/80 transition-colors"
+            >
               <Library className="h-4 w-4 mr-1" />
               <span className="text-sm">Whitepapers</span>
-            </Link>
+            </a>
             <a 
               href="https://bit.ly/EENHelpdesk" 
               target="_blank" 
