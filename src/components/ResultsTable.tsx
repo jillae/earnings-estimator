@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
+import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
 
 interface ResultsTableProps {
   dailyRevenueIncVat: number;
@@ -96,12 +98,14 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             {paymentOption === 'leasing' && (
               <tr>
                 <td colSpan={5} className="text-center py-2">
-                  <a href="https://bit.ly/leasingeen" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-primary hover:underline font-medium">
+                  <Button
+                    variant="default"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+                    onClick={() => window.open('https://bit.ly/leasingeen', '_blank')}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
                     För leasing offert ansök här
-                  </a>
+                  </Button>
                 </td>
               </tr>
             )}
@@ -155,12 +159,17 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
         Detta är endast ett beräkningsunderlag. Priser och kostnader uppdateras dagligen baserat på aktuell marknad och valutakurser, 
         vilket innebär att resultaten kan variera från dag till dag. Vid avtal gäller villkor från leasingbolag samt faktura.
         {paymentOption === 'leasing' && (
-          <span> <a href="https://bit.ly/leasingeen" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="text-primary hover:underline font-medium">
-            För leasing offert ansök här
-          </a></span>
+          <span className="ml-1">
+            <Button
+              variant="link"
+              size="sm"
+              className="p-0 h-auto text-emerald-600 hover:text-emerald-700 font-medium"
+              onClick={() => window.open('https://bit.ly/leasingeen', '_blank')}
+            >
+              <Download className="h-3 w-3 mr-1" />
+              För leasing offert ansök här
+            </Button>
+          </span>
         )}
       </div>
     </div>;
