@@ -96,10 +96,7 @@ const WhitePaperLibrary: React.FC = () => {
         </div>
         
         <div className="mt-10 text-center">
-          <div className="inline-block">
-            <img src="/lovable-uploads/cd40681e-4fda-4789-b9a9-196b4ab2ded2.png" alt="Erchonia Logo" className="h-16 mx-auto mb-4" />
-          </div>
-          <p className="text-sm text-slate-600 mt-4">Erchonia är världsledande med icke-termisk medicinsklaser och driver idag forskningen bakom tekniken. Kontakta oss för mer information om våra produkter och tjänster.</p>
+          <p className="text-sm text-slate-600">Erchonia är världsledande med icke-termisk medicinsklaser och driver idag forskningen bakom tekniken. Kontakta oss för mer information om våra produkter och tjänster.</p>
         </div>
       </div>
     </section>
