@@ -22,7 +22,7 @@ export function calculateRevenue(customerPrice: number, treatmentsPerDay: number
   
   // Calculate revenue excluding VAT
   const monthlyRevenueExVat = monthlyRevenueIncVat / (1 + VAT_RATE);
-  const yearlyRevenueExVat = monthlyRevenueExVat * MONTHS_PER_YEAR; // KORRIGERAD: Använder monthlyRevenueExVat istället för yearlyRevenueIncVat
+  const yearlyRevenueExVat = monthlyRevenueExVat * MONTHS_PER_YEAR; // Korrigerad beräkning
   
   console.log(`Revenue calculation:
     Customer price: ${customerPrice}
@@ -30,6 +30,7 @@ export function calculateRevenue(customerPrice: number, treatmentsPerDay: number
     Daily revenue (inc VAT): ${dailyRevenueIncVat}
     Monthly revenue (inc VAT): ${monthlyRevenueIncVat}
     Monthly revenue (ex VAT): ${monthlyRevenueExVat}
+    Yearly revenue (ex VAT): ${yearlyRevenueExVat}
     Net calculation per month example: ${monthlyRevenueExVat} - 4500 = ${monthlyRevenueExVat - 4500}
   `);
   

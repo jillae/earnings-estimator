@@ -5,5 +5,5 @@ export * from './calculatorUtils';
 export * from './leasingUtils';
 export * from './constants';
 
-// Explicitly re-export formatCurrency to avoid ambiguity
+// Explicit re-export för att undvika tvetydigheter
 export { formatCurrency } from './formatUtils';

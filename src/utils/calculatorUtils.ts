@@ -35,7 +35,18 @@ export const calculateRevenue = (
   
   // Beräkna intäkter exklusive moms
   const monthlyRevenueExVat = monthlyRevenueIncVat / (1 + VAT_RATE);
-  const yearlyRevenueExVat = yearlyRevenueExVat * 12; // DETTA ÄR FELET! Felaktig referens skapar ett NaN-värde
+  // Korrigerad beräkning - använder månadsintäkten (ex moms) * 12 för att få årsintäkten
+  const yearlyRevenueExVat = monthlyRevenueExVat * 12;
+  
+  console.log(`Beräknar intäkt:
+    Behandlingar per dag: ${treatmentsPerDay}
+    Kundpris: ${customerPrice}
+    Daglig intäkt (ink moms): ${dailyRevenueIncVat}
+    Månadsintäkt (ink moms): ${monthlyRevenueIncVat}
+    Årsintäkt (ink moms): ${yearlyRevenueIncVat}
+    Månadsintäkt (ex moms): ${monthlyRevenueExVat}
+    Årsintäkt (ex moms): ${yearlyRevenueExVat}
+  `);
   
   return {
     revenuePerTreatmentExVat: customerPrice / (1 + VAT_RATE),
@@ -44,7 +55,7 @@ export const calculateRevenue = (
     monthlyRevenueIncVat,
     yearlyRevenueIncVat,
     monthlyRevenueExVat,
-    yearlyRevenueExVat: monthlyRevenueExVat * 12 // KORRIGERAT: Använder månadsintäkten ex moms * 12
+    yearlyRevenueExVat
   };
 };
 

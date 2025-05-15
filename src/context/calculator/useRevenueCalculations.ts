@@ -50,11 +50,15 @@ export function useRevenueCalculations({
 
   // Calculate revenue and occupancy
   useEffect(() => {
-    // FEL: Parametrarna är i fel ordning!
-    // const calculatedRevenue = calculateRevenue(treatmentsPerDay, customerPrice);
-    
-    // KORRIGERAT: Parametrarna i rätt ordning
+    // Se till att parametrarna är i rätt ordning: treatmentsPerDay, customerPrice
     const calculatedRevenue = calculateRevenue(treatmentsPerDay, customerPrice);
+    
+    console.log(`useRevenueCalculations beräknar intäkter: 
+      behandlingar/dag: ${treatmentsPerDay}
+      kundpris: ${customerPrice}
+      månadsintäkt (ex moms): ${calculatedRevenue.monthlyRevenueExVat}
+      årsintäkt (ex moms): ${calculatedRevenue.yearlyRevenueExVat}
+    `);
     
     setRevenue(calculatedRevenue);
     
@@ -90,6 +94,8 @@ export function useRevenueCalculations({
       Total kostnad/mån: ${totalMonthlyCostExVat}
       Intäkt/mån (ex moms): ${revenue.monthlyRevenueExVat}
       Netto/mån (ex moms): ${calculatedNetResults.netPerMonthExVat}
+      Intäkt/år (ex moms): ${revenue.yearlyRevenueExVat}
+      Netto/år (ex moms): ${calculatedNetResults.netPerYearExVat}
     `);
     
     setNetResults(calculatedNetResults);
