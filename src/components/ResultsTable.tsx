@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Button } from '@/components/ui/button';
@@ -51,6 +50,16 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
 
   // Calculate total costs per month
   const totalCostPerMonth = safeLeasingCost + safeOperatingCost;
+
+  // Lägg till extra loggning för felsökning
+  console.log(`ResultsTable rendering with values:
+    Monthly revenue (inc VAT): ${safeMonthly}
+    Monthly operating cost: ${safeOperatingCost}
+    Leasing cost: ${safeLeasingCost}
+    Total cost per month: ${totalCostPerMonth}
+    Net per month (ex VAT): ${safeNetMonth}
+    Monthly revenue (ex VAT): ${safeMonthly / 1.25}
+  `);
 
   return <div className="glass-card mt-8 animate-slide-in" style={{
     animationDelay: '600ms'

@@ -50,7 +50,12 @@ export function useRevenueCalculations({
 
   // Calculate revenue and occupancy
   useEffect(() => {
+    // FEL: Parametrarna är i fel ordning!
+    // const calculatedRevenue = calculateRevenue(treatmentsPerDay, customerPrice);
+    
+    // KORRIGERAT: Parametrarna i rätt ordning
     const calculatedRevenue = calculateRevenue(treatmentsPerDay, customerPrice);
+    
     setRevenue(calculatedRevenue);
     
     const calculatedOccupancyRevenues = calculateOccupancyRevenues(calculatedRevenue.yearlyRevenueIncVat);

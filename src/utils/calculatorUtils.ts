@@ -1,3 +1,4 @@
+
 /**
  * Formatterar ett värde till svensk valutaformat
  */
@@ -34,7 +35,7 @@ export const calculateRevenue = (
   
   // Beräkna intäkter exklusive moms
   const monthlyRevenueExVat = monthlyRevenueIncVat / (1 + VAT_RATE);
-  const yearlyRevenueExVat = monthlyRevenueExVat * 12;
+  const yearlyRevenueExVat = yearlyRevenueExVat * 12; // DETTA ÄR FELET! Felaktig referens skapar ett NaN-värde
   
   return {
     revenuePerTreatmentExVat: customerPrice / (1 + VAT_RATE),
@@ -43,7 +44,7 @@ export const calculateRevenue = (
     monthlyRevenueIncVat,
     yearlyRevenueIncVat,
     monthlyRevenueExVat,
-    yearlyRevenueExVat
+    yearlyRevenueExVat: monthlyRevenueExVat * 12 // KORRIGERAT: Använder månadsintäkten ex moms * 12
   };
 };
 

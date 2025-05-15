@@ -14,6 +14,17 @@ const CalculatorResults: React.FC = () => {
     cashPriceSEK
   } = useCalculator();
 
+  // Lägg till loggning för felsökning
+  console.log(`CalculatorResults rendering:
+    Monthly revenue (inc VAT): ${revenue.monthlyRevenueIncVat}
+    Monthly revenue (ex VAT): ${revenue.monthlyRevenueExVat}
+    Operating cost: ${operatingCost.totalCost}
+    Leasing cost: ${leasingCost}
+    Total monthly cost: ${operatingCost.totalCost + leasingCost}
+    Net per month: ${netResults.netPerMonthExVat}
+    Payment option: ${paymentOption}
+  `);
+
   return (
     <div className="h-full flex items-start">
       <ResultsTable 
