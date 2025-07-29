@@ -98,8 +98,8 @@ const MachineDataManager: React.FC = () => {
       
       const response = await fetch(API_BASE_URL, {
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || '',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`,
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo',
         }
       });
 
@@ -160,8 +160,8 @@ const MachineDataManager: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || '',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`,
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo',
         },
         body: JSON.stringify(requestData)
       });
@@ -195,8 +195,8 @@ const MachineDataManager: React.FC = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || '',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`,
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo',
         },
         body: JSON.stringify(updates)
       });
@@ -232,8 +232,8 @@ const MachineDataManager: React.FC = () => {
       const response = await fetch(`${API_BASE_URL}/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || '',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`,
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo',
         }
       });
 

@@ -33,6 +33,9 @@ major_version = 15
 [functions.calculator-log]
 verify_jwt = false
 
+[functions.machines-api]
+verify_jwt = false
+
 [realtime]
 enabled = true
 ip_version = "IPv4"
