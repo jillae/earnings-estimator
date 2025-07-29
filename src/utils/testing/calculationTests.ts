@@ -30,6 +30,7 @@ export async function testCalculations() {
     leaseAdjustmentFactor: 1.0, // Standard (mitten)
     useFlatrateOption: 'perCredit' as const,
     currentSliderStep: 1, // Standard-läge
+    selectedLeasingModel: 'grundleasing' as const,
     exchangeRate: 11.4926 // Standard växelkurs
   };
   
@@ -177,6 +178,7 @@ export async function testAllMachines() {
       leaseAdjustmentFactor: 1.0,
       useFlatrateOption: 'perCredit' as const,
       currentSliderStep: 1,
+      selectedLeasingModel: 'grundleasing' as const,
       exchangeRate: 11.4926
     };
     

@@ -21,6 +21,7 @@ interface UseCalculationEngineProps {
   leaseAdjustmentFactor: number;
   useFlatrateOption: 'flatrate' | 'perCredit';
   currentSliderStep: number;
+  selectedLeasingModel: 'grundleasing' | 'strategisk';
   exchangeRate?: number;
 }
 
@@ -43,6 +44,7 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
       leaseAdjustmentFactor: props.leaseAdjustmentFactor,
       useFlatrateOption: props.useFlatrateOption,
       currentSliderStep: props.currentSliderStep,
+      selectedLeasingModel: props.selectedLeasingModel,
       exchangeRate: props.exchangeRate
     };
   }, [
@@ -57,6 +59,7 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     props.leaseAdjustmentFactor,
     props.useFlatrateOption,
     props.currentSliderStep,
+    props.selectedLeasingModel,
     props.exchangeRate
   ]);
 

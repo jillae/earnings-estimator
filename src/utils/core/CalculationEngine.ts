@@ -23,6 +23,7 @@ export interface CalculationInputs {
   leaseAdjustmentFactor: number;
   useFlatrateOption: 'flatrate' | 'perCredit';
   currentSliderStep: number;
+  selectedLeasingModel: 'grundleasing' | 'strategisk';
   exchangeRate?: number;
 }
 
@@ -228,18 +229,17 @@ export class CalculationEngine {
     // STRATEGISK KOSTNAD: Från maskindata (inkluderar credit-kompensation)
     const leasingCostStrategic = inputs.machine.leasingMax || leasingCostBase;
     
-    // AKTIV KOSTNAD: Beror på om användaren valt strategisk prissättning
-    // Om strategisk: använd fast pris. Om grund: använd slider inom snävt intervall
-    const useStrategicPricing = inputs.useFlatrateOption === 'flatrate' && inputs.selectedDriftpaket === 'Guld'; // "Allt-inkluderat" paket
+    // AKTIV KOSTNAD: Beror på valt leasingpaket (grundleasing eller strategisk)
+    const useStrategicPricing = inputs.selectedLeasingModel === 'strategisk';
     
     let leasingCost: number;
     if (useStrategicPricing) {
       // Strategisk: Fast pris med credits inkluderade
       leasingCost = leasingCostStrategic;
     } else {
-      // Grund: Slider justerar inom ett snävt intervall runt grundkostnaden
+      // Grundleasing: Slider justerar inom ett snävt intervall runt grundkostnaden
       const sliderPosition = Math.max(0, Math.min(2, inputs.currentSliderStep));
-      const adjustmentRange = leasingCostBase * 0.1; // ±10% justering
+      const adjustmentRange = leasingCostBase * 0.15; // ±15% justering för bättre kontroll
       leasingCost = leasingCostBase + (sliderPosition - 1) * adjustmentRange;
     }
     
@@ -269,12 +269,11 @@ export class CalculationEngine {
     }
     
     console.log(`Leasing för ${inputs.machine.name}:
-      Valt paket: ${useStrategicPricing ? 'Allt-inkluderat' : inputs.currentSliderStep === 0 ? 'Grundleasing' : 'Hybridpaket'}
+      Valt leasingmodell: ${inputs.selectedLeasingModel} 
       Grundkostnad (tariff): ${leasingCostBase} SEK/mån
       Strategisk kostnad (maskindata): ${leasingCostStrategic} SEK/mån
       ${useStrategicPricing ? 'Fast pris (credits ingår)' : `Slider-justerad (position ${inputs.currentSliderStep})`}: ${leasingCost} SEK/mån
       Range: ${Math.round(leasingRange.min)} - ${Math.round(leasingRange.max)} SEK/mån
-      VIKTIGT: Valet låses vid köp!
     `);
     
     return { 

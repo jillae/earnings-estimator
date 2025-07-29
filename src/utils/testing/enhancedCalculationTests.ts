@@ -66,6 +66,7 @@ export async function testMachineCalculations(machineId: string): Promise<TestRe
       leaseAdjustmentFactor: 1.0,
       useFlatrateOption: 'perCredit' as const,
       currentSliderStep: 1 as const,
+      selectedLeasingModel: 'grundleasing' as const,
       exchangeRate: 11.4926
     };
 
@@ -196,6 +197,7 @@ export async function testLeasingModelPricing(): Promise<TestResult> {
         leaseAdjustmentFactor: 1.0,
         useFlatrateOption: 'perCredit' as const,
         currentSliderStep: 1,
+        selectedLeasingModel: 'grundleasing' as const,
         exchangeRate: 11.4926
       };
 
@@ -358,6 +360,7 @@ export async function testLeasingModelScenario(
       leaseAdjustmentFactor: 1.0,
       useFlatrateOption: 'perCredit' as const,
       currentSliderStep: selectedLeasingModel === 'grundleasing' ? 1 : 2,
+      selectedLeasingModel: selectedLeasingModel,
       exchangeRate: 11.4926
     };
 

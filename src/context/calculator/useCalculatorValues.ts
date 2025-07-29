@@ -21,7 +21,8 @@ export function useCalculatorValues() {
     selectedDriftpaket: state.selectedDriftpaket,
     leaseAdjustmentFactor: 0.5,
     useFlatrateOption: state.useFlatrateOption,
-    currentSliderStep: state.currentSliderStep
+    currentSliderStep: state.currentSliderStep,
+    selectedLeasingModel: state.selectedLeasingModel
   });
 
   // Beräkna step-värden (diskreta värdepunkter för slider) - behövs fortfarande för UI

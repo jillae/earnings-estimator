@@ -30,6 +30,14 @@ export function useStateSelections() {
   // Nytt state för info-rutan
   const [currentInfoText, setCurrentInfoText] = useState<InfoText | null>(null);
 
+  // Återställ slider till standard när man byter till grundleasing
+  useEffect(() => {
+    if (selectedLeasingModel === 'grundleasing' && currentSliderStep !== 1) {
+      console.log('Återställer slider till standard (1) vid byte till grundleasing');
+      setCurrentSliderStep(1);
+    }
+  }, [selectedLeasingModel]);
+
   // Härled den valda maskinen från maskin-ID
   const selectedMachine = useMemo(() => {
     const machine = machineData.find(machine => machine.id === selectedMachineId);
