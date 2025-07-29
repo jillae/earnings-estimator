@@ -9,6 +9,7 @@ import { Machine } from '@/data/machines/types';
 import { CalculatorMachine } from '@/hooks/useMachineData';
 import { getExchangeRate } from '../exchangeRateUtils';
 import { calculateTariffBasedLeasingMax } from '../leasingTariffUtils';
+import { roundToHundredEndingSix } from '../formatUtils';
 import { VAT_RATE, WORKING_DAYS_PER_MONTH, MONTHS_PER_YEAR } from '../constants';
 
 // Input-interface för alla beräkningar
@@ -198,7 +199,7 @@ export class CalculationEngine {
     }
     
     const machinePriceSEK = machine.priceEur * exchangeRate;
-    const cashPriceSEK = Math.round(machinePriceSEK); // Avrunda till hela kronor
+    const cashPriceSEK = roundToHundredEndingSix(machinePriceSEK); // Avrunda till hundra slutande på 6
     
     console.log(`Maskinpriser - ${machine.name}: EUR ${machine.priceEur} × ${exchangeRate} = SEK ${Math.round(machinePriceSEK)} (kontant: ${cashPriceSEK})`);
     
@@ -367,9 +368,9 @@ export class CalculationEngine {
     // SLA-kostnad baserat på nivå
     let slaCost = 0;
     if (inputs.selectedSlaLevel === 'Silver') {
-      slaCost = leasingCalcs.leasingMax60mRef * 0.25; // 25%
+      slaCost = roundToHundredEndingSix(leasingCalcs.leasingMax60mRef * 0.25); // 25%
     } else if (inputs.selectedSlaLevel === 'Guld') {
-      slaCost = leasingCalcs.leasingMax60mRef * 0.50; // 50%
+      slaCost = roundToHundredEndingSix(leasingCalcs.leasingMax60mRef * 0.50); // 50%
     }
     
     const totalCost = costPerMonth + slaCost;

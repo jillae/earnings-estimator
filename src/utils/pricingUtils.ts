@@ -20,8 +20,8 @@ export function calculateCashPrice(
   const totalEurPrice = machinePriceEur + shippingCostEur;
   const sekPrice = totalEurPrice * exchangeRate;
   
-  // Avrunda till hela kronor
-  return Math.round(sekPrice);
+  // Avrunda till närmaste hundra slutande på 6
+  return roundToHundredEndingSix(sekPrice);
 }
 
 /**
@@ -83,14 +83,14 @@ export function calculateSlaCost(
   
   // För Silver, använd 25% av leasingMax60mRef
   if (selectedSlaLevel === 'Silver') {
-    const silverCost = Math.round(leasingMax60mRef * SLA_PERCENT_SILVER);
+    const silverCost = roundToHundredEndingSix(leasingMax60mRef * SLA_PERCENT_SILVER);
     console.log(`Beräknad Silver SLA-kostnad för ${machine?.name || 'okänd maskin'}: ${silverCost} (25% av ${leasingMax60mRef})`);
     return silverCost;
   }
   
   // För Guld, använd 50% av leasingMax60mRef
   if (selectedSlaLevel === 'Guld') {
-    const goldCost = Math.round(leasingMax60mRef * SLA_PERCENT_GULD);
+    const goldCost = roundToHundredEndingSix(leasingMax60mRef * SLA_PERCENT_GULD);
     console.log(`Beräknad Guld SLA-kostnad för ${machine?.name || 'okänd maskin'}: ${goldCost} (50% av ${leasingMax60mRef})`);
     return goldCost;
   }
