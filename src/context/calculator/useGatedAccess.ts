@@ -57,6 +57,17 @@ export function useGatedAccess() {
           timestamp: new Date().toISOString(),
         }),
       });
+
+      // Skicka e-postnotifikation till återförsäljaren
+      await fetch('/api/send-dealer-notification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'new_session',
+          userData: newUserData,
+          sessionId,
+        }),
+      });
       
       toast({
         title: "Kalkylatorn är nu upplåst!",
@@ -84,6 +95,21 @@ export function useGatedAccess() {
           timestamp: new Date().toISOString(),
         }),
       });
+
+      // För viktiga interaktioner, skicka också notifikation
+      if (['machine_changed', 'significant_adjustment', 'payment_option_changed'].includes(action)) {
+        await fetch('/api/send-dealer-notification', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'session_update',
+            userData,
+            sessionId,
+            action,
+            data,
+          }),
+        });
+      }
     } catch (error) {
       console.error('Error logging interaction:', error);
     }
