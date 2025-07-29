@@ -238,10 +238,23 @@ export class CalculationEngine {
       console.log(`Fallback till tariff-beräkning: ${leasingCostBase} SEK`);
     }
     
+    
     // FÖRSÄKRING: Lägg till försäkringskostnad om vald
     if (inputs.selectedInsuranceId === 'yes') {
-      const insuranceRate = 0.025; // 2.5% från leasingOptions.ts
       const machinePriceSEK = (inputs.machine.priceEur || 0) * exchangeRate;
+      
+      // Använd korrekt försäkringssats baserat på maskinpris
+      let insuranceRate: number;
+      if (machinePriceSEK <= 100000) {
+        insuranceRate = 0.04; // 4% för maskiner ≤ 100,000 SEK
+      } else if (machinePriceSEK <= 200000) {
+        insuranceRate = 0.03; // 3% för maskiner ≤ 200,000 SEK
+      } else if (machinePriceSEK <= 500000) {
+        insuranceRate = 0.025; // 2.5% för maskiner ≤ 500,000 SEK
+      } else {
+        insuranceRate = 0.015; // 1.5% för maskiner > 500,000 SEK
+      }
+      
       const insuranceCostPerMonth = machinePriceSEK * insuranceRate / 12;
       leasingCostBase += insuranceCostPerMonth;
       console.log(`Försäkring tillagd: ${insuranceCostPerMonth} SEK/mån (${insuranceRate * 100}% av ${machinePriceSEK})`);
