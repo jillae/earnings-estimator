@@ -1,17 +1,14 @@
 
-import { DEFAULT_EXCHANGE_RATE } from './constants';
+/**
+ * @deprecated Use ExchangeRateEngine instead
+ * Detta är en wrapper för bakåtkompatibilitet
+ */
+
+import { ExchangeRateEngine } from './core/ExchangeRateEngine';
 import { Machine } from '../data/machines/types';
 
 export async function getExchangeRate(fromCurrency: string, toCurrency: string): Promise<number> {
-  try {
-    // Simulerar API-anrop (ersätter axios för tillfället)
-    console.log(`Hämtar växelkurs från ${fromCurrency} till ${toCurrency}`);
-    // Returnerar standard-växelkursen om vi inte kan använda axios
-    return DEFAULT_EXCHANGE_RATE;
-  } catch (error) {
-    console.error('Error fetching exchange rate:', error);
-    return DEFAULT_EXCHANGE_RATE;
-  }
+  return ExchangeRateEngine.getRate();
 }
 
 export async function calculateMachinePriceSEK(machine: Machine): Promise<number> {
@@ -20,11 +17,11 @@ export async function calculateMachinePriceSEK(machine: Machine): Promise<number
   }
   
   try {
-    const exchangeRate = await getExchangeRate('EUR', 'SEK');
+    const exchangeRate = await ExchangeRateEngine.getRate();
     return machine.priceEur * exchangeRate;
   } catch (error) {
     console.error('Error calculating machine price in SEK:', error);
-    return machine.priceEur * DEFAULT_EXCHANGE_RATE;
+    return await ExchangeRateEngine.convertEurToSek(machine.priceEur);
   }
 }
 
