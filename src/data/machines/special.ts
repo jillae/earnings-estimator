@@ -16,12 +16,6 @@ export const specialMachines: Machine[] = [
     creditPriceMultiplier: 0,
     flatrateAmount: 0,
     usesCredits: false,
-    leasingTariffs: {
-      "24": 0.046386,
-      "36": 0.032515,
-      "48": 0.025413,
-      "60": 0.021158
-    },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 3600,
     imageUrl: "https://drive.google.com/uc?export=view&id=1gQ7R_j4zYl4R8z7P0b6b2vU6R4T6yP8n"
@@ -40,12 +34,6 @@ export const specialMachines: Machine[] = [
     creditPriceMultiplier: 0,
     flatrateAmount: 0,
     usesCredits: false,
-    leasingTariffs: {
-      "24": 0.046386,
-      "36": 0.032515,
-      "48": 0.025413,
-      "60": 0.021158
-    },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 4000,
     imageUrl: "https://drive.google.com/uc?export=view&id=1hW4c_i3aJ5rQ8E2xL9b9V1P9z5x7b7j9"

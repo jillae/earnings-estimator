@@ -20,12 +20,7 @@ export const treatmentMachines: Machine[] = [
     leasingMax: 13893, // Uppdaterat leasingMax från 10500 till 13893
     creditMin: 75,      // Kreditpris vid gamla leasingMax (mitten)
     creditMax: 159,     // Kreditpris vid leasingMin
-    leasingTariffs: {
-      "24": 0.046386,
-      "36": 0.032515,
-      "48": 0.025413,
-      "60": 0.021158
-    },
+    creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 900,
     imageUrl: "https://drive.google.com/uc?export=view&id=1bF2B_2j8jN32G5eM8jB8rY9r3-nU2N27"
@@ -48,12 +43,7 @@ export const treatmentMachines: Machine[] = [
     leasingMax: 16673, // Uppdaterat leasingMax från 12425 till 16673
     creditMin: 95,      // Kreditpris vid gamla leasingMax (mitten)
     creditMax: 199,     // Kreditpris vid leasingMin
-    leasingTariffs: {
-      "24": 0.046386,
-      "36": 0.032515,
-      "48": 0.025413,
-      "60": 0.021158
-    },
+    creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200,
     imageUrl: "https://drive.google.com/uc?export=view&id=1c7uF93v95qP3i2Q1e4k1K-j2i-P5p5L6"
