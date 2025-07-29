@@ -25,7 +25,7 @@ export const LEASING_PACKAGES = {
     id: 'hybridpaket', 
     name: 'Hybridpaket',
     shortName: 'Hybrid',
-    description: 'Denna modell ger dig kontroll över din månadskostnad. Justera balansen mellan maskinens grundleasing och din kreditkostnad.',
+    description: 'Flexibel investering - balansera din investeringskostnad med din driftkostnad.',
     detailedDescription: 'Credits köps separat eller via fastpris enligt ditt val.',
     sliderPosition: 1,
     icon: '⚖️',
