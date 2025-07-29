@@ -220,24 +220,18 @@ export class CalculationEngine {
       };
     }
     
-    // GRUNDKOSTNAD: Använd maskinens specifika leasing tariff från databasen
+    // GRUNDKOSTNAD: Använd tariff-baserad beräkning för alla maskiner
     const leaseDurationMonths = parseInt(inputs.selectedLeasingPeriodId);
     let leasingCostBase = 0;
     
-    // Försök först använda maskinens egna leasingTariffs från databasen
-    if (inputs.machine.leasingTariffs && inputs.machine.leasingTariffs[leaseDurationMonths]) {
-      leasingCostBase = inputs.machine.leasingTariffs[leaseDurationMonths];
-      console.log(`Använder maskinens direkta tariff: ${leasingCostBase} SEK för ${leaseDurationMonths} månader`);
-    } else {
-      // Fallback till tariff-baserad beräkning för gamla maskiner
-      leasingCostBase = calculateTariffBasedLeasingMax(
-        inputs.machine.priceEur || 0,
-        leaseDurationMonths,
-        inputs.machine.usesCredits,
-        exchangeRate
-      );
-      console.log(`Fallback till tariff-beräkning: ${leasingCostBase} SEK`);
-    }
+    // Använd alltid tariff-baserad beräkning för grundkostnad
+    leasingCostBase = calculateTariffBasedLeasingMax(
+      inputs.machine.priceEur || 0,
+      leaseDurationMonths,
+      inputs.machine.usesCredits,
+      exchangeRate
+    );
+    console.log(`Grundkostnad beräknad: ${inputs.machine.priceEur} EUR × ${exchangeRate} × tariff = ${leasingCostBase} SEK`);
     
     
     // FÖRSÄKRING: Lägg till försäkringskostnad om vald
