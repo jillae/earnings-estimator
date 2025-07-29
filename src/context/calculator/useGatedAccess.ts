@@ -15,16 +15,49 @@ export function useGatedAccess() {
   
   const { toast } = useToast();
 
-  // Check if user has already unlocked in this session
-  useEffect(() => {
-    const storedUnlock = sessionStorage.getItem('calculator_unlocked');
-    const storedUserData = sessionStorage.getItem('calculator_user_data');
-    
-    if (storedUnlock === 'true' && storedUserData) {
-      setIsUnlocked(true);
-      setUserData(JSON.parse(storedUserData));
+  // Hjälpfunktion för att logga ny session
+  const logNewSessionStart = useCallback(async (userData: UserData) => {
+    try {
+      await fetch('/api/calculator-log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'session_start',
+          sessionId: userData.sessionId,
+          userData,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+
+      await fetch('/api/send-dealer-notification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'returning_session',
+          userData,
+          sessionId: userData.sessionId,
+        }),
+      });
+    } catch (error) {
+      console.error('Error logging returning session:', error);
     }
   }, []);
+
+  // Check if user has already done opt-in (permanent until they clear browser data)
+  useEffect(() => {
+    const storedUserData = localStorage.getItem('calculator_user_data');
+    
+    if (storedUserData) {
+      const userData = JSON.parse(storedUserData);
+      // Skapa ny session men använd sparad användardata
+      const newUserData = { ...userData, sessionId };
+      setUserData(newUserData);
+      setIsUnlocked(true);
+      
+      // Logga ny session start automatiskt
+      logNewSessionStart(newUserData);
+    }
+  }, [sessionId, logNewSessionStart]);
 
   const triggerOptIn = useCallback(() => {
     if (isUnlocked) return true;
@@ -42,9 +75,8 @@ export function useGatedAccess() {
       setIsUnlocked(true);
       setShowOptIn(false);
       
-      // Spara i session storage
-      sessionStorage.setItem('calculator_unlocked', 'true');
-      sessionStorage.setItem('calculator_user_data', JSON.stringify(newUserData));
+      // Spara i localStorage så användaren inte behöver göra opt-in igen
+      localStorage.setItem('calculator_user_data', JSON.stringify(newUserData));
       
       // Logga session start
       await fetch('/api/calculator-log', {
