@@ -1,19 +1,16 @@
 
 import { useState, useEffect, useMemo } from 'react';
-import { useMachineData, CalculatorMachine } from '@/hooks/useMachineData';
 import { Machine } from '@/data/machines/types';
 import { FlatrateOption, PaymentOption, SlaLevel } from '@/utils/constants';
 import { DriftpaketType } from '@/types/calculator';
 import { SliderStep } from '@/utils/sliderSteps';
 import { InfoText } from '@/data/infoTexts';
+import { machineData } from '@/data/machines';
 
 export function useStateSelections() {
-  // Hämta maskindata från databas
-  const { calculatorMachines, isLoading: machinesLoading } = useMachineData();
-  
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
-  // Sätt första maskinen som standard istället för 'select-machine'
-  const [selectedMachineId, setSelectedMachineId] = useState<string>('');
+  // Sätt Emerald som standard vid sidladdning
+  const [selectedMachineId, setSelectedMachineId] = useState<string>('emerald');
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60'); // Default till 60 månader
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
@@ -34,14 +31,6 @@ export function useStateSelections() {
   // Nytt state för info-rutan
   const [currentInfoText, setCurrentInfoText] = useState<InfoText | null>(null);
 
-  // Auto-välj första maskinen när calculatorMachines laddas
-  useEffect(() => {
-    if (calculatorMachines.length > 0 && !selectedMachineId) {
-      console.log('Auto-väljer första maskinen:', calculatorMachines[0].name);
-      setSelectedMachineId(calculatorMachines[0].id);
-    }
-  }, [calculatorMachines, selectedMachineId]);
-
   // Återställ slider till standard när man byter till grundleasing
   useEffect(() => {
     if (selectedLeasingModel === 'grundleasing' && currentSliderStep !== 1) {
@@ -52,34 +41,16 @@ export function useStateSelections() {
 
   // Härled den valda maskinen från maskin-ID  
   const selectedMachine = useMemo(() => {
-    const machine = calculatorMachines.find(machine => machine.id === selectedMachineId);
-    return machine || { 
-      id: 'null-machine',
-      name: 'No Machine',
-      usesCredits: false,
-      flatrateAmount: 0,
-      defaultCustomerPrice: 0,
-      defaultLeasingPeriod: '60',
-      creditMin: 0,
-      creditMax: 0,
-      leasingMin: 24,
-      leasingMax: 120,
-      creditsPerTreatment: 1,
-      minLeaseMultiplier: 0.5,
-      maxLeaseMultiplier: 1.5,
-      defaultLeaseMultiplier: 1.0,
-      creditPriceMultiplier: 1.0,
-      leasingTariffs: { "60": 0 }
-    } as CalculatorMachine;
-  }, [selectedMachineId, calculatorMachines]);
+    const machine = machineData.find(machine => machine.id === selectedMachineId);
+    return machine || machineData.find(m => m.id === 'emerald'); // Fallback till Emerald
+  }, [selectedMachineId]);
 
   // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen
   useEffect(() => {
-    if (selectedMachine && selectedMachine.id !== 'null-machine') {
+    if (selectedMachine) {
       console.log(`Maskin valdes: ${selectedMachine.name}, återställer standardvärden`);
       
-      // Sätt standard-leasingperiod från maskinen om den är definierad,
-      // annars använd 60 månader som standard
+      // Sätt standard-leasingperiod från maskinen om den är definierad
       if (selectedMachine.defaultLeasingPeriod) {
         setSelectedLeasingPeriodId(String(selectedMachine.defaultLeasingPeriod));
       } else {
@@ -93,23 +64,11 @@ export function useStateSelections() {
       
       // Återställ ALLTID till standard värden för en ny maskin
       setCurrentSliderStep(1); // Standard steg (mitten)
-      
-      // Återställ alltid SLA till Brons
       setSlaLevel('Brons');
-      
-      // Återställ alltid driftpaket till Bas
       setSelectedDriftpaket('Bas');
-      
-      // Återställ betalningsalternativ till leasing
       setPaymentOption('leasing');
-      
-      // Återställ flatrate-valet till perCredit
       setUseFlatrateOption('perCredit');
-      
-      // Återställ allowBelowFlatrate till true
       setAllowBelowFlatrate(true);
-      
-      // Återställ leasingmodell till grundleasing
       setSelectedLeasingModel('grundleasing');
     }
   }, [selectedMachine]);
@@ -176,9 +135,6 @@ export function useStateSelections() {
     selectedLeasingModel,
     setSelectedLeasingModel,
     currentInfoText,
-    setCurrentInfoText,
-    // Lägg till maskindata-relaterade returns
-    calculatorMachines,
-    machinesLoading
+    setCurrentInfoText
   };
 }

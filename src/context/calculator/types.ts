@@ -1,6 +1,5 @@
 
 import { Machine, LeasingPeriod, InsuranceOption } from '@/data/machines/types';
-import { CalculatorMachine } from '@/hooks/useMachineData';
 import { ClinicSize, PaymentOption, FlatrateOption, SlaLevel, DriftpaketType, OperatingCost, Revenue, OccupancyRevenues, NetResults } from '@/types/calculator';
 import { SliderStep, StepValues } from '@/utils/sliderSteps';
 import { InfoText } from '@/data/infoTexts';
@@ -43,7 +42,7 @@ export interface CalculatorContextType {
   
   selectedMachineId: string;
   setSelectedMachineId: (id: string) => void;
-  selectedMachine: CalculatorMachine | undefined;
+  selectedMachine: Machine | undefined;
   
   paymentOption: PaymentOption;
   setPaymentOption: (option: PaymentOption) => void;
@@ -138,8 +137,4 @@ export interface CalculatorContextType {
   isUnlocked: boolean;
   triggerOptIn: () => boolean;
   logInteraction: (action: string, data: any) => void;
-  
-  // Maskindata från databas
-  calculatorMachines: CalculatorMachine[];
-  machinesLoading: boolean;
 }

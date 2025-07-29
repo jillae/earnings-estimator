@@ -7,10 +7,10 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { CalculatorMachine } from '@/hooks/useMachineData';
+import { Machine } from '@/data/machines/types';
 
 interface MachineSelectorProps {
-  machines: CalculatorMachine[];
+  machines: Machine[];
   selectedMachineId: string;
   onChange: (machineId: string) => void;
 }
@@ -53,7 +53,7 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
             <SelectValue placeholder="Växla maskin här" />
           </SelectTrigger>
           
-          <SelectContent position="item-aligned" className="w-full max-h-[400px] bg-white">
+          <SelectContent position="item-aligned" className="w-full max-h-[400px] bg-white z-50">
             <SelectItem value="select-machine">Växla maskin här</SelectItem>
             {machines.map((machine) => (
               <SelectItem key={machine.id} value={machine.id}>
