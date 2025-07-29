@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { CalculatorContext } from '../CalculatorContext';
+import { CalculatorContext } from './context';
 import { useCalculatorValues } from './useCalculatorValues';
 import { useSlaCosts } from './useSlaCosts';
 import { useFlatrateGuard } from './useFlatrateGuard';
