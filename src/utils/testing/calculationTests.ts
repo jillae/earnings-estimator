@@ -52,7 +52,10 @@ export async function testCalculations() {
     console.log(`💰 Kontantpris: ${Math.round(results.cashPriceSEK).toLocaleString('sv-SE')} kr`);
     
     // Leasing
-    console.log(`📈 Leasingkostnad: ${Math.round(results.leasingCost).toLocaleString('sv-SE')} kr/mån`);
+    console.log(`📈 Leasingkostnad (aktiv): ${Math.round(results.leasingCost).toLocaleString('sv-SE')} kr/mån`);
+    console.log(`📈 Grundkostnad (tariff): ${Math.round(results.leasingCostBase).toLocaleString('sv-SE')} kr/mån`);
+    console.log(`📈 Strategisk kostnad (maskindata): ${Math.round(results.leasingCostStrategic).toLocaleString('sv-SE')} kr/mån`);
+    console.log(`📈 Kompensationspåslag: ${Math.round(results.leasingCostStrategic - results.leasingCostBase).toLocaleString('sv-SE')} kr (${((results.leasingCostStrategic/results.leasingCostBase-1)*100).toFixed(1)}%)`);
     console.log(`📈 Leasing range: ${Math.round(results.leasingRange.min)}-${Math.round(results.leasingRange.max)} kr/mån`);
     console.log(`📈 Leasing 60m ref: ${Math.round(results.leasingMax60mRef).toLocaleString('sv-SE')} kr/mån`);
     
@@ -78,19 +81,25 @@ export async function testCalculations() {
     console.log('\n🔍 VALIDERING:');
     console.log('='.repeat(50));
     
-    // Kontrollera att leasingMax60mRef stämmer med maskinens hårdkodade värden
-    const expectedLeasingMax = emeraldMachine.leasingMax || 0;
-    const actualLeasingMax = results.leasingMax60mRef;
-    const leasingDiff = Math.abs(expectedLeasingMax - actualLeasingMax);
+    // Nu jämför vi båda värdena
+    const expectedStrategicMax = emeraldMachine.leasingMax || 0;
+    const actualStrategicMax = results.leasingCostStrategic;
+    const actualBaseMax = results.leasingCostBase;
     
-    console.log(`📊 Förväntad leasingMax: ${expectedLeasingMax.toLocaleString('sv-SE')} kr`);
-    console.log(`📊 Beräknad leasingMax: ${Math.round(actualLeasingMax).toLocaleString('sv-SE')} kr`);
-    console.log(`📊 Skillnad: ${Math.round(leasingDiff).toLocaleString('sv-SE')} kr (${((leasingDiff/expectedLeasingMax)*100).toFixed(1)}%)`);
+    console.log(`📊 STRATEGISK PRISSÄTTNING:`);
+    console.log(`   Förväntad: ${expectedStrategicMax.toLocaleString('sv-SE')} kr (maskindata)`);
+    console.log(`   Beräknad: ${Math.round(actualStrategicMax).toLocaleString('sv-SE')} kr`);
+    const strategicDiff = Math.abs(expectedStrategicMax - actualStrategicMax);
+    console.log(`   Skillnad: ${Math.round(strategicDiff).toLocaleString('sv-SE')} kr (${((strategicDiff/expectedStrategicMax)*100).toFixed(1)}%)`);
     
-    if (leasingDiff / expectedLeasingMax < 0.05) { // Mindre än 5% avvikelse
-      console.log('✅ Leasing-beräkning: GODKÄND');
+    console.log(`📊 GRUNDKOSTNAD (TARIFF):`);
+    console.log(`   Beräknad: ${Math.round(actualBaseMax).toLocaleString('sv-SE')} kr`);
+    console.log(`   Credit-kompensation: ${Math.round(actualStrategicMax - actualBaseMax).toLocaleString('sv-SE')} kr`);
+    
+    if (strategicDiff / expectedStrategicMax < 0.05) { // Mindre än 5% avvikelse
+      console.log('✅ Strategisk prissättning: GODKÄND');
     } else {
-      console.log('❌ Leasing-beräkning: AVVIKELSE FÖR STOR');
+      console.log('❌ Strategisk prissättning: AVVIKELSE FÖR STOR');
     }
     
     // Kontrollera credit-priser
@@ -114,14 +123,19 @@ export async function testCalculations() {
     }
     
     // Sammanfattning
+    const isStrategicValid = strategicDiff / expectedStrategicMax < 0.05;
     const isAllValid = results.isValid && 
-                      leasingDiff / expectedLeasingMax < 0.05 && 
+                      isStrategicValid && 
                       isCreditsInRange && 
                       revenueDiff < 1000;
     
     console.log('\n🎯 SLUTRESULTAT:');
     console.log('='.repeat(50));
     console.log(`${isAllValid ? '✅ ALLA TESTER GODKÄNDA' : '❌ VISSA TESTER MISSLYCKADES'}`);
+    console.log(`📋 SAMMANFATTNING:`);
+    console.log(`   • Strategisk prissättning använder dina hårdkodade värden med credit-kompensation`);
+    console.log(`   • Grundkostnad är ren tariff-baserad finansieringskostnad`);
+    console.log(`   • Skillnaden (${Math.round(actualStrategicMax - actualBaseMax)} kr) är din credit-förlust-kompensation`);
     
     if (results.errors.length > 0) {
       console.log('🚨 Fel:', results.errors);

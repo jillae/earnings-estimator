@@ -32,13 +32,17 @@ export interface CalculationResults {
   machinePriceSEK: number;
   cashPriceSEK: number;
   
-  // Leasing
-  leasingCost: number;
+  // Leasing (både grundkostnad och strategisk prissättning)
+  leasingCostBase: number;        // Tariff-baserad grundkostnad
+  leasingCostStrategic: number;   // Strategisk prissättning med credit-kompensation
+  leasingCost: number;            // Aktiv kostnad (base eller strategic beroende på inställning)
   leasingRange: {
     min: number;
     max: number;
     default: number;
     flatrateThreshold?: number;
+    baseMax: number;           // Tariff-baserad max
+    strategicMax: number;      // Strategisk max från maskindata
   };
   leasingMax60mRef: number;
   
@@ -120,6 +124,8 @@ export class CalculationEngine {
     const result: CalculationResults = {
       machinePriceSEK: machinePricing.machinePriceSEK,
       cashPriceSEK: machinePricing.cashPriceSEK,
+      leasingCostBase: leasingCalcs.leasingCostBase,
+      leasingCostStrategic: leasingCalcs.leasingCostStrategic,
       leasingCost: leasingCalcs.leasingCost,
       leasingRange: leasingCalcs.leasingRange,
       leasingMax60mRef: leasingCalcs.leasingMax60mRef,
@@ -198,40 +204,57 @@ export class CalculationEngine {
   }
   
   /**
-   * LEASING-BERÄKNINGAR
+   * LEASING-BERÄKNINGAR (Både grund och strategisk)
    */
   private static calculateLeasing(inputs: CalculationInputs, machinePricing: any, exchangeRate: number) {
     if (!inputs.machine) {
       return {
+        leasingCostBase: 0,
+        leasingCostStrategic: 0,
         leasingCost: 0,
-        leasingRange: { min: 0, max: 0, default: 0 },
+        leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0 },
         leasingMax60mRef: 0
       };
     }
     
-    // Beräkna 60-månaders referens (används för SLA-kostnader)
-    const leasingMax60mRef = calculateTariffBasedLeasingMax(
+    // GRUNDKOSTNAD: Tariff-baserad beräkning (ren finansieringskostnad)
+    const leasingCostBase = calculateTariffBasedLeasingMax(
       inputs.machine.priceEur || 0,
       60,
       inputs.machine.usesCredits,
       exchangeRate
     );
     
-    // Beräkna aktuell leasingkostnad baserat på slider
-    // TODO: Implementera slider-logik här
-    const leasingCost = leasingMax60mRef; // Tillfälligt
+    // STRATEGISK KOSTNAD: Från maskindata (inkluderar credit-kompensation)
+    const leasingCostStrategic = inputs.machine.leasingMax || leasingCostBase;
     
-    // Beräkna range
+    // AKTIV KOSTNAD: Använd strategisk som standard (kan göras konfigurerbar senare)
+    const leasingCost = leasingCostStrategic;
+    
+    // RANGE: Baserat på aktiv kostnad
     const leasingRange = {
-      min: leasingMax60mRef * 0.8,
-      max: leasingMax60mRef * 1.2,
-      default: leasingMax60mRef,
-      flatrateThreshold: leasingMax60mRef * 0.9
+      min: leasingCost * 0.8,
+      max: leasingCost * 1.2, 
+      default: leasingCost,
+      flatrateThreshold: leasingCost * 0.9,
+      baseMax: leasingCostBase,
+      strategicMax: leasingCostStrategic
     };
     
-    console.log(`Leasing för ${inputs.machine.name}: kostnad=${leasingCost}, max60mRef=${leasingMax60mRef}`);
+    console.log(`Leasing för ${inputs.machine.name}:
+      Grundkostnad (tariff): ${leasingCostBase} SEK/mån
+      Strategisk kostnad (maskindata): ${leasingCostStrategic} SEK/mån  
+      Aktiv kostnad: ${leasingCost} SEK/mån
+      Kompensationspåslag: ${leasingCostStrategic - leasingCostBase} SEK (${((leasingCostStrategic/leasingCostBase-1)*100).toFixed(1)}%)
+    `);
     
-    return { leasingCost, leasingRange, leasingMax60mRef };
+    return { 
+      leasingCostBase,
+      leasingCostStrategic, 
+      leasingCost, 
+      leasingRange, 
+      leasingMax60mRef: leasingCostBase // Använd grundkostnad för SLA-beräkningar
+    };
   }
   
   /**
@@ -363,8 +386,10 @@ export class CalculationEngine {
     return {
       machinePriceSEK: 0,
       cashPriceSEK: 0,
+      leasingCostBase: 0,
+      leasingCostStrategic: 0,
       leasingCost: 0,
-      leasingRange: { min: 0, max: 0, default: 0 },
+      leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0 },
       leasingMax60mRef: 0,
       creditPrice: 0,
       operatingCost: { costPerMonth: 0, useFlatrate: false, slaCost: 0, totalCost: 0 },

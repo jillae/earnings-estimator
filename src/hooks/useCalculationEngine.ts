@@ -92,8 +92,10 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
       const errorResult: CalculationResults = {
         machinePriceSEK: 0,
         cashPriceSEK: 0,
+        leasingCostBase: 0,
+        leasingCostStrategic: 0,
         leasingCost: 0,
-        leasingRange: { min: 0, max: 0, default: 0 },
+        leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0 },
         leasingMax60mRef: 0,
         creditPrice: 0,
         operatingCost: { costPerMonth: 0, useFlatrate: false, slaCost: 0, totalCost: 0 },
@@ -134,8 +136,10 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
   const safeResults: CalculationResults = results || {
     machinePriceSEK: 0,
     cashPriceSEK: 0,
+    leasingCostBase: 0,
+    leasingCostStrategic: 0,
     leasingCost: 0,
-    leasingRange: { min: 0, max: 0, default: 0 },
+    leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0 },
     leasingMax60mRef: 0,
     creditPrice: 0,
     operatingCost: { costPerMonth: 0, useFlatrate: false, slaCost: 0, totalCost: 0 },
