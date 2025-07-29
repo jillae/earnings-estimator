@@ -268,7 +268,7 @@ export class CalculationEngine {
     } else {
       // Grundleasing: Slider justerar inom ett snävt intervall runt grundkostnaden
       const sliderPosition = Math.max(0, Math.min(2, inputs.currentSliderStep));
-      const adjustmentRange = leasingCostBase * 0.15; // ±15% justering för bättre kontroll
+      const adjustmentRange = leasingCostBase * 0.1; // ±10% justering för bättre kontroll
       leasingCost = leasingCostBase + (sliderPosition - 1) * adjustmentRange;
     }
     
@@ -285,12 +285,12 @@ export class CalculationEngine {
         strategicMax: leasingCostStrategic
       };
     } else {
-      // Grund: Slider inom snävt intervall
+      // Grund: Slider inom snävt intervall - säkerställ att default är exakt leasingCostBase
       const adjustmentRange = leasingCostBase * 0.1;
       leasingRange = {
         min: leasingCostBase - adjustmentRange,    // Slider position 0
         max: leasingCostBase + adjustmentRange,    // Slider position 2  
-        default: leasingCostBase,                  // Slider position 1
+        default: leasingCostBase,                  // Slider position 1 (exakt samma som grund)
         flatrateThreshold: leasingCost * 0.9,
         baseMax: leasingCostBase,
         strategicMax: leasingCostStrategic

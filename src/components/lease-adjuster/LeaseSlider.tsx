@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Minus, Plus } from 'lucide-react';
+import { Circle, MoreHorizontal, Activity, Shield, Zap } from 'lucide-react';
 import FlatrateIndicator from './FlatrateIndicator';
 import { SliderStep } from '@/utils/sliderSteps';
 
@@ -45,8 +45,29 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
     return null;
   }
 
+  // Ikon-komponenter för olika investeringsnivåer
+  const getStepIcon = (step: SliderStep, isActive: boolean = false) => {
+    const iconSize = 18;
+    const activeClass = isActive ? "text-primary" : "text-slate-400";
+    
+    switch (step) {
+      case 0:
+        return <Circle size={iconSize} className={`${activeClass} fill-none`} />; // Tom cirkel - högsta creditkostnad
+      case 0.5:
+        return <MoreHorizontal size={iconSize} className={activeClass} />; // Partiell kompensation
+      case 1:
+        return <Activity size={iconSize} className={activeClass} />; // Balans/Standard
+      case 1.5:
+        return <Shield size={iconSize} className={activeClass} />; // Mer säkerhet/kompensation
+      case 2:
+        return <Zap size={iconSize} className={`${activeClass} fill-current`} />; // Full optimering - lägsta creditkostnad
+      default:
+        return <Activity size={iconSize} className={activeClass} />;
+    }
+  };
+
   return (
-    <div className="mb-6">
+    <div className="mb-4">
       <div className="mb-4">
         <h4 className="text-lg font-semibold text-slate-900 mb-2">
           Anpassa din investering
@@ -56,7 +77,6 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
         </p>
       </div>
 
-      
       {showSlider && (
         <div className="slider-container relative bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
           <FlatrateIndicator 
@@ -74,23 +94,27 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
             className="mt-6 slider-refined"
           />
           
-          <div className="flex justify-between items-center mt-3 px-1">
-            <div className="flex items-center gap-1">
-              <Minus size={14} className="text-slate-400" />
-              <Minus size={16} className="text-slate-500" />
+          {/* Ikoner för varje steg */}
+          <div className="flex justify-between items-center mt-4 px-1">
+            <div className="flex flex-col items-center gap-1">
+              {getStepIcon(0, currentStep === 0)}
+              <span className="text-xs text-slate-500">Hög driftkostnad</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Minus size={12} className="text-slate-400" />
+            <div className="flex flex-col items-center gap-1">
+              {getStepIcon(0.5, currentStep === 0.5)}
+              <span className="text-xs text-slate-500">Låg kompensation</span>
             </div>
-            <div className="flex items-center justify-center">
+            <div className="flex flex-col items-center gap-1">
+              {getStepIcon(1, currentStep === 1)}
               <span className="text-xs font-semibold text-slate-700">Standard</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Plus size={12} className="text-slate-400" />
+            <div className="flex flex-col items-center gap-1">
+              {getStepIcon(1.5, currentStep === 1.5)}
+              <span className="text-xs text-slate-500">Hög kompensation</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Plus size={16} className="text-slate-500" />
-              <Plus size={14} className="text-slate-400" />
+            <div className="flex flex-col items-center gap-1">
+              {getStepIcon(2, currentStep === 2)}
+              <span className="text-xs text-slate-500">Låg driftkostnad</span>
             </div>
           </div>
         </div>

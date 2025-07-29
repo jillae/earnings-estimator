@@ -57,6 +57,11 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     displayLeaseCost = selectedMachine.leasingMax;
   }
   
+  // KORRIGERING: För grundleasing, visa den exakta aktuella leasingkostnaden baserat på slider
+  if (selectedLeasingModel === 'grundleasing' && !noMachineSelected && stepValues[currentSliderStep]) {
+    displayLeaseCost = stepValues[currentSliderStep].leasingCost;
+  }
+  
   // Beräkna defaultCost korrekt baserat på tillgänglig data
   const defaultCost = noMachineSelected 
     ? 0 
@@ -132,6 +137,23 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           showMinMax={showMinMax}
         />
       </div>
+
+      {/* Finjusteringsslider - flyttad direkt under kostnadsdisplayen */}
+      {usesCredits && selectedLeasingModel === 'grundleasing' && (
+        <LeaseSlider 
+          currentStep={currentSliderStep}
+          onStepChange={handleSliderStepChange}
+          thresholdPosition={flatratePosition}
+          showFlatrateIndicator={showFlatrateIndicator && !!selectedMachine && !noMachineSelected}
+          allowBelowFlatrate={allowBelowFlatrate}
+          isAdjustmentEnabled={usesCredits ? isAdjustmentEnabled : false}
+          onToggleAdjustment={handleToggleAdjustment}
+          showAdjustmentCheckbox={false}
+          showSlider={showSlider}
+          isGrundleasingMode={selectedLeasingModel === 'grundleasing'}
+        />
+      )}
+
       <div className="flex flex-col md:flex-row items-stretch gap-3 w-full">
         {/* Rekommenderat pris - vi visar alltid detta oavsett maskintyp */}
         <div className="flex flex-1 items-center text-sm bg-blue-50 p-2 rounded-md gap-2 shadow-inner border border-blue-100">
@@ -173,22 +195,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           selectedModel={selectedLeasingModel}
           onModelChange={setSelectedLeasingModel}
           currentSliderStep={currentSliderStep}
-        />
-      )}
-
-      {/* Finjusteringsslider - visas endast i grundleasing-läge */}
-      {usesCredits && selectedLeasingModel === 'grundleasing' && (
-        <LeaseSlider 
-          currentStep={currentSliderStep}
-          onStepChange={handleSliderStepChange}
-          thresholdPosition={flatratePosition}
-          showFlatrateIndicator={showFlatrateIndicator && !!selectedMachine && !noMachineSelected}
-          allowBelowFlatrate={allowBelowFlatrate}
-          isAdjustmentEnabled={usesCredits ? isAdjustmentEnabled : false}
-          onToggleAdjustment={handleToggleAdjustment}
-          showAdjustmentCheckbox={false}
-          showSlider={showSlider}
-          isGrundleasingMode={selectedLeasingModel === 'grundleasing'}
         />
       )}
     </section>
