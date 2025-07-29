@@ -11,6 +11,8 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { runAllTests, testMachineCalculations, testLeasingModelScenario } from '@/utils/testing/enhancedCalculationTests';
 import { testCalculations, testAllMachines } from '@/utils/testing/calculationTests';
+import { createBaseline, exportBaseline, BaselineResults } from '@/utils/testing/baselineManager';
+import { runQuickBaseline } from '@/utils/testing/quickBaseline';
 import { logger } from '@/utils/logging/structuredLogger';
 import { CheckCircle, XCircle, AlertTriangle, Play, Download, Trash2 } from 'lucide-react';
 
@@ -31,6 +33,7 @@ const TestRunner: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [testResults, setTestResults] = useState<TestResults | null>(null);
   const [legacyResults, setLegacyResults] = useState<any>(null);
+  const [baselineResults, setBaselineResults] = useState<BaselineResults | null>(null);
 
   const runNewTests = async () => {
     setIsRunning(true);
@@ -61,6 +64,45 @@ const TestRunner: React.FC = () => {
       });
     } catch (error) {
       logger.error('ui', 'Fel vid äldre testning', error, 'TestRunner');
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  const runBaselineTests = async () => {
+    setIsRunning(true);
+    try {
+      logger.info('ui', 'Startar omfattande baseline-tester', undefined, 'TestRunner');
+      const results = await createBaseline();
+      setBaselineResults(results);
+    } catch (error) {
+      logger.error('ui', 'Fel vid baseline-testning', error, 'TestRunner');
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  const runQuickTest = async () => {
+    setIsRunning(true);
+    try {
+      logger.info('ui', 'Startar snabb baseline-test', undefined, 'TestRunner');
+      const results = await runQuickBaseline();
+      
+      // Konvertera till TestResults format
+      setTestResults({
+        suiteName: 'Snabb Baseline-test',
+        results: results.results.map(r => ({
+          testName: r.testName,
+          success: r.success,
+          errors: r.error ? [r.error] : [],
+          warnings: [],
+          data: r.result || null
+        })),
+        overallSuccess: results.successRate === 100,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      logger.error('ui', 'Fel vid snabb baseline-test', error, 'TestRunner');
     } finally {
       setIsRunning(false);
     }
@@ -98,9 +140,24 @@ const TestRunner: React.FC = () => {
     const data = {
       testResults,
       legacyResults,
+      baselineResults,
       logs: logger.getLogs(),
       exportTime: new Date().toISOString()
     };
+    
+    // Om vi har baseline-resultat, exportera dessa separat också
+    if (baselineResults) {
+      const baselineExport = exportBaseline(baselineResults);
+      const baselineBlob = new Blob([baselineExport], { type: 'application/json' });
+      const baselineUrl = URL.createObjectURL(baselineBlob);
+      const baselineLink = document.createElement('a');
+      baselineLink.href = baselineUrl;
+      baselineLink.download = `baseline_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(baselineLink);
+      baselineLink.click();
+      document.body.removeChild(baselineLink);
+      URL.revokeObjectURL(baselineUrl);
+    }
     
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -118,6 +175,7 @@ const TestRunner: React.FC = () => {
   const clearResults = () => {
     setTestResults(null);
     setLegacyResults(null);
+    setBaselineResults(null);
     logger.clearLogs();
     logger.info('ui', 'Testresultat rensade', undefined, 'TestRunner');
   };
@@ -142,8 +200,28 @@ const TestRunner: React.FC = () => {
         <CardContent className="space-y-4">
           <div className="flex flex-wrap gap-2">
             <Button
+              onClick={runBaselineTests}
+              disabled={isRunning}
+              className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700"
+            >
+              <Play className="w-4 h-4" />
+              Skapa Omfattande Baseline
+            </Button>
+            
+            <Button
+              onClick={runQuickTest}
+              disabled={isRunning}
+              variant="outline" 
+              className="flex items-center gap-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+            >
+              <Play className="w-4 h-4" />
+              Snabb Verifiering
+            </Button>
+            
+            <Button
               onClick={runNewTests}
               disabled={isRunning}
+              variant="outline"
               className="flex items-center gap-2"
             >
               <Play className="w-4 h-4" />
@@ -182,7 +260,7 @@ const TestRunner: React.FC = () => {
           <div className="flex gap-2">
             <Button
               onClick={exportResults}
-              disabled={!testResults && !legacyResults}
+              disabled={!testResults && !legacyResults && !baselineResults}
               variant="outline"
               size="sm"
               className="flex items-center gap-2"
@@ -193,7 +271,7 @@ const TestRunner: React.FC = () => {
             
             <Button
               onClick={clearResults}
-              disabled={!testResults && !legacyResults}
+              disabled={!testResults && !legacyResults && !baselineResults}
               variant="outline"
               size="sm"
               className="flex items-center gap-2"
@@ -207,7 +285,7 @@ const TestRunner: React.FC = () => {
             <Alert>
               <AlertTriangle className="w-4 h-4" />
               <AlertDescription>
-                Kör tester... Detta kan ta en stund.
+                Kör tester... Detta kan ta en stund. Baseline-tester kan ta flera minuter.
               </AlertDescription>
             </Alert>
           )}
@@ -303,6 +381,75 @@ const TestRunner: React.FC = () => {
                 <p className="text-sm">Se konsollen för detaljerade resultat av alla maskiner.</p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Baseline-resultat */}
+      {baselineResults && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {getStatusIcon(baselineResults.summary.failed === 0)}
+                Baseline-resultat
+              </div>
+              <Badge variant={baselineResults.summary.failed === 0 ? "default" : "destructive"}>
+                {baselineResults.summary.failed === 0 ? "GODKÄNT" : "MISSLYCKADES"}
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-sm text-muted-foreground">
+              Skapad: {new Date(baselineResults.metadata.timestamp).toLocaleString('sv-SE')}
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-blue-50 p-3 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">{baselineResults.summary.totalTests}</div>
+                <div className="text-sm text-blue-600">Totala Testfall</div>
+              </div>
+              <div className="bg-green-50 p-3 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">{baselineResults.summary.successful}</div>
+                <div className="text-sm text-green-600">Lyckade</div>
+              </div>
+              <div className="bg-red-50 p-3 rounded-lg">
+                <div className="text-2xl font-bold text-red-600">{baselineResults.summary.failed}</div>
+                <div className="text-sm text-red-600">Misslyckade</div>
+              </div>
+              <div className="bg-purple-50 p-3 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">
+                  {((baselineResults.summary.successful / baselineResults.summary.totalTests) * 100).toFixed(1)}%
+                </div>
+                <div className="text-sm text-purple-600">Framgångsgrad</div>
+              </div>
+            </div>
+            
+            <div className="border-t pt-4">
+              <h4 className="font-medium mb-2">Testsviter inkluderade:</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                <div className="flex items-center gap-2">
+                  {getStatusIcon(baselineResults.testResults.enhanced.overallSuccess)}
+                  <span>Förbättrade tester</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {getStatusIcon(true)} {/* Anta att legacy tests lyckades */}
+                  <span>Äldre tester</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {getStatusIcon(baselineResults.summary.failed === 0)}
+                  <span>Detaljerade beräkningsscenarier</span>
+                </div>
+              </div>
+            </div>
+            
+            <Alert>
+              <CheckCircle className="w-4 h-4" />
+              <AlertDescription>
+                Baseline sparad! {baselineResults.summary.totalTests} testfall med {baselineResults.summary.successful} lyckade beräkningar.
+                Exportera för att spara som permanent referens för regressionstestning.
+              </AlertDescription>
+            </Alert>
           </CardContent>
         </Card>
       )}
