@@ -49,12 +49,11 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMinCost = noMachineSelected ? 0 : minLeaseCost;
   const exactMaxCost = noMachineSelected ? 0 : maxLeaseCost;
   
-  // För strategisk leasing, visa fast högre kostnad
+  // För strategisk leasing, visa fast kostnad från maskindata
   let displayLeaseCost = noMachineSelected ? 0 : leaseCost;
-  if (selectedLeasingModel === 'strategisk' && !noMachineSelected) {
-    // Beräkna strategisk kostnad (exempel: 1.5x grundkostnaden)
-    const strategiskMultiplier = 1.5;
-    displayLeaseCost = (stepValues[1]?.leasingCost || leaseCost) * strategiskMultiplier;
+  if (selectedLeasingModel === 'strategisk' && !noMachineSelected && selectedMachine.leasingMax) {
+    // Använd verklig strategisk kostnad från maskindata (t.ex. 33 863 kr för Emerald)
+    displayLeaseCost = selectedMachine.leasingMax;
   }
   
   // Beräkna defaultCost korrekt baserat på tillgänglig data
