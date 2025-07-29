@@ -7,7 +7,7 @@ import { useFlatrateGuard } from './useFlatrateGuard';
 import { useContextualInfo } from './useContextualInfo';
 import { buildContextValue } from './buildContextValue';
 import { useGatedAccess } from './useGatedAccess';
-import { KartraOptInModal } from '@/components/KartraOptInModal';
+import { RegistrationModal } from '@/components/RegistrationModal';
 import { GatedOverlay } from '@/components/GatedOverlay';
 
 export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -48,7 +48,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         {!gatedAccess.isUnlocked && (
           <GatedOverlay onUnlock={gatedAccess.triggerOptIn} />
         )}
-        <KartraOptInModal
+        <RegistrationModal
           isOpen={gatedAccess.showOptIn}
           onClose={() => gatedAccess.setShowOptIn(false)}
           onSuccess={gatedAccess.handleOptInSuccess}
