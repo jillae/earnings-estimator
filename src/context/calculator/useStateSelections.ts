@@ -24,6 +24,9 @@ export function useStateSelections() {
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
   const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit');
   
+  // Nytt state för leasingmodell-val
+  const [selectedLeasingModel, setSelectedLeasingModel] = useState<'grundleasing' | 'strategisk'>('grundleasing');
+  
   // Nytt state för info-rutan
   const [currentInfoText, setCurrentInfoText] = useState<InfoText | null>(null);
 
@@ -81,6 +84,9 @@ export function useStateSelections() {
       
       // Återställ allowBelowFlatrate till true
       setAllowBelowFlatrate(true);
+      
+      // Återställ leasingmodell till grundleasing
+      setSelectedLeasingModel('grundleasing');
     }
   }, [selectedMachine]);
 
@@ -143,6 +149,8 @@ export function useStateSelections() {
     setCustomerPrice,
     useFlatrateOption,
     setUseFlatrateOption,
+    selectedLeasingModel,
+    setSelectedLeasingModel,
     currentInfoText,
     setCurrentInfoText
   };

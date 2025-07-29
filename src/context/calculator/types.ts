@@ -128,4 +128,8 @@ export interface CalculatorContextType {
   // Nya egenskaper
   isFlatrateViable: boolean;
   isLeasingFlatrateViable: boolean;
+  
+  // Leasingmodell-val
+  selectedLeasingModel: 'grundleasing' | 'strategisk';
+  setSelectedLeasingModel: (model: 'grundleasing' | 'strategisk') => void;
 }

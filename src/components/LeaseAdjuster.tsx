@@ -35,15 +35,27 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   onAllowBelowFlatrateChange
 }) => {
   const { toast } = useToast();
-  const { calculatedCreditPrice, selectedMachine, stepValues } = useCalculator();
+  const { 
+    calculatedCreditPrice, 
+    selectedMachine, 
+    stepValues, 
+    selectedLeasingModel, 
+    setSelectedLeasingModel 
+  } = useCalculator();
   const [isAdjustmentEnabled, setIsAdjustmentEnabled] = useState(false);
-  const [selectedLeasingModel, setSelectedLeasingModel] = useState<'grundleasing' | 'strategisk'>('grundleasing');
 
   // Säkerställ att kostnadsvärden alltid är 0 när ingen maskin är vald
   const noMachineSelected = !selectedMachine || selectedMachine.id === 'null-machine' || selectedMachine.id === 'select-machine';
   const exactMinCost = noMachineSelected ? 0 : minLeaseCost;
   const exactMaxCost = noMachineSelected ? 0 : maxLeaseCost;
-  const displayLeaseCost = noMachineSelected ? 0 : leaseCost;
+  
+  // För strategisk leasing, visa fast högre kostnad
+  let displayLeaseCost = noMachineSelected ? 0 : leaseCost;
+  if (selectedLeasingModel === 'strategisk' && !noMachineSelected) {
+    // Beräkna strategisk kostnad (exempel: 1.5x grundkostnaden)
+    const strategiskMultiplier = 1.5;
+    displayLeaseCost = (stepValues[1]?.leasingCost || leaseCost) * strategiskMultiplier;
+  }
   
   // Beräkna defaultCost korrekt baserat på tillgänglig data
   const defaultCost = noMachineSelected 
@@ -129,13 +141,23 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
             <span className="font-semibold ml-1">{formatCurrency(defaultCost)}</span>
           </span>
         </div>
-        {/* Krediter per behandling, endast om selectedMachine använder credits */}
-        {selectedMachine?.usesCredits && (
+        {/* Krediter per behandling, endast om selectedMachine använder credits OCH grundleasing */}
+        {selectedMachine?.usesCredits && selectedLeasingModel === 'grundleasing' && (
           <div className="flex flex-1 items-center text-sm bg-green-50 p-2 rounded-md gap-2 shadow-inner border border-emerald-100">
             <CreditCard className="w-5 h-5 text-green-600 shrink-0" />
             <span>
               Krediter per behandling:&nbsp;
               <span className="font-semibold">{formatCurrency(calculatedCreditPrice)} kr/credit</span>
+            </span>
+          </div>
+        )}
+        
+        {/* Strategisk leasing indikator */}
+        {selectedMachine?.usesCredits && selectedLeasingModel === 'strategisk' && (
+          <div className="flex flex-1 items-center text-sm bg-primary/10 p-2 rounded-md gap-2 shadow-inner border border-primary/20">
+            <CreditCard className="w-5 h-5 text-primary shrink-0" />
+            <span className="font-semibold text-primary">
+              Credits ingår i priset - inga extra kostnader
             </span>
           </div>
         )}
@@ -151,7 +173,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       )}
 
       {/* Finjusteringsslider - visas endast i grundleasing-läge */}
-      {usesCredits && (
+      {usesCredits && selectedLeasingModel === 'grundleasing' && (
         <LeaseSlider 
           currentStep={currentSliderStep}
           onStepChange={handleSliderStepChange}

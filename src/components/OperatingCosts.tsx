@@ -23,14 +23,41 @@ const OperatingCosts: React.FC = () => {
     paymentOption,
     selectedDriftpaket,
     operatingCost,
-    currentSliderStep
+    currentSliderStep,
+    selectedLeasingModel
   } = useCalculator();
 
   const { handleFlatrateChange, canEnableFlatrate } = useFlatrateHandler();
 
+  // Renderar omslutande kortstruktur
+  const renderOperatingCostCard = (content: React.ReactNode) => (
+    <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
+      <h3 className="text-lg font-semibold mb-4">Detaljer Driftskostnad</h3>
+      {content}
+    </div>
+  );
+
   // Om ingen maskin är vald, visa NoMachineSelected-komponenten
   if (!selectedMachine) {
     return <NoMachineSelected />;
+  }
+  
+  // Om strategisk leasing är valt, visa specialfall
+  if (selectedMachine.usesCredits && selectedLeasingModel === 'strategisk') {
+    return renderOperatingCostCard(
+      <div className="space-y-4">
+        <div className="flex items-center justify-center p-6 bg-primary/5 rounded-lg border border-primary/20">
+          <div className="text-center">
+            <h4 className="text-lg font-semibold text-primary mb-2">
+              Strategisk Leasing - Credits Ingår
+            </h4>
+            <p className="text-sm text-slate-600">
+              Alla credits ingår i ditt månatliga leasingpris. Inga extra kostnader för behandlingar.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
   
   // Beräkna om flatrate är inkluderat för Silver/Guld
@@ -52,13 +79,6 @@ const OperatingCosts: React.FC = () => {
     Current Slider Step: ${currentSliderStep}
   `);
 
-  // Renderar omslutande kortstruktur
-  const renderOperatingCostCard = (content: React.ReactNode) => (
-    <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
-      <h3 className="text-lg font-semibold mb-4">Detaljer Driftskostnad</h3>
-      {content}
-    </div>
-  );
 
   // Om maskinen inte använder credits, visa endast SLA-kostnad om den finns
   if (!selectedMachine.usesCredits) {
