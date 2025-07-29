@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Slider } from "@/components/ui/slider";
+import { useCalculator } from '@/context/CalculatorContext';
 
 interface TreatmentSettingsProps {
   treatmentsPerDay: number;
@@ -15,13 +16,17 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   onTreatmentsChange,
   onCustomerPriceChange
 }) => {
+  const { logSignificantInteraction } = useCalculator();
+
   // Hantera behandlingsantal via slider
   const handleTreatmentsSliderChange = (values: number[]) => {
+    logSignificantInteraction('treatments_changed');
     onTreatmentsChange(values[0]);
   };
 
   // Hantera kundpris via slider
   const handleCustomerPriceSliderChange = (values: number[]) => {
+    logSignificantInteraction('customer_price_changed');
     onCustomerPriceChange(values[0]);
   };
 

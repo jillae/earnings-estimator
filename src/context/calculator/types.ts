@@ -137,4 +137,6 @@ export interface CalculatorContextType {
   isUnlocked: boolean;
   triggerOptIn: () => boolean;
   logInteraction: (action: string, data: any) => void;
+  logSignificantInteraction: (action: string) => void;
+  interactionCount: number;
 }

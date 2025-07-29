@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Circle, MoreHorizontal, Activity, Shield, Zap } from 'lucide-react';
 import FlatrateIndicator from './FlatrateIndicator';
 import { SliderStep } from '@/utils/sliderSteps';
+import { useCalculator } from '@/context/CalculatorContext';
 
 interface LeaseSliderProps {
   currentStep: SliderStep; 
@@ -32,11 +33,17 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   showSlider,
   isGrundleasingMode
 }) => {
+  const { logSignificantInteraction } = useCalculator();
+
   // Hantera slider förändring
   const handleSliderChange = (values: number[]) => {
     // Säkerställ att värdet är ett giltigt steg (0, 0.5, 1, 1.5, 2)
     const newStep = values[0] as SliderStep;
     console.log(`Slider ändrades till steg: ${newStep}`);
+    
+    // Logga signifikant interaktion för gated access
+    logSignificantInteraction('slider_adjusted');
+    
     onStepChange(newStep);
   };
   

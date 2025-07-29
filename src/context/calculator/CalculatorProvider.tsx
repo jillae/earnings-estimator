@@ -45,9 +45,6 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     <CalculatorContext.Provider value={value}>
       <div className="relative">
         {children}
-        {!gatedAccess.isUnlocked && (
-          <GatedOverlay onUnlock={gatedAccess.triggerOptIn} />
-        )}
         <RegistrationModal
           isOpen={gatedAccess.showOptIn}
           onClose={() => gatedAccess.setShowOptIn(false)}

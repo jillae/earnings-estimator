@@ -11,9 +11,13 @@ export function useGatedAccess() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [showOptIn, setShowOptIn] = useState(false);
+  const [interactionCount, setInteractionCount] = useState(0);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   
   const { toast } = useToast();
+
+  // Tröskelvärde för när registrering ska triggas
+  const INTERACTION_THRESHOLD = 3;
 
   // Hjälpfunktion för att logga ny session
   const logNewSessionStart = useCallback(async (userData: UserData) => {
@@ -59,12 +63,45 @@ export function useGatedAccess() {
     }
   }, [sessionId, logNewSessionStart]);
 
+  // Signifikanta interaktioner som ska räknas
+  const logSignificantInteraction = useCallback((action: string) => {
+    const significantActions = [
+      'machine_changed',
+      'slider_adjusted', 
+      'treatments_changed',
+      'customer_price_changed',
+      'leasing_period_changed',
+      'insurance_changed'
+    ];
+
+    if (significantActions.includes(action) && !isUnlocked) {
+      setInteractionCount(prev => {
+        const newCount = prev + 1;
+        console.log(`Signifikant interaktion: ${action} (${newCount}/${INTERACTION_THRESHOLD})`);
+        
+        // Trigga registreringsmodal när tröskelvärdet nås
+        if (newCount >= INTERACTION_THRESHOLD && !showOptIn) {
+          console.log(`Triggar registrering efter ${newCount} interaktioner`);
+          setShowOptIn(true);
+        }
+        
+        return newCount;
+      });
+    }
+  }, [isUnlocked, INTERACTION_THRESHOLD, showOptIn]);
+
   const triggerOptIn = useCallback(() => {
     if (isUnlocked) return true;
     
-    setShowOptIn(true);
+    // Denna funktion används bara som fallback - huvudtrigger sker nu i logSignificantInteraction
+    // Kan användas för manuell trigger från UI om behövs
+    if (!showOptIn) {
+      console.log('Manuell trigger av registrering');
+      setShowOptIn(true);
+    }
+    
     return false;
-  }, [isUnlocked]);
+  }, [isUnlocked, showOptIn]);
 
   const handleOptInSuccess = useCallback(async (name: string, email: string) => {
     const newUserData: UserData = { name, email, sessionId };
@@ -112,9 +149,14 @@ export function useGatedAccess() {
     }
   }, [sessionId, toast]);
 
+  // Uppdaterad logInteraction som också hanterar interaktionsräknaren
   const logInteraction = useCallback(async (action: string, data: any) => {
-    if (!userData || !isUnlocked) return;
+    // Logga signifikanta interaktioner även när användaren inte är upplåst
+    logSignificantInteraction(action);
     
+    if (!userData || !isUnlocked) return;
+
+  
     try {
       await fetch('/api/calculator-log', {
         method: 'POST',
@@ -145,7 +187,7 @@ export function useGatedAccess() {
     } catch (error) {
       console.error('Error logging interaction:', error);
     }
-  }, [userData, sessionId, isUnlocked]);
+  }, [userData, sessionId, isUnlocked, logSignificantInteraction]);
 
   return {
     isUnlocked,
@@ -156,5 +198,7 @@ export function useGatedAccess() {
     handleOptInSuccess,
     logInteraction,
     sessionId,
+    interactionCount,
+    logSignificantInteraction,
   };
 }

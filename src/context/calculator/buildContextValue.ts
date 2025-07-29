@@ -52,5 +52,7 @@ export function buildContextValue(
     isUnlocked: gatedAccess?.isUnlocked ?? true,
     triggerOptIn: gatedAccess?.triggerOptIn ?? (() => true),
     logInteraction: gatedAccess?.logInteraction ?? (() => {}),
+    logSignificantInteraction: gatedAccess?.logSignificantInteraction ?? (() => {}),
+    interactionCount: gatedAccess?.interactionCount ?? 0,
   };
 }

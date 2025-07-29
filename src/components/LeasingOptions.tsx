@@ -7,6 +7,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { useCalculator } from '@/context/CalculatorContext';
 
 interface LeasingOption {
   id: string;
@@ -37,6 +38,17 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
   onLeasingPeriodChange,
   onInsuranceChange
 }) => {
+  const { logSignificantInteraction } = useCalculator();
+
+  const handleLeasingPeriodChange = (id: string) => {
+    logSignificantInteraction('leasing_period_changed');
+    onLeasingPeriodChange(id);
+  };
+
+  const handleInsuranceChange = (id: string) => {
+    logSignificantInteraction('insurance_changed');
+    onInsuranceChange(id);
+  };
   return (
     <div className="calculator-grid animate-slide-in" style={{ animationDelay: '200ms' }}>
       <div className="input-group">
@@ -46,7 +58,7 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
           </label>
         </div>
         
-        <Select value={selectedLeasingPeriodId} onValueChange={onLeasingPeriodChange}>
+        <Select value={selectedLeasingPeriodId} onValueChange={handleLeasingPeriodChange}>
           <SelectTrigger className="w-full" id="leasing-period">
             <SelectValue placeholder="Välj period" />
           </SelectTrigger>
@@ -71,7 +83,7 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
           </label>
         </div>
         
-        <Select value={selectedInsuranceId} onValueChange={onInsuranceChange}>
+        <Select value={selectedInsuranceId} onValueChange={handleInsuranceChange}>
           <SelectTrigger className="w-full" id="insurance">
             <SelectValue placeholder="Välj försäkring" />
           </SelectTrigger>

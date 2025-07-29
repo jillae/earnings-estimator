@@ -61,7 +61,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
-            Registrera dig för att fortsätta
+            Kul att du vill utforska!
             <Button
               variant="ghost"
               size="sm"
@@ -72,6 +72,13 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
             </Button>
           </DialogTitle>
         </DialogHeader>
+        
+        <div className="mb-4">
+          <p className="text-sm text-slate-600">
+            Du har sett grunderna – nu, en snabb registrering så låser vi upp alla funktioner. 
+            Sen kan du experimentera helt fritt! Kör!
+          </p>
+        </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -127,8 +134,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         </form>
         
         <div className="text-xs text-gray-500 text-center">
-          Genom att registrera dig får du tillgång till alla funktioner i kalkylatorn
-          och kan spara dina beräkningar.
+          Snabbt och enkelt – sen kan du testa allt utan begränsningar!
         </div>
       </DialogContent>
     </Dialog>

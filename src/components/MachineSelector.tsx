@@ -8,6 +8,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Machine } from '@/data/machines/types';
+import { useCalculator } from '@/context/CalculatorContext';
 
 interface MachineSelectorProps {
   machines: Machine[];
@@ -20,6 +21,8 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
   selectedMachineId, 
   onChange 
 }) => {
+  const { logSignificantInteraction } = useCalculator();
+  
   // Debug-loggning för att se vilken maskin som är vald
   useEffect(() => {
     console.log(`MachineSelector: Rendering med machineId: ${selectedMachineId}`);
@@ -27,6 +30,10 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
 
   const handleMachineChange = (newMachineId: string) => {
     console.log(`MachineSelector: Användaren valde maskin i dropdown: ${newMachineId}`);
+    
+    // Logga signifikant interaktion för gated access
+    logSignificantInteraction('machine_changed');
+    
     // Alltid trigga onChange för att säkerställa konsekvent uppdatering
     onChange(newMachineId);
   };
