@@ -15,7 +15,8 @@ interface LeaseSliderProps {
   isAdjustmentEnabled: boolean;
   onToggleAdjustment: (enabled: boolean) => void;
   showAdjustmentCheckbox: boolean;
-  showSlider: boolean; // Ny prop för att styra om slidern visas
+  showSlider: boolean;
+  isGrundleasingMode: boolean; // Ny prop för att styra om vi är i grundleasing-läge
 }
 
 const LeaseSlider: React.FC<LeaseSliderProps> = ({
@@ -27,7 +28,8 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   isAdjustmentEnabled,
   onToggleAdjustment,
   showAdjustmentCheckbox,
-  showSlider
+  showSlider,
+  isGrundleasingMode
 }) => {
   // Hantera slider förändring
   const handleSliderChange = (values: number[]) => {
@@ -37,8 +39,22 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
     onStepChange(newStep);
   };
   
+  // Visa endast i grundleasing-läge
+  if (!isGrundleasingMode) {
+    return null;
+  }
+
   return (
     <div className="mb-6">
+      <div className="mb-3">
+        <h4 className="text-sm font-medium text-slate-900 mb-1">
+          Finjustera grundleasingkostnad
+        </h4>
+        <p className="text-xs text-slate-600">
+          Justera din månatliga leasingkostnad inom ett snävt intervall (±10%)
+        </p>
+      </div>
+
       {showAdjustmentCheckbox && (
         <div className="flex items-center space-x-2 mb-4">
           <Checkbox 
@@ -47,7 +63,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
             onCheckedChange={onToggleAdjustment}
           />
           <Label htmlFor="adjustmentEnabled" className="text-sm text-slate-600">
-            Jag vill anpassa balansen mellan leasingkostnad och kreditpris
+            Aktivera finjustering av grundleasingkostnad
           </Label>
         </div>
       )}
@@ -71,11 +87,11 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
           />
           
           <div className="flex justify-between text-xs text-slate-500 mt-1 px-1">
-            <span>Min</span>
-            <span>Låg</span>
+            <span>-10%</span>
+            <span>-5%</span>
             <span>Standard</span>
-            <span>Hög</span>
-            <span>Max</span>
+            <span>+5%</span>
+            <span>+10%</span>
           </div>
         </div>
       )}

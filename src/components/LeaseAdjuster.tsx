@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
+import LeasingModelSelector from './lease-adjuster/LeasingModelSelector';
 import { Info, CreditCard } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useCalculator } from '@/context/CalculatorContext';
@@ -36,6 +37,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const { toast } = useToast();
   const { calculatedCreditPrice, selectedMachine, stepValues } = useCalculator();
   const [isAdjustmentEnabled, setIsAdjustmentEnabled] = useState(false);
+  const [selectedLeasingModel, setSelectedLeasingModel] = useState<'grundleasing' | 'strategisk'>('grundleasing');
 
   // Säkerställ att kostnadsvärden alltid är 0 när ingen maskin är vald
   const noMachineSelected = !selectedMachine || selectedMachine.id === 'null-machine' || selectedMachine.id === 'select-machine';
@@ -138,7 +140,17 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           </div>
         )}
       </div>
-      {/* Slider - visas endast för maskiner som använder credits */}
+      
+      {/* Leasingmodellval - visas endast för maskiner som använder credits */}
+      {usesCredits && (
+        <LeasingModelSelector
+          selectedModel={selectedLeasingModel}
+          onModelChange={setSelectedLeasingModel}
+          currentSliderStep={currentSliderStep}
+        />
+      )}
+
+      {/* Finjusteringsslider - visas endast i grundleasing-läge */}
       {usesCredits && (
         <LeaseSlider 
           currentStep={currentSliderStep}
@@ -150,6 +162,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           onToggleAdjustment={handleToggleAdjustment}
           showAdjustmentCheckbox={usesCredits}
           showSlider={showSlider}
+          isGrundleasingMode={selectedLeasingModel === 'grundleasing'}
         />
       )}
     </section>
