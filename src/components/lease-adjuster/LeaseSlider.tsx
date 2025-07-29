@@ -46,18 +46,18 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
 
   return (
     <div className="mb-6">
-      <div className="mb-3">
-        <h4 className="text-sm font-medium text-slate-900 mb-1">
-          Finjustera grundleasingkostnad
+      <div className="mb-4">
+        <h4 className="text-lg font-semibold text-slate-900 mb-2">
+          Finjustera kostnad
         </h4>
-        <p className="text-xs text-slate-600">
-          Justera din månatliga leasingkostnad inom ett snävt intervall (±10%)
+        <p className="text-sm text-slate-600 leading-relaxed">
+          Justera din månatliga kostnad inom ett snävt intervall (±10%)
         </p>
       </div>
 
       
       {showSlider && (
-        <div className="slider-container relative">
+        <div className="slider-container relative bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
           <FlatrateIndicator 
             thresholdPosition={thresholdPosition} 
             showFlatrateIndicator={showFlatrateIndicator}
@@ -70,15 +70,15 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
             max={2}
             step={0.5}
             onValueChange={handleSliderChange}
-            className="mt-8"
+            className="mt-6 slider-refined"
           />
           
-          <div className="flex justify-between text-xs text-slate-500 mt-1 px-1">
-            <span>-10%</span>
-            <span>-5%</span>
-            <span>Standard</span>
-            <span>+5%</span>
-            <span>+10%</span>
+          <div className="flex justify-between text-xs text-slate-500 mt-3 px-1">
+            <span className="font-medium">-10%</span>
+            <span className="font-medium">-5%</span>
+            <span className="font-semibold text-slate-700">Standard</span>
+            <span className="font-medium">+5%</span>
+            <span className="font-medium">+10%</span>
           </div>
         </div>
       )}

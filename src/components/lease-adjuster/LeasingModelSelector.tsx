@@ -107,8 +107,8 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
         </Card>
       </div>
 
-      {/* Varning om att valet låses */}
-      <div className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+      {/* Varning om att valet låses - flyttad till sist */}
+      <div className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg mt-4">
         <span className="text-amber-600 text-sm">{PACKAGE_LOCK_WARNING.icon}</span>
         <div>
           <div className="font-medium text-amber-800 text-sm">
