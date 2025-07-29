@@ -28,31 +28,31 @@ export interface DatabaseMachine {
   created_at: string;
 }
 
-// Konvertera från databas-format till kalkylatorkompatibelformat (kompatibel med Machine interface)
+// Konvertera från databas-format till Machine-kompatibelt format
 export interface CalculatorMachine {
   id: string;
   name: string;
-  priceEUR?: number;
-  isPremium?: boolean;
+  description?: string;
+  price?: string | number;
+  priceEur?: number;
+  fullName?: string;
+  shortName?: string;
+  modelCode?: string;
   usesCredits: boolean;
   creditMin?: number;
   creditMax?: number;
-  flatrateAmount?: number;
-  defaultCustomerPrice?: number;
-  defaultLeasingPeriod?: string; // String för kompatibilitet med Machine
   leasingMin?: number;
   leasingMax?: number;
-  creditsPerTreatment?: number;
-  description?: string;
-  category?: string;
-  leasingTariffs?: Record<string, number>;
-  // Lägg till egenskaper som krävs av Machine interface
-  priceEur?: number;
-  price?: string | number;
+  flatrateAmount?: number;
+  defaultCustomerPrice?: number;
+  defaultLeasingPeriod?: string; // String för kompatibilitet
+  imageUrl?: string;
   minLeaseMultiplier?: number;
   maxLeaseMultiplier?: number;
   defaultLeaseMultiplier?: number;
   creditPriceMultiplier?: number;
+  creditsPerTreatment?: number;
+  leasingTariffs?: {[key: string]: number};
 }
 
 const API_BASE_URL = `https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/machines-api`;
@@ -66,29 +66,27 @@ export const useMachineData = () => {
 
   const convertToCalculatorFormat = (dbMachine: DatabaseMachine): CalculatorMachine => {
     return {
-      id: dbMachine.name.toLowerCase(), // Använd name som id för bakåtkompatibilitet
+      id: dbMachine.name.toLowerCase().replace(/\s+/g, '-'), // Konsistent ID-format
       name: dbMachine.name,
-      priceEUR: dbMachine.price_eur,
-      priceEur: dbMachine.price_eur,
+      description: dbMachine.description || `${dbMachine.name} ${dbMachine.category} maskin`,
       price: dbMachine.price_eur,
-      isPremium: dbMachine.is_premium,
+      priceEur: dbMachine.price_eur,
       usesCredits: dbMachine.uses_credits,
       creditMin: dbMachine.credit_min,
       creditMax: dbMachine.credit_max,
+      leasingMin: dbMachine.leasing_min,
+      leasingMax: dbMachine.leasing_max,
       flatrateAmount: dbMachine.flatrate_amount,
       defaultCustomerPrice: dbMachine.default_customer_price,
       defaultLeasingPeriod: dbMachine.default_leasing_period.toString(),
-      leasingMin: dbMachine.leasing_min,
-      leasingMax: dbMachine.leasing_max,
       creditsPerTreatment: dbMachine.credits_per_treatment,
-      description: dbMachine.description || undefined,
-      category: dbMachine.category,
       leasingTariffs: dbMachine.leasing_tariffs,
-      // Standardvärden för Machine-kompatibilitet
+      // Standardvärden för kompatibilitet
       minLeaseMultiplier: 0.5,
       maxLeaseMultiplier: 1.5,
       defaultLeaseMultiplier: 1.0,
-      creditPriceMultiplier: 1.0
+      creditPriceMultiplier: 1.0,
+      imageUrl: `/machines/${dbMachine.name.toLowerCase()}.jpg` // Standard bildväg
     };
   };
 
@@ -121,13 +119,12 @@ export const useMachineData = () => {
       const errorMessage = `Kunde inte hämta maskindata: ${error instanceof Error ? error.message : 'Okänt fel'}`;
       setError(errorMessage);
       
-      // Fallback till hårdkodade maskiner om API failar (men bara under utveckling)
-      console.warn('Falling back to hardcoded machine data');
+      console.warn('API failed, no database machines available');
       setCalculatorMachines([]);
       
       toast({
         title: "Varning",
-        description: "Använder reservdata för maskiner. Kontakta administratör.",
+        description: "Kunde inte hämta maskindata från databasen",
         variant: "destructive",
       });
     } finally {

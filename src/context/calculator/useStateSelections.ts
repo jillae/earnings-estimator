@@ -41,7 +41,7 @@ export function useStateSelections() {
     }
   }, [selectedLeasingModel]);
 
-  // Härled den valda maskinen från maskin-ID
+  // Härled den valda maskinen från maskin-ID  
   const selectedMachine = useMemo(() => {
     const machine = calculatorMachines.find(machine => machine.id === selectedMachineId);
     return machine || { 
@@ -51,13 +51,17 @@ export function useStateSelections() {
       flatrateAmount: 0,
       defaultCustomerPrice: 0,
       defaultLeasingPeriod: '60',
-      minLeaseMultiplier: 0,
-      maxLeaseMultiplier: 0,
-      defaultLeaseMultiplier: 0,
-      creditPriceMultiplier: 0,
-      description: '',
-      priceEur: 0
-    } as Machine;
+      creditMin: 0,
+      creditMax: 0,
+      leasingMin: 24,
+      leasingMax: 120,
+      creditsPerTreatment: 1,
+      minLeaseMultiplier: 0.5,
+      maxLeaseMultiplier: 1.5,
+      defaultLeaseMultiplier: 1.0,
+      creditPriceMultiplier: 1.0,
+      leasingTariffs: { "60": 0 }
+    } as CalculatorMachine;
   }, [selectedMachineId, calculatorMachines]);
 
   // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen

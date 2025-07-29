@@ -6,13 +6,14 @@
  */
 
 import { Machine } from '@/data/machines/types';
+import { CalculatorMachine } from '@/hooks/useMachineData';
 import { getExchangeRate } from '../exchangeRateUtils';
 import { calculateTariffBasedLeasingMax } from '../leasingTariffUtils';
 import { VAT_RATE, WORKING_DAYS_PER_MONTH, MONTHS_PER_YEAR } from '../constants';
 
 // Input-interface för alla beräkningar
 export interface CalculationInputs {
-  machine: Machine | null;
+  machine: Machine | CalculatorMachine;
   treatmentsPerDay: number;
   customerPrice: number;
   paymentOption: 'leasing' | 'cash';
