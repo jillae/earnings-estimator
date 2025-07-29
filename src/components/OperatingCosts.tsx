@@ -131,6 +131,7 @@ const OperatingCosts: React.FC = () => {
       treatmentsPerDay={treatmentsPerDay}
       selectedMachine={selectedMachine}
       operatingCost={operatingCost}
+      selectedDriftpaket={selectedDriftpaket}
     />
   );
 };

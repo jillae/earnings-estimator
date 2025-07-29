@@ -48,10 +48,10 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
     <div className="mb-6">
       <div className="mb-4">
         <h4 className="text-lg font-semibold text-slate-900 mb-2">
-          Finjustera kostnad
+          Optimera din kreditkostnad
         </h4>
         <p className="text-sm text-slate-600 leading-relaxed">
-          Justera din månatliga kostnad inom ett snävt intervall (±10%)
+          Minska din kostnad per credit genom att kompensera med högre leasingavgift
         </p>
       </div>
 
@@ -74,11 +74,11 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
           />
           
           <div className="flex justify-between text-xs text-slate-500 mt-3 px-1">
-            <span className="font-medium">-10%</span>
-            <span className="font-medium">-5%</span>
+            <span className="font-medium">Högsta credit-pris</span>
+            <span className="font-medium">Mindre kompensation</span>
             <span className="font-semibold text-slate-700">Standard</span>
-            <span className="font-medium">+5%</span>
-            <span className="font-medium">+10%</span>
+            <span className="font-medium">Mer kompensation</span>
+            <span className="font-medium">Lägsta credit-pris</span>
           </div>
         </div>
       )}

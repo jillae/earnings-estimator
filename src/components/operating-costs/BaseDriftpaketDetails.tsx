@@ -3,6 +3,7 @@ import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 import FlatrateToggle from './FlatrateToggle';
+import FlatrateTooltip from '../lease-adjuster/FlatrateTooltip';
 import CreditCostDetails from './CreditCostDetails';
 
 interface BaseDriftpaketDetailsProps {
@@ -19,6 +20,7 @@ interface BaseDriftpaketDetailsProps {
   operatingCost: {
     totalCost: number;
   };
+  selectedDriftpaket?: string;
 }
 
 const BaseDriftpaketDetails: React.FC<BaseDriftpaketDetailsProps> = ({
@@ -29,7 +31,8 @@ const BaseDriftpaketDetails: React.FC<BaseDriftpaketDetailsProps> = ({
   creditPrice,
   treatmentsPerDay,
   selectedMachine,
-  operatingCost
+  operatingCost,
+  selectedDriftpaket = 'Bas'
 }) => {
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
   const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
@@ -39,12 +42,16 @@ const BaseDriftpaketDetails: React.FC<BaseDriftpaketDetailsProps> = ({
 
   return (
     <>
-      <FlatrateToggle 
-        useFlatrateOption={useFlatrateOption} 
-        handleFlatrateChange={handleFlatrateChange} 
-        canEnableFlatrate={canEnableFlatrate} 
-        paymentOption={paymentOption} 
-      />
+      <div className="flex items-center justify-between mb-3">
+        <FlatrateToggle 
+          useFlatrateOption={useFlatrateOption} 
+          handleFlatrateChange={handleFlatrateChange} 
+          canEnableFlatrate={canEnableFlatrate} 
+          paymentOption={paymentOption}
+          selectedDriftpaket={selectedDriftpaket}
+        />
+        <FlatrateTooltip />
+      </div>
 
       <CreditCostDetails 
         useFlatrateOption={useFlatrateOption}

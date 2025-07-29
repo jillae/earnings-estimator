@@ -4,7 +4,8 @@ import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
 import LeasingModelSelector from './lease-adjuster/LeasingModelSelector';
-import { Info, CreditCard } from 'lucide-react';
+import FlatrateTooltip from './lease-adjuster/FlatrateTooltip';
+import { Info, CreditCard, TrendingDown, TrendingUp } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useCalculator } from '@/context/CalculatorContext';
 import { SliderStep } from '@/utils/sliderSteps';
@@ -140,13 +141,17 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
             <span className="font-semibold ml-1">{formatCurrency(defaultCost)}</span>
           </span>
         </div>
-        {/* Krediter per behandling, endast om selectedMachine använder credits OCH grundleasing */}
+        {/* Kreditkostnad-indikator för grundleasing */}
         {selectedMachine?.usesCredits && selectedLeasingModel === 'grundleasing' && (
           <div className="flex flex-1 items-center text-sm bg-green-50 p-2 rounded-md gap-2 shadow-inner border border-emerald-100">
-            <CreditCard className="w-5 h-5 text-green-600 shrink-0" />
+            {currentSliderStep <= 1 ? (
+              <TrendingDown className="w-5 h-5 text-green-600 shrink-0" />
+            ) : (
+              <TrendingUp className="w-5 h-5 text-emerald-600 shrink-0" />
+            )}
             <span>
-              Krediter per behandling:&nbsp;
-              <span className="font-semibold">{formatCurrency(calculatedCreditPrice)} kr/credit</span>
+              Credit-kostnad:&nbsp;
+              <span className="font-semibold">{formatCurrency(calculatedCreditPrice)}/credit</span>
             </span>
           </div>
         )}

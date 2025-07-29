@@ -65,42 +65,43 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
           </CardContent>
         </Card>
 
-        {/* Strategisk Leasing (Credits ingår) */}
+        {/* Strategisk Leasing (Credits ingår) - De-promoterad */}
         <Card 
-          className={`cursor-pointer transition-all duration-200 ${
+          className={`cursor-pointer transition-all duration-200 opacity-75 ${
             selectedModel === 'strategisk' 
-              ? 'ring-2 ring-primary bg-primary/5' 
-              : 'hover:bg-slate-50'
+              ? 'ring-2 ring-slate-400 bg-slate-50' 
+              : 'hover:bg-slate-50 border-slate-300'
           }`}
           onClick={() => onModelChange('strategisk')}
         >
-          <CardContent className="p-4">
+          <CardContent className="p-4 opacity-75">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <span className="text-lg">{strategiskPackage.icon}</span>
-                <h3 className="font-semibold text-slate-900">
+                <h3 className="font-semibold text-slate-700">
                   {strategiskPackage.name}
                 </h3>
+                <span className="text-xs px-2 py-1 bg-slate-200 text-slate-600 rounded">Sista utväg</span>
               </div>
               {selectedModel === 'strategisk' && (
-                <Badge variant="default" className="text-xs">Vald</Badge>
+                <Badge variant="secondary" className="text-xs">Vald</Badge>
               )}
             </div>
             
-            <p className="text-sm text-slate-600 mb-3">
+            <p className="text-sm text-slate-500 mb-3">
               {strategiskPackage.description}
             </p>
             
             <div className="space-y-1">
               {strategiskPackage.benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-2 text-xs text-slate-500">
-                  <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
+                <div key={index} className="flex items-center gap-2 text-xs text-slate-400">
+                  <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
                   {benefit}
                 </div>
               ))}
             </div>
             
-            <div className="mt-3 text-xs text-slate-500">
+            <div className="mt-3 text-xs text-slate-400">
               <strong>Bäst för:</strong> {strategiskPackage.bestFor}
             </div>
           </CardContent>

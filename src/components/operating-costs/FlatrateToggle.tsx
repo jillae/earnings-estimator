@@ -9,14 +9,27 @@ interface FlatrateToggleProps {
   handleFlatrateChange: (checked: boolean) => void;
   canEnableFlatrate: boolean;
   paymentOption: string;
+  selectedDriftpaket?: string;
 }
 
 const FlatrateToggle: React.FC<FlatrateToggleProps> = ({
   useFlatrateOption,
   handleFlatrateChange,
   canEnableFlatrate,
-  paymentOption
+  paymentOption,
+  selectedDriftpaket = 'Bas'
 }) => {
+  
+  // Om Silver/Guld-paket, visa förklaringstext istället för toggle
+  if (selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld') {
+    return (
+      <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg mb-4">
+        <span className="text-sm font-medium text-blue-800">
+          Flatrate-credits är automatiskt aktiverat för {selectedDriftpaket}-paketet
+        </span>
+      </div>
+    );
+  }
   return (
     <>
       <div className="flex items-center justify-between mb-4">
