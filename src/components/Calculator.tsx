@@ -1,7 +1,7 @@
 
 import React from 'react';
 import CalculatorLayout from './calculator/CalculatorLayout';
-import { CalculatorProvider } from '@/context/calculator/CalculatorProvider';
+import { CalculatorProvider } from '@/context/CalculatorContext';
 import MachineGalleryContainer from './MachineGalleryContainer';
 
 const Calculator: React.FC = () => {
