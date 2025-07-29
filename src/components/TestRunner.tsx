@@ -14,7 +14,10 @@ import { testCalculations, testAllMachines } from '@/utils/testing/calculationTe
 import { createBaseline, exportBaseline, BaselineResults } from '@/utils/testing/baselineManager';
 import { runQuickBaseline } from '@/utils/testing/quickBaseline';
 import { logger } from '@/utils/logging/structuredLogger';
-import { CheckCircle, XCircle, AlertTriangle, Play, Download, Trash2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import ScrollToTop from '@/components/ScrollToTop';
+import { CheckCircle, XCircle, AlertTriangle, Play, Download, Trash2, Database } from 'lucide-react';
 
 interface TestResults {
   suiteName: string;
@@ -34,6 +37,7 @@ const TestRunner: React.FC = () => {
   const [testResults, setTestResults] = useState<TestResults | null>(null);
   const [legacyResults, setLegacyResults] = useState<any>(null);
   const [baselineResults, setBaselineResults] = useState<BaselineResults | null>(null);
+  const { toast } = useToast();
 
   const runNewTests = async () => {
     setIsRunning(true);
@@ -169,7 +173,46 @@ const TestRunner: React.FC = () => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
-    logger.info('ui', 'Testresultat exporterade', undefined, 'TestRunner');
+    toast({
+      title: "Framgång",
+      description: "Testresultat exporterade som fil",
+    });
+  };
+
+  const saveToDatabase = async () => {
+    try {
+      const exportName = `Test Export ${new Date().toLocaleString('sv-SE')}`;
+      const data = {
+        testResults,
+        legacyResults,
+        baselineResults,
+        logs: logger.getLogs(),
+        exportTime: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('test_exports')
+        .insert({
+          name: exportName,
+          export_data: JSON.parse(JSON.stringify(data)), // Ensure serializable
+          created_by: 'Admin',
+          description: `Export med ${testResults?.results?.length || 0} testresultat`
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Framgång", 
+        description: "Testresultat sparade i databasen",
+      });
+    } catch (error) {
+      console.error('Error saving to database:', error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte spara till databasen",
+        variant: "destructive",
+      });
+    }
   };
 
   const clearResults = () => {
@@ -270,14 +313,14 @@ const TestRunner: React.FC = () => {
             </Button>
             
             <Button
-              onClick={clearResults}
+              onClick={saveToDatabase}
               disabled={!testResults && !legacyResults && !baselineResults}
               variant="outline"
               size="sm"
               className="flex items-center gap-2"
             >
-              <Trash2 className="w-4 h-4" />
-              Rensa
+              <Database className="w-4 h-4" />
+              Spara i databas
             </Button>
           </div>
 
@@ -470,6 +513,8 @@ const TestRunner: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      <ScrollToTop />
     </div>
   );
 };

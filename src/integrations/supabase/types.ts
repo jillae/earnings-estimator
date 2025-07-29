@@ -154,6 +154,33 @@ export type Database = {
         }
         Relationships: []
       }
+      test_exports: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          export_data: Json
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          export_data: Json
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          export_data?: Json
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
