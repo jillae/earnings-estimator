@@ -55,18 +55,6 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
         </p>
       </div>
 
-      {showAdjustmentCheckbox && (
-        <div className="flex items-center space-x-2 mb-4">
-          <Checkbox 
-            id="adjustmentEnabled" 
-            checked={isAdjustmentEnabled}
-            onCheckedChange={onToggleAdjustment}
-          />
-          <Label htmlFor="adjustmentEnabled" className="text-sm text-slate-600">
-            Aktivera finjustering av grundleasingkostnad
-          </Label>
-        </div>
-      )}
       
       {showSlider && (
         <div className="slider-container relative">
@@ -81,7 +69,6 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
             min={0}
             max={2}
             step={0.5}
-            disabled={!isAdjustmentEnabled}
             onValueChange={handleSliderChange}
             className="mt-8"
           />

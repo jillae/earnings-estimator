@@ -75,21 +75,6 @@ const CalculatorInputs: React.FC = () => {
             
             {paymentOption === 'leasing' ? (
               <>
-                <LeasingOptions
-                  leasingPeriods={leasingPeriods}
-                  insuranceOptions={insuranceOptions}
-                  selectedLeasingPeriodId={selectedLeasingPeriodId}
-                  selectedInsuranceId={selectedInsuranceId}
-                  onLeasingPeriodChange={setSelectedLeasingPeriodId}
-                  onInsuranceChange={setSelectedInsuranceId}
-                />
-                
-                <div className="mt-4">
-                  <div className="text-sm text-slate-700 mb-2">Månadskostnad leasing</div>
-                  <div className="text-2xl font-bold text-blue-600">{formatCurrency(leasingCost)}</div>
-                  <div className="text-xs text-slate-500 mt-1">per månad exkl. moms</div>
-                </div>
-                
                 <LeaseAdjuster
                   minLeaseCost={leasingRange.min}
                   maxLeaseCost={leasingRange.max}
@@ -101,6 +86,15 @@ const CalculatorInputs: React.FC = () => {
                   onSliderStepChange={setCurrentSliderStep}
                   allowBelowFlatrate={allowBelowFlatrate}
                   onAllowBelowFlatrateChange={setAllowBelowFlatrate}
+                />
+                
+                <LeasingOptions
+                  leasingPeriods={leasingPeriods}
+                  insuranceOptions={insuranceOptions}
+                  selectedLeasingPeriodId={selectedLeasingPeriodId}
+                  selectedInsuranceId={selectedInsuranceId}
+                  onLeasingPeriodChange={setSelectedLeasingPeriodId}
+                  onInsuranceChange={setSelectedInsuranceId}
                 />
               </>
             ) : (

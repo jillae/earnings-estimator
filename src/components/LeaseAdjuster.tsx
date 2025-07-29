@@ -181,7 +181,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           allowBelowFlatrate={allowBelowFlatrate}
           isAdjustmentEnabled={usesCredits ? isAdjustmentEnabled : false}
           onToggleAdjustment={handleToggleAdjustment}
-          showAdjustmentCheckbox={usesCredits}
+          showAdjustmentCheckbox={false}
           showSlider={showSlider}
           isGrundleasingMode={selectedLeasingModel === 'grundleasing'}
         />
