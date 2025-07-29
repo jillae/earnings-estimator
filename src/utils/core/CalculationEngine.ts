@@ -338,45 +338,54 @@ export class CalculationEngine {
     return Math.round(creditPrice);
   }
   
-  /**
-   * DRIFTSKOSTNADER
-   */
-  private static calculateOperatingCosts(inputs: CalculationInputs, creditPrice: number, leasingCalcs: any) {
-    if (!inputs.machine) {
-      return { costPerMonth: 0, useFlatrate: false, slaCost: 0, totalCost: 0 };
-    }
-    
-    let costPerMonth = 0;
-    const useFlatrate = inputs.useFlatrateOption === 'flatrate' && Boolean(inputs.machine.flatrateAmount);
-    
-    if (useFlatrate && inputs.machine.flatrateAmount) {
-      // Flatrate-kostnad
-      costPerMonth = inputs.machine.flatrateAmount;
-    } else if (inputs.machine.usesCredits) {
-      // Per-credit kostnad
-      const creditsPerTreatment = inputs.machine.creditsPerTreatment || 1;
-      const treatmentsPerMonth = inputs.treatmentsPerDay * WORKING_DAYS_PER_MONTH;
-      costPerMonth = creditsPerTreatment * treatmentsPerMonth * creditPrice;
-    }
-    
-    // SLA-kostnad baserat på nivå
-    let slaCost = 0;
-    if (inputs.selectedSlaLevel === 'Silver') {
-      slaCost = roundToHundredEndingSix(leasingCalcs.leasingMax60mRef * 0.25); // 25%
-    } else if (inputs.selectedSlaLevel === 'Guld') {
-      slaCost = roundToHundredEndingSix(leasingCalcs.leasingMax60mRef * 0.50); // 50%
-    }
-    
-    const totalCost = costPerMonth + slaCost;
-    
-    console.log(`Driftskostnader för ${inputs.machine.name}:
-      Credit/Flatrate: ${costPerMonth}
-      SLA (${inputs.selectedSlaLevel}): ${slaCost}
-      Total: ${totalCost}
-    `);
-    
-    return { costPerMonth, useFlatrate, slaCost, totalCost };
-  }
+   /**
+    * DRIFTSKOSTNADER
+    */
+   private static calculateOperatingCosts(inputs: CalculationInputs, creditPrice: number, leasingCalcs: any) {
+     if (!inputs.machine) {
+       return { costPerMonth: 0, useFlatrate: false, slaCost: 0, totalCost: 0 };
+     }
+     
+     let costPerMonth = 0;
+     const useFlatrate = inputs.useFlatrateOption === 'flatrate' && Boolean(inputs.machine.flatrateAmount);
+     
+     if (useFlatrate && inputs.machine.flatrateAmount) {
+       // Flatrate-kostnad med SLA-rabatt
+       let flatrateCost = inputs.machine.flatrateAmount;
+       
+       // Applicera SLA-rabatt på Flatrate Credits
+       if (inputs.selectedSlaLevel === 'Silver') {
+         flatrateCost = flatrateCost * 0.5; // 50% rabatt för Silver
+       } else if (inputs.selectedSlaLevel === 'Guld') {
+         flatrateCost = 0; // 100% rabatt (gratis) för Guld
+       }
+       
+       costPerMonth = flatrateCost;
+     } else if (inputs.machine.usesCredits) {
+       // Per-credit kostnad
+       const creditsPerTreatment = inputs.machine.creditsPerTreatment || 1;
+       const treatmentsPerMonth = inputs.treatmentsPerDay * WORKING_DAYS_PER_MONTH;
+       costPerMonth = creditsPerTreatment * treatmentsPerMonth * creditPrice;
+     }
+     
+     // SLA-kostnad baserat på nivå
+     let slaCost = 0;
+     if (inputs.selectedSlaLevel === 'Silver') {
+       slaCost = roundToHundredEndingSix(leasingCalcs.leasingMax60mRef * 0.25); // 25%
+     } else if (inputs.selectedSlaLevel === 'Guld') {
+       slaCost = roundToHundredEndingSix(leasingCalcs.leasingMax60mRef * 0.50); // 50%
+     }
+     
+     const totalCost = costPerMonth + slaCost;
+     
+     console.log(`Driftskostnader för ${inputs.machine.name}:
+       Credit/Flatrate (med SLA-rabatt): ${costPerMonth}
+       SLA (${inputs.selectedSlaLevel}): ${slaCost}
+       Total: ${totalCost}
+     `);
+     
+     return { costPerMonth, useFlatrate, slaCost, totalCost };
+   }
   
   /**
    * INTÄKTSBERÄKNINGAR

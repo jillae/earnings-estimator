@@ -59,7 +59,15 @@ const DriftpaketSelector: React.FC = () => {
             </li>
             <li className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-blue-600" />
-              <span>Grundsupport (vardagar)</span>
+              <span>Support vardagar 09-17</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-blue-600" />
+              <span>Responstid 8 timmar</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-blue-600" />
+              <span>Max åtgärdstid 72 timmar</span>
             </li>
             {showCreditInfo && (
               <li className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200">
@@ -67,6 +75,9 @@ const DriftpaketSelector: React.FC = () => {
                 <span>Credits: {useFlatrateOption === 'flatrate' ? 'Flatrate' : `${formatCurrency(creditPrice)} per credit`}</span>
               </li>
             )}
+            <li className="text-xs text-gray-600 mt-2 pt-2 border-t border-gray-200">
+              <strong>Bäst för:</strong> Grundläggande behov
+            </li>
           </ul>
         </div>
       </div>
@@ -97,18 +108,33 @@ const DriftpaketSelector: React.FC = () => {
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span>Utökad Support</span>
+                <span>Support vardagar 08-18</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-blue-600" />
+                <span>Servicetid vardagar 08-18</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-blue-600" />
+                <span>Responstid 4 timmar</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-blue-600" />
+                <span>Max åtgärdstid 24 timmar</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-blue-600" />
-                <span>Lånemaskin</span>
+                <span>Lånemaskin vid servicebehov</span>
               </li>
               {selectedMachine?.usesCredits && (
                 <li className="flex items-center gap-2">
                   <CreditCard className="w-4 h-4 text-green-600" />
-                  <span className="font-medium text-green-700">Flatrate Credits Ingår</span>
+                  <span className="font-medium text-green-700">50% rabatt på Flatrate Credits</span>
                 </li>
               )}
+              <li className="text-xs text-gray-600 mt-2 pt-2 border-t border-gray-200">
+                <strong>Bäst för:</strong> Kommersiella kliniker med daglig användning
+              </li>
             </ul>
           </div>
         </div>
@@ -134,31 +160,55 @@ const DriftpaketSelector: React.FC = () => {
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span>Premium Support</span>
+                <span>Support vardagar 07-19</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-blue-600" />
+                <span>Servicetid vardagar 07-19</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-blue-600" />
+                <span>Responstid 2 timmar</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-blue-600" />
+                <span>Max åtgärdstid 12 timmar</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-blue-600" />
-                <span>Lånemaskin</span>
+                <span>Lånemaskin vid servicebehov</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-blue-600" />
+                <span>Årlig service på plats</span>
               </li>
               {selectedMachine?.usesCredits && (
                 <li className="flex items-center gap-2">
                   <CreditCard className="w-4 h-4 text-green-600" />
-                  <span className="font-medium text-green-700">Flatrate Credits Ingår</span>
+                  <span className="font-medium text-green-700">Flatrate Credits Ingår (100%)</span>
                 </li>
               )}
+              <li className="text-xs text-gray-600 mt-2 pt-2 border-t border-gray-200">
+                <strong>Bäst för:</strong> Högvolymkliniker med kritiska verksamhetsbehov
+              </li>
             </ul>
           </div>
         </div>
       </RadioGroup>
       
-      <div className="mt-4 text-center">
-        <a 
-          href="#" 
-          target="_blank" 
-          className="text-sm text-blue-600 hover:underline inline-flex items-center gap-1"
-        >
-          Jämför paketen / Läs fullständiga villkor
-        </a>
+      <div className="mt-4 space-y-2">
+        <div className="text-center">
+          <a 
+            href="#" 
+            target="_blank" 
+            className="text-sm text-blue-600 hover:underline inline-flex items-center gap-1"
+          >
+            Jämför paketen / Läs fullständiga villkor
+          </a>
+        </div>
+        <div className="text-xs text-gray-500 text-center italic">
+          *Avtalet är obundet löpande 3 månader (kvartalsvis) och faktureras i förskott
+        </div>
       </div>
     </div>
   );
