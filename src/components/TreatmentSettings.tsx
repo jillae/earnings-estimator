@@ -60,7 +60,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
           Kundpris per behandling (kr, inkl moms)
         </label>
         <div className="space-y-4">
-          <div className="text-lg font-semibold text-slate-800">{customerPrice.toLocaleString()} kr</div>
+          <div className="text-lg font-semibold text-slate-800">{Math.round(customerPrice).toLocaleString()} kr</div>
           <Slider
             value={[customerPrice]}
             min={500}

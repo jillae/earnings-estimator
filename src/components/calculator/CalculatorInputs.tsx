@@ -8,6 +8,7 @@ import MachineSelector from '../MachineSelector';
 import OperatingCosts from '../OperatingCosts';
 import LeaseAdjuster from '../LeaseAdjuster';
 import LeasingOptions from '../LeasingOptions';
+import FlatrateSection from './FlatrateSection';
 import PaymentOptionToggle from './PaymentOptionToggle';
 import DriftpaketSelector from './DriftpaketSelector';
 import ContextualInfoBox from './ContextualInfoBox';
@@ -100,11 +101,14 @@ const CalculatorInputs: React.FC = () => {
             ) : (
               <div className="mt-4">
                 <div className="text-sm text-slate-700 mb-2">Kontantpris</div>
-                <div className="text-2xl font-bold text-blue-600">{formatCurrency(cashPriceSEK)}</div>
+                <div className="text-2xl font-bold text-blue-600">{formatCurrency(cashPriceSEK, false, true)}</div>
                 <div className="text-xs text-slate-500 mt-1">exkl. moms, inkl. frakt & installation</div>
               </div>
             )}
           </div>
+          
+          {/* Flatrate-sektion kommer efter anpassning av investering */}
+          <FlatrateSection />
           
           <div className="mt-4">
             <DriftpaketSelector />

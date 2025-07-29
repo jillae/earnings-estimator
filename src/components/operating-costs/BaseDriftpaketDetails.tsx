@@ -2,15 +2,10 @@
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
-import FlatrateToggle from './FlatrateToggle';
-import FlatrateTooltip from '../lease-adjuster/FlatrateTooltip';
 import CreditCostDetails from './CreditCostDetails';
 
 interface BaseDriftpaketDetailsProps {
   useFlatrateOption: string;
-  handleFlatrateChange: (checked: boolean) => void;
-  canEnableFlatrate: boolean;
-  paymentOption: string;
   creditPrice: number;
   treatmentsPerDay: number;
   selectedMachine: {
@@ -25,9 +20,6 @@ interface BaseDriftpaketDetailsProps {
 
 const BaseDriftpaketDetails: React.FC<BaseDriftpaketDetailsProps> = ({
   useFlatrateOption,
-  handleFlatrateChange,
-  canEnableFlatrate,
-  paymentOption,
   creditPrice,
   treatmentsPerDay,
   selectedMachine,
@@ -42,18 +34,7 @@ const BaseDriftpaketDetails: React.FC<BaseDriftpaketDetailsProps> = ({
 
   return (
     <>
-      <div className="flex items-center justify-between mb-3">
-        <FlatrateToggle 
-          useFlatrateOption={useFlatrateOption} 
-          handleFlatrateChange={handleFlatrateChange} 
-          canEnableFlatrate={canEnableFlatrate} 
-          paymentOption={paymentOption}
-          selectedDriftpaket={selectedDriftpaket}
-        />
-        <FlatrateTooltip />
-      </div>
-
-      <CreditCostDetails 
+      <CreditCostDetails
         useFlatrateOption={useFlatrateOption}
         creditPrice={creditPrice}
         treatmentsPerDay={treatmentsPerDay}

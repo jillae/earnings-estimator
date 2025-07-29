@@ -124,9 +124,6 @@ const OperatingCosts: React.FC = () => {
   return renderOperatingCostCard(
     <BaseDriftpaketDetails 
       useFlatrateOption={useFlatrateOption}
-      handleFlatrateChange={handleFlatrateChange}
-      canEnableFlatrate={canEnableFlatrate}
-      paymentOption={paymentOption}
       creditPrice={creditPrice || 0}
       treatmentsPerDay={treatmentsPerDay}
       selectedMachine={selectedMachine}
