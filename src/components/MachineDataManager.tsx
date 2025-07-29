@@ -16,8 +16,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Edit2, Trash2, Save, X, AlertCircle, Loader2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, AlertCircle, Loader2, Check } from 'lucide-react';
 import { machineApiClient, type Machine } from '@/utils/machineApiClient';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // Machine interface importeras nu från API-klienten
 
@@ -41,6 +42,13 @@ interface MachineFormData {
 }
 
 // API-anrop hanteras nu av machineApiClient
+
+const CATEGORY_OPTIONS = [
+  { value: 'treatment', label: 'Behandling' },
+  { value: 'handheld', label: 'Handhållen' },
+  { value: 'premium', label: 'Premium' },
+  { value: 'special', label: 'Special' }
+];
 
 const MachineDataManager: React.FC = () => {
   const [machines, setMachines] = useState<Machine[]>([]);
@@ -148,6 +156,7 @@ const MachineDataManager: React.FC = () => {
 
   const handleUpdate = async (id: string, updates: Partial<Machine>) => {
     try {
+      console.log('Updating machine:', id, updates); // Debug log
       await machineApiClient.updateMachine(id, updates);
       await fetchMachines();
       setEditingId(null);
@@ -164,6 +173,19 @@ const MachineDataManager: React.FC = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const startEditing = (machine: Machine) => {
+    setEditingId(machine.id);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+  };
+
+  const handleInlineUpdate = async (machine: Machine, field: string, value: any) => {
+    const updates = { [field]: value };
+    await handleUpdate(machine.id, updates);
   };
 
   const handleDelete = async (id: string, name: string) => {
@@ -257,10 +279,10 @@ const MachineDataManager: React.FC = () => {
                   Lägg till maskin
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Lägg till ny maskin</DialogTitle>
-                </DialogHeader>
+               <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                 <DialogHeader>
+                   <DialogTitle>{editingId ? 'Redigera maskin' : 'Lägg till ny maskin'}</DialogTitle>
+                 </DialogHeader>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="name">Namn *</Label>
@@ -281,11 +303,18 @@ const MachineDataManager: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="category">Kategori</Label>
-                    <Input
-                      id="category"
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    />
+                    <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Välj kategori" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CATEGORY_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label htmlFor="default_customer_price">Standard kundpris</Label>
@@ -307,6 +336,7 @@ const MachineDataManager: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="credit_max">Credit max</Label>
+                    <p className="text-xs text-muted-foreground mb-1">Max antal credits per månad</p>
                     <Input
                       id="credit_max"
                       type="number"
@@ -356,7 +386,10 @@ const MachineDataManager: React.FC = () => {
                       checked={formData.is_premium}
                       onCheckedChange={(checked) => setFormData({ ...formData, is_premium: checked })}
                     />
-                    <Label htmlFor="is_premium">Premium maskin</Label>
+                    <div>
+                      <Label htmlFor="is_premium">Premium maskin</Label>
+                      <p className="text-xs text-muted-foreground">Flagga för avancerade/dyrare maskiner</p>
+                    </div>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch
@@ -375,14 +408,51 @@ const MachineDataManager: React.FC = () => {
                     <Label htmlFor="is_active">Aktiv</Label>
                   </div>
                 </div>
-                <div className="flex justify-end gap-2 mt-6">
-                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                    Avbryt
-                  </Button>
-                  <Button onClick={handleCreate}>
-                    Skapa maskin
-                  </Button>
-                </div>
+                 <div className="flex justify-end gap-2 mt-6">
+                   <Button variant="outline" onClick={() => {
+                     setIsDialogOpen(false);
+                     setEditingId(null);
+                     resetForm();
+                   }}>
+                     Avbryt
+                   </Button>
+                   <Button onClick={editingId ? async () => {
+                     // Uppdatera befintlig maskin
+                     const errors = validateFormData(formData);
+                     if (errors.length > 0) {
+                       toast({
+                         title: "Valideringsfel",
+                         description: errors.join(', '),
+                         variant: "destructive",
+                       });
+                       return;
+                     }
+                     const updates = {
+                       name: formData.name,
+                       price_eur: formData.price_eur,
+                       is_premium: formData.is_premium,
+                       uses_credits: formData.uses_credits,
+                       credit_min: formData.credit_min,
+                       credit_max: formData.credit_max,
+                       flatrate_amount: formData.flatrate_amount,
+                       default_customer_price: formData.default_customer_price,
+                       default_leasing_period: formData.default_leasing_period,
+                       leasing_min: formData.leasing_min,
+                       leasing_max: formData.leasing_max,
+                       credits_per_treatment: formData.credits_per_treatment,
+                       description: formData.description,
+                       category: formData.category,
+                       is_active: formData.is_active,
+                       leasing_tariffs: JSON.parse(formData.leasing_tariffs)
+                     };
+                     await handleUpdate(editingId, updates);
+                     setIsDialogOpen(false);
+                     setEditingId(null);
+                     resetForm();
+                   } : handleCreate}>
+                     {editingId ? 'Uppdatera maskin' : 'Skapa maskin'}
+                   </Button>
+                 </div>
               </DialogContent>
             </Dialog>
           </div>
@@ -436,28 +506,75 @@ const MachineDataManager: React.FC = () => {
                     <TableCell className="max-w-xs truncate">
                       {machine.description || '-'}
                     </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setEditingId(machine.id)}
-                          className="flex items-center gap-1"
-                        >
-                          <Edit2 className="w-3 h-3" />
-                          Redigera
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(machine.id, machine.name)}
-                          className="flex items-center gap-1 text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                          Radera
-                        </Button>
-                      </div>
-                    </TableCell>
+                     <TableCell>
+                       <div className="flex gap-2">
+                         {editingId === machine.id ? (
+                           <div className="flex gap-1">
+                             <Button
+                               variant="outline"
+                               size="sm"
+                               onClick={() => {
+                                 // Visa inline edit form
+                                 setFormData({
+                                   name: machine.name,
+                                   price_eur: machine.price_eur,
+                                   is_premium: machine.is_premium,
+                                   uses_credits: machine.uses_credits,
+                                   credit_min: machine.credit_min,
+                                   credit_max: machine.credit_max,
+                                   flatrate_amount: machine.flatrate_amount,
+                                   default_customer_price: machine.default_customer_price,
+                                   default_leasing_period: machine.default_leasing_period,
+                                   leasing_min: machine.leasing_min,
+                                   leasing_max: machine.leasing_max,
+                                   credits_per_treatment: machine.credits_per_treatment,
+                                   description: machine.description || '',
+                                   category: machine.category,
+                                   is_active: machine.is_active,
+                                   leasing_tariffs: JSON.stringify(machine.leasing_tariffs, null, 2)
+                                 });
+                                 setIsDialogOpen(true);
+                                 setEditingId(null);
+                               }}
+                               className="flex items-center gap-1"
+                             >
+                               <Edit2 className="w-3 h-3" />
+                               Öppna editor
+                             </Button>
+                             <Button
+                               variant="outline"
+                               size="sm"
+                               onClick={cancelEditing}
+                               className="flex items-center gap-1"
+                             >
+                               <X className="w-3 h-3" />
+                               Avbryt
+                             </Button>
+                           </div>
+                         ) : (
+                           <div className="flex gap-2">
+                             <Button
+                               variant="outline"
+                               size="sm"
+                               onClick={() => startEditing(machine)}
+                               className="flex items-center gap-1"
+                             >
+                               <Edit2 className="w-3 h-3" />
+                               Redigera
+                             </Button>
+                             <Button
+                               variant="outline"
+                               size="sm"
+                               onClick={() => handleDelete(machine.id, machine.name)}
+                               className="flex items-center gap-1 text-destructive hover:text-destructive"
+                             >
+                               <Trash2 className="w-3 h-3" />
+                               Radera
+                             </Button>
+                           </div>
+                         )}
+                       </div>
+                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
