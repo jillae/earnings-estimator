@@ -228,27 +228,52 @@ export class CalculationEngine {
     // STRATEGISK KOSTNAD: Från maskindata (inkluderar credit-kompensation)
     const leasingCostStrategic = inputs.machine.leasingMax || leasingCostBase;
     
-    // AKTIV KOSTNAD: Interpolera mellan grund och strategisk baserat på slider
-    // currentSliderStep: 0 = grundkostnad, 1 = mitt emellan, 2 = strategisk
-    const sliderPosition = Math.max(0, Math.min(2, inputs.currentSliderStep));
-    const leasingCost = leasingCostBase + (sliderPosition / 2) * (leasingCostStrategic - leasingCostBase);
+    // AKTIV KOSTNAD: Beror på om användaren valt strategisk prissättning
+    // Om strategisk: använd fast pris. Om grund: använd slider inom snävt intervall
+    const useStrategicPricing = inputs.useFlatrateOption === 'flatrate' && inputs.selectedDriftpaket === 'Guld'; // Tillfällig logik
     
-    // RANGE: Från grund till strategisk kostnad
-    const leasingRange = {
-      min: leasingCostBase,           // Slider position 0
-      max: leasingCostStrategic,      // Slider position 2
-      default: (leasingCostBase + leasingCostStrategic) / 2, // Mitt emellan
-      flatrateThreshold: leasingCost * 0.9,
-      baseMax: leasingCostBase,
-      strategicMax: leasingCostStrategic
-    };
+    let leasingCost: number;
+    if (useStrategicPricing) {
+      // Strategisk: Fast pris med credits inkluderade
+      leasingCost = leasingCostStrategic;
+    } else {
+      // Grund: Slider justerar inom ett snävt intervall runt grundkostnaden
+      const sliderPosition = Math.max(0, Math.min(2, inputs.currentSliderStep));
+      const adjustmentRange = leasingCostBase * 0.1; // ±10% justering
+      leasingCost = leasingCostBase + (sliderPosition - 1) * adjustmentRange;
+    }
+    
+    // RANGE: Olika beroende på läge
+    let leasingRange: any;
+    if (useStrategicPricing) {
+      // Strategisk: Fast pris, ingen slider
+      leasingRange = {
+        min: leasingCostStrategic,
+        max: leasingCostStrategic,
+        default: leasingCostStrategic,
+        flatrateThreshold: 0, // Irrelevant - credits redan inkluderade
+        baseMax: leasingCostBase,
+        strategicMax: leasingCostStrategic
+      };
+    } else {
+      // Grund: Slider inom snävt intervall
+      const adjustmentRange = leasingCostBase * 0.1;
+      leasingRange = {
+        min: leasingCostBase - adjustmentRange,    // Slider position 0
+        max: leasingCostBase + adjustmentRange,    // Slider position 2  
+        default: leasingCostBase,                  // Slider position 1
+        flatrateThreshold: leasingCost * 0.9,
+        baseMax: leasingCostBase,
+        strategicMax: leasingCostStrategic
+      };
+    }
     
     console.log(`Leasing för ${inputs.machine.name}:
-      Grundkostnad (tariff): ${leasingCostBase} SEK/mån [Slider pos 0]
-      Strategisk kostnad (maskindata): ${leasingCostStrategic} SEK/mån [Slider pos 2]
-      Aktuell slider position: ${sliderPosition}
-      Aktiv kostnad: ${leasingCost} SEK/mån
-      Kompensationspåslag: ${leasingCostStrategic - leasingCostBase} SEK (${((leasingCostStrategic/leasingCostBase-1)*100).toFixed(1)}%)
+      Använder strategisk prissättning: ${useStrategicPricing ? 'JA' : 'NEJ'}
+      Grundkostnad (tariff): ${leasingCostBase} SEK/mån
+      Strategisk kostnad (maskindata): ${leasingCostStrategic} SEK/mån
+      ${useStrategicPricing ? 'Fast pris (credits ingår)' : `Slider-justerad (${inputs.currentSliderStep})`}: ${leasingCost} SEK/mån
+      Range: ${Math.round(leasingRange.min)} - ${Math.round(leasingRange.max)} SEK/mån
     `);
     
     return { 
@@ -256,7 +281,8 @@ export class CalculationEngine {
       leasingCostStrategic, 
       leasingCost, 
       leasingRange, 
-      leasingMax60mRef: leasingCostBase // Använd grundkostnad för SLA-beräkningar
+      leasingMax60mRef: leasingCostBase, // Använd grundkostnad för SLA-beräkningar
+      useStrategicPricing // Lägg till detta för UI-logik
     };
   }
   
