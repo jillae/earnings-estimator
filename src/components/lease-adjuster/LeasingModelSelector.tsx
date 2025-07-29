@@ -81,7 +81,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
                 <h3 className="font-semibold text-slate-700">
                   {strategiskPackage.name}
                 </h3>
-                <span className="text-xs px-2 py-1 bg-slate-200 text-slate-600 rounded">Sista utväg</span>
+                
               </div>
               {selectedModel === 'strategisk' && (
                 <Badge variant="secondary" className="text-xs">Vald</Badge>

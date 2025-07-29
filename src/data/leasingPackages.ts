@@ -41,7 +41,7 @@ export const LEASING_PACKAGES = {
     id: 'allt-inkluderat',
     name: 'Allt-inkluderat', 
     shortName: 'Allt-ink',
-    description: 'Sista utväg: Fullständig kostnadskontroll mot högre fast kostnad.',
+    description: 'Fullständig kostnadskontroll mot högre fast kostnad.',
     detailedDescription: 'Fast månadsavgift för extremt hög volym eller när enkelhet väger tyngst.',
     sliderPosition: 2,
     icon: '⚠️',
@@ -91,6 +91,6 @@ export function packageIsHybrid(packageId: LeasingPackageId): boolean {
  */
 export const PACKAGE_LOCK_WARNING = {
   title: 'Viktigt att veta',
-  message: 'Det valda paketet låses vid köp och kan inte ändras under avtalstiden.',
+  message: 'Den valda leasingmodellen låses vid köp och kan inte ändras under avtalstiden.',
   icon: '⚠️'
 };

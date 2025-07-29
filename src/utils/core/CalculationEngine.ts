@@ -219,12 +219,22 @@ export class CalculationEngine {
     }
     
     // GRUNDKOSTNAD: Tariff-baserad beräkning (ren finansieringskostnad)
-    const leasingCostBase = calculateTariffBasedLeasingMax(
+    const leaseDurationMonths = parseInt(inputs.selectedLeasingPeriodId);
+    let leasingCostBase = calculateTariffBasedLeasingMax(
       inputs.machine.priceEur || 0,
-      60,
+      leaseDurationMonths,
       inputs.machine.usesCredits,
       exchangeRate
     );
+    
+    // FÖRSÄKRING: Lägg till försäkringskostnad om vald
+    if (inputs.selectedInsuranceId === 'yes') {
+      const insuranceRate = 0.025; // 2.5% från leasingOptions.ts
+      const machinePriceSEK = (inputs.machine.priceEur || 0) * exchangeRate;
+      const insuranceCostPerMonth = machinePriceSEK * insuranceRate / 12;
+      leasingCostBase += insuranceCostPerMonth;
+      console.log(`Försäkring tillagd: ${insuranceCostPerMonth} SEK/mån (${insuranceRate * 100}% av ${machinePriceSEK})`);
+    }
     
     // STRATEGISK KOSTNAD: Från maskindata (inkluderar credit-kompensation)
     const leasingCostStrategic = inputs.machine.leasingMax || leasingCostBase;
