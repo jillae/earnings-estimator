@@ -60,7 +60,7 @@ const FlatrateNotIncluded: React.FC<FlatrateNotIncludedProps> = ({
       {selectedDriftpaket === 'Guld' && operatingCost.slaCost > 0 && (
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm">Extra SLA-kostnad för Guld-paket</span>
-          <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost)}</span>
+          <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost, false, true)}</span>
         </div>
       )}
       

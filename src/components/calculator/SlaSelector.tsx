@@ -54,7 +54,7 @@ const SlaSelector: React.FC = () => {
           <RadioGroupItem value="Silver" id="sla-silver" />
           <Label htmlFor="sla-silver" className="flex-1">
             <span className="font-medium">Silver</span>
-            <div className="text-xs text-gray-500">{formatCurrency(slaCosts.Silver)}/mån</div>
+            <div className="text-xs text-gray-500">{formatCurrency(slaCosts.Silver, false, true)}/mån</div>
             <div className="text-xs text-blue-600">
               Prioriterad support & fjärrhjälp
               {selectedMachine?.usesCredits && <span className="font-semibold"> + Flatrate</span>}
@@ -66,7 +66,7 @@ const SlaSelector: React.FC = () => {
           <RadioGroupItem value="Guld" id="sla-guld" />
           <Label htmlFor="sla-guld" className="flex-1">
             <span className="font-medium">Guld</span>
-            <div className="text-xs text-gray-500">{formatCurrency(slaCosts.Guld)}/mån</div>
+            <div className="text-xs text-gray-500">{formatCurrency(slaCosts.Guld, false, true)}/mån</div>
             <div className="text-xs text-blue-600">
               VIP-support & årlig genomgång på plats
               {selectedMachine?.usesCredits && <span className="font-semibold"> + Flatrate</span>}

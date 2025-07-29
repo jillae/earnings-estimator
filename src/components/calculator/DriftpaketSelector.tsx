@@ -86,7 +86,7 @@ const DriftpaketSelector: React.FC = () => {
               </label>
             </div>
             <span className="text-sm font-semibold text-gray-700">
-              {formatCurrency(calculatedSlaCostSilver)} / mån
+              {formatCurrency(calculatedSlaCostSilver, false, true)} / mån
             </span>
           </div>
           <div className="pl-6 mt-2">
@@ -123,7 +123,7 @@ const DriftpaketSelector: React.FC = () => {
               </label>
             </div>
             <span className="text-sm font-semibold text-gray-700">
-              {formatCurrency(calculatedSlaCostGuld)} / mån
+              {formatCurrency(calculatedSlaCostGuld, false, true)} / mån
             </span>
           </div>
           <div className="pl-6 mt-2">

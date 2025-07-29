@@ -18,7 +18,7 @@ const NonCreditMachineDetails: React.FC<NonCreditMachineDetailsProps> = ({
     <>
       <div className="flex justify-between items-center mb-2">
         <span className="text-sm">SLA-kostnad för {selectedDriftpaket}-paket</span>
-        <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost)}</span>
+        <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost, false, true)}</span>
       </div>
       
       <div className="flex justify-between items-center mb-2 pt-2 border-t border-gray-200">
