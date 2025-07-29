@@ -58,6 +58,39 @@ export type Database = {
           },
         ]
       }
+      calculator_logs: {
+        Row: {
+          action: string
+          created_at: string
+          data: Json | null
+          id: string
+          session_id: string
+          timestamp: string
+          user_email: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          data?: Json | null
+          id?: string
+          session_id: string
+          timestamp?: string
+          user_email?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          data?: Json | null
+          id?: string
+          session_id?: string
+          timestamp?: string
+          user_email?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
       machines: {
         Row: {
           created_at: string

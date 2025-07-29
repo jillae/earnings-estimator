@@ -1,1 +1,49 @@
 project_id = "ejwbhvzmkmuimfqlishm"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://lovableproject.com"]
+jwt_expiry = 3600
+enable_signup = true
+refresh_token_rotation_enabled = true
+enable_manual_linking = false
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+
+[auth.sms]
+enable_signup = false
+enable_confirmations = false
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[functions.calculator-log]
+verify_jwt = false
+
+[realtime]
+enabled = true
+ip_version = "IPv4"
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+image_transformation = { enabled = true }
+
+[analytics]
+enabled = false
+
+[inbound_webhooks]
+enabled = false

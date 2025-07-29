@@ -1,7 +1,11 @@
 
 import { CalculatorContextType } from './types';
 
-export function buildContextValue(base: any, slaCosts: any): CalculatorContextType {
+export function buildContextValue(
+  base: any, 
+  slaCosts: any, 
+  gatedAccess?: ReturnType<typeof import('./useGatedAccess').useGatedAccess>
+): CalculatorContextType {
   // Kontrollera om vi har en giltig maskin vald
   const noMachineSelected = !base.selectedMachine || 
                            base.selectedMachine.id === 'null-machine' || 
@@ -42,6 +46,11 @@ export function buildContextValue(base: any, slaCosts: any): CalculatorContextTy
     isFlatrateViable: isFlatrateViable,
     isLeasingFlatrateViable: isLeasingFlatrateViable,
     selectedLeasingModel: base.selectedLeasingModel,
-    setSelectedLeasingModel: base.setSelectedLeasingModel
+    setSelectedLeasingModel: base.setSelectedLeasingModel,
+    
+    // Gated access funktionalitet
+    isUnlocked: gatedAccess?.isUnlocked ?? true,
+    triggerOptIn: gatedAccess?.triggerOptIn ?? (() => true),
+    logInteraction: gatedAccess?.logInteraction ?? (() => {}),
   };
 }

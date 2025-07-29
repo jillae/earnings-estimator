@@ -6,8 +6,14 @@ import { useSlaCosts } from './useSlaCosts';
 import { useFlatrateGuard } from './useFlatrateGuard';
 import { useContextualInfo } from './useContextualInfo';
 import { buildContextValue } from './buildContextValue';
+import { useGatedAccess } from './useGatedAccess';
+import { KartraOptInModal } from '@/components/KartraOptInModal';
+import { GatedOverlay } from '@/components/GatedOverlay';
 
 export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Gated access hantering
+  const gatedAccess = useGatedAccess();
+  
   // Få ut alla kärnvärden (det mesta av gamla logiken från tidigare fil)
   const base = useCalculatorValues();
   // SLA-värden
@@ -33,11 +39,21 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   });
 
   // Bygg det färdiga context-värdet (samma struktur som förut)
-  const value = buildContextValue(base, slaCosts);
+  const value = buildContextValue(base, slaCosts, gatedAccess);
 
   return (
     <CalculatorContext.Provider value={value}>
-      {children}
+      <div className="relative">
+        {children}
+        {!gatedAccess.isUnlocked && (
+          <GatedOverlay onUnlock={gatedAccess.triggerOptIn} />
+        )}
+        <KartraOptInModal
+          isOpen={gatedAccess.showOptIn}
+          onClose={() => gatedAccess.setShowOptIn(false)}
+          onSuccess={gatedAccess.handleOptInSuccess}
+        />
+      </div>
     </CalculatorContext.Provider>
   );
 };

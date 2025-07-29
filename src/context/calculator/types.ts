@@ -132,4 +132,9 @@ export interface CalculatorContextType {
   // Leasingmodell-val
   selectedLeasingModel: 'grundleasing' | 'strategisk';
   setSelectedLeasingModel: (model: 'grundleasing' | 'strategisk') => void;
+  
+  // Gated access funktionalitet
+  isUnlocked: boolean;
+  triggerOptIn: () => boolean;
+  logInteraction: (action: string, data: any) => void;
 }
