@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Calculator from '@/components/Calculator';
 import WhitePaperLibrary from '@/components/WhitePaperLibrary';
 import Footer from '@/components/Footer';
+import ScrollToTop from '@/components/ScrollToTop';
 import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
@@ -20,6 +21,7 @@ const Index = () => {
         <WhitePaperLibrary />
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   );
 };

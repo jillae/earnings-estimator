@@ -7,10 +7,10 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Machine } from '@/data/machines/types';
+import { CalculatorMachine } from '@/hooks/useMachineData';
 
 interface MachineSelectorProps {
-  machines: Machine[];
+  machines: CalculatorMachine[];
   selectedMachineId: string;
   onChange: (machineId: string) => void;
 }

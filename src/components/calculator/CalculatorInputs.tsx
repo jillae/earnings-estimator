@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useCalculator } from '@/context/CalculatorContext';
-import { machineData } from '@/data/machines';
 import ClinicSizeSelector from '../ClinicSizeSelector';
 import TreatmentSettings from '../TreatmentSettings';
 import MachineSelector from '../MachineSelector';
@@ -40,7 +39,8 @@ const CalculatorInputs: React.FC = () => {
     selectedInsuranceId,
     setSelectedLeasingPeriodId,
     setSelectedInsuranceId,
-    netResults
+    netResults,
+    calculatorMachines
   } = useCalculator();
   
   return (
@@ -61,7 +61,7 @@ const CalculatorInputs: React.FC = () => {
       </div>
 
       <MachineSelector 
-        machines={machineData}
+        machines={calculatorMachines}
         selectedMachineId={selectedMachineId}
         onChange={setSelectedMachineId}
       />
