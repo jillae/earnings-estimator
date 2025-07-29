@@ -93,42 +93,63 @@ export type Database = {
       }
       machines: {
         Row: {
+          category: string | null
           created_at: string
           credit_max: number | null
           credit_min: number | null
+          credits_per_treatment: number | null
           default_customer_price: number | null
           default_leasing_period: number | null
+          description: string | null
           flatrate_amount: number | null
           id: string
+          is_active: boolean | null
           is_premium: boolean | null
+          leasing_max: number | null
+          leasing_min: number | null
+          leasing_tariffs: Json | null
           name: string
-          price: number
+          price_eur: number
           uses_credits: boolean | null
         }
         Insert: {
+          category?: string | null
           created_at?: string
           credit_max?: number | null
           credit_min?: number | null
+          credits_per_treatment?: number | null
           default_customer_price?: number | null
           default_leasing_period?: number | null
+          description?: string | null
           flatrate_amount?: number | null
           id?: string
+          is_active?: boolean | null
           is_premium?: boolean | null
+          leasing_max?: number | null
+          leasing_min?: number | null
+          leasing_tariffs?: Json | null
           name: string
-          price: number
+          price_eur?: number
           uses_credits?: boolean | null
         }
         Update: {
+          category?: string | null
           created_at?: string
           credit_max?: number | null
           credit_min?: number | null
+          credits_per_treatment?: number | null
           default_customer_price?: number | null
           default_leasing_period?: number | null
+          description?: string | null
           flatrate_amount?: number | null
           id?: string
+          is_active?: boolean | null
           is_premium?: boolean | null
+          leasing_max?: number | null
+          leasing_min?: number | null
+          leasing_tariffs?: Json | null
           name?: string
-          price?: number
+          price_eur?: number
           uses_credits?: boolean | null
         }
         Relationships: []

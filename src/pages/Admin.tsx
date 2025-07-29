@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DealerRevenueReport from '@/components/DealerRevenueReport';
 import TestRunner from '@/components/TestRunner';
+import MachineDataManager from '@/components/MachineDataManager';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { setActiveTariffYear } from '@/utils/leasingTariffUtils';
@@ -50,6 +51,7 @@ const Admin = () => {
           <TabsTrigger value="dealer-revenue">Återförsäljarintäkt</TabsTrigger>
           <TabsTrigger value="testing">Beräkningstester</TabsTrigger>
           <TabsTrigger value="settings">Inställningar</TabsTrigger>
+          <TabsTrigger value="machines">Maskindata</TabsTrigger>
         </TabsList>
         <TabsContent value="dealer-revenue" className="mt-4">
           <div className="bg-white p-6 rounded-lg border">
@@ -99,6 +101,13 @@ const Admin = () => {
               
               <p className="text-gray-500">Fler inställningar kommer att läggas till här.</p>
             </div>
+          </div>
+        </TabsContent>
+        <TabsContent value="machines" className="mt-4">
+          <div className="bg-white p-6 rounded-lg border">
+            <h2 className="text-xl font-bold mb-4">Maskindata-hantering</h2>
+            <p className="text-gray-600 mb-4">Hantera all maskindata som används i kalkylatorn.</p>
+            <MachineDataManager />
           </div>
         </TabsContent>
       </Tabs>

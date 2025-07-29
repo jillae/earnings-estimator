@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useMemo } from 'react';
-import { machineData } from '@/data/machines';
+import { useMachineData, CalculatorMachine } from '@/hooks/useMachineData';
 import { Machine } from '@/data/machines/types';
 import { FlatrateOption, PaymentOption, SlaLevel } from '@/utils/constants';
 import { DriftpaketType } from '@/types/calculator';
@@ -8,6 +8,9 @@ import { SliderStep } from '@/utils/sliderSteps';
 import { InfoText } from '@/data/infoTexts';
 
 export function useStateSelections() {
+  // Hämta maskindata från databas
+  const { calculatorMachines, isLoading: machinesLoading } = useMachineData();
+  
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [selectedMachineId, setSelectedMachineId] = useState<string>('select-machine');
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
@@ -40,7 +43,7 @@ export function useStateSelections() {
 
   // Härled den valda maskinen från maskin-ID
   const selectedMachine = useMemo(() => {
-    const machine = machineData.find(machine => machine.id === selectedMachineId);
+    const machine = calculatorMachines.find(machine => machine.id === selectedMachineId);
     return machine || { 
       id: 'null-machine',
       name: 'No Machine',
@@ -55,7 +58,7 @@ export function useStateSelections() {
       description: '',
       priceEur: 0
     } as Machine;
-  }, [selectedMachineId]);
+  }, [selectedMachineId, calculatorMachines]);
 
   // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen
   useEffect(() => {
@@ -65,7 +68,7 @@ export function useStateSelections() {
       // Sätt standard-leasingperiod från maskinen om den är definierad,
       // annars använd 60 månader som standard
       if (selectedMachine.defaultLeasingPeriod) {
-        setSelectedLeasingPeriodId(selectedMachine.defaultLeasingPeriod);
+        setSelectedLeasingPeriodId(String(selectedMachine.defaultLeasingPeriod));
       } else {
         setSelectedLeasingPeriodId('60');
       }
@@ -160,6 +163,9 @@ export function useStateSelections() {
     selectedLeasingModel,
     setSelectedLeasingModel,
     currentInfoText,
-    setCurrentInfoText
+    setCurrentInfoText,
+    // Lägg till maskindata-relaterade returns
+    calculatorMachines,
+    machinesLoading
   };
 }
