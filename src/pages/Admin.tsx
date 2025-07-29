@@ -6,6 +6,7 @@ import { ArrowLeft, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DealerRevenueReport from '@/components/DealerRevenueReport';
+import TestRunner from '@/components/TestRunner';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { setActiveTariffYear } from '@/utils/leasingTariffUtils';
@@ -47,6 +48,7 @@ const Admin = () => {
       <Tabs defaultValue="dealer-revenue" className="w-full">
         <TabsList className="mb-4">
           <TabsTrigger value="dealer-revenue">Återförsäljarintäkt</TabsTrigger>
+          <TabsTrigger value="testing">Beräkningstester</TabsTrigger>
           <TabsTrigger value="settings">Inställningar</TabsTrigger>
         </TabsList>
         <TabsContent value="dealer-revenue" className="mt-4">
@@ -65,6 +67,13 @@ const Admin = () => {
             </div>
             
             <DealerRevenueReport includeInsurance={includeInsurance} />
+          </div>
+        </TabsContent>
+        <TabsContent value="testing" className="mt-4">
+          <div className="bg-white p-6 rounded-lg border">
+            <h2 className="text-xl font-bold mb-4">Beräkningstester</h2>
+            <p className="text-gray-600 mb-4">Verifiera att alla beräkningar fungerar korrekt med befintliga hårdkodade värden.</p>
+            <TestRunner />
           </div>
         </TabsContent>
         <TabsContent value="settings" className="mt-4">
