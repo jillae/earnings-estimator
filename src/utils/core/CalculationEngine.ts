@@ -228,22 +228,25 @@ export class CalculationEngine {
     // STRATEGISK KOSTNAD: Från maskindata (inkluderar credit-kompensation)
     const leasingCostStrategic = inputs.machine.leasingMax || leasingCostBase;
     
-    // AKTIV KOSTNAD: Använd strategisk som standard (kan göras konfigurerbar senare)
-    const leasingCost = leasingCostStrategic;
+    // AKTIV KOSTNAD: Interpolera mellan grund och strategisk baserat på slider
+    // currentSliderStep: 0 = grundkostnad, 1 = mitt emellan, 2 = strategisk
+    const sliderPosition = Math.max(0, Math.min(2, inputs.currentSliderStep));
+    const leasingCost = leasingCostBase + (sliderPosition / 2) * (leasingCostStrategic - leasingCostBase);
     
-    // RANGE: Baserat på aktiv kostnad
+    // RANGE: Från grund till strategisk kostnad
     const leasingRange = {
-      min: leasingCost * 0.8,
-      max: leasingCost * 1.2, 
-      default: leasingCost,
+      min: leasingCostBase,           // Slider position 0
+      max: leasingCostStrategic,      // Slider position 2
+      default: (leasingCostBase + leasingCostStrategic) / 2, // Mitt emellan
       flatrateThreshold: leasingCost * 0.9,
       baseMax: leasingCostBase,
       strategicMax: leasingCostStrategic
     };
     
     console.log(`Leasing för ${inputs.machine.name}:
-      Grundkostnad (tariff): ${leasingCostBase} SEK/mån
-      Strategisk kostnad (maskindata): ${leasingCostStrategic} SEK/mån  
+      Grundkostnad (tariff): ${leasingCostBase} SEK/mån [Slider pos 0]
+      Strategisk kostnad (maskindata): ${leasingCostStrategic} SEK/mån [Slider pos 2]
+      Aktuell slider position: ${sliderPosition}
       Aktiv kostnad: ${leasingCost} SEK/mån
       Kompensationspåslag: ${leasingCostStrategic - leasingCostBase} SEK (${((leasingCostStrategic/leasingCostBase-1)*100).toFixed(1)}%)
     `);
