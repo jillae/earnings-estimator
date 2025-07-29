@@ -20,8 +20,8 @@ export function calculateCashPrice(
   const totalEurPrice = machinePriceEur + shippingCostEur;
   const sekPrice = totalEurPrice * exchangeRate;
   
-  // Avrunda till närmaste hundra slutande på 6
-  return roundToHundredEndingSix(sekPrice);
+  // Avrunda till hela kronor
+  return Math.round(sekPrice);
 }
 
 /**

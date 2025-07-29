@@ -198,9 +198,9 @@ export class CalculationEngine {
     }
     
     const machinePriceSEK = machine.priceEur * exchangeRate;
-    const cashPriceSEK = machinePriceSEK; // Samma för kontant
+    const cashPriceSEK = Math.round(machinePriceSEK); // Avrunda till hela kronor
     
-    console.log(`Maskinpriser - ${machine.name}: EUR ${machine.priceEur} × ${exchangeRate} = SEK ${machinePriceSEK}`);
+    console.log(`Maskinpriser - ${machine.name}: EUR ${machine.priceEur} × ${exchangeRate} = SEK ${Math.round(machinePriceSEK)} (kontant: ${cashPriceSEK})`);
     
     return { machinePriceSEK, cashPriceSEK };
   }
