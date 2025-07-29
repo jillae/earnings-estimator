@@ -2,11 +2,13 @@
 import { getExchangeRate } from './exchangeRateUtils';
 import { Machine } from '../data/machines/types';
 import { calculateTariffBasedLeasingMax } from './leasingTariffUtils';
+import { calculateInsuranceCost } from './insuranceUtils';
 
 export async function calculateLeasingCost(
   machine: Machine,
   leasingRate: number,
-  includeInsurance: boolean
+  includeInsurance: boolean,
+  leasingPeriodMonths: number = 60
 ): Promise<number> {
   // Validering - Säkerställ att vi har en giltig maskin
   if (!machine || !machine.priceEur) {
@@ -52,20 +54,31 @@ export async function calculateLeasingCost(
   // Detta ger garanterat korrekt beräkning för alla maskiner
   const leasingCost = calculateTariffBasedLeasingMax(
     machine.priceEur,
-    60, // Använd alltid 60 månader som referens
+    leasingPeriodMonths, // Använd den valda leasingperioden
     machine.usesCredits,
     exchangeRate
   );
 
+  // Lägg till försäkring om det är aktiverat
+  let finalLeasingCost = leasingCost;
+  if (includeInsurance) {
+    const machinePriceSEK = machine.priceEur * exchangeRate;
+    const insuranceCost = calculateInsuranceCost(machinePriceSEK);
+    finalLeasingCost += insuranceCost;
+    console.log(`Försäkringskostnad tillagd: ${insuranceCost} SEK/månad`);
+  }
+
   // Logga detaljerad information för felsökning
   console.log(`Leasingkostnad beräknad för ${machine.name}:
     Pris EUR: ${machine.priceEur} 
+    Leasingperiod: ${leasingPeriodMonths} månader
     LeasingRate: ${leasingRate}
     Använder krediter: ${machine.usesCredits}
     Växelkurs: ${exchangeRate}
-    Beräknad kostnad: ${leasingCost} SEK
+    Beräknad basekostnad: ${leasingCost} SEK
     Inkludera försäkring: ${includeInsurance}
+    Slutkostnad: ${finalLeasingCost} SEK
   `);
 
-  return leasingCost;
+  return finalLeasingCost;
 }

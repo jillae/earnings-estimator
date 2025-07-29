@@ -9,7 +9,7 @@ interface GatedOverlayProps {
 
 export const GatedOverlay: React.FC<GatedOverlayProps> = ({ onUnlock }) => {
   return (
-    <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
       <Card className="max-w-md mx-4">
         <CardContent className="p-6 text-center space-y-4">
           <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">

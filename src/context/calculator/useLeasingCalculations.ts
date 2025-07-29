@@ -165,7 +165,8 @@ export function useLeasingCalculations({
         const cost = await calculateLeasingCost(
           selectedMachine,
           leasingRate,
-          includeInsurance
+          includeInsurance,
+          parseInt(selectedLeasingPeriodId)
         );
         
         // Nu kan vi uppdatera state med värdet vi fått
