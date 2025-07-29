@@ -1,10 +1,8 @@
 
-import React, { createContext, useContext } from 'react';
+import React, { useContext } from 'react';
 import { CalculatorProvider as ActualCalculatorProvider } from './calculator/CalculatorProvider';
+import { CalculatorContext } from './calculator/context';
 import { CalculatorContextType } from './calculator/types';
-
-// Skapa context
-const CalculatorContext = createContext<CalculatorContextType | undefined>(undefined);
 
 // Custom hook för att använda calculator context
 export const useCalculator = () => {
