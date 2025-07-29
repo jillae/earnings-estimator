@@ -87,10 +87,10 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
     <div className="mb-4">
       <div className="mb-4">
         <h4 className="text-lg font-semibold text-slate-900 mb-2">
-          Anpassa din investering
+          Flexibel investering
         </h4>
         <p className="text-sm text-slate-600 leading-relaxed">
-          Balansera din investeringskostnad med din driftkostnad - flexibel investering
+          Balansera din investeringskostnad och driftkostnad för optimal lönsamhet
         </p>
       </div>
 
