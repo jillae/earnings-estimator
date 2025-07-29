@@ -67,7 +67,7 @@ export const useMachineData = () => {
 
   const convertToCalculatorFormat = (dbMachine: DatabaseMachine): CalculatorMachine => {
     return {
-      id: dbMachine.name.toLowerCase().replace(/\s+/g, '-'), // Konsistent ID-format
+      id: dbMachine.id, // Använd det riktiga UUID:t från databasen istället för konstruerat ID
       name: dbMachine.name,
       description: dbMachine.description || `${dbMachine.name} ${dbMachine.category} maskin`,
       price: dbMachine.price_eur,

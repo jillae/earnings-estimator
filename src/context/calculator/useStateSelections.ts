@@ -12,7 +12,8 @@ export function useStateSelections() {
   const { calculatorMachines, isLoading: machinesLoading } = useMachineData();
   
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
-  const [selectedMachineId, setSelectedMachineId] = useState<string>('select-machine');
+  // Sätt första maskinen som standard istället för 'select-machine'
+  const [selectedMachineId, setSelectedMachineId] = useState<string>('');
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60'); // Default till 60 månader
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
@@ -32,6 +33,14 @@ export function useStateSelections() {
   
   // Nytt state för info-rutan
   const [currentInfoText, setCurrentInfoText] = useState<InfoText | null>(null);
+
+  // Auto-välj första maskinen när calculatorMachines laddas
+  useEffect(() => {
+    if (calculatorMachines.length > 0 && !selectedMachineId) {
+      console.log('Auto-väljer första maskinen:', calculatorMachines[0].name);
+      setSelectedMachineId(calculatorMachines[0].id);
+    }
+  }, [calculatorMachines, selectedMachineId]);
 
   // Återställ slider till standard när man byter till grundleasing
   useEffect(() => {

@@ -219,14 +219,24 @@ export class CalculationEngine {
       };
     }
     
-    // GRUNDKOSTNAD: Tariff-baserad beräkning (ren finansieringskostnad)
+    // GRUNDKOSTNAD: Använd maskinens specifika leasing tariff från databasen
     const leaseDurationMonths = parseInt(inputs.selectedLeasingPeriodId);
-    let leasingCostBase = calculateTariffBasedLeasingMax(
-      inputs.machine.priceEur || 0,
-      leaseDurationMonths,
-      inputs.machine.usesCredits,
-      exchangeRate
-    );
+    let leasingCostBase = 0;
+    
+    // Försök först använda maskinens egna leasingTariffs från databasen
+    if (inputs.machine.leasingTariffs && inputs.machine.leasingTariffs[leaseDurationMonths]) {
+      leasingCostBase = inputs.machine.leasingTariffs[leaseDurationMonths];
+      console.log(`Använder maskinens direkta tariff: ${leasingCostBase} SEK för ${leaseDurationMonths} månader`);
+    } else {
+      // Fallback till tariff-baserad beräkning för gamla maskiner
+      leasingCostBase = calculateTariffBasedLeasingMax(
+        inputs.machine.priceEur || 0,
+        leaseDurationMonths,
+        inputs.machine.usesCredits,
+        exchangeRate
+      );
+      console.log(`Fallback till tariff-beräkning: ${leasingCostBase} SEK`);
+    }
     
     // FÖRSÄKRING: Lägg till försäkringskostnad om vald
     if (inputs.selectedInsuranceId === 'yes') {
@@ -237,7 +247,7 @@ export class CalculationEngine {
       console.log(`Försäkring tillagd: ${insuranceCostPerMonth} SEK/mån (${insuranceRate * 100}% av ${machinePriceSEK})`);
     }
     
-    // STRATEGISK KOSTNAD: Från maskindata (inkluderar credit-kompensation)
+    // STRATEGISK KOSTNAD: Från maskindata (använd leasingMax eller fallback till leasingCostBase)
     const leasingCostStrategic = inputs.machine.leasingMax || leasingCostBase;
     
     // AKTIV KOSTNAD: Beror på valt leasingpaket (grundleasing eller strategisk)
