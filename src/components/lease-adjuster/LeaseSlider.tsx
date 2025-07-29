@@ -127,7 +127,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
               onClick={() => handleStepClick(0.5)}
             >
               {getStepIcon(0.5, currentStep === 0.5)}
-              <span className="text-xs text-slate-500 text-center">Mer flexibilitet</span>
+              <span className="text-xs text-slate-500 text-center">Flexibilitet</span>
             </div>
             <div 
               className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
@@ -141,7 +141,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
               onClick={() => handleStepClick(1.5)}
             >
               {getStepIcon(1.5, currentStep === 1.5)}
-              <span className="text-xs text-slate-500 text-center">Ökad trygghet</span>
+              <span className="text-xs text-slate-500 text-center">Trygghet</span>
             </div>
             <div 
               className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
