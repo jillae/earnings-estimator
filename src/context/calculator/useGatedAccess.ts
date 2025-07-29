@@ -22,9 +22,12 @@ export function useGatedAccess() {
   // Hjälpfunktion för att logga ny session
   const logNewSessionStart = useCallback(async (userData: UserData) => {
     try {
-      await fetch('/api/calculator-log', {
+      await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/calculator-log', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
+        },
         body: JSON.stringify({
           action: 'session_start',
           sessionId: userData.sessionId,
@@ -33,9 +36,12 @@ export function useGatedAccess() {
         }),
       });
 
-      await fetch('/api/send-dealer-notification', {
+      await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/send-dealer-notification', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
+        },
         body: JSON.stringify({
           type: 'returning_session',
           userData,
@@ -116,9 +122,12 @@ export function useGatedAccess() {
       localStorage.setItem('calculator_user_data', JSON.stringify(newUserData));
       
       // Logga session start
-      await fetch('/api/calculator-log', {
+      await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/calculator-log', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
+        },
         body: JSON.stringify({
           action: 'session_start',
           sessionId,
@@ -128,9 +137,12 @@ export function useGatedAccess() {
       });
 
       // Skicka e-postnotifikation till återförsäljaren
-      await fetch('/api/send-dealer-notification', {
+      await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/send-dealer-notification', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
+        },
         body: JSON.stringify({
           type: 'new_session',
           userData: newUserData,
@@ -156,11 +168,14 @@ export function useGatedAccess() {
     
     if (!userData || !isUnlocked) return;
 
-  
+    
     try {
-      await fetch('/api/calculator-log', {
+      await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/calculator-log', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
+        },
         body: JSON.stringify({
           action,
           sessionId,
@@ -172,9 +187,12 @@ export function useGatedAccess() {
 
       // För viktiga interaktioner, skicka också notifikation
       if (['machine_changed', 'significant_adjustment', 'payment_option_changed'].includes(action)) {
-        await fetch('/api/send-dealer-notification', {
+        await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/send-dealer-notification', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
+          },
           body: JSON.stringify({
             type: 'session_update',
             userData,
