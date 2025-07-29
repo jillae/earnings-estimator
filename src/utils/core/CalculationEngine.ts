@@ -230,7 +230,7 @@ export class CalculationEngine {
     
     // AKTIV KOSTNAD: Beror på om användaren valt strategisk prissättning
     // Om strategisk: använd fast pris. Om grund: använd slider inom snävt intervall
-    const useStrategicPricing = inputs.useFlatrateOption === 'flatrate' && inputs.selectedDriftpaket === 'Guld'; // Tillfällig logik
+    const useStrategicPricing = inputs.useFlatrateOption === 'flatrate' && inputs.selectedDriftpaket === 'Guld'; // "Allt-inkluderat" paket
     
     let leasingCost: number;
     if (useStrategicPricing) {
@@ -269,11 +269,12 @@ export class CalculationEngine {
     }
     
     console.log(`Leasing för ${inputs.machine.name}:
-      Använder strategisk prissättning: ${useStrategicPricing ? 'JA' : 'NEJ'}
+      Valt paket: ${useStrategicPricing ? 'Allt-inkluderat' : inputs.currentSliderStep === 0 ? 'Grundleasing' : 'Hybridpaket'}
       Grundkostnad (tariff): ${leasingCostBase} SEK/mån
       Strategisk kostnad (maskindata): ${leasingCostStrategic} SEK/mån
-      ${useStrategicPricing ? 'Fast pris (credits ingår)' : `Slider-justerad (${inputs.currentSliderStep})`}: ${leasingCost} SEK/mån
+      ${useStrategicPricing ? 'Fast pris (credits ingår)' : `Slider-justerad (position ${inputs.currentSliderStep})`}: ${leasingCost} SEK/mån
       Range: ${Math.round(leasingRange.min)} - ${Math.round(leasingRange.max)} SEK/mån
+      VIKTIGT: Valet låses vid köp!
     `);
     
     return { 
