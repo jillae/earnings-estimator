@@ -25,16 +25,16 @@ export const LEASING_PACKAGES = {
     id: 'hybridpaket', 
     name: 'Hybridpaket',
     shortName: 'Hybrid',
-    description: 'En balans mellan fast och rörligt. En del credits inkluderas i månadsavgiften.',
-    detailedDescription: 'Medan andra debiteras separat baserat på användning utöver det inkluderade.',
+    description: 'Denna modell ger dig kontroll över din månadskostnad. Justera balansen mellan maskinens grundleasing och din kreditkostnad.',
+    detailedDescription: 'Credits köps separat eller via fastpris enligt ditt val.',
     sliderPosition: 1,
     icon: '⚖️',
     benefits: [
-      'Balanserad kostnad',
-      'Delvis förutsägbar budget',
-      'Vissa credits inkluderade'
+      'Anpassningsbar månadskostnad',
+      'Credits köps separat eller via fastpris',
+      'Optimera din totala lönsamhet'
     ],
-    bestFor: 'Måttlig behandlingsvolym'
+    bestFor: 'Kliniker som vill anpassa sin kostnad'
   },
   
   ALLT_INKLUDERAT: {
