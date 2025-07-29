@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { LEASING_PACKAGES, getPackageBySliderPosition, PACKAGE_LOCK_WARNING } from '@/data/leasingPackages';
+import { LEASING_PACKAGES, PACKAGE_LOCK_WARNING } from '@/data/leasingPackages';
 
 interface LeasingModelSelectorProps {
   selectedModel: 'grundleasing' | 'strategisk';
@@ -14,7 +14,8 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
   onModelChange,
   currentSliderStep
 }) => {
-  const grundleasingPackage = getPackageBySliderPosition(currentSliderStep);
+  // Statiska paketrubriker - ska aldrig ändras dynamiskt
+  const grundleasingPackage = LEASING_PACKAGES.HYBRIDPAKET;
   const strategiskPackage = LEASING_PACKAGES.ALLT_INKLUDERAT;
 
   return (

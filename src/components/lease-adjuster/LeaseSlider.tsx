@@ -118,8 +118,8 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
               onClick={() => handleStepClick(0)}
             >
               {getStepIcon(0, currentStep === 0)}
-              <span className="text-xs text-slate-500 text-center leading-tight">
-                Hög driftkostnad /<br />Låg fast investering
+              <span className="text-xs text-slate-500 text-center">
+                Låg investering
               </span>
             </div>
             <div 
@@ -134,7 +134,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
               onClick={() => handleStepClick(1)}
             >
               {getStepIcon(1, currentStep === 1)}
-              <span className="text-xs font-semibold text-slate-700 text-center">Standardbalans</span>
+              <span className="text-xs font-semibold text-slate-700 text-center">Standard</span>
             </div>
             <div 
               className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
@@ -148,8 +148,8 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
               onClick={() => handleStepClick(2)}
             >
               {getStepIcon(2, currentStep === 2)}
-              <span className="text-xs text-slate-500 text-center leading-tight">
-                Låg driftkostnad /<br />Hög fast investering
+              <span className="text-xs text-slate-500 text-center">
+                Låg driftkostnad
               </span>
             </div>
           </div>
