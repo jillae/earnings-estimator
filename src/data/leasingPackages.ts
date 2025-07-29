@@ -9,8 +9,8 @@ export const LEASING_PACKAGES = {
     id: 'grundleasing',
     name: 'Grundleasing',
     shortName: 'Grund',
-    description: 'Lägsta månadsavgift. Credits debiteras separat per användning.',
-    detailedDescription: 'Idealisk för dig med lägre eller varierande behandlingsvolym.',
+    description: 'Lägsta månadsavgift för maskinen. Credits debiteras separat per behandling.',
+    detailedDescription: 'Betala endast för det du använder. Ger dig full flexibilitet med rörlig driftskostnad.',
     sliderPosition: 0,
     icon: '💡',
     benefits: [
@@ -41,8 +41,8 @@ export const LEASING_PACKAGES = {
     id: 'allt-inkluderat',
     name: 'Allt-inkluderat', 
     shortName: 'Allt-ink',
-    description: 'Fullständig kostnadskontroll mot högre fast kostnad.',
-    detailedDescription: 'Fast månadsavgift för extremt hög volym eller när enkelhet väger tyngst.',
+    description: 'Fullständig kostnadskontroll med fast månadsavgift.',
+    detailedDescription: 'Alla credits inkluderade i priset. Perfekt för hög volym och förutsägbar budget.',
     sliderPosition: 2,
     icon: '⚠️',
     benefits: [
@@ -51,7 +51,7 @@ export const LEASING_PACKAGES = {
       'Inga variabla kostnader',
       'Förutsägbar budget'
     ],
-    bestFor: 'Extremt hög volym eller enkelhetsönskemål'
+    bestFor: 'Hög volym och förutsägbar budget'
   }
 } as const;
 
