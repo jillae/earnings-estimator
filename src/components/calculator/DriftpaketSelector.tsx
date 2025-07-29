@@ -55,19 +55,23 @@ const DriftpaketSelector: React.FC = () => {
           <ul className="text-sm space-y-1">
             <li className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-blue-600" />
-              <span>12 mån Garanti</span>
+              <span>12 månader garanti</span>
             </li>
             <li className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-blue-600" />
-              <span>Support vardagar 09-17</span>
+              <span>Grundsupport (vardagar)</span>
             </li>
             <li className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-blue-600" />
-              <span>Responstid 8 timmar</span>
+              <span>Servicetid vardagar</span>
             </li>
             <li className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-blue-600" />
-              <span>Max åtgärdstid 72 timmar</span>
+              <span>Responstid 336h</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-blue-600" />
+              <span>Max åtgärdstid: Inom rimlig tid</span>
             </li>
             {showCreditInfo && (
               <li className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200">
@@ -76,7 +80,7 @@ const DriftpaketSelector: React.FC = () => {
               </li>
             )}
             <li className="text-xs text-gray-600 mt-2 pt-2 border-t border-gray-200">
-              <strong>Bäst för:</strong> Grundläggande behov
+              <strong>Bäst för:</strong> Nya kliniker
             </li>
           </ul>
         </div>
@@ -104,23 +108,27 @@ const DriftpaketSelector: React.FC = () => {
             <ul className="text-sm space-y-1">
               <li className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-blue-600" />
-                <span>24 mån Garanti</span>
+                <span>24 månader garanti</span>
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span>Support vardagar 08-18</span>
+                <span>Prioriterad Support (5 dagar/vecka)</span>
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span>Servicetid vardagar 08-18</span>
+                <span>Servicetid vardagar 9-15</span>
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span>Responstid 4 timmar</span>
+                <span>Responstid 24h</span>
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span>Max åtgärdstid 24 timmar</span>
+                <span>Max åtgärdstid 72h</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-blue-600" />
+                <span>Årlig service (resekostnad ingår)</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-blue-600" />
@@ -133,7 +141,7 @@ const DriftpaketSelector: React.FC = () => {
                 </li>
               )}
               <li className="text-xs text-gray-600 mt-2 pt-2 border-t border-gray-200">
-                <strong>Bäst för:</strong> Kommersiella kliniker med daglig användning
+                <strong>Bäst för:</strong> Växande kliniker
               </li>
             </ul>
           </div>
@@ -156,31 +164,31 @@ const DriftpaketSelector: React.FC = () => {
             <ul className="text-sm space-y-1">
               <li className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-blue-600" />
-                <span>24 mån Garanti</span>
+                <span>24 månader garanti</span>
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span>Support vardagar 07-19</span>
+                <span>Högsta Prioritet Support (7 dagar/vecka)</span>
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span>Servicetid vardagar 07-19</span>
+                <span>Servicetid alla dagar 00-24</span>
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span>Responstid 2 timmar</span>
+                <span>Responstid omgående</span>
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span>Max åtgärdstid 12 timmar</span>
+                <span>Max åtgärdstid 48h</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-blue-600" />
+                <span>Årlig service (res och arbetskostnad ingår)</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-blue-600" />
                 <span>Lånemaskin vid servicebehov</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-blue-600" />
-                <span>Årlig service på plats</span>
               </li>
               {selectedMachine?.usesCredits && (
                 <li className="flex items-center gap-2">
@@ -189,7 +197,7 @@ const DriftpaketSelector: React.FC = () => {
                 </li>
               )}
               <li className="text-xs text-gray-600 mt-2 pt-2 border-t border-gray-200">
-                <strong>Bäst för:</strong> Högvolymkliniker med kritiska verksamhetsbehov
+                <strong>Bäst för:</strong> Etablerade kliniker
               </li>
             </ul>
           </div>
