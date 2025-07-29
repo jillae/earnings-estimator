@@ -17,10 +17,10 @@ export const handheldMachines: Machine[] = [
     flatrateAmount: 0,
     usesCredits: false,
     leasingTariffs: {
-      "24": 0.045136,
-      "36": 0.031346,
-      "48": 0.024475,
-      "60": 0.020372
+      "24": 0.046386,
+      "36": 0.032515,
+      "48": 0.025413,
+      "60": 0.021158
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 500,
@@ -41,10 +41,10 @@ export const handheldMachines: Machine[] = [
     flatrateAmount: 0,
     usesCredits: false,
     leasingTariffs: {
-      "24": 0.045136,
-      "36": 0.031346,
-      "48": 0.024475,
-      "60": 0.020372
+      "24": 0.046386,
+      "36": 0.032515,
+      "48": 0.025413,
+      "60": 0.021158
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 800,
@@ -65,10 +65,10 @@ export const handheldMachines: Machine[] = [
     flatrateAmount: 0,
     usesCredits: false, // Bekräftat att GVL INTE använder krediter
     leasingTariffs: {
-      "24": 0.045136,
-      "36": 0.031346,
-      "48": 0.024475,
-      "60": 0.020372
+      "24": 0.046386,
+      "36": 0.032515,
+      "48": 0.025413,
+      "60": 0.021158
     },
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200,
