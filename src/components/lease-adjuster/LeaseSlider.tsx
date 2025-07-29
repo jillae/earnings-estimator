@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Minus, Plus } from 'lucide-react';
 import FlatrateIndicator from './FlatrateIndicator';
 import { SliderStep } from '@/utils/sliderSteps';
 
@@ -73,12 +74,24 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
             className="mt-6 slider-refined"
           />
           
-          <div className="flex justify-between text-xs text-slate-500 mt-3 px-1">
-            <span className="font-medium">Högsta credit-pris</span>
-            <span className="font-medium">Mindre kompensation</span>
-            <span className="font-semibold text-slate-700">Standard</span>
-            <span className="font-medium">Mer kompensation</span>
-            <span className="font-medium">Lägsta credit-pris</span>
+          <div className="flex justify-between items-center mt-3 px-1">
+            <div className="flex items-center gap-1">
+              <Minus size={14} className="text-slate-400" />
+              <Minus size={16} className="text-slate-500" />
+            </div>
+            <div className="flex items-center gap-1">
+              <Minus size={12} className="text-slate-400" />
+            </div>
+            <div className="flex items-center justify-center">
+              <span className="text-xs font-semibold text-slate-700">Standard</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Plus size={12} className="text-slate-400" />
+            </div>
+            <div className="flex items-center gap-1">
+              <Plus size={16} className="text-slate-500" />
+              <Plus size={14} className="text-slate-400" />
+            </div>
           </div>
         </div>
       )}
