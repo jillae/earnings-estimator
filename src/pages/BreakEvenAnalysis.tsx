@@ -11,16 +11,41 @@ import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { formatCurrency } from '@/utils/formatUtils';
+import { useCalculator } from '@/context/CalculatorContext';
 
 const BreakEvenAnalysis = () => {
+  const {
+    operatingCost,
+    revenue,
+    customerPrice,
+    treatmentsPerDay,
+    workDaysPerMonth,
+    selectedMachine
+  } = useCalculator();
+
+  // Beräkna dynamiska startvärden från kalkylatorn
   const [analysisData, setAnalysisData] = useState({
-    fixedCosts: 25000, // Månadsleasing + försäkring + SLA
-    variableCostPerTreatment: 45, // Kostnad per behandling (consumables etc)
-    pricePerTreatment: 1200, // Pris per behandling
-    workDaysPerMonth: 22,
-    currentTreatmentsPerDay: 6,
+    fixedCosts: operatingCost.totalCost || 25000, // Månadsleasing + försäkring + SLA
+    variableCostPerTreatment: selectedMachine?.usesCredits ? (operatingCost.costPerMonth / (treatmentsPerDay * workDaysPerMonth) || 45) : 45,
+    pricePerTreatment: customerPrice || 1200,
+    workDaysPerMonth: workDaysPerMonth || 22,
+    currentTreatmentsPerDay: treatmentsPerDay || 6,
     maxTreatmentsPerDay: 15 // Kapacitet
   });
+
+  // Uppdatera värden när kalkylatorn ändras
+  React.useEffect(() => {
+    setAnalysisData(prev => ({
+      ...prev,
+      fixedCosts: operatingCost.totalCost || prev.fixedCosts,
+      variableCostPerTreatment: selectedMachine?.usesCredits ? 
+        (operatingCost.costPerMonth / (treatmentsPerDay * workDaysPerMonth) || prev.variableCostPerTreatment) : 
+        prev.variableCostPerTreatment,
+      pricePerTreatment: customerPrice || prev.pricePerTreatment,
+      workDaysPerMonth: workDaysPerMonth || prev.workDaysPerMonth,
+      currentTreatmentsPerDay: treatmentsPerDay || prev.currentTreatmentsPerDay,
+    }));
+  }, [operatingCost.totalCost, operatingCost.costPerMonth, customerPrice, treatmentsPerDay, workDaysPerMonth, selectedMachine]);
 
   // Beräkna break-even punkt
   const contributionMargin = analysisData.pricePerTreatment - analysisData.variableCostPerTreatment;
@@ -133,7 +158,15 @@ const BreakEvenAnalysis = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Kostnadsstruktur</CardTitle>
-                <CardDescription>Justera dina kostnader och priser</CardDescription>
+                <CardDescription>
+                  Värden hämtas automatiskt från kalkylatorn och kan justeras för scenarioanalys
+                </CardDescription>
+                {selectedMachine && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    Synkroniserat med {selectedMachine.name}
+                  </div>
+                )}
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>

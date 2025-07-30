@@ -1,12 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import ResultsTable from '../ResultsTable';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { SaveConfigurationButton } from './SaveConfigurationButton';
 import { QuoteRequestButton } from './QuoteRequestButton';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
+import ROIAnalysisModal from './ROIAnalysisModal';
+import BreakEvenAnalysisModal from './BreakEvenAnalysisModal';
 import ExportButton from '@/components/ExportButton';
+import { Button } from '@/components/ui/button';
+import { TrendingUp, Target } from 'lucide-react';
 
 const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null }> = ({ hoveredInput = null }) => {
   const {
@@ -21,8 +25,16 @@ const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | 'wor
     selectedDriftpaket,
     treatmentsPerDay,
     customerPrice,
-    selectedSlaLevel
+    selectedSlaLevel,
+    selectedMachine
   } = useCalculator();
+
+  // State för modaler
+  const [roiModalOpen, setRoiModalOpen] = useState(false);
+  const [breakEvenModalOpen, setBreakEvenModalOpen] = useState(false);
+
+  // Kontrollera om vi har tillräckligt med data för analyserna
+  const hasEnoughDataForAnalysis = selectedMachine && treatmentsPerDay > 0 && customerPrice > 0;
 
   // Lägg till loggning för felsökning
   console.log(`CalculatorResults rendering:
@@ -60,7 +72,46 @@ const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | 'wor
          creditCost={operatingCost.costPerMonth}
          hoveredInput={hoveredInput}
          />
+         
+        {/* Fördjupad Analys Knappar */}
+        {hasEnoughDataForAnalysis && (
+          <div className="mt-4 p-4 border-t border-gray-100">
+            <h4 className="text-sm font-medium text-gray-700 mb-3">Fördjupad Analys</h4>
+            <div className="flex gap-3 flex-wrap">
+              <Button
+                onClick={() => setRoiModalOpen(true)}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <TrendingUp className="h-4 w-4" />
+                ROI Analys
+              </Button>
+              
+              <Button
+                onClick={() => setBreakEvenModalOpen(true)}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <Target className="h-4 w-4" />
+                Break-Even Analys
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
+      
+      {/* Modaler */}
+      <ROIAnalysisModal 
+        open={roiModalOpen} 
+        onOpenChange={setRoiModalOpen} 
+      />
+      
+      <BreakEvenAnalysisModal 
+        open={breakEvenModalOpen} 
+        onOpenChange={setBreakEvenModalOpen} 
+      />
     </div>
   );
 };
