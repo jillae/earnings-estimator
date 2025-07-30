@@ -9,6 +9,7 @@ import { Info, CreditCard, TrendingDown, TrendingUp } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useCalculator } from '@/context/CalculatorContext';
 import { SliderStep } from '@/utils/sliderSteps';
+import CreditInfoPopover from './calculator/CreditInfoPopover';
 
 interface LeaseAdjusterProps {
   minLeaseCost: number;
@@ -175,6 +176,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
               Credit-kostnad:&nbsp;
               <span className="font-semibold">{formatCurrency(calculatedCreditPrice)}/credit</span>
             </span>
+            <CreditInfoPopover />
           </div>
         )}
         
