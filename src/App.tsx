@@ -7,6 +7,7 @@ import Contact from './pages/Contact';
 import Manual from './pages/Manual';
 import AdminLogin from './pages/AdminLogin';
 import Admin from './pages/Admin';
+import KlinikOptimeringComingSoon from './pages/KlinikOptimeringComingSoon';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import NotFound from './pages/NotFound';
 import './App.css';
@@ -28,6 +29,7 @@ function App() {
               </AdminProtectedRoute>
             }
           />
+          <Route path="/klinik-optimering-coming-soon" element={<KlinikOptimeringComingSoon />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster />

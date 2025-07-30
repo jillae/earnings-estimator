@@ -53,7 +53,7 @@ export const KlinikOptimeringHomePlug: React.FC = () => {
               <Button 
                 size="lg"
                 className="group px-8 py-3 text-lg"
-                onClick={() => window.open('https://klinik-flow-control.lovable.app', '_blank')}
+                onClick={() => window.open('/klinik-optimering-coming-soon', '_blank')}
               >
                 <Brain className="h-5 w-5 mr-2" />
                 Upptäck KlinikOptimering

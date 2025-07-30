@@ -52,7 +52,7 @@ export const KlinikOptimeringSidebar: React.FC = () => {
         <div className="pt-3 border-t border-border/50">
           <Button 
             className="w-full group" 
-            onClick={() => window.open('https://klinik-flow-control.lovable.app', '_blank')}
+            onClick={() => window.open('/klinik-optimering-coming-soon', '_blank')}
             variant="default"
           >
             <Users className="h-4 w-4 mr-2" />
