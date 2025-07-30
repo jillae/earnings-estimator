@@ -2,23 +2,26 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, ReferenceLine } from 'recharts';
-import { TrendingUp, DollarSign, PieChart as PieChartIcon, ExternalLink, Download, AlertTriangle, Users, Target } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart as PieChartIcon, ExternalLink, Download, AlertTriangle, Users, Target, Zap } from 'lucide-react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useModalCalculations } from '@/hooks/useModalCalculations';
 import GrowthMetrics from './GrowthMetrics';
 import ComparisonTable from './ComparisonTable';
 import { KlinikOptimeringSidebar } from '@/components/KlinikOptimeringSidebar';
+import { machineData } from '@/data/machines';
 
 const DetailedAnalysisModal: React.FC = () => {
   const { 
     leasingCost,
     operatingCost,
-    selectedMachine
+    selectedMachine,
+    setSelectedMachineId
   } = useCalculator();
 
   const {
@@ -162,6 +165,29 @@ const DetailedAnalysisModal: React.FC = () => {
               </Button>
             </div>
           </DialogTitle>
+          
+          {/* Maskinväljare */}
+          <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <Zap className="h-5 w-5 text-primary" />
+            <Label htmlFor="machine-selector" className="text-sm font-medium">
+              Välj maskin för analys:
+            </Label>
+            <Select
+              value={selectedMachine?.id || ''}
+              onValueChange={(value) => setSelectedMachineId(value)}
+            >
+              <SelectTrigger className="w-64 bg-white">
+                <SelectValue placeholder="Välj maskin..." />
+              </SelectTrigger>
+              <SelectContent className="bg-white border shadow-lg z-50">
+                {machineData.map((machine) => (
+                  <SelectItem key={machine.id} value={machine.id} className="hover:bg-slate-100">
+                    <span>{machine.name}</span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </DialogHeader>
         
         <Tabs defaultValue="graph" className="space-y-4">

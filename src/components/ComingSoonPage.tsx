@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Brain, Construction, Sparkles, CheckCircle, Mail, User, Building, MessageSquare } from 'lucide-react';
+import { Brain, Sparkles, CheckCircle, Mail, User, Building, MessageSquare, Star, Crown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -85,10 +85,10 @@ export const ComingSoonPage: React.FC = () => {
         <Card className="text-center mb-8 border-primary/20 shadow-xl bg-white/80 backdrop-blur-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <Construction className="h-8 w-8 text-amber-500" />
-              <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
-                <Sparkles className="h-3 w-3 mr-1" />
-                Under uppbyggnad
+              <Star className="h-8 w-8 text-amber-500" />
+              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                <Star className="h-3 w-3 mr-1" />
+                Exklusiv förhandsversion
               </Badge>
             </div>
             
@@ -98,7 +98,7 @@ export const ComingSoonPage: React.FC = () => {
             </div>
             
             <CardDescription className="text-xl text-slate-600 max-w-2xl mx-auto">
-              AI-driven klinikoptimering som maximerar din potential
+              Revolutionerande AI-driven klinikoptimering som maximerar din potential
             </CardDescription>
           </CardHeader>
           
