@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 interface RollingValueDisplayProps {
   value: number;
   label: string;
   className?: string;
   showTrendIcon?: boolean;
-  trendDirection?: 'up' | 'down';
+  trendDirection?: 'up' | 'down' | 'neutral';
   showStandardBadge?: boolean;
   isStandardPosition?: boolean;
   animationStyle?: 'rolling' | 'slotmachine' | 'rolodex' | 'digitalflip' | 'typewriter';
@@ -193,19 +193,21 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
         {showTrendIcon && (
           trendDirection === 'up' ? (
             <TrendingUp className="w-4 h-4 text-green-600 shrink-0" />
-          ) : (
+          ) : trendDirection === 'down' ? (
             <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0" />
+          ) : (
+            <Minus className="w-4 h-4 text-blue-600 shrink-0" />
           )
         )}
         <span>{label}</span>
-      </div>
-      <div className={`text-lg font-bold text-blue-900 transition-all duration-300 flex items-center gap-2 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
-        <span>{formatCurrency(displayValue)}</span>
         {showStandardBadge && isStandardPosition && (
-          <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full font-medium">
+          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium border border-blue-200 ml-2">
             Standard
           </span>
         )}
+      </div>
+      <div className={`text-lg font-bold text-blue-900 transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
+        <span>{formatCurrency(displayValue)}</span>
       </div>
       <div className="text-xs text-blue-600">
         /månad

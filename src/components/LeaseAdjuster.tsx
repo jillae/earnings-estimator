@@ -171,7 +171,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
             label="Rekommenderat pris"
             className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
             showTrendIcon={true}
-            trendDirection={currentSliderStep <= 1 ? 'down' : 'up'}
+            trendDirection={currentSliderStep === 1 ? 'neutral' : (currentSliderStep <= 1 ? 'down' : 'up')}
             showStandardBadge={true}
             isStandardPosition={currentSliderStep === 1}
             animationStyle="rolodex"
@@ -181,7 +181,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
             label="Credit-kostnad: Styckepris"
             className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
             showTrendIcon={true}
-            trendDirection={currentSliderStep <= 1 ? 'up' : 'down'}
+            trendDirection={currentSliderStep === 1 ? 'neutral' : (currentSliderStep <= 1 ? 'up' : 'down')}
             animationStyle="rolodex"
           />
         </div>
