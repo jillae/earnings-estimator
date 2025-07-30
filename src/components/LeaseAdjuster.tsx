@@ -152,27 +152,17 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         />
       )}
 
-      {/* Rullande visare EFTER slidern */}
-      {usesCredits && selectedLeasingModel === 'grundleasing' && (
-        <div className="grid grid-cols-2 gap-4">
-          <RollingValueDisplay 
-            value={displayLeaseCost}
-            label="Rekommenderat pris"
-            className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
-            showTrendIcon={true}
-            trendDirection={currentSliderStep <= 1 ? 'down' : 'up'}
-            showStandardBadge={true}
-            isStandardPosition={currentSliderStep === 1}
-          />
-          <RollingValueDisplay 
-            value={calculatedCreditPrice}
-            label="Credit-kostnad: Styckepris"
-            className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
-            showTrendIcon={true}
-            trendDirection={currentSliderStep <= 1 ? 'up' : 'down'}
-          />
+      {/* Credits information box */}
+      {selectedMachine?.usesCredits && (
+        <div className="flex items-center justify-center p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center gap-2 text-sm text-blue-700">
+            <span>Behöver du veta mer om hur Credits fungerar?</span>
+            <CreditInfoPopover />
+          </div>
         </div>
       )}
+
+      {/* "Vad är Credits?" flyttat till egen sektion */}
 
 
       <div className="flex flex-col md:flex-row items-stretch gap-3 w-full">
