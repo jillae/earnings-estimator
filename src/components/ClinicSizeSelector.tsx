@@ -41,7 +41,11 @@ const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({
   };
 
   return (
-    <div className="glass-card animate-fade-in">
+    <div className="relative">
+      <div className="absolute -top-3 left-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+        STEG 2
+      </div>
+      <div className="glass-card animate-fade-in pt-2">
       <h3 className="text-lg font-semibold mb-4">Klinikstorlek</h3>
       
       <div className="mb-6">
@@ -73,6 +77,7 @@ const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({
             {formatCurrency(netYearlyResult)}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

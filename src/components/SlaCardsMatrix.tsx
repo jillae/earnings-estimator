@@ -138,7 +138,11 @@ export const SlaCardsMatrix: React.FC = () => {
   };
 
   return (
-    <div className="glass-card animate-slide-in" style={{ animationDelay: '300ms' }}>
+    <div className="relative">
+      <div className="absolute -top-3 left-0 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+        STEG 4
+      </div>
+      <div className="glass-card animate-slide-in pt-2" style={{ animationDelay: '300ms' }}>
       <div className="mb-8">
         <h3 className="text-xl font-bold text-slate-900 mb-3">
           Välj Service & Driftpaket
@@ -305,6 +309,7 @@ export const SlaCardsMatrix: React.FC = () => {
       {/* Avtalsinfo */}
       <div className="text-xs text-slate-500 text-center italic mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
         <span className="font-medium">📄 Avtalsvillkor:</span> Avtalet är obundet löpande 3 månader (kvartalsvis) och faktureras i förskott
+      </div>
       </div>
     </div>
   );
