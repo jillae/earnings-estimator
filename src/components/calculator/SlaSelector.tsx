@@ -27,148 +27,199 @@ const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
 
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '350ms' }}>
-      <h3 className="text-lg font-semibold mb-4">Serviceavtal (SLA)</h3>
+      <h3 className="text-lg font-semibold mb-6">Serviceavtal (SLA) - Jämförelsetabell</h3>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Brons SLA */}
-        <Card 
-          className={`cursor-pointer transition-all duration-300 border-2 ${
-            selectedSlaLevel === 'Brons'
-              ? 'ring-2 ring-amber-500 border-amber-500 bg-amber-50 shadow-lg' 
-              : 'border-slate-200 hover:border-amber-300 hover:shadow-md'
-          }`}
-          onClick={() => handleSlaChange('Brons')}
-        >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Phone className="h-5 w-5 text-amber-600" />
-                <h4 className="font-semibold text-slate-900">Brons</h4>
-              </div>
-              {selectedSlaLevel === 'Brons' && (
-                <Badge variant="default" className="text-xs font-bold bg-amber-600 shadow-md ring-2 ring-amber-300">
-                  <Check className="h-3 w-3 mr-1" />
-                  VALD
-                </Badge>
-              )}
-            </div>
-            
-            <div className="text-lg font-bold text-amber-600 mb-2">
-              Ingår vid köp
-            </div>
-            <div className="text-xs text-slate-500 mb-3">
-              {formatCurrency(0)}/mån
-            </div>
-            
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs text-slate-600">
-                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0"></div>
-                <span>Grundläggande telefonsupport</span>
+      {/* Matrix Header */}
+      <div className="overflow-x-auto">
+        <div className="min-w-full bg-white rounded-lg border border-slate-200 shadow-sm">
+          
+          {/* Header Row */}
+          <div className="grid grid-cols-4 bg-slate-50 border-b border-slate-200">
+            <div className="p-4 font-semibold text-slate-700">Funktioner</div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <Phone className="h-5 w-5 text-amber-600" />
+                  <span className="font-semibold text-slate-900">Brons</span>
+                </div>
+                {selectedSlaLevel === 'Brons' && (
+                  <Badge variant="default" className="text-xs font-bold bg-amber-600">
+                    <Check className="h-3 w-3 mr-1" />
+                    VALD
+                  </Badge>
+                )}
               </div>
             </div>
-          </CardContent>
-        </Card>
+            <div className="p-4 text-center border-l border-slate-200">
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <Headphones className="h-5 w-5 text-slate-600" />
+                  <span className="font-semibold text-slate-900">Silver</span>
+                </div>
+                {selectedSlaLevel === 'Silver' && (
+                  <Badge variant="default" className="text-xs font-bold bg-slate-600">
+                    <Check className="h-3 w-3 mr-1" />
+                    VALD
+                  </Badge>
+                )}
+              </div>
+            </div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <Crown className="h-5 w-5 text-yellow-600" />
+                  <span className="font-semibold text-slate-900">Guld</span>
+                </div>
+                {selectedSlaLevel === 'Guld' && (
+                  <Badge variant="default" className="text-xs font-bold bg-yellow-600">
+                    <Check className="h-3 w-3 mr-1" />
+                    VALD
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
 
-        {/* Silver SLA */}
-        <Card 
-          className={`cursor-pointer transition-all duration-300 border-2 ${
-            selectedSlaLevel === 'Silver'
-              ? 'ring-2 ring-slate-500 border-slate-500 bg-slate-50 shadow-lg' 
-              : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
-          }`}
-          onClick={() => handleSlaChange('Silver')}
-        >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Headphones className="h-5 w-5 text-slate-600" />
-                <h4 className="font-semibold text-slate-900">Silver</h4>
-              </div>
-              {selectedSlaLevel === 'Silver' && (
-                <Badge variant="default" className="text-xs font-bold bg-slate-600 shadow-md ring-2 ring-slate-300">
-                  <Check className="h-3 w-3 mr-1" />
-                  VALD
-                </Badge>
-              )}
+          {/* Price Row */}
+          <div className="grid grid-cols-4 border-b border-slate-200 bg-slate-25">
+            <div className="p-4 font-medium text-slate-700">Månadskostnad</div>
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Brons' ? 'bg-amber-50' : 'hover:bg-amber-25'
+              }`}
+              onClick={() => handleSlaChange('Brons')}
+            >
+              <div className="text-lg font-bold text-amber-600">Ingår vid köp</div>
+              <div className="text-xs text-slate-500">{formatCurrency(0)}/mån</div>
             </div>
-            
-            <div className="text-lg font-bold text-slate-600 mb-2">
-              {formatCurrency(slaCosts.Silver)}
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Silver' ? 'bg-slate-50' : 'hover:bg-slate-25'
+              }`}
+              onClick={() => handleSlaChange('Silver')}
+            >
+              <div className="text-lg font-bold text-slate-600">{formatCurrency(slaCosts.Silver)}</div>
+              <div className="text-xs text-slate-500">per månad</div>
             </div>
-            <div className="text-xs text-slate-500 mb-3">
-              per månad
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Guld' ? 'bg-yellow-50' : 'hover:bg-yellow-25'
+              }`}
+              onClick={() => handleSlaChange('Guld')}
+            >
+              <div className="text-lg font-bold text-yellow-600">{formatCurrency(slaCosts.Guld)}</div>
+              <div className="text-xs text-slate-500">per månad</div>
             </div>
-            
-            <div className="space-y-1 mb-3">
-              <div className="flex items-center gap-2 text-xs text-slate-600">
-                <div className="w-1.5 h-1.5 bg-slate-500 rounded-full flex-shrink-0"></div>
-                <span>Prioriterad support</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-slate-600">
-                <div className="w-1.5 h-1.5 bg-slate-500 rounded-full flex-shrink-0"></div>
-                <span>Fjärrhjälp</span>
-              </div>
-            </div>
-            
-            {selectedMachine?.usesCredits && (
-              <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-xs">
-                + Flatrate ingår
-              </Badge>
-            )}
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Guld SLA */}
-        <Card 
-          className={`cursor-pointer transition-all duration-300 border-2 ${
-            selectedSlaLevel === 'Guld'
-              ? 'ring-2 ring-yellow-500 border-yellow-500 bg-yellow-50 shadow-lg' 
-              : 'border-slate-200 hover:border-yellow-300 hover:shadow-md'
-          }`}
-          onClick={() => handleSlaChange('Guld')}
-        >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Crown className="h-5 w-5 text-yellow-600" />
-                <h4 className="font-semibold text-slate-900">Guld</h4>
+          {/* Features Matrix */}
+          <div className="grid grid-cols-4 border-b border-slate-200">
+            <div className="p-4 font-medium text-slate-700">Telefonsupport</div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <Check className="h-5 w-5 text-green-600 mx-auto" />
+              <div className="text-xs text-slate-600 mt-1">Grundläggande</div>
+            </div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <Check className="h-5 w-5 text-green-600 mx-auto" />
+              <div className="text-xs text-slate-600 mt-1">Prioriterad</div>
+            </div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <Check className="h-5 w-5 text-green-600 mx-auto" />
+              <div className="text-xs text-slate-600 mt-1">VIP-support</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 border-b border-slate-200">
+            <div className="p-4 font-medium text-slate-700">Fjärrhjälp</div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <div className="text-slate-400">-</div>
+            </div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <Check className="h-5 w-5 text-green-600 mx-auto" />
+            </div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <Check className="h-5 w-5 text-green-600 mx-auto" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 border-b border-slate-200">
+            <div className="p-4 font-medium text-slate-700">Årlig genomgång på plats</div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <div className="text-slate-400">-</div>
+            </div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <div className="text-slate-400">-</div>
+            </div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <Check className="h-5 w-5 text-green-600 mx-auto" />
+            </div>
+          </div>
+
+          {selectedMachine?.usesCredits && (
+            <div className="grid grid-cols-4 border-b border-slate-200 bg-green-25">
+              <div className="p-4 font-medium text-slate-700">Flatrate Credits</div>
+              <div className="p-4 text-center border-l border-slate-200">
+                <div className="text-slate-400">-</div>
               </div>
-              {selectedSlaLevel === 'Guld' && (
-                <Badge variant="default" className="text-xs font-bold bg-yellow-600 shadow-md ring-2 ring-yellow-300">
-                  <Check className="h-3 w-3 mr-1" />
-                  VALD
+              <div className="p-4 text-center border-l border-slate-200">
+                <Check className="h-5 w-5 text-green-600 mx-auto" />
+                <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-xs mt-1">
+                  Ingår
                 </Badge>
-              )}
-            </div>
-            
-            <div className="text-lg font-bold text-yellow-600 mb-2">
-              {formatCurrency(slaCosts.Guld)}
-            </div>
-            <div className="text-xs text-slate-500 mb-3">
-              per månad
-            </div>
-            
-            <div className="space-y-1 mb-3">
-              <div className="flex items-center gap-2 text-xs text-slate-600">
-                <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full flex-shrink-0"></div>
-                <span>VIP-support</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-600">
-                <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full flex-shrink-0"></div>
-                <span>Årlig genomgång på plats</span>
+              <div className="p-4 text-center border-l border-slate-200">
+                <Check className="h-5 w-5 text-green-600 mx-auto" />
+                <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-xs mt-1">
+                  Ingår
+                </Badge>
               </div>
             </div>
-            
-            {selectedMachine?.usesCredits && (
-              <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-xs">
-                + Flatrate ingår
-              </Badge>
-            )}
-          </CardContent>
-        </Card>
+          )}
+
+          {/* Action Row */}
+          <div className="grid grid-cols-4 bg-slate-50">
+            <div className="p-4"></div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <button
+                onClick={() => handleSlaChange('Brons')}
+                className={`w-full py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  selectedSlaLevel === 'Brons'
+                    ? 'bg-amber-600 text-white shadow-md'
+                    : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                }`}
+              >
+                {selectedSlaLevel === 'Brons' ? 'Vald' : 'Välj Brons'}
+              </button>
+            </div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <button
+                onClick={() => handleSlaChange('Silver')}
+                className={`w-full py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  selectedSlaLevel === 'Silver'
+                    ? 'bg-slate-600 text-white shadow-md'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                {selectedSlaLevel === 'Silver' ? 'Vald' : 'Välj Silver'}
+              </button>
+            </div>
+            <div className="p-4 text-center border-l border-slate-200">
+              <button
+                onClick={() => handleSlaChange('Guld')}
+                className={`w-full py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  selectedSlaLevel === 'Guld'
+                    ? 'bg-yellow-600 text-white shadow-md'
+                    : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
+                }`}
+              >
+                {selectedSlaLevel === 'Guld' ? 'Vald' : 'Välj Guld'}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       
-      {(showCreditsIncludedSilver || showCreditsIncludedGuld) && (
+      {selectedMachine?.usesCredits && (selectedSlaLevel === 'Silver' || selectedSlaLevel === 'Guld') && (
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-700">
             💡 Obegränsat antal credits ingår i detta SLA-abonnemang.
