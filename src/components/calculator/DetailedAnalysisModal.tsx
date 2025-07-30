@@ -2,12 +2,14 @@ import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, DollarSign, PieChart as PieChartIcon, ExternalLink, Download, AlertTriangle } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart as PieChartIcon, ExternalLink, Download, AlertTriangle, Users } from 'lucide-react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useModalCalculations } from '@/hooks/useModalCalculations';
-import InteractiveControls from './InteractiveControls';
 import GrowthMetrics from './GrowthMetrics';
 
 const DetailedAnalysisModal: React.FC = () => {
@@ -134,16 +136,6 @@ const DetailedAnalysisModal: React.FC = () => {
         </DialogHeader>
         
         <div className="space-y-6">
-          {/* Interaktiva kontroller */}
-          <InteractiveControls
-            treatmentsPerDay={modalTreatmentsPerDay}
-            onTreatmentsChange={setModalTreatmentsPerDay}
-            customerPrice={modalCustomerPrice}
-            onCustomerPriceChange={setModalCustomerPrice}
-            monthlyRevenue={modalRevenue.monthlyRevenueExVat}
-            monthlyNet={modalNetPerMonthExVat}
-          />
-
           {/* Huvudgraf - Fokus på klinikens tillväxt */}
           <div className="bg-white rounded-lg border border-slate-200 p-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -273,7 +265,7 @@ const DetailedAnalysisModal: React.FC = () => {
             <div className="mt-4 text-sm text-slate-600 bg-blue-50 p-3 rounded-lg">
               <p className="font-medium text-blue-800 mb-1">📈 Tillväxtprognos</p>
               <p>Denna graf visar hur din kliniks ekonomi kan utvecklas över 5 år med <strong>{selectedMachine?.name || 'den valda maskinen'}</strong>. 
-              Justera behandlingar per dag och kundpris ovan för att se olika scenarier!</p>
+              Justera behandlingar per dag och kundpris nedan för att se olika scenarier!</p>
             </div>
 
             {/* Disclaimer */}
@@ -283,6 +275,71 @@ const DetailedAnalysisModal: React.FC = () => {
                 <div className="text-sm text-yellow-800">
                   <p className="font-medium mb-1">⚠️ Ansvarsfriskrivning</p>
                   <p>Dessa prognoser är baserade på dina inmatade värden och nuvarande marknadsförhållanden. Verifiera alltid siffrorna själv och förlita dig inte blint på automatiska beräkningar för viktiga affärsbeslut. Vi kan inte garantera att algoritmerna är helt korrekta - så dubbelkolla gärna om du ska satsa miljoner! 😅</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Prognos-verktyg: Interaktiva Sliderns */}
+            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-emerald-50 border border-blue-200 rounded-lg">
+              <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-blue-600" />
+                Prognos-verktyg - Testa Din Kliniks Potential
+              </h4>
+              
+              <div className="grid grid-cols-2 gap-6">
+                {/* Antal behandlingar per dag */}
+                <div className="space-y-2">
+                  <Label htmlFor="modal-treatments" className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                    <Users className="h-3 w-3" />
+                    Antal behandlingar per dag
+                  </Label>
+                  <Slider
+                    id="modal-treatments"
+                    min={1}
+                    max={20}
+                    step={1}
+                    value={[modalTreatmentsPerDay]}
+                    onValueChange={(value) => setModalTreatmentsPerDay(value[0])}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-slate-500">
+                    <span>1</span>
+                    <span className="font-semibold text-blue-600">{modalTreatmentsPerDay} beh/dag</span>
+                    <span>20</span>
+                  </div>
+                </div>
+
+                {/* Kundpris per behandling */}
+                <div className="space-y-2">
+                  <Label htmlFor="modal-price" className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                    <DollarSign className="h-3 w-3" />
+                    Kundpris per behandling (ink moms)
+                  </Label>
+                  <Input
+                    id="modal-price"
+                    type="number"
+                    min="500"
+                    max="10000"
+                    step="100"
+                    value={modalCustomerPrice}
+                    onChange={(e) => setModalCustomerPrice(Number(e.target.value))}
+                    className="text-center font-medium h-8"
+                  />
+                  <div className="text-xs text-slate-500 text-center">
+                    500 - 10 000 kr
+                  </div>
+                </div>
+              </div>
+              
+              {/* Snabb resultat-förhandsvisning */}
+              <div className="grid grid-cols-2 gap-3 mt-4 p-3 bg-white rounded border border-slate-200">
+                <div className="text-center">
+                  <div className="text-xs text-slate-600">Månadsintäkt</div>
+                  <div className="text-lg font-bold text-emerald-600">{formatCurrency(modalRevenue.monthlyRevenueExVat)}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xs text-slate-600">Månadsnetto</div>
+                  <div className="text-lg font-bold text-blue-600">{formatCurrency(modalNetPerMonthExVat)}</div>
                 </div>
               </div>
             </div>
