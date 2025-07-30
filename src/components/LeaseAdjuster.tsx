@@ -163,7 +163,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       )}
 
 
-      {/* Rullande visare EFTER slidern */}
+      {/* Rullande visare EFTER slidern - prova olika animationer */}
       {usesCredits && selectedLeasingModel === 'grundleasing' && (
         <div className="grid grid-cols-2 gap-4">
           <RollingValueDisplay 
@@ -174,6 +174,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
             trendDirection={currentSliderStep <= 1 ? 'down' : 'up'}
             showStandardBadge={true}
             isStandardPosition={currentSliderStep === 1}
+            animationStyle="slotmachine"
           />
           <RollingValueDisplay 
             value={calculatedCreditPrice}
@@ -181,6 +182,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
             className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
             showTrendIcon={true}
             trendDirection={currentSliderStep <= 1 ? 'up' : 'down'}
+            animationStyle="rolodex"
           />
         </div>
       )}
