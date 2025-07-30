@@ -51,10 +51,17 @@ const CalculatorResults: React.FC = () => {
         selectedSlaLevel={selectedDriftpaket}
         />
         
-        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-          <SaveConfigurationButton />
-          <QuoteRequestButton />
-          <DetailedAnalysisModal />
+        {/* Action buttons i tydligt eget block */}
+        <div className="mt-8 glass-card p-6 border-2 border-dashed border-blue-200 bg-gradient-to-br from-blue-50/50 to-slate-50/50">
+          <div className="text-center mb-4">
+            <h3 className="text-lg font-semibold text-slate-800 mb-2">Nästa steg</h3>
+            <p className="text-sm text-slate-600">Välj vad du vill göra med din beräkning</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <SaveConfigurationButton />
+            <QuoteRequestButton />
+            <DetailedAnalysisModal />
+          </div>
         </div>
       </div>
     </div>
