@@ -112,6 +112,21 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                 <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeCashPrice / 60)}</td>
                 <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency((safeCashPrice / 60) * 12)}</td>
               </tr>
+             )}
+             
+            {paymentOption === 'leasing' && (
+              <tr>
+                <td colSpan={5} className="text-center py-2">
+                  <Button
+                    variant="default"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+                    onClick={() => window.open('https://bit.ly/leasingeen', '_blank')}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                     För leasingoffert, ansök här
+                  </Button>
+                </td>
+              </tr>
             )}
             
             
