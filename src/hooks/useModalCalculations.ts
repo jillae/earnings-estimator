@@ -11,9 +11,9 @@ export const useModalCalculations = () => {
     selectedMachine
   } = useCalculator();
 
-  // Separata states för modalen
+  // Separata states för modalen - sätt defaultvärden enligt emerald
   const [modalTreatmentsPerDay, setModalTreatmentsPerDay] = useState(4);
-  const [modalCustomerPrice, setModalCustomerPrice] = useState(2500);
+  const [modalCustomerPrice, setModalCustomerPrice] = useState(3500);
 
   // Initialisera med värden från huvudkalkylatorn
   useEffect(() => {
