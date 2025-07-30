@@ -43,7 +43,7 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '100ms' }}>
       <div className="text-center">
         <label htmlFor="machine-select" className="text-lg font-semibold block mb-4">
-          Välj maskin
+          Växla maskin
         </label>
         
         {/* Centrerad dropdown för maskinval */}
