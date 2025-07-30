@@ -99,7 +99,6 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
           </SelectContent>
         </Select>
       </div>
-      <p className="text-xs text-red-600 col-span-2 mt-2">Påverkar kostnader • Välj period och försäkring</p>
     </div>
   );
 };

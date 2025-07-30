@@ -29,7 +29,6 @@ const PaymentOptionToggle: React.FC = () => {
           <span className="mr-2">Kontant ({formatCurrency(cashPriceSEK)})</span>
         </ToggleGroupItem>
       </ToggleGroup>
-      <p className="text-xs text-red-600 mt-2">Påverkar kostnader • Välj betalningsalternativ</p>
     </div>
   );
 };

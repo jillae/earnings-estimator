@@ -53,7 +53,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             <span>12 st</span>
           </div>
         </div>
-        <p className="text-xs text-emerald-600">Påverkar intäkter • Justera med sliden</p>
+        <p className="text-xs text-emerald-600">Justera med sliden</p>
       </div>
       {/* Kundpris */}
       <div className="flex-1 flex flex-col justify-between bg-emerald-50/20 border-emerald-200 rounded-2xl border px-5 py-6 shadow-subtle min-h-[164px] hover:bg-emerald-50/30 transition-colors">
@@ -76,7 +76,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             <span>8 000 kr</span>
           </div>
         </div>
-        <p className="text-xs text-emerald-600">Påverkar intäkter • Justera med sliden</p>
+        <p className="text-xs text-emerald-600">Justera med sliden</p>
       </div>
     </section>
   );

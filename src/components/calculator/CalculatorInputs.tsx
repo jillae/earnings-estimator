@@ -10,7 +10,7 @@ import LeaseAdjuster from '../LeaseAdjuster';
 import LeasingOptions from '../LeasingOptions';
 import FlatrateSection from './FlatrateSection';
 import PaymentOptionToggle from './PaymentOptionToggle';
-import { SlaCardsMatrix } from '../SlaCardsMatrix';
+import SlaCarousel from './SlaCarousel';
 import ContextualInfoBox from './ContextualInfoBox';
 import { formatCurrency } from '@/utils/formatUtils';
 import { leasingPeriods, insuranceOptions } from '@/data/machines'; 
@@ -155,7 +155,7 @@ const CalculatorInputs: React.FC = () => {
               STEG 5
             </div>
             <div className="pt-2">
-              <SlaCardsMatrix />
+              <SlaCarousel />
             </div>
           </div>
           

@@ -120,7 +120,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                   const monthlyRevenueExVat = safeMonthly / 1.25; // 22 arbetsdagar per månad
                   const dailyRevenue = monthlyRevenueExVat / 22;
                   const breakEvenDays = dailyRevenue > 0 ? totalCostPerMonth / dailyRevenue : 0;
-                  return breakEvenDays.toFixed(1);
+                  return Math.round(breakEvenDays);
                 })()}
               </td>
               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">
