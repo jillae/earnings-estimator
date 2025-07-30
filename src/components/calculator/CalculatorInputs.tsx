@@ -63,10 +63,10 @@ const CalculatorInputs: React.FC = () => {
             </div>
           </div>
 
-          {/* Steg 1: Klinikstorlek */}
+          {/* Steg 2: Klinikstorlek */}
           <div className="relative">
-            <div className="absolute -top-3 left-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
-              STEG 1
+            <div className="absolute -top-3 left-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+              STEG 2
             </div>
             <div className="pt-2">
               <ClinicSizeSelector 
@@ -77,10 +77,10 @@ const CalculatorInputs: React.FC = () => {
             </div>
           </div>
 
-          {/* Steg 2: Behandlingsvolym */}
+          {/* Steg 3: Behandlingsvolym */}
           <div className="relative">
-            <div className="absolute -top-3 left-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
-              STEG 2
+            <div className="absolute -top-3 left-0 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+              STEG 3
             </div>
             <div className="pt-2">
               <div className="glass-card animate-slide-in" style={{ animationDelay: '200ms' }}>
@@ -94,10 +94,10 @@ const CalculatorInputs: React.FC = () => {
             </div>
           </div>
 
-          {/* Steg 3: Betalning */}
+          {/* Steg 4: Betalning */}
           <div className="relative">
-            <div className="absolute -top-3 left-0 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
-              STEG 3
+            <div className="absolute -top-3 left-0 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+              STEG 4
             </div>
             <div className="pt-2">
               <div className="glass-card animate-slide-in" style={{ animationDelay: '250ms' }}>
@@ -149,10 +149,10 @@ const CalculatorInputs: React.FC = () => {
           {/* Flatrate-sektion */}
           <FlatrateSection />
           
-          {/* Steg 4: Service & SLA */}
+          {/* Steg 5: Service & SLA */}
           <div className="relative">
-            <div className="absolute -top-3 left-0 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
-              STEG 4
+            <div className="absolute -top-3 left-0 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+              STEG 5
             </div>
             <div className="pt-2">
               <SlaCardsMatrix />

@@ -31,12 +31,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   };
 
   return (
-    <div className="relative">
-      <div className="absolute -top-3 left-0 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
-        STEG 3
-      </div>
-      <div className="pt-2">
-        <section className="w-full flex flex-row gap-4 md:gap-6">
+    <section className="w-full flex flex-row gap-4 md:gap-6">
       {/* Antal behandlingar */}
       <div className="flex-1 flex flex-col justify-between bg-white rounded-2xl border border-blue-100 px-5 py-6 shadow-subtle min-h-[164px]">
         <label htmlFor="treatments-per-day" className="text-sm font-semibold text-slate-600 mb-3">
@@ -81,9 +76,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
         </div>
         <p className="text-xs text-gray-400">Justera med sliden</p>
       </div>
-        </section>
-      </div>
-    </div>
+    </section>
   );
 };
 
