@@ -2,6 +2,8 @@
 import React from 'react';
 import ResultsTable from '../ResultsTable';
 import { useCalculator } from '@/context/CalculatorContext';
+import { SaveConfigurationButton } from './SaveConfigurationButton';
+import { QuoteRequestButton } from './QuoteRequestButton';
 
 const CalculatorResults: React.FC = () => {
   const {
@@ -43,6 +45,11 @@ const CalculatorResults: React.FC = () => {
         occupancy75={occupancyRevenues.occupancy75}
         occupancy100={occupancyRevenues.occupancy100}
         />
+        
+        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+          <SaveConfigurationButton />
+          <QuoteRequestButton />
+        </div>
       </div>
     </div>
   );
