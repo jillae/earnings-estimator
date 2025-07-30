@@ -86,7 +86,24 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
       </div>
       
       <div className="table-container overflow-x-auto">
-        <table className="w-full border-collapse text-sm min-w-[500px] md:min-w-full">
+        <table className="w-full border-collapse text-sm min-w-[500px] md:min-w-full table-fixed">
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              .table-fixed td:nth-child(2),
+              .table-fixed td:nth-child(3),
+              .table-fixed th:nth-child(2),
+              .table-fixed th:nth-child(3) {
+                font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+                font-variant-numeric: tabular-nums;
+                white-space: nowrap;
+              }
+            `
+          }} />
+          <colgroup>
+            <col className="w-[45%]" />
+            <col className="w-[27.5%]" />
+            <col className="w-[27.5%]" />
+          </colgroup>
           <thead>
             <tr className="border-b border-slate-200">
               <th className="text-left py-2 px-3 text-slate-600 font-medium text-xs">Översikt</th>
@@ -102,14 +119,14 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               </td>
              </tr>
              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'treatments' ? 'bg-emerald-100/50 ring-2 ring-emerald-300' : 'bg-emerald-50/10 hover:bg-emerald-50/20'}`}>
-               <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Behandlingar/dag</td>
-               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{treatmentsPerDay || 0}</td>
-               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{(treatmentsPerDay || 0) * 252}</td>
+               <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300 truncate">Behandlingar/dag</td>
+               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs font-mono">{treatmentsPerDay || 0}</td>
+               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs font-mono">{(treatmentsPerDay || 0) * 252}</td>
             </tr>
               <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'price' ? 'bg-emerald-100/50 ring-2 ring-emerald-300' : 'bg-emerald-50/10 hover:bg-emerald-50/20'}`}>
-                <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Intäkt/behandling (ink moms)</td>
-                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{formatCurrency(customerPrice || 0)}</td>
-                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
+                <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300 truncate">Intäkt/behandling (ink moms)</td>
+                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs font-mono">{formatCurrency(customerPrice || 0)}</td>
+                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs font-mono">-</td>
              </tr>
              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'workdays' ? 'bg-emerald-100/50 ring-2 ring-emerald-300' : 'bg-emerald-50/10 hover:bg-emerald-50/20'}`}>
                <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Nollpunkt (arbetsdagar/månad)</td>
@@ -144,9 +161,9 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               </td>
             </tr>
             <tr className="border-b border-slate-200 bg-emerald-50/10 hover:bg-emerald-50/20 transition-colors">
-              <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Total intäkt (ink moms)</td>
-              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeMonthly)}</td>
-              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeYearly)}</td>
+              <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300 truncate">Total intäkt (ink moms)</td>
+              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs font-mono">{formatCurrency(safeMonthly)}</td>
+              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs font-mono">{formatCurrency(safeYearly)}</td>
             </tr>
             
             {/* KOSTNADER SEKTION */}
