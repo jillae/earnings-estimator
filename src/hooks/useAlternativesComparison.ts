@@ -23,81 +23,86 @@ export const useAlternativesComparison = () => {
   } = useCalculator();
 
   const alternatives = useMemo((): AlternativeOption[] => {
-    if (!selectedMachine || !slaCosts) {
+    if (!selectedMachine) {
       return [];
     }
 
-    const baseLeasingCost = leasingCost;
+    // Grundkostnad = leasingCost
+    const grundkostnad = leasingCost;
     
-    // Använd de riktiga SLA-kostnaderna från slaCosts
-    const slaBronsCost = slaCosts.Brons || 0;
-    const slaSilverCost = slaCosts.Silver || 0;
-    const slaGuldCost = slaCosts.Guld || 0;
-    
-    // Använd flatrate-kostnad från maskinen
-    const flatrateMonthlyCost = selectedMachine.flatrateAmount || 0;
+    // FlatrateAmount från maskinen
+    const flatrateAmount = selectedMachine.flatrateAmount || 5996; // Default till 5996 för Emerald
+
+    /**
+     * EXAKTA BERÄKNINGSFORMLER enligt slutgiltig specifikation:
+     */
 
     const options: AlternativeOption[] = [
       {
         rank: 1,
-        name: 'Standard + SLA Guld',
-        monthlyCost: baseLeasingCost + slaGuldCost,
-        hasUnlimitedCredits: true,
-        hasFreeCredits: true, // SLA Guld inkluderar gratis credits
-        slaLevel: 'Guld',
-        hasAnnualService: true,
-        hasLoanMachine: true,
-        description: 'Premium service med fullständig support'
-      },
-      {
-        rank: 2,
-        name: 'Standard + SLA Silver',
-        monthlyCost: baseLeasingCost + slaSilverCost,
-        hasUnlimitedCredits: true,
-        hasFreeCredits: false, // SLA Silver har inte gratis credits
-        slaLevel: 'Silver',
-        hasAnnualService: false,
-        hasLoanMachine: true,
-        description: 'Förbättrad service med lånemaskin'
-      },
-      {
-        rank: 3,
-        name: 'Allt-inkluderat',
-        monthlyCost: baseLeasingCost, // Allt-inkluderat är bara leasingkostnaden
-        hasUnlimitedCredits: true,
-        hasFreeCredits: true,
-        slaLevel: 'Brons',
-        hasAnnualService: false,
-        hasLoanMachine: false,
-        description: 'Fast månadsavgift med obegränsade behandlingar'
-      },
-      {
-        rank: 4,
         name: 'Standard + Flatrate',
-        monthlyCost: baseLeasingCost + flatrateMonthlyCost,
+        // Formel: Grundkostnad + FlatrateAmount (standard)
+        monthlyCost: Math.round(grundkostnad + flatrateAmount),
         hasUnlimitedCredits: true,
         hasFreeCredits: false,
         slaLevel: 'Brons',
         hasAnnualService: false,
         hasLoanMachine: false,
-        description: 'Kombinerat paket med flatrate för credits'
+        description: `${Math.round(grundkostnad).toLocaleString()} kr (leasing) + ${flatrateAmount.toLocaleString()} kr (Flatrate)`
+      },
+      {
+        rank: 2,
+        name: 'Standard + SLA Guld',
+        // Formel: Grundkostnad + (0.50 * Grundkostnad)
+        monthlyCost: Math.round(grundkostnad + (0.50 * grundkostnad)),
+        hasUnlimitedCredits: true,
+        hasFreeCredits: true, // Flatrate Credits inbakade i 50%-kostnaden
+        slaLevel: 'Guld',
+        hasAnnualService: true,
+        hasLoanMachine: true,
+        description: `${Math.round(grundkostnad).toLocaleString()} kr (leasing) + ${Math.round(0.50 * grundkostnad).toLocaleString()} kr (SLA Guld)`
+      },
+      {
+        rank: 3,
+        name: 'Standard + SLA Silver',
+        // Formel: Grundkostnad + (0.25 * Grundkostnad) + (0.50 * FlatrateAmount)
+        monthlyCost: Math.round(grundkostnad + (0.25 * grundkostnad) + (0.50 * flatrateAmount)),
+        hasUnlimitedCredits: true,
+        hasFreeCredits: false, // 50% rabatt på Flatrate Credits
+        slaLevel: 'Silver',
+        hasAnnualService: false,
+        hasLoanMachine: true,
+        description: `${Math.round(grundkostnad).toLocaleString()} kr (leasing) + ${Math.round(0.25 * grundkostnad).toLocaleString()} kr (SLA Silver) + ${Math.round(0.50 * flatrateAmount).toLocaleString()} kr (Flatrate)`
+      },
+      {
+        rank: 4,
+        name: 'Allt-inkluderat',
+        // Formel: Grundkostnad
+        monthlyCost: Math.round(grundkostnad),
+        hasUnlimitedCredits: true,
+        hasFreeCredits: true, // Credits inkluderade
+        slaLevel: 'Brons',
+        hasAnnualService: false,
+        hasLoanMachine: false,
+        description: `${Math.round(grundkostnad).toLocaleString()} kr (leasing med inkluderade credits)`
       },
       {
         rank: 5,
         name: 'Standard + SLA Brons',
-        monthlyCost: baseLeasingCost + slaBronsCost,
+        // Formel: Grundkostnad
+        monthlyCost: Math.round(grundkostnad),
         hasUnlimitedCredits: false,
         hasFreeCredits: false,
         slaLevel: 'Brons',
         hasAnnualService: false,
         hasLoanMachine: false,
-        description: 'Grundläggande leasingpaket'
+        description: `${Math.round(grundkostnad).toLocaleString()} kr (endast leasing)`
       }
     ];
 
     // Sortera efter månadskostnad (fallande ordning för att behålla rangordning)
     return options.sort((a, b) => b.monthlyCost - a.monthlyCost);
-  }, [selectedMachine, leasingCost, slaCosts]);
+  }, [selectedMachine, leasingCost]);
 
   return {
     alternatives,
