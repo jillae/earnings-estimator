@@ -145,8 +145,15 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
     
     const baseClasses = "p-4 text-center font-bold cursor-pointer border-r border-slate-200 last:border-r-0 transition-all duration-200 hover:bg-slate-50";
     
+    // Olika kulörer för de olika SLA-nivåerna
     if (isSelected) {
-      return `${baseClasses} bg-red-200 border-red-300 text-red-900 ring-2 ring-red-300`;
+      if (index === 0) {
+        return `${baseClasses} bg-emerald-200 border-emerald-300 text-emerald-900 ring-2 ring-emerald-300`;
+      } else if (index === 1) {
+        return `${baseClasses} bg-blue-200 border-blue-300 text-blue-900 ring-2 ring-blue-300`;
+      } else {
+        return `${baseClasses} bg-purple-200 border-purple-300 text-purple-900 ring-2 ring-purple-300`;
+      }
     } else if (isPreviousSelection) {
       return `${baseClasses} bg-slate-100 text-slate-400 opacity-75`;
     } else {
@@ -175,7 +182,11 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
         <div>{levelText}</div>
         <div className="text-sm font-medium">{formatCurrency(cost)}/mån</div>
         {index === selectedIndex && (
-          <Badge variant="default" className="text-xs mt-1 bg-red-600">
+          <Badge variant="default" className={`text-xs mt-1 ${
+            index === 0 ? 'bg-emerald-600' : 
+            index === 1 ? 'bg-blue-600' : 
+            'bg-purple-600'
+          }`}>
             <Check className="h-3 w-3 mr-1" />
             VALD
           </Badge>

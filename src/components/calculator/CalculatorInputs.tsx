@@ -138,19 +138,6 @@ const CalculatorInputs: React.FC<{
                       onHoveredInputChange={onHoveredInputChange}
                     />
                     
-                    {/* Credits/Driftpaket direkt efter leasingslider för credit-maskiner */}
-                    {selectedMachine?.usesCredits && (
-                      <div className="bg-slate-50/30 border border-slate-200 rounded-xl p-4">
-                        <h4 className="text-sm font-semibold text-slate-700 mb-3 flex items-center">
-                          <span className="w-2 h-2 bg-purple-400 rounded-sm mr-2"></span>
-                          Credits & Driftpaket
-                        </h4>
-                        <DriftpaketSelector 
-                          hoveredInput={hoveredInput}
-                          onHoveredInputChange={onHoveredInputChange}
-                        />
-                      </div>
-                    )}
                     
                     <LeasingOptions
                       leasingPeriods={leasingPeriods}

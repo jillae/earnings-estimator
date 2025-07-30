@@ -10,6 +10,7 @@ import { formatCurrency } from '@/utils/formatUtils';
 import { useCalculator } from '@/context/CalculatorContext';
 import { SliderStep } from '@/utils/sliderSteps';
 import CreditInfoPopover from './calculator/CreditInfoPopover';
+import RollingValueDisplay from './calculator/RollingValueDisplay';
 
 interface LeaseAdjusterProps {
   minLeaseCost: number;
@@ -135,6 +136,22 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       onMouseEnter={() => onHoveredInputChange?.('leasing')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
+      {/* Rullande visare OVANFÖR slidern för credit-maskiner */}
+      {usesCredits && selectedLeasingModel === 'grundleasing' && (
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <RollingValueDisplay 
+            value={displayLeaseCost}
+            label="Månadskostnad leasing"
+            className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
+          />
+          <RollingValueDisplay 
+            value={calculatedCreditPrice}
+            label="Krediter per behandling"
+            className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
+          />
+        </div>
+      )}
+
       {/* Flexibel investering - flyttat upp */}
       {usesCredits && selectedLeasingModel === 'grundleasing' && (
         <LeaseSlider 
@@ -200,7 +217,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         )}
       </div>
       
-      {/* Leasingmodellval - visas endast för maskiner som använder credits */}
+            {/* Ta bort nollpunkt från vänster kolumn - förklaring: detta är ett enkelt GUI element utan komplexitet */}
+            
+            {/* Leasingmodellval - visas endast för maskiner som använder credits */}
       {usesCredits && (
         <LeasingModelSelector
           selectedModel={selectedLeasingModel}
