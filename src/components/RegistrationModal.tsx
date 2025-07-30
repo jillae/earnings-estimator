@@ -60,16 +60,8 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
+          <DialogTitle>
             Kul att du vill utforska!
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="h-auto p-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </DialogTitle>
         </DialogHeader>
         
