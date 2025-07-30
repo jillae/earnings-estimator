@@ -12,6 +12,7 @@ import { formatCurrency } from '@/utils/formatUtils';
 import { useModalCalculations } from '@/hooks/useModalCalculations';
 import GrowthMetrics from './GrowthMetrics';
 import ComparisonTable from './ComparisonTable';
+import { KlinikOptimeringSidebar } from '@/components/KlinikOptimeringSidebar';
 
 const DetailedAnalysisModal: React.FC = () => {
   const { 
@@ -372,6 +373,11 @@ const DetailedAnalysisModal: React.FC = () => {
                 <p>Denna graf visar hur din kliniks ekonomi kan utvecklas över 5 år med <strong>{selectedMachine?.name || 'den valda maskinen'}</strong>. 
                 Justera behandlingar per dag och kundpris ovan för att se olika scenarier!</p>
               </div>
+            </div>
+
+            {/* KlinikOptimering Reklam - Strategiskt placerad efter huvudgrafen */}
+            <div className="border border-primary/20 rounded-lg bg-gradient-to-br from-primary/5 to-secondary/5 p-1">
+              <KlinikOptimeringSidebar />
             </div>
 
             {/* Nyckeltal för Tillväxt */}
