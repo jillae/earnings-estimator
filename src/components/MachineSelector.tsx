@@ -58,14 +58,17 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
                 }
               }}
             >
-              <SelectTrigger className="w-full h-auto py-3 min-h-[50px] text-center" id="machine-select">
-                <SelectValue placeholder="Växla maskin här" />
+              <SelectTrigger className="w-full h-auto py-3 min-h-[50px] text-center bg-white border-2" id="machine-select">
+                <SelectValue placeholder="Välj en maskin" />
               </SelectTrigger>
               
-              <SelectContent position="item-aligned" className="w-full max-h-[400px] bg-white z-50">
-                <SelectItem value="select-machine">Växla maskin här</SelectItem>
+              <SelectContent position="item-aligned" className="w-full max-h-[400px] bg-white border shadow-lg z-50">
                 {machines.map((machine) => (
-                  <SelectItem key={machine.id} value={machine.id}>
+                  <SelectItem 
+                    key={machine.id} 
+                    value={machine.id}
+                    className="hover:bg-slate-100 focus:bg-slate-100"
+                  >
                     <div className="flex flex-col py-1">
                       <span className="font-medium">{machine.name}</span>
                       <span className="text-xs text-slate-500">{machine.description}</span>
