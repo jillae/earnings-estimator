@@ -120,7 +120,15 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                   Math.ceil(totalCostPerMonth / ((customerPrice / 1.25) * 21)).toFixed(1) 
                   : '0'}
               </td>
-              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
+              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">
+                {customerPrice > 0 && treatmentsPerDay > 0 ? (
+                  treatmentsPerDay >= Math.ceil(totalCostPerMonth / ((customerPrice / 1.25) * 21)) ? (
+                    <span className="text-emerald-600 font-bold">✅ Vinst</span>
+                  ) : (
+                    <span className="text-red-600 font-bold">❌ Förlust</span>
+                  )
+                ) : '-'}
+              </td>
             </tr>
             <tr className="border-b border-slate-200">
               <td className="py-2 px-3 text-slate-700 text-xs">Intäkt/behandling (ink moms)</td>
