@@ -92,8 +92,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           <thead>
             <tr className="border-b border-slate-200">
               <th className="text-left py-2 px-3 text-slate-600 font-medium text-xs">Översikt</th>
-              <th className="text-right py-2 px-2 text-slate-600 font-medium text-xs">Månad</th>
-              <th className="text-right py-2 px-2 text-slate-600 font-medium text-xs">År</th>
+              <th className="text-right py-2 px-2 text-slate-600 font-medium text-xs">Per månad</th>
+              <th className="text-right py-2 px-2 text-slate-600 font-medium text-xs">Per år</th>
             </tr>
           </thead>
           <tbody>
@@ -105,13 +105,13 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             </tr>
             <tr className="border-b border-slate-200">
               <td className="py-2 px-3 text-slate-700 text-xs">Behandlingar/dag</td>
-              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{treatmentsPerDay || 0}</td>
+              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{(treatmentsPerDay || 0) * 252}</td>
             </tr>
             <tr className="border-b border-slate-200">
-              <td className="py-2 px-3 text-slate-700 text-xs">Intäkt/behandling</td>
-              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
+              <td className="py-2 px-3 text-slate-700 text-xs">Intäkt/behandling (ink moms)</td>
               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{formatCurrency(customerPrice || 0)}</td>
+              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
             </tr>
             
             {/* INTÄKT SEKTION */}

@@ -6,7 +6,7 @@ import { TrendingUp, LineChart, BarChart3, ExternalLink, Sparkles, Target, Calen
 
 export const GrowthForecastPlug: React.FC = () => {
   return (
-    <section className="mt-8">
+    <section className="mt-8" data-growth-forecast>
       <div className="relative">
         {/* Bakgrundsgradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-50/50 via-blue-50/50 to-purple-50/50 rounded-2xl"></div>

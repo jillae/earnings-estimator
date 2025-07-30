@@ -44,6 +44,20 @@ const Header = () => {
               <Library className="h-4 w-4 mr-1" />
               <span className="text-sm">Whitepapers</span>
             </a>
+            <Link to="/klinik-optimering-coming-soon" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+              <span className="text-xs">🏥</span>
+              <span className="text-sm ml-1">Klinikoptimering</span>
+            </Link>
+            <button 
+              onClick={() => {
+                const element = document.querySelector('[data-growth-forecast]');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="flex items-center hover:text-primary-foreground/80 transition-colors"
+            >
+              <span className="text-xs">📈</span>
+              <span className="text-sm ml-1">Tillväxtprognos</span>
+            </button>
             <a 
               href="https://bit.ly/erchoniaeenallmodels" 
               target="_blank" 
@@ -51,7 +65,7 @@ const Header = () => {
               className="flex items-center hover:text-primary-foreground/80 transition-colors"
             >
               <ExternalLink className="h-4 w-4 mr-1" />
-              <span className="text-sm">Produktbeskrivningar</span>
+              <span className="text-sm">Produkter</span>
             </a>
             <a 
               href="https://bit.ly/EENHelpdesk" 
