@@ -259,6 +259,21 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           </div>
         </div>
         
+        {/* Testa nu knapp */}
+        <div className="text-center mt-6">
+          <Button 
+            variant="outline" 
+            size="lg"
+            className="bg-white hover:bg-emerald-50 border-emerald-300 text-emerald-700 hover:text-emerald-800 px-8 py-3 font-semibold shadow-sm hover:shadow-md transition-all duration-200"
+            onClick={() => {
+              // Kan länka till detaljerad analys eller annan funktion
+              console.log('Testa nu klickad');
+            }}
+          >
+            Testa nu!
+          </Button>
+        </div>
+        
         </div>
         
         {/* Tillväxtprognos plugg */}
