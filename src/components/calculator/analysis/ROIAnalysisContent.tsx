@@ -29,8 +29,8 @@ const ROIAnalysisContent: React.FC = () => {
 
   const [analysisData, setAnalysisData] = useState({
     initialInvestment: getInitialInvestment(),
-    monthlyRevenue: revenue.monthlyRevenueExVat || 45000,
-    monthlyCosts: operatingCost.totalCost || 15000,
+    monthlyRevenue: revenue.monthlyRevenueExVat || 0,
+    monthlyCosts: operatingCost.totalCost || 0,
     timeHorizon: 60,
     growthRate: 2
   });
@@ -122,27 +122,28 @@ const ROIAnalysisContent: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Varning om fallback-data */}
+      {/* Varning om saknad data */}
       {usingFallbackData && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <div className="flex items-start gap-3">
-            <div className="text-yellow-600">⚠️</div>
-            <div>
-              <h4 className="font-medium text-yellow-800 mb-1">Använder exempelvärden</h4>
-              <p className="text-sm text-yellow-700 mb-2">
-                Denna analys baseras på exempelvärden eftersom ingen maskin är vald eller kalkylatorn är tom. 
-                För korrekt analys, gå tillbaka till kalkylatorn och:
-              </p>
-              <ul className="text-sm text-yellow-700 list-disc list-inside space-y-1">
-                <li>Välj en maskin</li>
-                <li>Ange behandlingar per dag</li>
-                <li>Sätt kundpris</li>
-              </ul>
-            </div>
-          </div>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+          <div className="text-red-600 text-4xl mb-4">📊</div>
+          <h3 className="text-xl font-semibold text-red-800 mb-2">Ingen data att analysera</h3>
+          <p className="text-red-700 mb-4">
+            För att göra en ROI-analys behöver du först göra en beräkning i kalkylatorn.
+          </p>
+          <p className="text-sm text-red-600 mb-4">
+            Vi visar inga exempelvärden för att undvika missförstånd.
+          </p>
+          <a 
+            href="/" 
+            className="inline-block bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Gå till Kalkylatorn
+          </a>
         </div>
       )}
 
+      {/* Visa analysen endast om vi har data */}
+      {!usingFallbackData && (
       <div className="grid lg:grid-cols-3 gap-6">
       {/* Input Panel */}
       <div className="lg:col-span-1">
@@ -363,6 +364,7 @@ const ROIAnalysisContent: React.FC = () => {
         </Card>
       </div>
       </div>
+      )}
     </div>
   );
 };

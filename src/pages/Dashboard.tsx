@@ -73,7 +73,7 @@ const Dashboard = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 Starta en ny intäktsberäkning
               </p>
-              <Link to="/calculator">
+              <Link to="/">
                 <Button className="w-full">
                   Börja beräkna
                 </Button>
