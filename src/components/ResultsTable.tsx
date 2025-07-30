@@ -21,6 +21,8 @@ interface ResultsTableProps {
   occupancy100: number;
   isFlatrateActive?: boolean;
   selectedSlaLevel?: 'Bas' | 'Silver' | 'Guld';
+  treatmentsPerDay?: number;
+  customerPrice?: number;
 }
 
 const ResultsTable: React.FC<ResultsTableProps> = ({
@@ -38,7 +40,9 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   occupancy75,
   occupancy100,
   isFlatrateActive = false,
-  selectedSlaLevel = 'Bas'
+  selectedSlaLevel = 'Bas',
+  treatmentsPerDay = 0,
+  customerPrice = 0
 }) => {
   // Validera värden och se till att de är giltiga nummer
   const safeDaily = isNaN(dailyRevenueIncVat) ? 0 : dailyRevenueIncVat;
@@ -65,11 +69,14 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
     occupancy75 prop: ${occupancy75} -> safeOcc75: ${safeOcc75}
     occupancy100 prop: ${occupancy100} -> safeOcc100: ${safeOcc100}
     Monthly revenue (inc VAT): ${safeMonthly}
+    Yearly revenue (inc VAT): ${safeYearly}
     Monthly operating cost: ${safeOperatingCost} (original: ${operatingCostPerMonth}, flatrate active: ${isFlatrateActive})
     Leasing cost: ${safeLeasingCost}
     Total cost per month: ${totalCostPerMonth}
     Net per month (ex VAT): ${safeNetMonth}
     Monthly revenue (ex VAT): ${safeMonthly / 1.25}
+    Behandlingar per dag: ${treatmentsPerDay}
+    Kundpris: ${customerPrice}
   `);
 
   return <div className="glass-card mt-8 animate-slide-in bg-white/95 backdrop-blur-sm shadow-xl border border-slate-200" style={{
@@ -81,139 +88,110 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
       </div>
       
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className="text-left py-3 px-4 text-slate-600 font-medium text-sm">Översikt</th>
-              <th className="text-right py-3 px-4 text-slate-600 font-medium text-sm">Per dag</th>
-              <th className="text-right py-3 px-4 text-slate-600 font-medium text-sm">Per vecka</th>
-              <th className="text-right py-3 px-4 text-slate-600 font-medium text-sm">Per månad</th>
-              <th className="text-right py-3 px-4 text-slate-600 font-medium text-sm">Per år</th>
+              <th className="text-left py-2 px-3 text-slate-600 font-medium text-xs">Översikt</th>
+              <th className="text-right py-2 px-2 text-slate-600 font-medium text-xs">Månad</th>
+              <th className="text-right py-2 px-2 text-slate-600 font-medium text-xs">År</th>
             </tr>
           </thead>
           <tbody>
             {/* KLINIK SEKTION */}
             <tr className="border-b border-slate-100 bg-blue-50/30">
-              <td colSpan={5} className="py-2 px-4 text-sm font-semibold text-blue-800 uppercase tracking-wide">
+              <td colSpan={3} className="py-2 px-3 text-xs font-semibold text-blue-800 uppercase tracking-wide">
                 📊 Klinik & Verksamhet
               </td>
             </tr>
             <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">Antal behandlingar</td>
-              <td className="py-3 px-4 text-right text-slate-700 font-medium">{safeMonthly / 22}</td>
-              <td className="py-3 px-4 text-right text-slate-700 font-medium">{(safeMonthly / 22) * 5}</td>
-              <td className="py-3 px-4 text-right text-slate-700 font-medium">{safeMonthly / (safeMonthly / 22 > 0 ? (safeMonthly / (safeMonthly / 22)) / 22 : 1)}</td>
-              <td className="py-3 px-4 text-right text-slate-700 font-medium">{safeYearly / (safeYearly / 12 > 0 ? (safeYearly / (safeYearly / 12)) / 22 : 1)}</td>
+              <td className="py-2 px-3 text-slate-700 text-xs">Behandlingar/dag</td>
+              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
+              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{treatmentsPerDay || 0}</td>
             </tr>
             <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">Intäkt per behandling (ink moms)</td>
-              <td className="py-3 px-4 text-right text-slate-700 font-medium">{formatCurrency(safeDaily / (safeMonthly / 22 > 0 ? safeDaily / (safeMonthly / 22) : 1))}</td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
+              <td className="py-2 px-3 text-slate-700 text-xs">Intäkt/behandling</td>
+              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
+              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{formatCurrency(customerPrice || 0)}</td>
             </tr>
             
             {/* INTÄKT SEKTION */}
             <tr className="border-b border-slate-100 bg-emerald-50/30">
-              <td colSpan={5} className="py-2 px-4 text-sm font-semibold text-emerald-800 uppercase tracking-wide">
+              <td colSpan={3} className="py-2 px-3 text-xs font-semibold text-emerald-800 uppercase tracking-wide">
                 💰 Intäkter
               </td>
             </tr>
             <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">Total intäkt (ink moms)</td>
-              <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeDaily)}</td>
-              <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeWeekly)}</td>
-              <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeMonthly)}</td>
-              <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeYearly)}</td>
-            </tr>
-            <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">Total intäkt (ex moms)</td>
-              <td className="py-3 px-4 text-right text-slate-600 whitespace-nowrap">{formatCurrency(safeDaily / 1.25)}</td>
-              <td className="py-3 px-4 text-right text-slate-600 whitespace-nowrap">{formatCurrency(safeWeekly / 1.25)}</td>
-              <td className="py-3 px-4 text-right text-slate-600 whitespace-nowrap">{formatCurrency(safeMonthly / 1.25)}</td>
-              <td className="py-3 px-4 text-right text-slate-600 whitespace-nowrap">{formatCurrency(safeYearly / 1.25)}</td>
+              <td className="py-2 px-3 text-slate-700 text-xs">Total intäkt (ink moms)</td>
+              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeMonthly)}</td>
+              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeYearly)}</td>
             </tr>
             
             {/* KOSTNADER SEKTION */}
             <tr className="border-b border-slate-100 bg-red-50/30">
-              <td colSpan={5} className="py-2 px-4 text-sm font-semibold text-red-800 uppercase tracking-wide">
+              <td colSpan={3} className="py-2 px-3 text-xs font-semibold text-red-800 uppercase tracking-wide">
                 📉 Kostnader
               </td>
             </tr>
             
             {paymentOption === 'leasing' ? (
               <tr className="border-b border-slate-200">
-                <td className="py-3 px-4 text-slate-700">Leasingkostnad (ex moms)</td>
-                <td className="py-3 px-4 text-right text-slate-700">-</td>
-                <td className="py-3 px-4 text-right text-slate-700">-</td>
-                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeLeasingCost)}</td>
-                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeLeasingCost * 12)}</td>
+                <td className="py-2 px-3 text-slate-700 text-xs">Leasingkostnad (ex moms)</td>
+                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost)}</td>
+                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost * 12)}</td>
               </tr>
             ) : (
               <tr className="border-b border-slate-200">
-                <td className="py-3 px-4 text-slate-700">Kontantköp (ex moms, avskrivning 5 år)</td>
-                <td className="py-3 px-4 text-right text-slate-700">-</td>
-                <td className="py-3 px-4 text-right text-slate-700">-</td>
-                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeCashPrice / 60)}</td>
-                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency((safeCashPrice / 60) * 12)}</td>
+                <td className="py-2 px-3 text-slate-700 text-xs">Kontantköp (ex moms, 5 år)</td>
+                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCashPrice / 60)}</td>
+                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency((safeCashPrice / 60) * 12)}</td>
               </tr>
              )}
             
             {isFlatrateActive && (
               <tr className="border-b border-slate-200">
-                <td className="py-3 px-4 text-slate-700">
-                  {selectedSlaLevel === 'Guld' ? 'Flatrate credits (ingår i Guld SLA)' : 'Flatrate credits (ex moms)'}
+                <td className="py-2 px-3 text-slate-700 text-xs">
+                  {selectedSlaLevel === 'Guld' ? 'Flatrate (ingår i Guld)' : 'Flatrate credits'}
                 </td>
-                <td className="py-3 px-4 text-right text-slate-700">-</td>
-                <td className="py-3 px-4 text-right text-slate-700">-</td>
-                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">
+                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
                   {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(operatingCostPerMonth)}
                 </td>
-                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">
+                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
                   {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(operatingCostPerMonth * 12)}
                 </td>
               </tr>
             )}
             
             <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">
-                {isFlatrateActive ? 'Övrigt (ex moms)' : 'Driftskostnad (ex moms)'}
+              <td className="py-2 px-3 text-slate-700 text-xs">
+                {isFlatrateActive ? 'Övrigt' : 'Driftskostnad'}
               </td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeOperatingCost)}</td>
-              <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeOperatingCost * 12)}</td>
+              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeOperatingCost)}</td>
+              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeOperatingCost * 12)}</td>
             </tr>
             
             <tr className="border-b border-slate-200 font-medium bg-slate-50">
-              <td className="py-3 px-4 text-slate-800">Total kostnad (ex moms)</td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-800 font-bold whitespace-nowrap">{formatCurrency(totalCostPerMonth)}</td>
-              <td className="py-3 px-4 text-right text-slate-800 font-bold whitespace-nowrap">{formatCurrency(totalCostPerMonth * 12)}</td>
+              <td className="py-2 px-3 text-slate-800 text-xs font-bold">Total kostnad</td>
+              <td className="py-2 px-2 text-right text-slate-800 font-bold whitespace-nowrap text-xs">{formatCurrency(totalCostPerMonth)}</td>
+              <td className="py-2 px-2 text-right text-slate-800 font-bold whitespace-nowrap text-xs">{formatCurrency(totalCostPerMonth * 12)}</td>
             </tr>
             
             {/* NETTO SEKTION */}
             <tr className="border-b border-slate-100 bg-emerald-50/50">
-              <td colSpan={5} className="py-2 px-4 text-sm font-semibold text-emerald-800 uppercase tracking-wide">
+              <td colSpan={3} className="py-2 px-3 text-xs font-semibold text-emerald-800 uppercase tracking-wide">
                 ✅ Nettoresultat
               </td>
             </tr>
             <tr className="border-b border-slate-200 font-bold bg-emerald-50">
-              <td className="py-4 px-4 text-slate-900">Netto (ex moms)</td>
-              <td className="py-4 px-4 text-right text-slate-700">-</td>
-              <td className="py-4 px-4 text-right text-slate-700">-</td>
-              <td className="py-4 px-4 text-right text-emerald-700 font-bold text-lg whitespace-nowrap">{formatCurrency(safeNetMonth)}</td>
-              <td className="py-4 px-4 text-right text-emerald-700 font-bold text-lg whitespace-nowrap">{formatCurrency(safeNetYear)}</td>
+              <td className="py-3 px-3 text-slate-900 text-sm font-bold">Netto (ex moms)</td>
+              <td className="py-3 px-2 text-right text-emerald-700 font-bold text-base whitespace-nowrap">{formatCurrency(safeNetMonth)}</td>
+              <td className="py-3 px-2 text-right text-emerald-700 font-bold text-base whitespace-nowrap">{formatCurrency(safeNetYear)}</td>
             </tr>
             <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">Vinstmarginal</td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-emerald-700 font-medium">
+              <td className="py-2 px-3 text-slate-700 text-xs">Vinstmarginal</td>
+              <td className="py-2 px-2 text-right text-emerald-700 font-medium text-xs">
                 {safeMonthly > 0 ? `${((safeNetMonth / (safeMonthly / 1.25)) * 100).toFixed(1)}%` : '0%'}
               </td>
-              <td className="py-3 px-4 text-right text-emerald-700 font-medium">
+              <td className="py-2 px-2 text-right text-emerald-700 font-medium text-xs">
                 {safeYearly > 0 ? `${((safeNetYear / (safeYearly / 1.25)) * 100).toFixed(1)}%` : '0%'}
               </td>
             </tr>
