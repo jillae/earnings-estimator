@@ -144,13 +144,13 @@ const DetailedAnalysisModal: React.FC = () => {
               <TrendingUp className="h-5 w-5 text-emerald-600" />
               Interaktiv Tillväxtprognos - {selectedMachine?.name || 'Vald maskin'}
             </div>
-            {/* Export-knappar i header */}
+            {/* Action-knappar i header */}
             <div className="flex gap-2">
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={handleOpenInNewWindow}
-                className="gap-2"
+                className="gap-2 hover:bg-blue-50"
               >
                 <ExternalLink className="h-4 w-4" />
                 Nytt fönster
@@ -159,11 +159,20 @@ const DetailedAnalysisModal: React.FC = () => {
                 variant="outline" 
                 size="sm" 
                 onClick={handleSaveChart}
-                className="gap-2"
+                className="gap-2 hover:bg-emerald-50"
               >
                 <Download className="h-4 w-4" />
                 Skriv ut
               </Button>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2 hover:bg-red-50 text-red-600 border-red-200"
+                >
+                  ✕ Stäng
+                </Button>
+              </DialogTrigger>
             </div>
           </DialogTitle>
           
@@ -192,9 +201,19 @@ const DetailedAnalysisModal: React.FC = () => {
         </DialogHeader>
         
         <Tabs defaultValue="graph" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="graph">📈 Grafisk Översikt</TabsTrigger>
-            <TabsTrigger value="table">🏥 SLA & Kundalternativ</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 h-12 bg-gradient-to-r from-blue-50 to-emerald-50 border border-slate-300 rounded-xl p-1">
+            <TabsTrigger 
+              value="graph" 
+              className="rounded-lg h-10 font-medium text-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-700 data-[state=active]:border data-[state=active]:border-blue-200 text-slate-600 hover:text-blue-600 transition-all duration-200"
+            >
+              📈 Grafisk Översikt
+            </TabsTrigger>
+            <TabsTrigger 
+              value="table" 
+              className="rounded-lg h-10 font-medium text-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-emerald-700 data-[state=active]:border data-[state=active]:border-emerald-200 text-slate-600 hover:text-emerald-600 transition-all duration-200"
+            >
+              🏥 SLA & Kundalternativ
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="graph" className="space-y-6">
