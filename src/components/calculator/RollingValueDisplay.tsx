@@ -67,8 +67,8 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
           }
           
           case 'rolodex': {
-            // Rolodex - blädrar genom kort-liknande värden (MYCKET SNABBARE)
-            const duration = 100; // Drastiskt minskat från 600ms till 100ms
+            // Rolodex - blädrar genom kort-liknande värden (DUBBELT SNABBARE)
+            const duration = 50; // Halverat från 100ms till 50ms för dubbel hastighet
             const startTime = Date.now();
             const startValue = displayValue;
             const endValue = value;
