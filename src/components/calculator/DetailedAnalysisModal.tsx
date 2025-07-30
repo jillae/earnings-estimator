@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { Slider } from '@/components/ui/slider';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, DollarSign, PieChart as PieChartIcon, ExternalLink, Download, AlertTriangle, Users } from 'lucide-react';
@@ -298,18 +297,19 @@ const DetailedAnalysisModal: React.FC = () => {
                     <DollarSign className="h-3 w-3" />
                     Kundpris per behandling (ink moms)
                   </Label>
-                  <Input
+                  <Slider
                     id="modal-price"
-                    type="number"
-                    min="500"
-                    max="10000"
-                    step="100"
-                    value={modalCustomerPrice}
-                    onChange={(e) => setModalCustomerPrice(Number(e.target.value))}
-                    className="text-center font-medium h-8"
+                    min={500}
+                    max={10000}
+                    step={100}
+                    value={[modalCustomerPrice]}
+                    onValueChange={(value) => setModalCustomerPrice(value[0])}
+                    className="w-full"
                   />
-                  <div className="text-xs text-slate-500 text-center">
-                    500 - 10 000 kr
+                  <div className="flex justify-between text-xs text-slate-500">
+                    <span>500 kr</span>
+                    <span className="font-semibold text-blue-600">{formatCurrency(modalCustomerPrice)}</span>
+                    <span>10 000 kr</span>
                   </div>
                 </div>
               </div>
