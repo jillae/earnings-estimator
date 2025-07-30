@@ -96,11 +96,11 @@ const DetailedAnalysisModal: React.FC = () => {
     <Dialog>
       <DialogTrigger asChild>
         <Button 
-          variant="outline" 
-          className="gap-2 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50"
+          size="lg"
+          className="gap-2 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-semibold px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300"
         >
-          <TrendingUp className="h-4 w-4" />
-          Detaljerad Analys
+          <TrendingUp className="h-5 w-5" />
+          📊 Visa Detaljerad Analys
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
