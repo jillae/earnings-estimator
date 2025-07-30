@@ -28,12 +28,12 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
     if (displayValue !== value) {
       setIsAnimating(true);
       
-      // Grövre steg-animation
-      const duration = 400;
+      // Snabbare, grövre steg-animation
+      const duration = 150;
       const startValue = displayValue;
       const endValue = value;
       const startTime = Date.now();
-      const steps = 8; // Antal diskreta steg
+      const steps = 3; // Endast 3 diskreta steg
       
       const animate = () => {
         const elapsed = Date.now() - startTime;
