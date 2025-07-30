@@ -36,18 +36,18 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
 
   const getProductUrl = (machineId: string) => {
     const productUrls: {[key: string]: string} = {
-      "emerald": "https://bit.ly/erchoniaeenallmodels#emerald",
-      "zerona": "https://bit.ly/erchoniaeenallmodels#zerona", 
-      "fx-635": "https://bit.ly/erchoniaeenallmodels#fx635",
-      "fx-405": "https://bit.ly/erchoniaeenallmodels#fx405",
-      "xlr8": "https://bit.ly/erchoniaeenallmodels#xlr8",
-      "evrl": "https://bit.ly/erchoniaeenallmodels#evrl",
-      "gvl": "https://bit.ly/erchoniaeenallmodels#gvl",
-      "base-station": "https://bit.ly/erchoniaeenallmodels#basestation",
-      "lunula": "https://bit.ly/erchoniaeenallmodels#lunula"
+      "emerald": "https://emeraldnordics.lovable.app/models/emerald",
+      "zerona": "https://emeraldnordics.lovable.app/models/zerona", 
+      "fx-635": "https://emeraldnordics.lovable.app/models/fx-635",
+      "fx-405": "https://emeraldnordics.lovable.app/models/fx-405",
+      "xlr8": "https://emeraldnordics.lovable.app/models/xlr8",
+      "evrl": "https://emeraldnordics.lovable.app/models/evrl",
+      "gvl": "https://emeraldnordics.lovable.app/models/gvl",
+      "base-station": "https://emeraldnordics.lovable.app/models/base-station",
+      "lunula": "https://emeraldnordics.lovable.app/models/lunula"
     };
     
-    return productUrls[machineId] || "https://bit.ly/erchoniaeenallmodels";
+    return productUrls[machineId] || "https://emeraldnordics.lovable.app/all-models";
   };
   
   return (
