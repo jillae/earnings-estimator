@@ -11,7 +11,10 @@ export const GrowthForecastPlug: React.FC = () => {
         {/* Bakgrundsgradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-50/50 via-blue-50/50 to-purple-50/50 rounded-2xl"></div>
         
-        <Card className="relative border-emerald-200/50 shadow-lg bg-white/90 backdrop-blur-sm">
+        <Card 
+          className="relative border-emerald-200/50 shadow-lg bg-white/90 backdrop-blur-sm cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+          onClick={() => window.open('/klinik-optimering-coming-soon', '_blank')}
+        >
           <CardHeader className="text-center pb-4">
             <div className="flex items-center justify-center gap-2 mb-3">
               <TrendingUp className="h-6 w-6 text-emerald-600" />
@@ -50,19 +53,9 @@ export const GrowthForecastPlug: React.FC = () => {
             </div>
 
             <div className="text-center space-y-3">
-              <Button 
-                size="sm"
-                className="group px-6 py-2 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700"
-                onClick={() => window.open('/klinik-optimering-coming-soon', '_blank')}
-              >
-                <LineChart className="h-4 w-4 mr-2" />
-                Se tillväxtprognos
-                <ExternalLink className="h-3 w-3 ml-2 opacity-70 group-hover:opacity-100 transition-opacity" />
-              </Button>
-              
-              <p className="text-xs text-muted-foreground">
+              <div className="text-xs text-muted-foreground">
                 Avancerade grafer • Scenario-planering • Gratis för alla användare
-              </p>
+              </div>
             </div>
           </CardContent>
         </Card>
