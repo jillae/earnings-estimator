@@ -29,9 +29,9 @@ const machineOrder = [
   "zerona",
   "fx-635",
   "fx-405",
-  "evrl",
-  "xlr8",
   "gvl",
+  "xlr8",
+  "evrl",
   "lunula",
   "base-station"
 ];

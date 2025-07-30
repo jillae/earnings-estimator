@@ -3,6 +3,7 @@ import { formatCurrency } from '@/utils/formatUtils';
 import { Button } from '@/components/ui/button';
 import { Download, TrendingUp } from 'lucide-react';
 import DetailedAnalysisModal from './calculator/DetailedAnalysisModal';
+import { OccupancyAnalysisPlug } from './OccupancyAnalysisPlug';
 
 interface ResultsTableProps {
   dailyRevenueIncVat: number;
@@ -180,6 +181,9 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             <div className="text-xl font-bold text-purple-800 whitespace-nowrap">{formatCurrency(safeOcc100)}</div>
           </div>
         </div>
+        
+        {/* Kapacitetsanalys plugg */}
+        <OccupancyAnalysisPlug />
       </div>
       
       <div className="mt-8 text-sm text-slate-500 italic">
