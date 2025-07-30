@@ -103,7 +103,7 @@ export const SlaCardsMatrix: React.FC = () => {
 
   const getColumnStyle = (slaLevel: DriftpaketType) => {
     const isSelected = selectedDriftpaket === slaLevel;
-    const baseStyle = "p-6 text-center cursor-pointer transition-all duration-300 hover:bg-slate-50/80 border-r border-slate-100 last:border-r-0";
+    const baseStyle = "p-3 text-center cursor-pointer transition-all duration-300 hover:bg-slate-50/80 border-r border-slate-100 last:border-r-0";
     
     if (isSelected) {
       switch (slaLevel) {
@@ -121,7 +121,7 @@ export const SlaCardsMatrix: React.FC = () => {
 
   const getHeaderStyle = (slaLevel: DriftpaketType) => {
     const isSelected = selectedDriftpaket === slaLevel;
-    const baseStyle = "p-6 text-center font-semibold cursor-pointer transition-all duration-300 hover:bg-slate-50/80 border-r border-slate-100 last:border-r-0";
+    const baseStyle = "p-4 text-center font-semibold cursor-pointer transition-all duration-300 hover:bg-slate-50/80 border-r border-slate-100 last:border-r-0";
     
     if (isSelected) {
       switch (slaLevel) {
@@ -149,12 +149,12 @@ export const SlaCardsMatrix: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-x-auto overflow-y-visible">
-        <div className="min-w-[900px]">
-          <table className="w-full table-fixed">{/* Fixed table layout för jämna kolumner */}
+        <div className="min-w-[700px]">
+          <table className="w-full table-fixed text-sm">{/* Mindre text och minska min-width */}
           {/* Header */}
           <thead>
             <tr className="border-b border-slate-200">
-              <th className="p-6 text-left bg-gradient-to-r from-slate-50 to-slate-100 font-bold text-slate-800 border-r border-slate-100">
+              <th className="p-3 text-left bg-gradient-to-r from-slate-50 to-slate-100 font-bold text-slate-800 border-r border-slate-100">
                 <div className="flex items-center gap-2">
                   <span className="text-slate-600">📋</span>
                   <span>Vad ingår</span>
@@ -237,7 +237,7 @@ export const SlaCardsMatrix: React.FC = () => {
                 {/* Section rows */}
                 {section.features.map((feature, featureIndex) => (
                   <tr key={`${sectionIndex}-${featureIndex}`} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                    <td className="p-4 font-medium text-slate-700 bg-slate-50/50 border-r border-slate-100">
+                    <td className="p-2 font-medium text-slate-700 bg-slate-50/50 border-r border-slate-100">
                       <div className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 bg-slate-400 rounded-full flex-shrink-0"></span>
                         <span className="leading-tight">{feature.label}</span>
