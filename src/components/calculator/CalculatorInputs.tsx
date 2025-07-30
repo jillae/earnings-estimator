@@ -114,10 +114,10 @@ const CalculatorInputs: React.FC<{
                   )}
                 </div>
                 
-        <PaymentOptionToggle 
-          hoveredInput={hoveredInput}
-          onHoveredInputChange={onHoveredInputChange}
-        />
+                <PaymentOptionToggle 
+                  hoveredInput={hoveredInput}
+                  onHoveredInputChange={onHoveredInputChange}
+                />
                 
                 {paymentOption === 'leasing' ? (
                   <div className="mt-4 space-y-4">
