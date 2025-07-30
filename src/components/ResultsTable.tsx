@@ -92,12 +92,53 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             </tr>
           </thead>
           <tbody>
+            {/* KLINIK SEKTION */}
+            <tr className="border-b border-slate-100 bg-blue-50/30">
+              <td colSpan={5} className="py-2 px-4 text-sm font-semibold text-blue-800 uppercase tracking-wide">
+                📊 Klinik & Verksamhet
+              </td>
+            </tr>
             <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">Intäkt (ink moms)</td>
+              <td className="py-3 px-4 text-slate-700">Antal behandlingar</td>
+              <td className="py-3 px-4 text-right text-slate-700 font-medium">{safeMonthly / 22}</td>
+              <td className="py-3 px-4 text-right text-slate-700 font-medium">{(safeMonthly / 22) * 5}</td>
+              <td className="py-3 px-4 text-right text-slate-700 font-medium">{safeMonthly / (safeMonthly / 22 > 0 ? (safeMonthly / (safeMonthly / 22)) / 22 : 1)}</td>
+              <td className="py-3 px-4 text-right text-slate-700 font-medium">{safeYearly / (safeYearly / 12 > 0 ? (safeYearly / (safeYearly / 12)) / 22 : 1)}</td>
+            </tr>
+            <tr className="border-b border-slate-200">
+              <td className="py-3 px-4 text-slate-700">Intäkt per behandling (ink moms)</td>
+              <td className="py-3 px-4 text-right text-slate-700 font-medium">{formatCurrency(safeDaily / (safeMonthly / 22 > 0 ? safeDaily / (safeMonthly / 22) : 1))}</td>
+              <td className="py-3 px-4 text-right text-slate-700">-</td>
+              <td className="py-3 px-4 text-right text-slate-700">-</td>
+              <td className="py-3 px-4 text-right text-slate-700">-</td>
+            </tr>
+            
+            {/* INTÄKT SEKTION */}
+            <tr className="border-b border-slate-100 bg-emerald-50/30">
+              <td colSpan={5} className="py-2 px-4 text-sm font-semibold text-emerald-800 uppercase tracking-wide">
+                💰 Intäkter
+              </td>
+            </tr>
+            <tr className="border-b border-slate-200">
+              <td className="py-3 px-4 text-slate-700">Total intäkt (ink moms)</td>
               <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeDaily)}</td>
               <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeWeekly)}</td>
               <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeMonthly)}</td>
               <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeYearly)}</td>
+            </tr>
+            <tr className="border-b border-slate-200">
+              <td className="py-3 px-4 text-slate-700">Total intäkt (ex moms)</td>
+              <td className="py-3 px-4 text-right text-slate-600 whitespace-nowrap">{formatCurrency(safeDaily / 1.25)}</td>
+              <td className="py-3 px-4 text-right text-slate-600 whitespace-nowrap">{formatCurrency(safeWeekly / 1.25)}</td>
+              <td className="py-3 px-4 text-right text-slate-600 whitespace-nowrap">{formatCurrency(safeMonthly / 1.25)}</td>
+              <td className="py-3 px-4 text-right text-slate-600 whitespace-nowrap">{formatCurrency(safeYearly / 1.25)}</td>
+            </tr>
+            
+            {/* KOSTNADER SEKTION */}
+            <tr className="border-b border-slate-100 bg-red-50/30">
+              <td colSpan={5} className="py-2 px-4 text-sm font-semibold text-red-800 uppercase tracking-wide">
+                📉 Kostnader
+              </td>
             </tr>
             
             {paymentOption === 'leasing' ? (
@@ -117,8 +158,6 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                 <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency((safeCashPrice / 60) * 12)}</td>
               </tr>
              )}
-             
-            
             
             {isFlatrateActive && (
               <tr className="border-b border-slate-200">
@@ -146,20 +185,37 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeOperatingCost * 12)}</td>
             </tr>
             
-            <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">Total kostnad (ex moms)</td>
+            <tr className="border-b border-slate-200 font-medium bg-slate-50">
+              <td className="py-3 px-4 text-slate-800">Total kostnad (ex moms)</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
-              <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(totalCostPerMonth)}</td>
-              <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(totalCostPerMonth * 12)}</td>
+              <td className="py-3 px-4 text-right text-slate-800 font-bold whitespace-nowrap">{formatCurrency(totalCostPerMonth)}</td>
+              <td className="py-3 px-4 text-right text-slate-800 font-bold whitespace-nowrap">{formatCurrency(totalCostPerMonth * 12)}</td>
             </tr>
             
+            {/* NETTO SEKTION */}
+            <tr className="border-b border-slate-100 bg-emerald-50/50">
+              <td colSpan={5} className="py-2 px-4 text-sm font-semibold text-emerald-800 uppercase tracking-wide">
+                ✅ Nettoresultat
+              </td>
+            </tr>
             <tr className="border-b border-slate-200 font-bold bg-emerald-50">
               <td className="py-4 px-4 text-slate-900">Netto (ex moms)</td>
               <td className="py-4 px-4 text-right text-slate-700">-</td>
               <td className="py-4 px-4 text-right text-slate-700">-</td>
               <td className="py-4 px-4 text-right text-emerald-700 font-bold text-lg whitespace-nowrap">{formatCurrency(safeNetMonth)}</td>
               <td className="py-4 px-4 text-right text-emerald-700 font-bold text-lg whitespace-nowrap">{formatCurrency(safeNetYear)}</td>
+            </tr>
+            <tr className="border-b border-slate-200">
+              <td className="py-3 px-4 text-slate-700">Vinstmarginal</td>
+              <td className="py-3 px-4 text-right text-slate-700">-</td>
+              <td className="py-3 px-4 text-right text-slate-700">-</td>
+              <td className="py-3 px-4 text-right text-emerald-700 font-medium">
+                {safeMonthly > 0 ? `${((safeNetMonth / (safeMonthly / 1.25)) * 100).toFixed(1)}%` : '0%'}
+              </td>
+              <td className="py-3 px-4 text-right text-emerald-700 font-medium">
+                {safeYearly > 0 ? `${((safeNetYear / (safeYearly / 1.25)) * 100).toFixed(1)}%` : '0%'}
+              </td>
             </tr>
           </tbody>
         </table>
