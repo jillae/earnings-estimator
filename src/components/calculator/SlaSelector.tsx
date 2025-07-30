@@ -23,15 +23,7 @@ const SlaSelector: React.FC = () => {
   const showCreditsIncludedSilver = selectedMachine?.usesCredits && selectedSlaLevel === 'Silver';
   const showCreditsIncludedGuld = selectedMachine?.usesCredits && selectedSlaLevel === 'Guld';
 
-  // För felsökning, logga de aktuella SLA-kostnaderna
-  console.log(`SlaSelector Rendering:
-    Machine: ${selectedMachine?.name}
-    SLA Level: ${selectedSlaLevel}
-    LeasingMax60mRef: ${leasingMax60mRef}
-    SLA Costs: Brons=${slaCosts.Brons}, Silver=${slaCosts.Silver}, Guld=${slaCosts.Guld}
-    Uses Credits: ${selectedMachine?.usesCredits}
-    Machine Price EUR: ${selectedMachine?.priceEur || 'N/A'}
-  `);
+  // Ta bort denna logg för att undvika loops
 
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '350ms' }}>

@@ -19,7 +19,7 @@ export function useFlatrateGuard({
   setUseFlatrateOption: (option: FlatrateOption) => void;
   paymentOption: 'leasing' | 'cash';
 }) {
-  // När slider-steget ändras (eller andra dependencies), säkerställ korrekt flatrate-option
+  // När slider-steget ändras, säkerställ korrekt flatrate-option
   useEffect(() => {
     // NYTT VILLKOR:
     // Bara vid leasing och step < 1 ska vi tvinga per-credit
@@ -27,5 +27,5 @@ export function useFlatrateGuard({
       console.log('Återställer flatrate-val till perCredit då slider < 1 och leasing');
       setUseFlatrateOption('perCredit');
     }
-  }, [currentSliderStep, useFlatrateOption, setUseFlatrateOption, paymentOption]);
+  }, [currentSliderStep, setUseFlatrateOption, paymentOption]); // Ta bort useFlatrateOption från dependencies för att undvika loop
 }

@@ -70,7 +70,7 @@ export function useFlatrateHandler() {
         setUseFlatrateOption('flatrate');
       }
     }
-  }, [selectedDriftpaket, selectedMachine?.usesCredits, setUseFlatrateOption, useFlatrateOption]);
+  }, [selectedDriftpaket, selectedMachine?.usesCredits, setUseFlatrateOption]); // Ta bort useFlatrateOption från dependencies för att undvika loop
 
   return {
     handleFlatrateChange,
