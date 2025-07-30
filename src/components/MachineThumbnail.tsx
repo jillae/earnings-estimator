@@ -40,14 +40,12 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
       "zerona": "https://emeraldnordics.lovable.app/products?tab=zerona", 
       "fx-635": "https://emeraldnordics.lovable.app/products?tab=fx635",
       "fx-405": "https://emeraldnordics.lovable.app/products?tab=fx405",
-      "xlr8": "https://emeraldnordics.lovable.app/products",
       "evrl": "https://emeraldnordics.lovable.app/products?tab=evrl",
       "gvl": "https://emeraldnordics.lovable.app/products?tab=gvl",
-      "base-station": "https://emeraldnordics.lovable.app/products",
       "lunula": "https://emeraldnordics.lovable.app/products?tab=lunula"
     };
     
-    return productUrls[machineId] || "https://emeraldnordics.lovable.app/products";
+    return productUrls[machineId];
   };
   
   return (
@@ -82,18 +80,20 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
         {machine.modelCode && (
           <p className="text-xs text-slate-500">({machine.modelCode})</p>
         )}
-        <Button
-          variant="outline"
-          size="sm"
-          className="mt-2 h-7 text-xs"
-          onClick={(e) => {
-            e.stopPropagation();
-            window.open(getProductUrl(machine.id), '_blank');
-          }}
-        >
-          <ExternalLink className="h-3 w-3 mr-1" />
-          Läs mer
-        </Button>
+        {getProductUrl(machine.id) && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-2 h-7 text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(getProductUrl(machine.id), '_blank');
+            }}
+          >
+            <ExternalLink className="h-3 w-3 mr-1" />
+            Läs mer
+          </Button>
+        )}
       </div>
     </div>
   );
