@@ -51,8 +51,9 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const safeOcc75 = isNaN(occupancy75) ? 0 : occupancy75;
   const safeOcc100 = isNaN(occupancy100) ? 0 : occupancy100;
 
-  // Calculate total costs per month
-  const totalCostPerMonth = safeLeasingCost + safeOperatingCost;
+  // Calculate total costs per month - include flatrate cost when active
+  const flatrateCost = isFlatrateActive ? (isNaN(operatingCostPerMonth) ? 0 : operatingCostPerMonth) : 0;
+  const totalCostPerMonth = safeLeasingCost + safeOperatingCost + flatrateCost;
 
   // Lägg till extra loggning för felsökning
   console.log(`ResultsTable rendering with values:
@@ -122,10 +123,19 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               </tr>
             )}
             
+            {isFlatrateActive && (
+              <tr className="border-b border-slate-200">
+                <td className="py-3 px-4 text-slate-700">Flatrate credits (ex moms)</td>
+                <td className="py-3 px-4 text-right text-slate-700">-</td>
+                <td className="py-3 px-4 text-right text-slate-700">-</td>
+                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(operatingCostPerMonth)}</td>
+                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(operatingCostPerMonth * 12)}</td>
+              </tr>
+            )}
+            
             <tr className="border-b border-slate-200">
               <td className="py-3 px-4 text-slate-700">
-                Driftskostnad (ex moms)
-                {isFlatrateActive && <span className="text-emerald-600 text-xs ml-2">(Inkluderat i Flatrate)</span>}
+                {isFlatrateActive ? 'Övrigt (ex moms)' : 'Driftskostnad (ex moms)'}
               </td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>

@@ -11,6 +11,7 @@ interface PerCreditCardProps {
   creditPrice: number;
   creditsPerTreatment: number;
   treatmentsPerDay: number;
+  isDisabled?: boolean;
 }
 
 const PerCreditCard: React.FC<PerCreditCardProps> = ({
@@ -18,7 +19,8 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
   onSelect,
   creditPrice,
   creditsPerTreatment,
-  treatmentsPerDay
+  treatmentsPerDay,
+  isDisabled = false
 }) => {
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
   const totalCreditsPerMonth = treatmentsPerMonth * creditsPerTreatment;
@@ -26,12 +28,14 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
 
   return (
     <Card 
-      className={`cursor-pointer transition-all duration-300 h-full border-2 ${
-        isSelected 
-          ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50 shadow-lg' 
-          : 'border-slate-200 hover:border-blue-300 hover:shadow-md'
+      className={`transition-all duration-300 h-full border-2 ${
+        isDisabled 
+          ? 'opacity-50 cursor-not-allowed bg-slate-50 border-slate-200' 
+          : isSelected 
+            ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50 shadow-lg cursor-pointer' 
+            : 'border-slate-200 hover:border-blue-300 hover:shadow-md cursor-pointer'
       }`}
-      onClick={onSelect}
+      onClick={isDisabled ? undefined : onSelect}
     >
       <CardContent className="p-6 h-full flex flex-col">
         <div className="flex items-center justify-between mb-3">
@@ -81,6 +85,12 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
           <div className="text-sm text-slate-600">
             <span className="font-semibold text-slate-700">Bäst för:</span> Låg eller varierande behandlingsvolym
           </div>
+          
+          {isDisabled && (
+            <div className="mt-2 text-sm text-orange-600 font-medium">
+              Credits ingår redan i ditt valda paket
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

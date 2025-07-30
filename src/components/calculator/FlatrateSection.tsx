@@ -77,6 +77,7 @@ const FlatrateSection: React.FC = () => {
             creditPrice={creditPrice || 0}
             creditsPerTreatment={creditsPerTreatment}
             treatmentsPerDay={treatmentsPerDay}
+            isDisabled={selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld'}
           />
 
           {/* Flatrate Card */}

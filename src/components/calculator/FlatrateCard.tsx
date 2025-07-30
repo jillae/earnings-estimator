@@ -49,7 +49,7 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
         </div>
         
         <p className="text-base text-slate-700 mb-4 leading-relaxed">
-          Fast månadsavgift för obegränsad användning av credits. Lönsamt vid mer än 2 behandlingar per dag.
+          Den ultimata lösningen för total kostnadskontroll. Med detta paket betalar du <strong>aldrig mer för credits</strong> – du köper dig helt fri från all framtida debitering.
         </p>
         
         <div className="space-y-3 mb-4">
@@ -66,22 +66,26 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
           <div className="space-y-2 flex-grow">
             <div className="flex items-center gap-3 text-sm text-slate-600">
               <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-              <span>Obegränsad användning</span>
+              <span>Noll kostnad per credit, för alltid</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-slate-600">
               <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-              <span>Förutsägbar budgetering</span>
+              <span>Precis som att äga en "rå" maskin</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-slate-600">
               <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-              <span>Fast kostnad oavsett volym</span>
+              <span>Maximal enkelhet & förutsägbarhet</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm text-slate-600">
+              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+              <span>Unikt erbjudande på marknaden</span>
             </div>
           </div>
         </div>
         
         <div className="mt-auto pt-3 border-t border-slate-100">
           <div className="text-sm text-slate-600">
-            <span className="font-semibold text-slate-700">Bäst för:</span> Höga behandlingsvolymer med förutsägbar kostnad
+            <span className="font-semibold text-slate-700">Bäst för:</span> Hög volym och total kostnadsfrihet
           </div>
           
           {!isEnabled && (
