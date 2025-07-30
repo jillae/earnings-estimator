@@ -5,6 +5,7 @@ import Calculator from '@/components/Calculator';
 import WhitePaperLibrary from '@/components/WhitePaperLibrary';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
+import { KlinikOptimeringHomePlug } from '@/components/KlinikOptimeringHomePlug';
 import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
@@ -18,6 +19,7 @@ const Index = () => {
       <Header />
       <main className="flex-grow py-6">
         <Calculator />
+        <KlinikOptimeringHomePlug />
         <WhitePaperLibrary />
       </main>
       <Footer />
