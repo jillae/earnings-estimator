@@ -41,17 +41,17 @@ export const LEASING_PACKAGES = {
     id: 'allt-inkluderat',
     name: 'Allt-inkluderat', 
     shortName: 'Allt-ink',
-    description: 'Fullständig kostnadskontroll med fast månadsavgift.',
+    description: 'Den ultimata lösningen för total kostnadskontroll. Med detta paket betalar du aldrig mer för credits – du köper dig helt fri från all framtida debitering.',
     detailedDescription: 'Alla credits inkluderade i priset. Perfekt för hög volym och förutsägbar budget.',
     sliderPosition: 2,
     icon: '📦',
     benefits: [
-      'Fast månadsavgift',
-      'Alla credits inkluderade', 
-      'Inga extra driftkostnader',
-      'Förutsägbar budget'
+      'Noll kostnad per credit, för alltid',
+      'Precis som att äga en "rå" maskin', 
+      'Maximal enkelhet & förutsägbarhet',
+      'Unikt erbjudande på marknaden'
     ],
-    bestFor: 'Hög volym och förutsägbar budget'
+    bestFor: 'Hög volym och total kostnadsfrihet'
   }
 } as const;
 
