@@ -23,67 +23,66 @@ const Header = () => {
     <>
       <div className="bg-primary text-white py-2 px-4">
         <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <Link to="/" className="flex items-center hover:text-primary-foreground/80 transition-colors">
-              <Home className="h-4 w-4 mr-1" />
-              <span className="text-sm">Hem</span>
-            </Link>
-            <Link to="/dashboard" className="flex items-center hover:text-primary-foreground/80 transition-colors">
-              <BarChart3 className="h-4 w-4 mr-1" />
-              <span className="text-sm">Dashboard</span>
-            </Link>
-            <Link to="/contact" className="flex items-center hover:text-primary-foreground/80 transition-colors">
-              <Phone className="h-4 w-4 mr-1" />
-              <span className="text-sm">Kontakt</span>
-            </Link>
-            <Link to="/manual" className="flex items-center hover:text-primary-foreground/80 transition-colors">
-              <FileText className="h-4 w-4 mr-1" />
-              <span className="text-sm">Manual</span>
-            </Link>
-            <a 
-              href="#whitepapers" 
-              onClick={scrollToWhitepapers}
-              className="flex items-center hover:text-primary-foreground/80 transition-colors"
-            >
-              <Library className="h-4 w-4 mr-1" />
-              <span className="text-sm">Whitepapers</span>
-            </a>
-            <Link to="/klinik-optimering-coming-soon" className="flex items-center hover:text-primary-foreground/80 transition-colors">
-              <span className="text-xs">🏥</span>
-              <span className="text-sm ml-1">Klinikoptimering</span>
-            </Link>
-            <button 
-              onClick={() => {
-                const element = document.querySelector('[data-growth-forecast]');
-                if (element) element.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="flex items-center hover:text-primary-foreground/80 transition-colors"
-            >
-              <span className="text-xs">📈</span>
-              <span className="text-sm ml-1">Tillväxtprognos</span>
-            </button>
-            <a 
-              href="https://bit.ly/erchoniaeenallmodels" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="flex items-center hover:text-primary-foreground/80 transition-colors"
-            >
-              <ExternalLink className="h-4 w-4 mr-1" />
-              <span className="text-sm">Produkter</span>
-            </a>
-            <a 
-              href="https://bit.ly/EENHelpdesk" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="group flex items-center"
-            >
-              <div className="flex items-center space-x-1">
-                <div className="bg-green-500 rounded-full p-1.5 mr-1 text-white">
-                  <HelpCircle className="h-3.5 w-3.5" />
+          <div className="flex items-center space-x-6">
+            {/* Huvudnavigation */}
+            <div className="flex items-center space-x-4 border-r border-white/20 pr-6">
+              <Link to="/" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+                <Home className="h-4 w-4 mr-1" />
+                <span className="text-sm">Kalkylator</span>
+              </Link>
+              <Link to="/dashboard" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+                <BarChart3 className="h-4 w-4 mr-1" />
+                <span className="text-sm">Dashboard</span>
+              </Link>
+            </div>
+
+            {/* Analysverktyg - nu integrerade i kalkylatorn via modaler, men kan behållas för direktaccess */}
+            
+            {/* Produkter & Information */}
+            <div className="flex items-center space-x-4 border-r border-white/20 pr-6">
+              <a 
+                href="https://bit.ly/erchoniaeenallmodels" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center hover:text-primary-foreground/80 transition-colors"
+              >
+                <ExternalLink className="h-4 w-4 mr-1" />
+                <span className="text-sm">Produkter</span>
+              </a>
+              <a 
+                href="#whitepapers" 
+                onClick={scrollToWhitepapers}
+                className="flex items-center hover:text-primary-foreground/80 transition-colors"
+              >
+                <Library className="h-4 w-4 mr-1" />
+                <span className="text-sm">Whitepapers</span>
+              </a>
+            </div>
+
+            {/* Support & Service */}
+            <div className="flex items-center space-x-4">
+              <Link to="/manual" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+                <FileText className="h-4 w-4 mr-1" />
+                <span className="text-sm">Manual</span>
+              </Link>
+              <Link to="/contact" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+                <Phone className="h-4 w-4 mr-1" />
+                <span className="text-sm">Kontakt</span>
+              </Link>
+              <a 
+                href="https://bit.ly/EENHelpdesk" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="group flex items-center"
+              >
+                <div className="flex items-center space-x-1">
+                  <div className="bg-green-500 rounded-full p-1.5 mr-1 text-white">
+                    <HelpCircle className="h-3.5 w-3.5" />
+                  </div>
+                  <span className="text-sm group-hover:text-primary-foreground/80 transition-colors">Hjälp</span>
                 </div>
-                <span className="text-sm group-hover:text-primary-foreground/80 transition-colors">Hjälp</span>
-              </div>
-            </a>
+              </a>
+            </div>
           </div>
           <div className="flex space-x-2">
             <Link to="/admin-login">
