@@ -103,70 +103,78 @@ export const SlaCardsMatrix: React.FC = () => {
 
   const getColumnStyle = (slaLevel: DriftpaketType) => {
     const isSelected = selectedDriftpaket === slaLevel;
-    const baseStyle = "p-4 text-center border cursor-pointer transition-all duration-200 hover:bg-slate-50";
+    const baseStyle = "p-6 text-center cursor-pointer transition-all duration-300 hover:bg-slate-50/80 border-r border-slate-100 last:border-r-0";
     
     if (isSelected) {
       switch (slaLevel) {
         case 'Bas':
-          return `${baseStyle} bg-blue-50 border-blue-300 ring-2 ring-blue-400`;
+          return `${baseStyle} bg-gradient-to-b from-blue-50 to-blue-100/50 ring-1 ring-blue-200 shadow-sm`;
         case 'Silver':
-          return `${baseStyle} bg-slate-50 border-slate-300 ring-2 ring-slate-400`;
+          return `${baseStyle} bg-gradient-to-b from-slate-50 to-slate-100/50 ring-1 ring-slate-200 shadow-sm`;
         case 'Guld':
-          return `${baseStyle} bg-yellow-50 border-yellow-300 ring-2 ring-yellow-400`;
+          return `${baseStyle} bg-gradient-to-b from-yellow-50 to-yellow-100/50 ring-1 ring-yellow-200 shadow-sm`;
       }
     }
     
-    return `${baseStyle} border-slate-200`;
+    return `${baseStyle} hover:shadow-sm`;
   };
 
   const getHeaderStyle = (slaLevel: DriftpaketType) => {
     const isSelected = selectedDriftpaket === slaLevel;
-    const baseStyle = "p-4 text-center border font-semibold cursor-pointer transition-all duration-200 hover:bg-slate-50";
+    const baseStyle = "p-6 text-center font-semibold cursor-pointer transition-all duration-300 hover:bg-slate-50/80 border-r border-slate-100 last:border-r-0";
     
     if (isSelected) {
       switch (slaLevel) {
         case 'Bas':
-          return `${baseStyle} bg-blue-100 border-blue-300 text-blue-900 ring-2 ring-blue-400`;
+          return `${baseStyle} bg-gradient-to-b from-blue-100 to-blue-200/50 text-blue-900 ring-1 ring-blue-300 shadow-md`;
         case 'Silver':
-          return `${baseStyle} bg-slate-100 border-slate-300 text-slate-900 ring-2 ring-slate-400`;
+          return `${baseStyle} bg-gradient-to-b from-slate-100 to-slate-200/50 text-slate-900 ring-1 ring-slate-300 shadow-md`;
         case 'Guld':
-          return `${baseStyle} bg-yellow-100 border-yellow-300 text-yellow-900 ring-2 ring-yellow-400`;
+          return `${baseStyle} bg-gradient-to-b from-yellow-100 to-yellow-200/50 text-yellow-900 ring-1 ring-yellow-300 shadow-md`;
       }
     }
     
-    return `${baseStyle} border-slate-200 bg-slate-50`;
+    return `${baseStyle} bg-gradient-to-b from-slate-50 to-slate-100 hover:from-slate-100 hover:to-slate-150`;
   };
 
   return (
     <div className="glass-card animate-slide-in" style={{ animationDelay: '300ms' }}>
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">
+      <div className="mb-8">
+        <h3 className="text-xl font-bold text-slate-900 mb-3">
           Välj Service & Driftpaket
         </h3>
-        <p className="text-sm text-slate-600">
-          Jämför alternativen och välj det som passar din klinik bäst
+        <p className="text-slate-600 leading-relaxed">
+          Jämför alternativen och välj det som passar din klinik bäst. Klicka på en kolumn för att välja.
         </p>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse rounded-lg overflow-hidden shadow-sm">
+      <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+        <table className="w-full">{/* Remove border-collapse for better control */}
           {/* Header */}
           <thead>
-            <tr>
-              <th className="p-4 text-left border bg-slate-100 border-slate-200 font-semibold text-slate-700">
-                Vad ingår
+            <tr className="border-b border-slate-200">
+              <th className="p-6 text-left bg-gradient-to-r from-slate-50 to-slate-100 font-bold text-slate-800 border-r border-slate-100">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-600">📋</span>
+                  <span>Vad ingår</span>
+                </div>
               </th>
               <th 
                 className={getHeaderStyle('Bas')}
                 onClick={() => handleSlaSelect('Bas')}
               >
-                <div>
-                  <div className="text-lg font-bold">🔵 Bas</div>
-                  <div className="text-sm">(Ingår)</div>
-                  <div className="text-lg font-bold mt-1">{formatCurrency(0)}</div>
-                  <div className="text-xs">/ mån</div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-2xl">🔵</span>
+                    <span className="text-xl font-bold">Bas</span>
+                  </div>
+                  <div className="text-sm opacity-80">(Ingår)</div>
+                  <div className="text-2xl font-bold">{formatCurrency(0)}</div>
+                  <div className="text-sm opacity-70">/ mån</div>
                   {selectedDriftpaket === 'Bas' && (
-                    <div className="text-xs font-bold text-blue-700 mt-1">✓ VALT</div>
+                    <div className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">
+                      ✓ VALT
+                    </div>
                   )}
                 </div>
               </th>
@@ -174,13 +182,18 @@ export const SlaCardsMatrix: React.FC = () => {
                 className={getHeaderStyle('Silver')}
                 onClick={() => handleSlaSelect('Silver')}
               >
-                <div>
-                  <div className="text-lg font-bold">⚪ Silver</div>
-                  <div className="text-sm">&nbsp;</div>
-                  <div className="text-lg font-bold mt-1">{formatCurrency(calculatedSlaCostSilver)}</div>
-                  <div className="text-xs">/ mån</div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-2xl">⚪</span>
+                    <span className="text-xl font-bold">Silver</span>
+                  </div>
+                  <div className="text-sm opacity-80">&nbsp;</div>
+                  <div className="text-2xl font-bold">{formatCurrency(calculatedSlaCostSilver)}</div>
+                  <div className="text-sm opacity-70">/ mån</div>
                   {selectedDriftpaket === 'Silver' && (
-                    <div className="text-xs font-bold text-slate-700 mt-1">✓ VALT</div>
+                    <div className="inline-flex items-center gap-1 px-2 py-1 bg-slate-600 text-white text-xs font-bold rounded-full">
+                      ✓ VALT
+                    </div>
                   )}
                 </div>
               </th>
@@ -188,13 +201,18 @@ export const SlaCardsMatrix: React.FC = () => {
                 className={getHeaderStyle('Guld')}
                 onClick={() => handleSlaSelect('Guld')}
               >
-                <div>
-                  <div className="text-lg font-bold">🟡 Guld</div>
-                  <div className="text-sm">&nbsp;</div>
-                  <div className="text-lg font-bold mt-1">{formatCurrency(calculatedSlaCostGuld)}</div>
-                  <div className="text-xs">/ mån</div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-2xl">🟡</span>
+                    <span className="text-xl font-bold">Guld</span>
+                  </div>
+                  <div className="text-sm opacity-80">&nbsp;</div>
+                  <div className="text-2xl font-bold">{formatCurrency(calculatedSlaCostGuld)}</div>
+                  <div className="text-sm opacity-70">/ mån</div>
                   {selectedDriftpaket === 'Guld' && (
-                    <div className="text-xs font-bold text-yellow-700 mt-1">✓ VALT</div>
+                    <div className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-600 text-white text-xs font-bold rounded-full">
+                      ✓ VALT
+                    </div>
                   )}
                 </div>
               </th>
@@ -206,35 +224,47 @@ export const SlaCardsMatrix: React.FC = () => {
             {tableRows.map((section, sectionIndex) => (
               <React.Fragment key={sectionIndex}>
                 {/* Section header */}
-                <tr>
-                  <td colSpan={4} className="p-3 bg-slate-100 border border-slate-200 font-semibold text-slate-700 text-sm">
-                    {section.category}
+                <tr className="bg-gradient-to-r from-slate-50 to-slate-100">
+                  <td colSpan={4} className="p-4 font-bold text-slate-800 text-sm border-b border-slate-200">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-slate-400 rounded-full"></span>
+                      {section.category}
+                    </div>
                   </td>
                 </tr>
                 
                 {/* Section rows */}
                 {section.features.map((feature, featureIndex) => (
-                  <tr key={`${sectionIndex}-${featureIndex}`}>
-                    <td className="p-3 border border-slate-200 font-medium text-slate-700 text-sm">
-                      {feature.label}
+                  <tr key={`${sectionIndex}-${featureIndex}`} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="p-4 font-medium text-slate-700 bg-slate-50/50 border-r border-slate-100">
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 bg-slate-400 rounded-full flex-shrink-0"></span>
+                        <span className="leading-tight">{feature.label}</span>
+                      </div>
                     </td>
                     <td 
                       className={getColumnStyle('Bas')}
                       onClick={() => handleSlaSelect('Bas')}
                     >
-                      <span className="text-sm">{feature.bas}</span>
+                      <div className="font-medium text-slate-800 leading-tight">
+                        {feature.bas}
+                      </div>
                     </td>
                     <td 
                       className={getColumnStyle('Silver')}
                       onClick={() => handleSlaSelect('Silver')}
                     >
-                      <span className="text-sm">{feature.silver}</span>
+                      <div className="font-medium text-slate-800 leading-tight">
+                        {feature.silver}
+                      </div>
                     </td>
                     <td 
                       className={getColumnStyle('Guld')}
                       onClick={() => handleSlaSelect('Guld')}
                     >
-                      <span className="text-sm">{feature.guld}</span>
+                      <div className="font-medium text-slate-800 leading-tight">
+                        {feature.guld}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -242,30 +272,30 @@ export const SlaCardsMatrix: React.FC = () => {
             ))}
 
             {/* Bäst för rad */}
-            <tr>
-              <td className="p-3 border border-slate-200 font-medium text-slate-700 text-sm bg-slate-50">
+            <tr className="border-t-2 border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100">
+              <td className="p-4 font-bold text-slate-800 bg-slate-100 border-r border-slate-100">
                 <div className="flex items-center gap-2">
-                  <Target className="h-4 w-4" />
-                  Bäst för
+                  <Target className="h-4 w-4 text-slate-600" />
+                  <span>Bäst för</span>
                 </div>
               </td>
               <td 
                 className={getColumnStyle('Bas')}
                 onClick={() => handleSlaSelect('Bas')}
               >
-                <span className="text-sm font-medium">Nya kliniker</span>
+                <div className="font-bold text-slate-900 py-2">Nya kliniker</div>
               </td>
               <td 
                 className={getColumnStyle('Silver')}
                 onClick={() => handleSlaSelect('Silver')}
               >
-                <span className="text-sm font-medium">Växande kliniker</span>
+                <div className="font-bold text-slate-900 py-2">Växande kliniker</div>
               </td>
               <td 
                 className={getColumnStyle('Guld')}
                 onClick={() => handleSlaSelect('Guld')}
               >
-                <span className="text-sm font-medium">Etablerade kliniker</span>
+                <div className="font-bold text-slate-900 py-2">Etablerade kliniker</div>
               </td>
             </tr>
           </tbody>
@@ -273,8 +303,8 @@ export const SlaCardsMatrix: React.FC = () => {
       </div>
 
       {/* Avtalsinfo */}
-      <div className="text-xs text-gray-500 text-center italic mt-4 pt-4 border-t border-slate-200">
-        *Avtalet är obundet löpande 3 månader (kvartalsvis) och faktureras i förskott
+      <div className="text-xs text-slate-500 text-center italic mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+        <span className="font-medium">📄 Avtalsvillkor:</span> Avtalet är obundet löpande 3 månader (kvartalsvis) och faktureras i förskott
       </div>
     </div>
   );
