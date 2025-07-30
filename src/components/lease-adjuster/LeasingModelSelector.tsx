@@ -34,36 +34,36 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
           }`}
           onClick={() => onModelChange('grundleasing')}
         >
-          <CardContent className="p-6 h-full flex flex-col">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{grundleasingPackage.icon}</span>
-                <h3 className="text-xl font-bold text-slate-900">
+          <CardContent className="p-4 h-full flex flex-col">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">{grundleasingPackage.icon}</span>
+                <h3 className="text-lg font-bold text-slate-900">
                   {grundleasingPackage.name}
                 </h3>
               </div>
               {selectedModel === 'grundleasing' && (
-                <Badge variant="default" className="text-sm font-semibold px-3 py-1">
+                <Badge variant="default" className="text-xs font-semibold px-2 py-1">
                   Vald
                 </Badge>
               )}
             </div>
             
-            <p className="text-base text-slate-700 mb-4 leading-relaxed">
+            <p className="text-sm text-slate-700 mb-3 leading-relaxed">
               {grundleasingPackage.description}
             </p>
             
-            <div className="space-y-2 mb-4 flex-grow">
-              {grundleasingPackage.benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-3 text-sm text-slate-600">
-                  <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
+            <div className="space-y-1 mb-3 flex-grow">
+              {grundleasingPackage.benefits.slice(0, 3).map((benefit, index) => (
+                <div key={index} className="flex items-center gap-2 text-xs text-slate-600">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0"></div>
                   <span>{benefit}</span>
                 </div>
               ))}
             </div>
             
-            <div className="mt-auto pt-3 border-t border-slate-100">
-              <div className="text-sm text-slate-600">
+            <div className="mt-auto pt-2 border-t border-slate-100">
+              <div className="text-xs text-slate-600">
                 <span className="font-semibold text-slate-700">Bäst för:</span> {grundleasingPackage.bestFor}
               </div>
             </div>
@@ -79,36 +79,36 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
           }`}
           onClick={() => onModelChange('strategisk')}
         >
-          <CardContent className="p-6 h-full flex flex-col">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{strategiskPackage.icon}</span>
-                <h3 className="text-xl font-bold text-slate-700">
+          <CardContent className="p-4 h-full flex flex-col">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">{strategiskPackage.icon}</span>
+                <h3 className="text-lg font-bold text-slate-700">
                   {strategiskPackage.name}
                 </h3>
               </div>
               {selectedModel === 'strategisk' && (
-                <Badge variant="secondary" className="text-sm font-semibold px-3 py-1">
+                <Badge variant="secondary" className="text-xs font-semibold px-2 py-1">
                   Vald
                 </Badge>
               )}
             </div>
             
-            <p className="text-base text-slate-600 mb-4 leading-relaxed">
+            <p className="text-sm text-slate-600 mb-3 leading-relaxed">
               {strategiskPackage.description}
             </p>
             
-            <div className="space-y-2 mb-4 flex-grow">
-              {strategiskPackage.benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-3 text-sm text-slate-500">
-                  <div className="w-2 h-2 bg-slate-400 rounded-full flex-shrink-0"></div>
+            <div className="space-y-1 mb-3 flex-grow">
+              {strategiskPackage.benefits.slice(0, 3).map((benefit, index) => (
+                <div key={index} className="flex items-center gap-2 text-xs text-slate-500">
+                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full flex-shrink-0"></div>
                   <span>{benefit}</span>
                 </div>
               ))}
             </div>
             
-            <div className="mt-auto pt-3 border-t border-slate-100">
-              <div className="text-sm text-slate-500">
+            <div className="mt-auto pt-2 border-t border-slate-100">
+              <div className="text-xs text-slate-500">
                 <span className="font-semibold text-slate-600">Bäst för:</span> {strategiskPackage.bestFor}
               </div>
             </div>

@@ -123,9 +123,9 @@ export const SlaCardsMatrix: React.FC = () => {
     const baseClasses = "p-3 text-center border-r border-slate-200 last:border-r-0 transition-all duration-200";
     
     if (isSelected) {
-      return `${baseClasses} bg-red-100 border-red-300 font-semibold text-slate-900`;
+      return `${baseClasses} bg-slate-100 border-slate-300 font-semibold text-slate-900`;
     } else if (isPreviousSelection) {
-      return `${baseClasses} bg-slate-50 text-slate-400 line-through opacity-75`;
+      return `${baseClasses} bg-slate-50/50 text-slate-400 opacity-60`;
     } else {
       return `${baseClasses} bg-white text-slate-600`;
     }
@@ -138,9 +138,9 @@ export const SlaCardsMatrix: React.FC = () => {
     const baseClasses = "p-4 text-center font-bold cursor-pointer border-r border-slate-200 last:border-r-0 transition-all duration-200 hover:bg-slate-50";
     
     if (isSelected) {
-      return `${baseClasses} bg-red-200 border-red-300 text-red-900 ring-2 ring-red-300`;
+      return `${baseClasses} bg-slate-200 border-slate-300 text-slate-900 ring-2 ring-slate-300`;
     } else if (isPreviousSelection) {
-      return `${baseClasses} bg-slate-100 text-slate-400 opacity-75`;
+      return `${baseClasses} bg-slate-100/50 text-slate-400 opacity-60`;
     } else {
       return `${baseClasses} bg-slate-50 text-slate-700 hover:bg-slate-100`;
     }
@@ -153,8 +153,8 @@ export const SlaCardsMatrix: React.FC = () => {
     if (isPreviousSelection) {
       return (
         <div>
-          <div className="line-through">{levelText}</div>
-          <div className="text-xs line-through">{formatCurrency(cost)}/mån</div>
+          <div className="opacity-60">{levelText}</div>
+          <div className="text-sm opacity-60">{formatCurrency(cost)}/mån</div>
           <Badge variant="secondary" className="text-xs mt-1 opacity-75">
             Ingår
           </Badge>
@@ -167,7 +167,7 @@ export const SlaCardsMatrix: React.FC = () => {
         <div>{levelText}</div>
         <div className="text-sm font-medium">{formatCurrency(cost)}/mån</div>
         {index === selectedIndex && (
-          <Badge variant="default" className="text-xs mt-1 bg-red-600">
+          <Badge variant="default" className="text-xs mt-1 bg-slate-600">
             <Check className="h-3 w-3 mr-1" />
             VALD
           </Badge>
