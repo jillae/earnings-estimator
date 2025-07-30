@@ -111,7 +111,7 @@ const DetailedAnalysisModal: React.FC = () => {
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-8">
+        <div className="space-y-6">
           {/* Huvudgraf - Förbättrad med bättre visualisering */}
           <div className="bg-white rounded-lg border border-slate-200 p-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -223,141 +223,147 @@ const DetailedAnalysisModal: React.FC = () => {
             </div>
           </div>
 
-          {/* Separator mellan huvudgraf och KPI-cirkeldiagram */}
-          <div className="border-t border-slate-200 pt-6">
-            <h2 className="text-xl font-semibold mb-6 text-slate-800 flex items-center gap-2">
-              <PieChartIcon className="h-5 w-5 text-emerald-600" />
-              KPI-Cirkeldiagram
+          {/* KPI-Cirkeldiagram - Kompakt horisontell layout */}
+          <div className="border-t border-slate-200 pt-4">
+            <h2 className="text-lg font-semibold mb-4 text-slate-800 flex items-center gap-2">
+              <PieChartIcon className="h-4 w-4 text-emerald-600" />
+              KPI-Översikt
             </h2>
 
-            {/* KPI Cirkeldiagram */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Cirkeldiagram 1: Kostnadsfördelning */}
-              <div className="bg-white rounded-lg border border-slate-200 p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <PieChartIcon className="h-5 w-5 text-blue-600" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Cirkeldiagram 1: Kostnadsfördelning - Horisontell layout */}
+              <div className="bg-white rounded-lg border border-slate-200 p-4">
+                <h3 className="text-base font-semibold mb-3 flex items-center gap-2">
+                  <PieChartIcon className="h-4 w-4 text-blue-600" />
                   Månatlig Kostnadsfördelning
                 </h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={costDistributionData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={40}
-                        outerRadius={80}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {costDistributionData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.fill} />
-                        ))}
-                      </Pie>
-                      <ChartTooltip 
-                        content={({ active, payload }) => {
-                          if (active && payload && payload.length) {
-                            const data = payload[0];
-                            return (
-                              <div className="bg-white p-3 border border-slate-200 rounded shadow-lg">
-                                <p className="font-medium">{data.name}</p>
-                                <p className="text-sm text-slate-600">
-                                  {formatCurrency(data.value as number)}
-                                </p>
-                                <p className="text-xs text-slate-500">
-                                  {((data.value as number / totalMonthlyCost) * 100).toFixed(1)}% av total
-                                </p>
-                              </div>
-                            );
-                          }
-                          return null;
-                        }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="space-y-2 mt-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      <span>Leasingkostnad</span>
-                    </div>
-                    <span className="font-medium">{formatCurrency(leasingCost)}</span>
+                <div className="flex items-center gap-4">
+                  <div className="h-24 w-24 flex-shrink-0">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={costDistributionData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={25}
+                          outerRadius={45}
+                          paddingAngle={3}
+                          dataKey="value"
+                        >
+                          {costDistributionData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                          ))}
+                        </Pie>
+                        <ChartTooltip 
+                          content={({ active, payload }) => {
+                            if (active && payload && payload.length) {
+                              const data = payload[0];
+                              return (
+                                <div className="bg-white p-2 border border-slate-200 rounded shadow-lg">
+                                  <p className="font-medium text-sm">{data.name}</p>
+                                  <p className="text-xs text-slate-600">
+                                    {formatCurrency(data.value as number)}
+                                  </p>
+                                </div>
+                              );
+                            }
+                            return null;
+                          }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
-                      <span>Driftskostnad</span>
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span>Leasing</span>
+                      </div>
+                      <span className="font-medium">{formatCurrency(leasingCost)}</span>
                     </div>
-                    <span className="font-medium">{formatCurrency(operatingCost.totalCost)}</span>
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                        <span>Drift</span>
+                      </div>
+                      <span className="font-medium">{formatCurrency(operatingCost.totalCost)}</span>
+                    </div>
+                    <div className="pt-1 border-t border-slate-100">
+                      <div className="flex items-center justify-between text-sm font-medium">
+                        <span>Total</span>
+                        <span>{formatCurrency(totalMonthlyCost)}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Cirkeldiagram 2: Lönsamhet per månadsintäkt */}
-              <div className="bg-white rounded-lg border border-slate-200 p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-emerald-600" />
+              {/* Cirkeldiagram 2: Lönsamhet per månadsintäkt - Horisontell layout */}
+              <div className="bg-white rounded-lg border border-slate-200 p-4">
+                <h3 className="text-base font-semibold mb-3 flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-emerald-600" />
                   Nettoandel av Månadsintäkt
                 </h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={profitabilityData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={40}
-                        outerRadius={80}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {profitabilityData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.fill} />
-                        ))}
-                      </Pie>
-                      <ChartTooltip 
-                        content={({ active, payload }) => {
-                          if (active && payload && payload.length) {
-                            const data = payload[0];
-                            const totalRevenue = revenue.monthlyRevenueExVat;
-                            return (
-                              <div className="bg-white p-3 border border-slate-200 rounded shadow-lg">
-                                <p className="font-medium">{data.name}</p>
-                                <p className="text-sm text-slate-600">
-                                  {formatCurrency(data.value as number)}
-                                </p>
-                                <p className="text-xs text-slate-500">
-                                  {((data.value as number / totalRevenue) * 100).toFixed(1)}% av intäkt
-                                </p>
-                              </div>
-                            );
-                          }
-                          return null;
-                        }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="space-y-2 mt-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-emerald-600 rounded-full"></div>
-                      <span>Nettoresultat</span>
-                    </div>
-                    <span className="font-medium text-emerald-600">{formatCurrency(netResults.netPerMonthExVat)}</span>
+                <div className="flex items-center gap-4">
+                  <div className="h-24 w-24 flex-shrink-0">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={profitabilityData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={25}
+                          outerRadius={45}
+                          paddingAngle={3}
+                          dataKey="value"
+                        >
+                          {profitabilityData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                          ))}
+                        </Pie>
+                        <ChartTooltip 
+                          content={({ active, payload }) => {
+                            if (active && payload && payload.length) {
+                              const data = payload[0];
+                              const totalRevenue = revenue.monthlyRevenueExVat;
+                              return (
+                                <div className="bg-white p-2 border border-slate-200 rounded shadow-lg">
+                                  <p className="font-medium text-sm">{data.name}</p>
+                                  <p className="text-xs text-slate-600">
+                                    {formatCurrency(data.value as number)}
+                                  </p>
+                                  <p className="text-xs text-slate-500">
+                                    {((data.value as number / totalRevenue) * 100).toFixed(1)}% av intäkt
+                                  </p>
+                                </div>
+                              );
+                            }
+                            return null;
+                          }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-600 rounded-full"></div>
-                      <span>Totala kostnader</span>
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
+                        <span>Netto</span>
+                      </div>
+                      <span className="font-medium text-emerald-600">{formatCurrency(netResults.netPerMonthExVat)}</span>
                     </div>
-                    <span className="font-medium">{formatCurrency(totalMonthlyCost)}</span>
-                  </div>
-                  <div className="pt-2 border-t border-slate-100">
-                    <div className="flex items-center justify-between text-sm font-medium">
-                      <span>Total månadsintäkt</span>
-                      <span>{formatCurrency(revenue.monthlyRevenueExVat)}</span>
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+                        <span>Kostnader</span>
+                      </div>
+                      <span className="font-medium">{formatCurrency(totalMonthlyCost)}</span>
+                    </div>
+                    <div className="pt-1 border-t border-slate-100">
+                      <div className="flex items-center justify-between text-sm font-medium">
+                        <span>Intäkt</span>
+                        <span>{formatCurrency(revenue.monthlyRevenueExVat)}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -365,27 +371,27 @@ const DetailedAnalysisModal: React.FC = () => {
             </div>
           </div>
 
-          {/* Sammanfattning */}
-          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-lg border border-emerald-200 p-6">
-            <h3 className="text-lg font-semibold mb-4 text-slate-800">Ekonomisk Sammanfattning</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Ekonomisk Sammanfattning */}
+          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-lg border border-emerald-200 p-4">
+            <h3 className="text-base font-semibold mb-3 text-slate-800">Ekonomisk Sammanfattning</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="text-center">
-                <div className="text-2xl font-bold text-emerald-600">
+                <div className="text-xl font-bold text-emerald-600">
                   {((netResults.netPerMonthExVat / revenue.monthlyRevenueExVat) * 100).toFixed(1)}%
                 </div>
-                <div className="text-sm text-slate-600">Vinstmarginal</div>
+                <div className="text-xs text-slate-600">Vinstmarginal</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
+                <div className="text-xl font-bold text-blue-600">
                   {Math.ceil(totalMonthlyCost / (revenue.monthlyRevenueExVat / 22))}
                 </div>
-                <div className="text-sm text-slate-600">Nollpunkt (dagar/mån)</div>
+                <div className="text-xs text-slate-600">Nollpunkt (dagar/mån)</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">
+                <div className="text-xl font-bold text-purple-600">
                   {formatCurrency(netResults.netPerYearExVat * 5)}
                 </div>
-                <div className="text-sm text-slate-600">5-års nettovinst</div>
+                <div className="text-xs text-slate-600">5-års nettovinst</div>
               </div>
             </div>
           </div>

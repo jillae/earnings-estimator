@@ -1,7 +1,8 @@
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Download, TrendingUp } from 'lucide-react';
+import DetailedAnalysisModal from './calculator/DetailedAnalysisModal';
 
 interface ResultsTableProps {
   dailyRevenueIncVat: number;
@@ -68,7 +69,10 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   return <div className="glass-card mt-8 animate-slide-in bg-white/95 backdrop-blur-sm shadow-xl border border-slate-200" style={{
     animationDelay: '600ms'
   }}>
-      <h2 className="text-2xl font-bold mb-6 text-slate-900">Resultat</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-slate-900">Resultat</h2>
+        <DetailedAnalysisModal />
+      </div>
       
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
