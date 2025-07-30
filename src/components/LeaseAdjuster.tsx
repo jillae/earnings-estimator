@@ -151,50 +151,39 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           isGrundleasingMode={selectedLeasingModel === 'grundleasing'}
         />
       )}
-
-      {/* Credits information box */}
-      {selectedMachine?.usesCredits && (
-        <div className="flex items-center justify-center p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-center gap-2 text-sm text-blue-700">
-            <span>Behöver du veta mer om hur Credits fungerar?</span>
-            <CreditInfoPopover />
-          </div>
+      
+      {/* Strategisk leasing indikator - behåll denna */}
+      {selectedMachine?.usesCredits && selectedLeasingModel === 'strategisk' && (
+        <div className="flex items-center text-sm bg-primary/10 p-2 rounded-md gap-2 shadow-inner border border-primary/20">
+          <CreditCard className="w-5 h-5 text-primary shrink-0" />
+          <span className="font-semibold text-primary">
+            Credits ingår i priset - inga extra kostnader
+          </span>
         </div>
       )}
 
-      {/* "Vad är Credits?" flyttat till egen sektion */}
 
-
-      <div className="flex flex-col md:flex-row items-stretch gap-3 w-full">
-        {/* Rekommenderat pris - vi visar alltid detta oavsett maskintyp */}
-        <div className="flex flex-1 items-center text-sm bg-blue-50 p-2 rounded-md gap-2 shadow-inner border border-blue-100">
-          <Info className="w-5 h-5 text-blue-600 shrink-0" />
-          <span>
-            Rekommenderat pris:
-            <span className="font-semibold ml-1">{formatCurrency(defaultCost)}</span>
-          </span>
+      {/* Rullande visare EFTER slidern */}
+      {usesCredits && selectedLeasingModel === 'grundleasing' && (
+        <div className="grid grid-cols-2 gap-4">
+          <RollingValueDisplay 
+            value={displayLeaseCost}
+            label="Rekommenderat pris"
+            className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
+            showTrendIcon={true}
+            trendDirection={currentSliderStep <= 1 ? 'down' : 'up'}
+            showStandardBadge={true}
+            isStandardPosition={currentSliderStep === 1}
+          />
+          <RollingValueDisplay 
+            value={calculatedCreditPrice}
+            label="Credit-kostnad: Styckepris"
+            className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
+            showTrendIcon={true}
+            trendDirection={currentSliderStep <= 1 ? 'up' : 'down'}
+          />
         </div>
-        {/* Kreditkostnad-indikator för grundleasing */}
-        {selectedMachine?.usesCredits && selectedLeasingModel === 'grundleasing' && (
-          <div className="flex flex-1 items-center text-sm bg-green-50 p-2 rounded-md gap-2 shadow-inner border border-emerald-100">
-            <span>
-              Credit-kostnad:&nbsp;
-              <span className="font-semibold">{formatCurrency(calculatedCreditPrice)}/credit</span>
-            </span>
-            <CreditInfoPopover />
-          </div>
-        )}
-        
-        {/* Strategisk leasing indikator */}
-        {selectedMachine?.usesCredits && selectedLeasingModel === 'strategisk' && (
-          <div className="flex flex-1 items-center text-sm bg-primary/10 p-2 rounded-md gap-2 shadow-inner border border-primary/20">
-            <CreditCard className="w-5 h-5 text-primary shrink-0" />
-            <span className="font-semibold text-primary">
-              Credits ingår i priset - inga extra kostnader
-            </span>
-          </div>
-        )}
-      </div>
+      )}
       
             {/* Ta bort nollpunkt från vänster kolumn - förklaring: detta är ett enkelt GUI element utan komplexitet */}
             
