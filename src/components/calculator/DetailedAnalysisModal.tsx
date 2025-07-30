@@ -327,6 +327,17 @@ const DetailedAnalysisModal: React.FC = () => {
                 </ChartContainer>
               </div>
               
+              {/* Leasingoffert knapp - under grafen */}
+              <div className="mt-4 text-center">
+                <Button
+                  variant="default"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+                  onClick={() => window.open('https://bit.ly/leasingeen', '_blank')}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  För leasingoffert, ansök här
+                </Button>
+              </div>
               {/* Prognos-verktyg: Interaktiva Sliderns - DIREKT UNDER GRAFEN */}
               <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-emerald-50 border border-blue-200 rounded-lg">
                 <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">

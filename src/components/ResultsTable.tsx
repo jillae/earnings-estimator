@@ -114,20 +114,6 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               </tr>
             )}
             
-            {paymentOption === 'leasing' && (
-              <tr>
-                <td colSpan={5} className="text-center py-2">
-                  <Button
-                    variant="default"
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
-                    onClick={() => window.open('https://bit.ly/leasingeen', '_blank')}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                     För leasingoffert, ansök här
-                  </Button>
-                </td>
-              </tr>
-            )}
             
             {isFlatrateActive && (
               <tr className="border-b border-slate-200">
