@@ -6,7 +6,7 @@ import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, ReferenceLine } from 'recharts';
-import { TrendingUp, DollarSign, PieChart as PieChartIcon, ExternalLink, Download, AlertTriangle, Users } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart as PieChartIcon, ExternalLink, Download, AlertTriangle, Users, Target } from 'lucide-react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useModalCalculations } from '@/hooks/useModalCalculations';
@@ -31,6 +31,10 @@ const DetailedAnalysisModal: React.FC = () => {
     totalMonthlyCost,
     monthlyData
   } = useModalCalculations();
+
+  // Beräkna nollpunkt (break-even punkt)
+  const dailyRevenue = modalRevenue.monthlyRevenueExVat / 22; // 22 arbetsdagar per månad
+  const breakEvenDays = dailyRevenue > 0 ? totalMonthlyCost / dailyRevenue : 0;
 
   // Funktioner för att hantera export och nytt fönster
   const handleOpenInNewWindow = () => {
@@ -192,90 +196,109 @@ const DetailedAnalysisModal: React.FC = () => {
                 </div>
               </div>
 
-              <ChartContainer config={chartConfig} className="h-96">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis 
-                      dataKey="month" 
-                      tick={{ fontSize: 11 }}
-                      interval={11}
-                      tickFormatter={(value) => `År ${Math.ceil(value / 12)}`}
-                    />
-                    <YAxis 
-                      tick={{ fontSize: 11 }}
-                      tickFormatter={(value) => `${Math.round(value / 1000)}k kr`}
-                    />
-                    <ChartTooltip 
-                      content={({ active, payload, label }) => {
-                        if (active && payload && payload.length) {
-                          const monthNum = label as number;
-                          const year = Math.ceil(monthNum / 12);
-                          const monthInYear = ((monthNum - 1) % 12) + 1;
-                          
-                          return (
-                            <div className="bg-white p-4 border border-slate-200 rounded-lg shadow-lg">
-                              <p className="font-medium mb-2">
-                                År {year}, Månad {monthInYear} (Månad {monthNum})
-                              </p>
-                              {payload.map((entry, index) => (
-                                <div key={index} className="flex items-center justify-between gap-4">
-                                  <div className="flex items-center gap-2">
-                                    <div 
-                                      className="w-3 h-3 rounded-full" 
-                                      style={{ backgroundColor: entry.color }}
-                                    />
-                                    <span className="text-sm">{entry.name}</span>
+              {/* Flytande ruta för Nollpunkt */}
+              <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg border border-slate-200 p-4 z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Target className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-slate-900">
+                      {breakEvenDays.toFixed(1)} dagar
+                    </div>
+                    <div className="text-sm text-slate-600">Nollpunkt</div>
+                    <div className="text-xs text-slate-500">
+                      Arbetsdagar per månad för att täcka kostnader
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative">
+                <ChartContainer config={chartConfig} className="h-96">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                      <XAxis 
+                        dataKey="month" 
+                        tick={{ fontSize: 11 }}
+                        interval={11}
+                        tickFormatter={(value) => `År ${Math.ceil(value / 12)}`}
+                      />
+                      <YAxis 
+                        tick={{ fontSize: 11 }}
+                        tickFormatter={(value) => `${Math.round(value / 1000)}k kr`}
+                      />
+                      <ChartTooltip 
+                        content={({ active, payload, label }) => {
+                          if (active && payload && payload.length) {
+                            const monthNum = label as number;
+                            const year = Math.ceil(monthNum / 12);
+                            const monthInYear = ((monthNum - 1) % 12) + 1;
+                            
+                            return (
+                              <div className="bg-white p-4 border border-slate-200 rounded-lg shadow-lg">
+                                <p className="font-medium mb-2">
+                                  År {year}, Månad {monthInYear} (Månad {monthNum})
+                                </p>
+                                {payload.map((entry, index) => (
+                                  <div key={index} className="flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-2">
+                                      <div 
+                                        className="w-3 h-3 rounded-full" 
+                                        style={{ backgroundColor: entry.color }}
+                                      />
+                                      <span className="text-sm">{entry.name}</span>
+                                    </div>
+                                    <span className="font-medium">
+                                      {formatCurrency(entry.value as number)}
+                                    </span>
                                   </div>
-                                  <span className="font-medium">
-                                    {formatCurrency(entry.value as number)}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="intaktKumulativ" 
-                      stroke={chartConfig.intakt.color}
-                      strokeWidth={3}
-                      name="Din Kumulativa Intäkt"
-                      dot={{ r: 3 }}
-                      activeDot={{ r: 5 }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="kostnadKumulativ" 
-                      stroke={chartConfig.kostnad.color}
-                      strokeWidth={3}
-                      name="Dina Kumulativa Kostnader"
-                      dot={{ r: 3 }}
-                      activeDot={{ r: 5 }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="nettoKumulativ" 
-                      stroke={chartConfig.netto.color}
-                      strokeWidth={4}
-                      name="Din Kumulativa Netto"
-                      dot={{ r: 4 }}
-                      activeDot={{ r: 6 }}
-                    />
-                    {/* Nollpunkt - horisontell linje vid y=0 */}
-                    <ReferenceLine 
-                      y={0} 
-                      stroke="#64748b" 
-                      strokeWidth={2} 
-                      strokeDasharray="5 5" 
-                      label={{ value: "Nollpunkt (Break-even)", position: "insideTopRight", style: { fontSize: 12, fill: "#64748b", fontWeight: "bold" } }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </ChartContainer>
+                                ))}
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="intaktKumulativ" 
+                        stroke={chartConfig.intakt.color}
+                        strokeWidth={3}
+                        name="Din Kumulativa Intäkt"
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="kostnadKumulativ" 
+                        stroke={chartConfig.kostnad.color}
+                        strokeWidth={3}
+                        name="Dina Kumulativa Kostnader"
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="nettoKumulativ" 
+                        stroke={chartConfig.netto.color}
+                        strokeWidth={4}
+                        name="Din Kumulativa Netto"
+                        dot={{ r: 4 }}
+                        activeDot={{ r: 6 }}
+                      />
+                      {/* Nollpunkt - horisontell linje vid y=0 utan text */}
+                      <ReferenceLine 
+                        y={0} 
+                        stroke="#64748b" 
+                        strokeWidth={2} 
+                        strokeDasharray="5 5"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              </div>
               
               {/* Prognos-verktyg: Interaktiva Sliderns - DIREKT UNDER GRAFEN */}
               <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-emerald-50 border border-blue-200 rounded-lg">
