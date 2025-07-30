@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Download, TrendingUp } from 'lucide-react';
 import DetailedAnalysisModal from './calculator/DetailedAnalysisModal';
 import { GrowthForecastPlug } from './GrowthForecastPlug';
+import { useCalculator } from '@/context/CalculatorContext';
 
 interface ResultsTableProps {
   dailyRevenueIncVat: number;
@@ -50,13 +51,14 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   creditCost = 0,
   hoveredInput = null
 }) => {
+  const { selectedMachine } = useCalculator();
+  
   // Validera värden och se till att de är giltiga nummer
   const safeDaily = isNaN(dailyRevenueIncVat) ? 0 : dailyRevenueIncVat;
   const safeWeekly = isNaN(weeklyRevenueIncVat) ? 0 : weeklyRevenueIncVat;
   const safeMonthly = isNaN(monthlyRevenueIncVat) ? 0 : monthlyRevenueIncVat;
   const safeYearly = isNaN(yearlyRevenueIncVat) ? 0 : yearlyRevenueIncVat;
   const safeLeasingCost = isNaN(leasingCostPerMonth) ? 0 : leasingCostPerMonth;
-  // Om Flatrate är aktivt, visa 0 för driftskostnader, annars använd faktisk kostnad
   const safeOperatingCost = isNaN(operatingCostPerMonth) ? 0 : operatingCostPerMonth;
   const safeCashPrice = isNaN(cashPriceSEK) ? 0 : cashPriceSEK;
   const safeNetMonth = isNaN(netPerMonthExVat) ? 0 : netPerMonthExVat;
@@ -70,25 +72,10 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   // Calculate components for display
   const totalCostPerMonth = safeLeasingCost + safeOperatingCost;
 
-  // Lägg till extra loggning för felsökning av beläggningsgrader
-  console.log(`[TRACKER] ResultsTable rendering with occupancy values:
-    occupancy50 prop: ${occupancy50} -> safeOcc50: ${safeOcc50}
-    occupancy75 prop: ${occupancy75} -> safeOcc75: ${safeOcc75}
-    occupancy100 prop: ${occupancy100} -> safeOcc100: ${safeOcc100}
-    Monthly revenue (inc VAT): ${safeMonthly}
-    Yearly revenue (inc VAT): ${safeYearly}
-    Monthly operating cost: ${safeOperatingCost} (original: ${operatingCostPerMonth}, flatrate active: ${isFlatrateActive})
-    Leasing cost: ${safeLeasingCost}
-    Total cost per month: ${totalCostPerMonth}
-    Net per month (ex VAT): ${safeNetMonth}
-    Monthly revenue (ex VAT): ${safeMonthly / 1.25}
-    Behandlingar per dag: ${treatmentsPerDay}
-    Kundpris: ${customerPrice}
-  `);
-
-  return <div className="glass-card mt-8 animate-slide-in bg-white/95 backdrop-blur-sm shadow-xl border border-slate-200" style={{
-    animationDelay: '600ms'
-  }}>
+  return (
+    <div className="glass-card mt-8 animate-slide-in bg-white/95 backdrop-blur-sm shadow-xl border border-slate-200" style={{
+      animationDelay: '600ms'
+    }}>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-slate-900">Resultat</h2>
         <DetailedAnalysisModal />
@@ -125,7 +112,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">
                  {(() => {
                    const monthlyRevenueExVat = safeMonthly / 1.25;
-                   const dailyRevenue = monthlyRevenueExVat / (22); // Använd standardvärde för nollpunkt beräkning
+                   const dailyRevenue = monthlyRevenueExVat / (22);
                    const breakEvenDays = dailyRevenue > 0 ? totalCostPerMonth / dailyRevenue : 0;
                    return Math.round(breakEvenDays);
                  })()} dagar
@@ -165,41 +152,77 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               </td>
             </tr>
             
-            {paymentOption === 'leasing' ? (
-              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'leasing' || hoveredInput === 'payment' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
-                <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Leasingkostnad (ex moms)</td>
-                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost)}</td>
-                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost * 12)}</td>
-              </tr>
-            ) : (
-              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'payment' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
-                <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Kontantköp (ex moms, 5 år)</td>
-                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCashPrice / 60)}</td>
-                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency((safeCashPrice / 60) * 12)}</td>
-              </tr>
-             )}
-            
-            {/* Flatrate eller Credits kostnad */}
-            {isFlatrateActive ? (
-              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
+            {/* KOMBINERAD LEASING + CREDITS RAD för credit-maskiner */}
+            {paymentOption === 'leasing' && selectedMachine?.usesCredits ? (
+              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'leasing' || hoveredInput === 'payment' || hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
                 <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">
-                  {selectedSlaLevel === 'Guld' ? 'Flatrate credits (ingår i Guld)' : 'Flatrate credits'}
+                  <div className="flex flex-col">
+                    <span className="font-medium">Total månadskostnad</span>
+                    <div className="text-xs text-slate-500 mt-1">
+                      <div>• Leasing: {formatCurrency(safeLeasingCost)}</div>
+                      {isFlatrateActive ? (
+                        <div>• {selectedSlaLevel === 'Guld' ? 'Flatrate (ingår i Guld)' : `Flatrate: ${formatCurrency(safeCreditCost)}`}</div>
+                      ) : (
+                        safeCreditCost > 0 && <div>• Credits: {formatCurrency(safeCreditCost)}</div>
+                      )}
+                    </div>
+                  </div>
                 </td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
-                  {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(safeCreditCost)}
+                  <div className="font-semibold">
+                    {formatCurrency(safeLeasingCost + (selectedSlaLevel === 'Guld' ? 0 : safeCreditCost))}
+                  </div>
                 </td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
-                  {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(safeCreditCost * 12)}
+                  <div className="font-semibold">
+                    {formatCurrency((safeLeasingCost + (selectedSlaLevel === 'Guld' ? 0 : safeCreditCost)) * 12)}
+                  </div>
                 </td>
               </tr>
             ) : (
-              safeCreditCost > 0 && (
-                <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
-                  <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Credits (per användning)</td>
-                  <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCreditCost)}</td>
-                  <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCreditCost * 12)}</td>
-                </tr>
-              )
+              /* SEPARATA RADER för icke-credit maskiner eller kontantköp */
+              <>
+                {paymentOption === 'leasing' ? (
+                  <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'leasing' || hoveredInput === 'payment' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
+                    <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Leasingkostnad (ex moms)</td>
+                    <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost)}</td>
+                    <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost * 12)}</td>
+                  </tr>
+                ) : (
+                  <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'payment' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
+                    <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Kontantköp (ex moms, 5 år)</td>
+                    <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCashPrice / 60)}</td>
+                    <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency((safeCashPrice / 60) * 12)}</td>
+                  </tr>
+                )}
+                
+                {/* Credits kostnad för icke-credit maskiner eller vid kontantköp */}
+                {!selectedMachine?.usesCredits && (
+                  <>
+                    {isFlatrateActive ? (
+                      <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
+                        <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">
+                          {selectedSlaLevel === 'Guld' ? 'Flatrate credits (ingår i Guld)' : 'Flatrate credits'}
+                        </td>
+                        <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
+                          {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(safeCreditCost)}
+                        </td>
+                        <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
+                          {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(safeCreditCost * 12)}
+                        </td>
+                      </tr>
+                    ) : (
+                      safeCreditCost > 0 && (
+                        <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
+                          <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Credits (per användning)</td>
+                          <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCreditCost)}</td>
+                          <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCreditCost * 12)}</td>
+                        </tr>
+                      )
+                    )}
+                  </>
+                )}
+              </>
             )}
             
             {/* SLA-kostnad - visa alltid, även vid 0 kr */}
@@ -259,11 +282,9 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           </div>
         </div>
         
-        
-        </div>
-        
         {/* Tillväxtprognos plugg */}
         <GrowthForecastPlug />
+      </div>
       
       <div className="mt-8 text-sm text-slate-500 italic">
         Detta är endast ett beräkningsunderlag. Priser och kostnader uppdateras dagligen baserat på aktuell marknad och valutakurser, 
@@ -282,7 +303,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           </span>
         )}
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default ResultsTable;
