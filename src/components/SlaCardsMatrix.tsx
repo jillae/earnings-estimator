@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Shield, Headphones, Timer, Zap, CreditCard, Target } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatUtils';
 
 export const SlaCardsMatrix: React.FC = () => {
-  // Statiska värden för showcase (inte beroende av Calculator context)
+  const [activeTab, setActiveTab] = useState('brons');
+
+  // Statiska värden för showcase
   const baseLeasingCost = 25835; // Exempel för Emerald
   const silverCost = Math.round(baseLeasingCost * 0.25); // 25% av leasing
   const guldCost = Math.round(baseLeasingCost * 0.50);   // 50% av leasing
@@ -13,10 +15,10 @@ export const SlaCardsMatrix: React.FC = () => {
   const slaOptions = [
     {
       id: 'brons',
-      title: 'Bas (Ingår)',
+      title: 'Bas',
+      subtitle: '(Ingår)',
       price: 0,
       color: 'blue',
-      radioSelected: true,
       features: [
         { icon: Clock, text: '12 månader garanti' },
         { icon: Headphones, text: 'Grundsupport (vardagar)' },
@@ -24,16 +26,17 @@ export const SlaCardsMatrix: React.FC = () => {
         { icon: Shield, text: 'Responstid 336h' },
         { icon: Zap, text: 'Max åtgärdstid: Inom rimlig tid' }
       ],
-      credits: 224, // Standard credit-kostnad
+      credits: 224,
+      creditText: 'per credit',
       bestFor: 'Nya kliniker',
       description: 'Grundläggande support och service'
     },
     {
       id: 'silver',
       title: 'Silver',
+      subtitle: '',
       price: silverCost,
       color: 'slate',
-      radioSelected: false,
       features: [
         { icon: Clock, text: '24 månader garanti' },
         { icon: Headphones, text: 'Prioriterad support (5d/v, 9-15)' },
@@ -41,16 +44,17 @@ export const SlaCardsMatrix: React.FC = () => {
         { icon: Shield, text: '72h omfattande fel' },
         { icon: Zap, text: 'Lånemaskin vid service' }
       ],
-      credits: 2998, // 50% rabatt på flatrate
+      credits: 2998,
+      creditText: '/ mån (50% rabatt)',
       bestFor: 'Växande kliniker',
       description: 'Förbättrad support och snabbare service'
     },
     {
       id: 'guld',
       title: 'Guld',
+      subtitle: '',
       price: guldCost,
       color: 'yellow',
-      radioSelected: false,
       features: [
         { icon: Clock, text: '24 månader garanti' },
         { icon: Headphones, text: '7d/v högsta prioritet support 00-24' },
@@ -58,24 +62,44 @@ export const SlaCardsMatrix: React.FC = () => {
         { icon: Shield, text: '48h omfattande fel' },
         { icon: Zap, text: 'Årlig service + lånemaskin' }
       ],
-      credits: 0, // 100% rabatt på credits
+      credits: 0,
+      creditText: '(100% rabatt)',
       bestFor: 'Etablerade kliniker',
       description: 'Premium support med högsta prioritet'
     }
   ];
 
-  const getColorClasses = (color: string, isSelected: boolean) => {
-    const baseClasses = 'border-2 transition-all duration-300 hover:shadow-lg';
+  const activeOption = slaOptions.find(option => option.id === activeTab) || slaOptions[0];
+
+  const getTabStyle = (option: any, isActive: boolean) => {
+    const baseStyle = "flex-1 p-4 text-center border-b-2 transition-all duration-300 cursor-pointer hover:bg-slate-50";
     
+    if (isActive) {
+      switch (option.color) {
+        case 'blue':
+          return `${baseStyle} border-blue-500 bg-blue-50 text-blue-700`;
+        case 'slate':
+          return `${baseStyle} border-slate-500 bg-slate-50 text-slate-700`;
+        case 'yellow':
+          return `${baseStyle} border-yellow-500 bg-yellow-50 text-yellow-700`;
+        default:
+          return `${baseStyle} border-slate-500 bg-slate-50`;
+      }
+    }
+    
+    return `${baseStyle} border-slate-200 text-slate-600 hover:border-slate-300`;
+  };
+
+  const getPanelStyle = (color: string) => {
     switch (color) {
       case 'blue':
-        return `${baseClasses} ${isSelected ? 'border-blue-500 shadow-blue-100' : 'border-blue-200 hover:border-blue-300'}`;
+        return 'border-blue-200 bg-gradient-to-br from-blue-50/50 to-white';
       case 'slate':
-        return `${baseClasses} ${isSelected ? 'border-slate-500 shadow-slate-100' : 'border-slate-200 hover:border-slate-300'}`;
+        return 'border-slate-200 bg-gradient-to-br from-slate-50/50 to-white';
       case 'yellow':
-        return `${baseClasses} ${isSelected ? 'border-yellow-500 shadow-yellow-100' : 'border-yellow-200 hover:border-yellow-300'}`;
+        return 'border-yellow-200 bg-gradient-to-br from-yellow-50/50 to-white';
       default:
-        return `${baseClasses} border-slate-200 hover:border-slate-300`;
+        return 'border-slate-200 bg-white';
     }
   };
 
@@ -88,12 +112,12 @@ export const SlaCardsMatrix: React.FC = () => {
     }
   };
 
-  const getPriceColor = (color: string) => {
+  const getRadioIcon = (color: string) => {
     switch (color) {
-      case 'blue': return 'text-blue-700';
-      case 'slate': return 'text-slate-700';
-      case 'yellow': return 'text-yellow-700';
-      default: return 'text-slate-700';
+      case 'blue': return '🔵';
+      case 'slate': return '⚪';
+      case 'yellow': return '🟡';
+      default: return '⚪';
     }
   };
 
@@ -104,100 +128,116 @@ export const SlaCardsMatrix: React.FC = () => {
           Välj din SLA-nivå
         </h2>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-          Service Level Agreement - välj den supportnivå som passar din klinik bäst
+          Service Level Agreement - jämför alternativen och se hur de påverkar din totalkostnad
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {slaOptions.map((option) => (
-          <Card 
-            key={option.id} 
-            className={getColorClasses(option.color, option.radioSelected)}
-          >
-            <CardHeader className="pb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`w-4 h-4 rounded-full border-2 ${
-                    option.radioSelected 
-                      ? option.color === 'blue' ? 'border-blue-500 bg-blue-500' :
-                        option.color === 'slate' ? 'border-slate-500 bg-slate-500' :
-                        'border-yellow-500 bg-yellow-500'
-                      : option.color === 'blue' ? 'border-blue-300' :
-                        option.color === 'slate' ? 'border-slate-300' :
-                        'border-yellow-300'
-                  }`}>
-                    {option.radioSelected && (
-                      <div className="w-full h-full rounded-full bg-white scale-50"></div>
-                    )}
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900">
-                    {option.title}
+      <div className="max-w-4xl mx-auto">
+        {/* Flikar */}
+        <div className="flex border border-slate-200 rounded-t-lg overflow-hidden bg-white shadow-sm">
+          {slaOptions.map((option) => (
+            <div
+              key={option.id}
+              onClick={() => setActiveTab(option.id)}
+              className={getTabStyle(option, activeTab === option.id)}
+            >
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <span className="text-lg">{getRadioIcon(option.color)}</span>
+                <h3 className="font-bold text-lg">
+                  {option.title} {option.subtitle}
+                </h3>
+              </div>
+              <div className="text-sm font-semibold">
+                {formatCurrency(option.price)} / mån
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Aktiv panel */}
+        <Card className={`border-t-0 rounded-t-none shadow-lg ${getPanelStyle(activeOption.color)}`}>
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{getRadioIcon(activeOption.color)}</span>
+                <div>
+                  <h3 className="text-2xl font-bold text-slate-900">
+                    {activeOption.title} {activeOption.subtitle}
                   </h3>
-                </div>
-                <div className={`text-right ${getPriceColor(option.color)}`}>
-                  <div className="text-2xl font-bold">
-                    {formatCurrency(option.price)}
-                  </div>
-                  <div className="text-sm text-slate-500">/ mån</div>
+                  <p className="text-slate-600">{activeOption.description}</p>
                 </div>
               </div>
-            </CardHeader>
+              <div className="text-right">
+                <div className="text-3xl font-bold text-slate-900">
+                  {formatCurrency(activeOption.price)}
+                </div>
+                <div className="text-sm text-slate-500">/ mån</div>
+              </div>
+            </div>
+          </CardHeader>
 
-            <CardContent className="space-y-4">
-              {/* Features lista */}
+          <CardContent className="space-y-6">
+            {/* Features grid */}
+            <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-3">
-                {option.features.map((feature, index) => (
+                {activeOption.features.slice(0, 3).map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
-                    <feature.icon className={`h-4 w-4 ${getIconColor(option.color)}`} />
-                    <span className="text-sm text-slate-700">{feature.text}</span>
+                    <feature.icon className={`h-5 w-5 ${getIconColor(activeOption.color)}`} />
+                    <span className="text-slate-700">{feature.text}</span>
                   </div>
                 ))}
               </div>
+              <div className="space-y-3">
+                {activeOption.features.slice(3).map((feature, index) => (
+                  <div key={index + 3} className="flex items-center gap-3">
+                    <feature.icon className={`h-5 w-5 ${getIconColor(activeOption.color)}`} />
+                    <span className="text-slate-700">{feature.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-              {/* Credits sektion */}
-              <div className={`p-3 rounded-lg border ${
-                option.color === 'blue' ? 'bg-blue-50 border-blue-200' :
-                option.color === 'slate' ? 'bg-slate-50 border-slate-200' :
+            {/* Credits och Bäst för sektion */}
+            <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-slate-200">
+              <div className={`p-4 rounded-lg border ${
+                activeOption.color === 'blue' ? 'bg-blue-50 border-blue-200' :
+                activeOption.color === 'slate' ? 'bg-slate-50 border-slate-200' :
                 'bg-yellow-50 border-yellow-200'
               }`}>
-                <div className="flex items-center gap-2 mb-1">
-                  <CreditCard className={`h-4 w-4 ${getIconColor(option.color)}`} />
-                  <span className="text-sm font-medium text-slate-700">Credits:</span>
+                <div className="flex items-center gap-2 mb-2">
+                  <CreditCard className={`h-5 w-5 ${getIconColor(activeOption.color)}`} />
+                  <span className="font-semibold text-slate-700">Credits:</span>
                 </div>
-                <div className="text-sm text-slate-600">
-                  {option.credits === 0 ? (
+                <div className="text-slate-600">
+                  {activeOption.credits === 0 ? (
                     <span className="font-semibold text-green-600">
-                      Kostnadsfria (100% rabatt)
+                      Kostnadsfria {activeOption.creditText}
                     </span>
                   ) : (
                     <span>
-                      {formatCurrency(option.credits)} {option.id === 'silver' ? '/ mån (50% rabatt)' : 'per credit'}
+                      {formatCurrency(activeOption.credits)} {activeOption.creditText}
                     </span>
                   )}
                 </div>
               </div>
 
-              {/* Bäst för sektion */}
-              <div className="pt-3 border-t border-slate-200">
+              <div className="p-4 rounded-lg border border-slate-200 bg-slate-50">
                 <div className="flex items-center gap-2 mb-2">
-                  <Target className={`h-4 w-4 ${getIconColor(option.color)}`} />
-                  <span className="text-sm font-medium text-slate-700">
-                    Bäst för: {option.bestFor}
-                  </span>
+                  <Target className={`h-5 w-5 ${getIconColor(activeOption.color)}`} />
+                  <span className="font-semibold text-slate-700">Bäst för:</span>
                 </div>
-                <p className="text-xs text-slate-500">
-                  {option.description}
-                </p>
+                <div className="text-slate-600">{activeOption.bestFor}</div>
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </div>
 
-      <div className="mt-8 text-center">
-        <p className="text-sm text-slate-500">
-          💡 SLA-nivån kan justeras i kalkylatorn ovan för att se exakt påverkan på din månadskostnad
-        </p>
+            {/* Call to action */}
+            <div className="text-center pt-4 border-t border-slate-200">
+              <p className="text-sm text-slate-500">
+                💡 Justera SLA-nivån i kalkylatorn ovan för att se exakt påverkan på din totalkostnad
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </section>
   );
