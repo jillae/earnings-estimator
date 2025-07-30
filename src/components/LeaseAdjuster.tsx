@@ -126,20 +126,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 
   return (
     <section className="bg-white rounded-2xl border border-blue-100 shadow-subtle p-5 flex flex-col gap-6 animate-slide-in" style={{ animationDelay: '150ms' }}>
-      <div>
-        <label className="flex items-center justify-between text-base font-semibold mb-2">
-          <span>Månadskostnad leasing</span>
-          {showSlider && <span className="text-sm font-medium text-blue-600">{currentStepLabel}</span>}
-        </label>
-        <CostDisplay 
-          minLeaseCost={exactMinCost}
-          maxLeaseCost={exactMaxCost}
-          leaseCost={displayLeaseCost}
-          showMinMax={showMinMax}
-        />
-      </div>
-
-      {/* Finjusteringsslider - flyttad direkt under kostnadsdisplayen */}
+      {/* Flexibel investering - flyttat upp */}
       {usesCredits && selectedLeasingModel === 'grundleasing' && (
         <LeaseSlider 
           currentStep={currentSliderStep}
@@ -154,6 +141,19 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           isGrundleasingMode={selectedLeasingModel === 'grundleasing'}
         />
       )}
+
+      <div>
+        <label className="flex items-center justify-between text-base font-semibold mb-2">
+          <span>Månadskostnad leasing</span>
+          {showSlider && <span className="text-sm font-medium text-blue-600">{currentStepLabel}</span>}
+        </label>
+        <CostDisplay 
+          minLeaseCost={exactMinCost}
+          maxLeaseCost={exactMaxCost}
+          leaseCost={displayLeaseCost}
+          showMinMax={showMinMax}
+        />
+      </div>
 
       <div className="flex flex-col md:flex-row items-stretch gap-3 w-full">
         {/* Rekommenderat pris - vi visar alltid detta oavsett maskintyp */}
