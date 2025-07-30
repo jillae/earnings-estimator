@@ -58,8 +58,11 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const flatrateCost = isFlatrateActive ? (isNaN(operatingCostPerMonth) ? 0 : operatingCostPerMonth) : 0;
   const totalCostPerMonth = safeLeasingCost + safeOperatingCost + flatrateCost;
 
-  // Lägg till extra loggning för felsökning
-  console.log(`ResultsTable rendering with values:
+  // Lägg till extra loggning för felsökning av beläggningsgrader
+  console.log(`[TRACKER] ResultsTable rendering with occupancy values:
+    occupancy50 prop: ${occupancy50} -> safeOcc50: ${safeOcc50}
+    occupancy75 prop: ${occupancy75} -> safeOcc75: ${safeOcc75}
+    occupancy100 prop: ${occupancy100} -> safeOcc100: ${safeOcc100}
     Monthly revenue (inc VAT): ${safeMonthly}
     Monthly operating cost: ${safeOperatingCost} (original: ${operatingCostPerMonth}, flatrate active: ${isFlatrateActive})
     Leasing cost: ${safeLeasingCost}

@@ -50,38 +50,36 @@ export function useRevenueCalculations({
 
   // Calculate revenue and occupancy
   useEffect(() => {
-    // Se till att parametrarna är i rätt ordning: treatmentsPerDay, customerPrice
-    const calculatedRevenue = calculateRevenue(treatmentsPerDay, customerPrice);
-    
-    console.log(`useRevenueCalculations beräknar intäkter: 
-      behandlingar/dag: ${treatmentsPerDay}
-      kundpris: ${customerPrice}
-      månadsintäkt (ex moms): ${calculatedRevenue.monthlyRevenueExVat}
-      årsintäkt (ex moms): ${calculatedRevenue.yearlyRevenueExVat}
-    `);
-    
-    setRevenue(calculatedRevenue);
-  }, [customerPrice, treatmentsPerDay]);
-
-  // Calculate occupancy revenues separately and update when revenue changes
-  useEffect(() => {
-    console.log(`useRevenueCalculations - Checking occupancy update trigger:
-      revenue.yearlyRevenueIncVat: ${revenue.yearlyRevenueIncVat}
+    console.log(`[TRACKER] useRevenueCalculations - Input values changed:
       treatmentsPerDay: ${treatmentsPerDay}
       customerPrice: ${customerPrice}
     `);
     
-    const calculatedOccupancyRevenues = calculateOccupancyRevenues(revenue.yearlyRevenueIncVat);
+    // Se till att parametrarna är i rätt ordning: treatmentsPerDay, customerPrice
+    const calculatedRevenue = calculateRevenue(treatmentsPerDay, customerPrice);
     
-    console.log(`useRevenueCalculations uppdaterar beläggningsgrader:
-      årsintäkt (inkl moms): ${revenue.yearlyRevenueIncVat}
+    console.log(`[TRACKER] useRevenueCalculations beräknar intäkter: 
+      behandlingar/dag: ${treatmentsPerDay}
+      kundpris: ${customerPrice}
+      månadsintäkt (ex moms): ${calculatedRevenue.monthlyRevenueExVat}
+      årsintäkt (ex moms): ${calculatedRevenue.yearlyRevenueExVat}
+      årsintäkt (ink moms): ${calculatedRevenue.yearlyRevenueIncVat}
+    `);
+    
+    setRevenue(calculatedRevenue);
+    
+    // Beräkna beläggningsgrader direkt här för att undvika timing issues
+    const calculatedOccupancyRevenues = calculateOccupancyRevenues(calculatedRevenue.yearlyRevenueIncVat);
+    
+    console.log(`[TRACKER] useRevenueCalculations uppdaterar beläggningsgrader:
+      årsintäkt (inkl moms): ${calculatedRevenue.yearlyRevenueIncVat}
       50% beläggning: ${calculatedOccupancyRevenues.occupancy50}
       75% beläggning: ${calculatedOccupancyRevenues.occupancy75}
       100% beläggning: ${calculatedOccupancyRevenues.occupancy100}
     `);
     
     setOccupancyRevenues(calculatedOccupancyRevenues);
-  }, [revenue.yearlyRevenueIncVat, treatmentsPerDay, customerPrice]);
+  }, [customerPrice, treatmentsPerDay]);
 
   // Calculate net results
   useEffect(() => {
