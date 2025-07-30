@@ -15,13 +15,13 @@ export const useModalCalculations = () => {
   const [modalTreatmentsPerDay, setModalTreatmentsPerDay] = useState(4);
   const [modalCustomerPrice, setModalCustomerPrice] = useState(3500);
 
-  // Initialisera med värden från huvudkalkylatorn
+  // Initialisera med värden från huvudkalkylatorn - men behåll våra defaultvärden
   useEffect(() => {
-    // Beräkna ursprungliga värden från huvudkalkylatorn
-    const originalTreatments = Math.round(baseRevenue.dailyRevenueIncVat / modalCustomerPrice);
-    if (originalTreatments > 0 && originalTreatments <= 20) {
-      setModalTreatmentsPerDay(originalTreatments);
-    }
+    // Kommenterar ut denna automatiska uppdatering så att våra defaults behålls
+    // const originalTreatments = Math.round(baseRevenue.dailyRevenueIncVat / modalCustomerPrice);
+    // if (originalTreatments > 0 && originalTreatments <= 20) {
+    //   setModalTreatmentsPerDay(originalTreatments);
+    // }
   }, [baseRevenue.dailyRevenueIncVat]);
 
   // Beräkna modal-specifika värden
