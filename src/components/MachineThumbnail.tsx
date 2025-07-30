@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import { cn } from "@/lib/utils";
-import { Computer } from 'lucide-react';
+import { Computer, ExternalLink } from 'lucide-react';
 import { Machine } from '@/data/machines/types';
+import { Button } from '@/components/ui/button';
 
 interface MachineThumbnailProps {
   machine: Machine;
@@ -31,6 +32,22 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
     };
 
     return placeholders[machineId] || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=200&q=80";
+  };
+
+  const getProductUrl = (machineId: string) => {
+    const productUrls: {[key: string]: string} = {
+      "emerald": "https://bit.ly/erchoniaeenallmodels#emerald",
+      "zerona": "https://bit.ly/erchoniaeenallmodels#zerona", 
+      "fx-635": "https://bit.ly/erchoniaeenallmodels#fx635",
+      "fx-405": "https://bit.ly/erchoniaeenallmodels#fx405",
+      "xlr8": "https://bit.ly/erchoniaeenallmodels#xlr8",
+      "evrl": "https://bit.ly/erchoniaeenallmodels#evrl",
+      "gvl": "https://bit.ly/erchoniaeenallmodels#gvl",
+      "base-station": "https://bit.ly/erchoniaeenallmodels#basestation",
+      "lunula": "https://bit.ly/erchoniaeenallmodels#lunula"
+    };
+    
+    return productUrls[machineId] || "https://bit.ly/erchoniaeenallmodels";
   };
   
   return (
@@ -65,6 +82,18 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
         {machine.modelCode && (
           <p className="text-xs text-slate-500">({machine.modelCode})</p>
         )}
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-2 h-7 text-xs"
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(getProductUrl(machine.id), '_blank');
+          }}
+        >
+          <ExternalLink className="h-3 w-3 mr-1" />
+          Läs mer
+        </Button>
       </div>
     </div>
   );

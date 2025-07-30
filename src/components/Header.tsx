@@ -45,6 +45,15 @@ const Header = () => {
               <span className="text-sm">Whitepapers</span>
             </a>
             <a 
+              href="https://bit.ly/erchoniaeenallmodels" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex items-center hover:text-primary-foreground/80 transition-colors"
+            >
+              <ExternalLink className="h-4 w-4 mr-1" />
+              <span className="text-sm">Produkter</span>
+            </a>
+            <a 
               href="https://bit.ly/EENHelpdesk" 
               target="_blank" 
               rel="noopener noreferrer" 
