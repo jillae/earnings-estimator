@@ -108,8 +108,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                 📊 Klinik & Verksamhet
               </td>
             </tr>
-            <tr className="border-b border-slate-200">
-              <td className="py-2 px-3 text-slate-700 text-xs">Behandlingar/dag</td>
+            <tr className="border-b border-slate-200 bg-emerald-50/20 hover:bg-emerald-50/30 transition-colors">
+              <td className="py-2 px-3 text-slate-700 text-xs border-l-2 border-emerald-400">Behandlingar/dag</td>
               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{treatmentsPerDay || 0}</td>
               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{(treatmentsPerDay || 0) * 252}</td>
             </tr>
@@ -138,8 +138,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                 })()}
               </td>
             </tr>
-            <tr className="border-b border-slate-200">
-              <td className="py-2 px-3 text-slate-700 text-xs">Intäkt/behandling (ink moms)</td>
+            <tr className="border-b border-slate-200 bg-emerald-50/20 hover:bg-emerald-50/30 transition-colors">
+              <td className="py-2 px-3 text-slate-700 text-xs border-l-2 border-emerald-400">Intäkt/behandling (ink moms)</td>
               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{formatCurrency(customerPrice || 0)}</td>
               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
             </tr>
@@ -150,8 +150,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                 💰 Intäkter
               </td>
             </tr>
-            <tr className="border-b border-slate-200">
-              <td className="py-2 px-3 text-slate-700 text-xs">Total intäkt (ink moms)</td>
+            <tr className="border-b border-slate-200 bg-emerald-50/20 hover:bg-emerald-50/30 transition-colors">
+              <td className="py-2 px-3 text-slate-700 text-xs border-l-2 border-emerald-400">Total intäkt (ink moms)</td>
               <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeMonthly)}</td>
               <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeYearly)}</td>
             </tr>
@@ -164,14 +164,14 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             </tr>
             
             {paymentOption === 'leasing' ? (
-              <tr className="border-b border-slate-200">
-                <td className="py-2 px-3 text-slate-700 text-xs">Leasingkostnad (ex moms)</td>
+              <tr className="border-b border-slate-200 bg-red-50/20 hover:bg-red-50/30 transition-colors">
+                <td className="py-2 px-3 text-slate-700 text-xs border-l-2 border-red-400">Leasingkostnad (ex moms)</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost)}</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost * 12)}</td>
               </tr>
             ) : (
-              <tr className="border-b border-slate-200">
-                <td className="py-2 px-3 text-slate-700 text-xs">Kontantköp (ex moms, 5 år)</td>
+              <tr className="border-b border-slate-200 bg-red-50/20 hover:bg-red-50/30 transition-colors">
+                <td className="py-2 px-3 text-slate-700 text-xs border-l-2 border-red-400">Kontantköp (ex moms, 5 år)</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCashPrice / 60)}</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency((safeCashPrice / 60) * 12)}</td>
               </tr>
@@ -179,8 +179,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             
             {/* Flatrate eller Credits kostnad */}
             {isFlatrateActive ? (
-              <tr className="border-b border-slate-200">
-                <td className="py-2 px-3 text-slate-700 text-xs">
+              <tr className="border-b border-slate-200 bg-red-50/20 hover:bg-red-50/30 transition-colors">
+                <td className="py-2 px-3 text-slate-700 text-xs border-l-2 border-red-400">
                   {selectedSlaLevel === 'Guld' ? 'Flatrate credits (ingår i Guld)' : 'Flatrate credits'}
                 </td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
@@ -192,8 +192,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               </tr>
             ) : (
               safeCreditCost > 0 && (
-                <tr className="border-b border-slate-200">
-                  <td className="py-2 px-3 text-slate-700 text-xs">Credits (per användning)</td>
+                <tr className="border-b border-slate-200 bg-red-50/20 hover:bg-red-50/30 transition-colors">
+                  <td className="py-2 px-3 text-slate-700 text-xs border-l-2 border-red-400">Credits (per användning)</td>
                   <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCreditCost)}</td>
                   <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCreditCost * 12)}</td>
                 </tr>
@@ -202,8 +202,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             
             {/* SLA-kostnad */}
             {safeSlaOstCost > 0 && (
-              <tr className="border-b border-slate-200">
-                <td className="py-2 px-3 text-slate-700 text-xs">SLA {selectedSlaLevel}</td>
+              <tr className="border-b border-slate-200 bg-red-50/20 hover:bg-red-50/30 transition-colors">
+                <td className="py-2 px-3 text-slate-700 text-xs border-l-2 border-red-400">SLA {selectedSlaLevel}</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeSlaOstCost)}</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeSlaOstCost * 12)}</td>
               </tr>
@@ -240,19 +240,22 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
       </div>
       
       <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-3">Budgeterbar intäkt vid olika beläggningsgrad</h3>
+        <h3 className="text-lg font-semibold mb-3 flex items-center">
+          <span className="w-3 h-3 bg-emerald-400 rounded-sm mr-2"></span>
+          Budgeterbar intäkt vid olika beläggningsgrad
+        </h3>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 hover:shadow-md transition-all duration-200">
-            <div className="text-sm text-blue-700 mb-1 font-medium">Beläggning 50%, år 1 (ink moms)</div>
-            <div className="text-xl font-bold text-blue-800 whitespace-nowrap">{formatCurrency(safeOcc50)}</div>
+          <div className="p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 border-l-4 border-l-emerald-400 hover:shadow-md transition-all duration-200">
+            <div className="text-sm text-emerald-700 mb-1 font-medium">Beläggning 50%, år 1 (ink moms)</div>
+            <div className="text-xl font-bold text-emerald-800 whitespace-nowrap">{formatCurrency(safeOcc50)}</div>
           </div>
-          <div className="p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 hover:shadow-md transition-all duration-200">
+          <div className="p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 border-l-4 border-l-emerald-400 hover:shadow-md transition-all duration-200">
             <div className="text-sm text-emerald-700 mb-1 font-medium">Beläggning 75%, år 2 (ink moms)</div>
             <div className="text-xl font-bold text-emerald-800 whitespace-nowrap">{formatCurrency(safeOcc75)}</div>
           </div>
-          <div className="p-4 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 hover:shadow-md transition-all duration-200">
-            <div className="text-sm text-purple-700 mb-1 font-medium">Beläggning 100%, år 3 (ink moms)</div>
-            <div className="text-xl font-bold text-purple-800 whitespace-nowrap">{formatCurrency(safeOcc100)}</div>
+          <div className="p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 border-l-4 border-l-emerald-400 hover:shadow-md transition-all duration-200">
+            <div className="text-sm text-emerald-700 mb-1 font-medium">Beläggning 100%, år 3 (ink moms)</div>
+            <div className="text-xl font-bold text-emerald-800 whitespace-nowrap">{formatCurrency(safeOcc100)}</div>
           </div>
         </div>
         
