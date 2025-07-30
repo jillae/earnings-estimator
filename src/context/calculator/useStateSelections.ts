@@ -9,8 +9,11 @@ import { machineData } from '@/data/machines';
 
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
-  // Ingen förvald maskin vid sidladdning
-  const [selectedMachineId, setSelectedMachineId] = useState<string>('');
+  // DEBUGGING: Explicit tom start för selectedMachineId
+  const [selectedMachineId, setSelectedMachineId] = useState<string>(() => {
+    console.log('useStateSelections: Initialiserar selectedMachineId till tom sträng');
+    return '';
+  });
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60'); // Default till 60 månader
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
