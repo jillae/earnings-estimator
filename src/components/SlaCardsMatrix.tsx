@@ -180,93 +180,118 @@ export const SlaCardsMatrix: React.FC = () => {
           Välj Service & Driftpaket
         </h3>
         <p className="text-sm text-slate-600">
-          Service Level Agreement - jämför alternativen och se hur de påverkar din totalkostnad
+          Service Level Agreement - jämför alternativen och välj det som passar din klinik
         </p>
       </div>
 
-      {/* Flikar */}
-      <div className="flex border border-slate-200 rounded-t-lg overflow-hidden bg-white shadow-sm mb-0">
-        {slaOptions.map((option) => (
-          <div
-            key={option.id}
-            onClick={() => handleTabChange(option.id)}
-            className={getTabStyle(option, activeTab === option.id)}
-          >
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <span className="text-lg">{getRadioIcon(option.color)}</span>
-              <h4 className="font-bold text-base">
-                {option.title} {option.subtitle}
-              </h4>
-            </div>
-            <div className="text-sm font-semibold">
-              {formatCurrency(option.price)} / mån
-            </div>
-          </div>
-        ))}
+      {/* Alla tre kort visas samtidigt */}
+      <div className="grid md:grid-cols-3 gap-4">
+        {slaOptions.map((option) => {
+          const isSelected = option.id === activeTab;
+          
+          return (
+            <Card 
+              key={option.id}
+              onClick={() => handleTabChange(option.id)}
+              className={`cursor-pointer transition-all duration-300 hover:shadow-md ${
+                isSelected 
+                  ? `ring-2 ${
+                      option.color === 'blue' ? 'ring-blue-500 bg-blue-50/50' :
+                      option.color === 'slate' ? 'ring-slate-500 bg-slate-50/50' :
+                      'ring-yellow-500 bg-yellow-50/50'
+                    }` 
+                  : 'hover:shadow-sm border-slate-200'
+              }`}
+            >
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{getRadioIcon(option.color)}</span>
+                    <div>
+                      <h4 className={`font-bold ${isSelected ? 'text-slate-900' : 'text-slate-700'}`}>
+                        {option.title} {option.subtitle}
+                      </h4>
+                      {isSelected && (
+                        <div className="flex items-center gap-1 mt-1">
+                          <div className={`w-2 h-2 rounded-full ${
+                            option.color === 'blue' ? 'bg-blue-500' :
+                            option.color === 'slate' ? 'bg-slate-500' :
+                            'bg-yellow-500'
+                          }`} />
+                          <span className="text-xs text-slate-600 font-medium">VALT</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className={`font-bold ${isSelected ? 'text-slate-900' : 'text-slate-700'}`}>
+                      {formatCurrency(option.price)}
+                    </div>
+                    <div className="text-xs text-slate-500">/ mån</div>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-600 mt-1">{option.description}</p>
+              </CardHeader>
+
+              <CardContent className="space-y-3">
+                {/* Huvudfunktioner */}
+                <div className="space-y-2">
+                  {option.features.slice(0, 3).map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <feature.icon className={`h-3 w-3 ${getIconColor(option.color)}`} />
+                      <span className="text-xs text-slate-700">{feature.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Övriga funktioner */}
+                {option.features.length > 3 && (
+                  <div className="space-y-2 pt-2 border-t border-slate-100">
+                    {option.features.slice(3).map((feature, index) => (
+                      <div key={index + 3} className="flex items-center gap-2">
+                        <feature.icon className={`h-3 w-3 ${getIconColor(option.color)}`} />
+                        <span className="text-xs text-slate-700">{feature.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Ytterligare funktioner (credits etc) */}
+                {option.additionalFeatures && option.additionalFeatures.length > 0 && (
+                  <div className="space-y-2 pt-2 border-t border-slate-100">
+                    {option.additionalFeatures.map((feature, index) => (
+                      <div key={`additional-${index}`} className="flex items-center gap-2">
+                        <feature.icon className={`h-3 w-3 ${feature.highlight ? 'text-green-600' : getIconColor(option.color)}`} />
+                        <span className={`text-xs ${feature.highlight ? 'text-green-700 font-medium' : 'text-slate-700'}`}>
+                          {feature.text}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Bäst för */}
+                <div className={`p-2 rounded-md text-center ${
+                  option.color === 'blue' ? 'bg-blue-50 border border-blue-200' :
+                  option.color === 'slate' ? 'bg-slate-50 border border-slate-200' :
+                  'bg-yellow-50 border border-yellow-200'
+                }`}>
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Target className={`h-3 w-3 ${getIconColor(option.color)}`} />
+                    <span className="text-xs font-semibold text-slate-700">Bäst för:</span>
+                  </div>
+                  <div className="text-xs text-slate-600">{option.bestFor}</div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
-      {/* Aktiv panel */}
-      <Card className={`border-t-0 rounded-t-none shadow-sm ${getPanelStyle(activeOption.color)}`}>
-        <CardHeader className="pb-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-xl">{getRadioIcon(activeOption.color)}</span>
-              <div>
-                <h4 className="text-xl font-bold text-slate-900">
-                  {activeOption.title} {activeOption.subtitle}
-                </h4>
-                <p className="text-sm text-slate-600">{activeOption.description}</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-slate-900">
-                {formatCurrency(activeOption.price)}
-              </div>
-              <div className="text-sm text-slate-500">/ mån</div>
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
-          {/* Features grid */}
-          <div className="grid gap-2">
-            {activeOption.features.map((feature, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <feature.icon className={`h-4 w-4 ${getIconColor(activeOption.color)}`} />
-                <span className="text-sm text-slate-700">{feature.text}</span>
-              </div>
-            ))}
-            {activeOption.additionalFeatures?.map((feature, index) => (
-              <div key={`additional-${index}`} className="flex items-center gap-3">
-                <feature.icon className={`h-4 w-4 ${feature.highlight ? 'text-green-600' : getIconColor(activeOption.color)}`} />
-                <span className={`text-sm ${feature.highlight ? 'text-green-700 font-medium' : 'text-slate-700'}`}>
-                  {feature.text}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Bäst för sektion */}
-          <div className="pt-3 border-t border-slate-200">
-            <div className={`p-3 rounded-lg border ${
-              activeOption.color === 'blue' ? 'bg-blue-50 border-blue-200' :
-              activeOption.color === 'slate' ? 'bg-slate-50 border-slate-200' :
-              'bg-yellow-50 border-yellow-200'
-            }`}>
-              <div className="flex items-center gap-2 mb-1">
-                <Target className={`h-4 w-4 ${getIconColor(activeOption.color)}`} />
-                <span className="font-semibold text-sm text-slate-700">Bäst för:</span>
-              </div>
-              <div className="text-sm text-slate-600">{activeOption.bestFor}</div>
-            </div>
-          </div>
-
-          {/* Avtalsinfo */}
-          <div className="text-xs text-gray-500 text-center italic pt-3 border-t border-slate-200">
-            *Avtalet är obundet löpande 3 månader (kvartalsvis) och faktureras i förskott
-          </div>
-        </CardContent>
-      </Card>
+      {/* Avtalsinfo */}
+      <div className="text-xs text-gray-500 text-center italic mt-4 pt-4 border-t border-slate-200">
+        *Avtalet är obundet löpande 3 månader (kvartalsvis) och faktureras i förskott
+      </div>
     </div>
   );
 };
