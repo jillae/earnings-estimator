@@ -28,6 +28,9 @@ export function useStateSelections() {
   // Nytt state för leasingmodell-val
   const [selectedLeasingModel, setSelectedLeasingModel] = useState<'grundleasing' | 'strategisk'>('grundleasing');
   
+  // Nollpunkt state
+  const [workDaysPerMonth, setWorkDaysPerMonth] = useState<number>(22);
+  
   // Nytt state för info-rutan
   const [currentInfoText, setCurrentInfoText] = useState<InfoText | null>(null);
 
@@ -135,6 +138,8 @@ export function useStateSelections() {
     selectedLeasingModel,
     setSelectedLeasingModel,
     currentInfoText,
-    setCurrentInfoText
+    setCurrentInfoText,
+    workDaysPerMonth,
+    setWorkDaysPerMonth
   };
 }

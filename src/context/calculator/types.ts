@@ -34,6 +34,7 @@ export interface CalculatorState {
   revenue: Revenue;
   occupancyRevenues: OccupancyRevenues;
   netResults: NetResults;
+  workDaysPerMonth: number;
 }
 
 export interface CalculatorContextType {
@@ -139,4 +140,7 @@ export interface CalculatorContextType {
   logInteraction: (action: string, data: any) => void;
   logSignificantInteraction: (action: string) => void;
   interactionCount: number;
+  
+  workDaysPerMonth: number;
+  setWorkDaysPerMonth: (days: number) => void;
 }

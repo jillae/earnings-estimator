@@ -25,6 +25,7 @@ interface ResultsTableProps {
   customerPrice?: number;
   slaCost?: number;
   creditCost?: number;
+  hoveredInput?: 'treatments' | 'price' | null;
 }
 
 const ResultsTable: React.FC<ResultsTableProps> = ({
@@ -46,7 +47,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   treatmentsPerDay = 0,
   customerPrice = 0,
   slaCost = 0,
-  creditCost = 0
+  creditCost = 0,
+  hoveredInput = null
 }) => {
   // Validera värden och se till att de är giltiga nummer
   const safeDaily = isNaN(dailyRevenueIncVat) ? 0 : dailyRevenueIncVat;
@@ -107,11 +109,11 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               <td colSpan={3} className="py-2 px-3 text-xs font-semibold text-blue-800 uppercase tracking-wide">
                 📊 Klinik & Verksamhet
               </td>
-            </tr>
-            <tr className="border-b border-slate-200 bg-emerald-50/10 hover:bg-emerald-50/20 transition-colors">
-              <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Behandlingar/dag</td>
-              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{treatmentsPerDay || 0}</td>
-              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{(treatmentsPerDay || 0) * 252}</td>
+             </tr>
+             <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'treatments' ? 'bg-emerald-100/50 ring-2 ring-emerald-300' : 'bg-emerald-50/10 hover:bg-emerald-50/20'}`}>
+               <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Behandlingar/dag</td>
+               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{treatmentsPerDay || 0}</td>
+               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{(treatmentsPerDay || 0) * 252}</td>
             </tr>
             <tr className="border-b border-slate-200">
               <td className="py-2 px-3 text-slate-700 text-xs">Nollpunkt (arbetsdagar/månad)</td>
@@ -137,11 +139,11 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                   );
                 })()}
               </td>
-            </tr>
-            <tr className="border-b border-slate-200 bg-emerald-50/10 hover:bg-emerald-50/20 transition-colors">
-              <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Intäkt/behandling (ink moms)</td>
-              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{formatCurrency(customerPrice || 0)}</td>
-              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
+             </tr>
+             <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'price' ? 'bg-emerald-100/50 ring-2 ring-emerald-300' : 'bg-emerald-50/10 hover:bg-emerald-50/20'}`}>
+               <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Intäkt/behandling (ink moms)</td>
+               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{formatCurrency(customerPrice || 0)}</td>
+               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
             </tr>
             
             {/* INTÄKT SEKTION */}

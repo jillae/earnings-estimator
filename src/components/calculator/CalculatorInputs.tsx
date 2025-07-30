@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
 import ClinicSizeSelector from '../ClinicSizeSelector';
@@ -18,7 +18,10 @@ import FloatingResultsSummary from './FloatingResultsSummary';
 import CreditInfoPopover from './CreditInfoPopover';
 import { SliderStep } from '@/utils/sliderSteps';
 
-const CalculatorInputs: React.FC = () => {
+const CalculatorInputs: React.FC<{ 
+  hoveredInput: 'treatments' | 'price' | null;
+  setHoveredInput: (input: 'treatments' | 'price' | null) => void;
+}> = ({ hoveredInput, setHoveredInput }) => {
   const {
     clinicSize,
     setClinicSize,
@@ -82,6 +85,8 @@ const CalculatorInputs: React.FC = () => {
                   customerPrice={customerPrice}
                   onTreatmentsChange={setTreatmentsPerDay}
                   onCustomerPriceChange={setCustomerPrice}
+                  hoveredInput={hoveredInput}
+                  setHoveredInput={setHoveredInput}
                 />
               </div>
             </div>

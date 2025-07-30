@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { useCalculator } from '@/context/CalculatorContext';
 
@@ -8,15 +8,24 @@ interface TreatmentSettingsProps {
   customerPrice: number;
   onTreatmentsChange: (value: number) => void;
   onCustomerPriceChange: (value: number) => void;
+  hoveredInput?: 'treatments' | 'price' | null;
+  setHoveredInput?: (input: 'treatments' | 'price' | null) => void;
 }
 
 const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   treatmentsPerDay,
   customerPrice,
   onTreatmentsChange,
-  onCustomerPriceChange
+  onCustomerPriceChange,
+  setHoveredInput
 }) => {
-  const { logSignificantInteraction } = useCalculator();
+  const { logSignificantInteraction, workDaysPerMonth, setWorkDaysPerMonth } = useCalculator();
+  const [hoveredInput, setInternalHoveredInput] = useState<'treatments' | 'price' | null>(null);
+
+  const handleHover = (input: 'treatments' | 'price' | null) => {
+    setInternalHoveredInput(input);
+    setHoveredInput?.(input);
+  };
 
   // Hantera behandlingsantal via slider
   const handleTreatmentsSliderChange = (values: number[]) => {
@@ -30,14 +39,24 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
     onCustomerPriceChange(values[0]);
   };
 
+  // Hantera nollpunkt via slider
+  const handleWorkDaysSliderChange = (values: number[]) => {
+    logSignificantInteraction('work_days_changed');
+    setWorkDaysPerMonth(values[0]);
+  };
+
   return (
     <section className="w-full space-y-4">
       {/* Rad 1: Behandlingar och Kundpris */}
       <div className="flex flex-row gap-4 md:gap-6">
         {/* Antal behandlingar */}
-        <div className="flex-1 flex flex-col justify-between bg-emerald-50/20 border-emerald-200 rounded-2xl border px-5 py-6 shadow-subtle min-h-[164px] hover:bg-emerald-50/30 transition-colors">
-        <label htmlFor="treatments-per-day" className="text-sm font-semibold text-emerald-800 mb-3 flex items-center">
-          <span className="w-2 h-2 bg-emerald-400 rounded-sm mr-2"></span>
+        <div 
+          className="flex-1 flex flex-col justify-between bg-slate-50/50 border-slate-200 rounded-2xl border px-5 py-6 shadow-subtle min-h-[164px] hover:bg-slate-100/50 transition-colors cursor-pointer"
+          onMouseEnter={() => handleHover('treatments')}
+          onMouseLeave={() => handleHover(null)}
+        >
+        <label htmlFor="treatments-per-day" className="text-sm font-semibold text-slate-700 mb-3 flex items-center">
+          <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
           Antal behandlingar per dag
         </label>
         <div className="space-y-4">
@@ -55,12 +74,16 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             <span>12 st</span>
           </div>
         </div>
-        <p className="text-xs text-emerald-600">Justera med sliden</p>
+        <p className="text-xs text-slate-600">Justera med sliden</p>
       </div>
       {/* Kundpris */}
-      <div className="flex-1 flex flex-col justify-between bg-emerald-50/20 border-emerald-200 rounded-2xl border px-5 py-6 shadow-subtle min-h-[164px] hover:bg-emerald-50/30 transition-colors">
-        <label htmlFor="customer-price" className="text-sm font-semibold text-emerald-800 mb-3 flex items-center">
-          <span className="w-2 h-2 bg-emerald-400 rounded-sm mr-2"></span>
+      <div 
+        className="flex-1 flex flex-col justify-between bg-slate-50/50 border-slate-200 rounded-2xl border px-5 py-6 shadow-subtle min-h-[164px] hover:bg-slate-100/50 transition-colors cursor-pointer"
+        onMouseEnter={() => handleHover('price')}
+        onMouseLeave={() => handleHover(null)}
+      >
+        <label htmlFor="customer-price" className="text-sm font-semibold text-slate-700 mb-3 flex items-center">
+          <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
           Kundpris per behandling (kr, inkl moms)
         </label>
         <div className="space-y-4">
@@ -78,24 +101,25 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             <span>8 000 kr</span>
           </div>
         </div>
-        <p className="text-xs text-emerald-600">Justera med sliden</p>
+        <p className="text-xs text-slate-600">Justera med sliden</p>
         </div>
       </div>
       
       {/* Rad 2: Nollpunkt mini-slider */}
       <div className="w-full max-w-md">
-        <div className="bg-blue-50/20 border-blue-200 rounded-2xl border px-5 py-4 shadow-subtle hover:bg-blue-50/30 transition-colors">
-          <label className="text-sm font-semibold text-blue-800 mb-3 flex items-center">
-            <span className="w-2 h-2 bg-blue-400 rounded-sm mr-2"></span>
+        <div className="bg-slate-50/50 border-slate-200 rounded-2xl border px-5 py-4 shadow-subtle hover:bg-slate-100/50 transition-colors">
+          <label className="text-sm font-semibold text-slate-700 mb-3 flex items-center">
+            <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
             Nollpunkt (arbetsdagar/månad)
           </label>
           <div className="space-y-3">
-            <div className="text-base font-semibold text-slate-800">22 dagar</div>
+            <div className="text-base font-semibold text-slate-800">{workDaysPerMonth} dagar</div>
             <Slider
-              value={[22]}
+              value={[workDaysPerMonth]}
               min={1}
               max={22}
               step={1}
+              onValueChange={handleWorkDaysSliderChange}
               className="w-full"
             />
             <div className="flex justify-between text-xs text-slate-500">
@@ -103,7 +127,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               <span>22 dagar</span>
             </div>
           </div>
-          <p className="text-xs text-blue-600 mt-2">Test-funktion för utvärdering</p>
+          <p className="text-xs text-slate-600 mt-2">Test-funktion för utvärdering</p>
         </div>
       </div>
     </section>

@@ -47,5 +47,6 @@ export const initialState: CalculatorState = {
   netResults: {
     netPerMonthExVat: 0,
     netPerYearExVat: 0
-  }
+  },
+  workDaysPerMonth: 22
 };

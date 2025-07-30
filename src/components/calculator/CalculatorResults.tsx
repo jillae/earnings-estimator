@@ -6,7 +6,7 @@ import { SaveConfigurationButton } from './SaveConfigurationButton';
 import { QuoteRequestButton } from './QuoteRequestButton';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
 
-const CalculatorResults: React.FC = () => {
+const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | null }> = ({ hoveredInput = null }) => {
   const {
     revenue,
     leasingCost,
@@ -55,8 +55,9 @@ const CalculatorResults: React.FC = () => {
         treatmentsPerDay={treatmentsPerDay}
         customerPrice={customerPrice}
         slaCost={operatingCost.slaCost}
-        creditCost={operatingCost.costPerMonth}
-        />
+         creditCost={operatingCost.costPerMonth}
+         hoveredInput={hoveredInput}
+         />
       </div>
     </div>
   );

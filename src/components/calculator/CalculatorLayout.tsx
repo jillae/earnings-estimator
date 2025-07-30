@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import CalculatorInputs from './CalculatorInputs';
 import CalculatorResults from './CalculatorResults';
 import { useCalculator } from '@/context/CalculatorContext';
@@ -9,15 +9,16 @@ import DetailedAnalysisModal from './DetailedAnalysisModal';
 
 const CalculatorLayout: React.FC = () => {
   const { netResults } = useCalculator();
+  const [hoveredInput, setHoveredInput] = useState<'treatments' | 'price' | null>(null);
   
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
       <div className="grid lg:grid-cols-2 gap-8">
         <div className="space-y-6">
-          <CalculatorInputs />
+          <CalculatorInputs hoveredInput={hoveredInput} setHoveredInput={setHoveredInput} />
         </div>
         <div className="space-y-6">
-          <CalculatorResults />
+          <CalculatorResults hoveredInput={hoveredInput} />
         </div>
       </div>
       
