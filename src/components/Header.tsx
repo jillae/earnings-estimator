@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, Settings, Phone, FileText, HelpCircle, ExternalLink, Library } from 'lucide-react';
+import { Home, Settings, Phone, FileText, HelpCircle, ExternalLink, Library, BarChart3 } from 'lucide-react';
 
 const Header = () => {
   const scrollToWhitepapers = (e: React.MouseEvent) => {
@@ -27,6 +27,10 @@ const Header = () => {
             <Link to="/" className="flex items-center hover:text-primary-foreground/80 transition-colors">
               <Home className="h-4 w-4 mr-1" />
               <span className="text-sm">Hem</span>
+            </Link>
+            <Link to="/dashboard" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+              <BarChart3 className="h-4 w-4 mr-1" />
+              <span className="text-sm">Dashboard</span>
             </Link>
             <Link to="/contact" className="flex items-center hover:text-primary-foreground/80 transition-colors">
               <Phone className="h-4 w-4 mr-1" />

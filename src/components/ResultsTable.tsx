@@ -1,10 +1,11 @@
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Button } from '@/components/ui/button';
-import { Download, TrendingUp } from 'lucide-react';
+import { Download, TrendingUp, FileBarChart } from 'lucide-react';
 import DetailedAnalysisModal from './calculator/DetailedAnalysisModal';
 import { GrowthForecastPlug } from './GrowthForecastPlug';
 import { useCalculator } from '@/context/CalculatorContext';
+import ExportButton from '@/components/ExportButton';
 
 interface ResultsTableProps {
   dailyRevenueIncVat: number;
@@ -84,8 +85,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
         <DetailedAnalysisModal />
       </div>
       
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
+      <div className="table-container overflow-x-auto">
+        <table className="w-full border-collapse text-sm min-w-[500px] md:min-w-full">
           <thead>
             <tr className="border-b border-slate-200">
               <th className="text-left py-2 px-3 text-slate-600 font-medium text-xs">Översikt</th>
@@ -231,22 +232,28 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           <span className="w-2 h-2 bg-emerald-400 rounded-sm mr-2"></span>
           Budgeterbar intäkt vid olika beläggningsgrad
         </h3>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-blue-50 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:shadow-md transition-all duration-200">
+        <div className="occupancy-grid grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="occupancy-card p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-blue-50 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:shadow-md transition-all duration-200">
             <div className="text-sm text-blue-700 mb-1 font-medium">Beläggning 50%, år 1 (ink moms)</div>
             <div className="text-xl font-bold text-blue-800 whitespace-nowrap">{formatCurrency(safeOcc50)}</div>
           </div>
-          <div className="p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:shadow-md transition-all duration-200">
+          <div className="occupancy-card p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:shadow-md transition-all duration-200">
             <div className="text-sm text-emerald-700 mb-1 font-medium">Beläggning 75%, år 2 (ink moms)</div>
             <div className="text-xl font-bold text-emerald-800 whitespace-nowrap">{formatCurrency(safeOcc75)}</div>
           </div>
-          <div className="p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-purple-50 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:shadow-md transition-all duration-200">
+          <div className="occupancy-card p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-purple-50 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:shadow-md transition-all duration-200">
             <div className="text-sm text-purple-700 mb-1 font-medium">Beläggning 100%, år 3 (ink moms)</div>
             <div className="text-xl font-bold text-purple-800 whitespace-nowrap">{formatCurrency(safeOcc100)}</div>
           </div>
         </div>
-        
-        {/* Tillväxtprognos plugg */}
+      </div>
+
+      {/* Export Button Section */}
+      <div className="mt-6 flex justify-center">
+        <ExportButton />
+      </div>
+
+      <div className="mt-8" data-growth-forecast>
         <GrowthForecastPlug />
       </div>
       

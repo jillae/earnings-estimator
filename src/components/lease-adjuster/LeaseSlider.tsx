@@ -109,14 +109,23 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
             max={2}
             step={0.5}
             onValueChange={handleSliderChange}
-            className="mt-6 slider-refined"
+            className="mt-6 slider-refined touch-manipulation"
+            style={{
+              touchAction: 'manipulation',
+              WebkitTouchCallout: 'none',
+              WebkitUserSelect: 'none'
+            }}
           />
           
           {/* Klickbara ikoner för varje steg - bättre alignment */}
           <div className="grid grid-cols-5 gap-0 mt-4">
             <div 
-              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity touch-manipulation p-2 -m-2 min-h-[44px] flex items-center justify-center"
               onClick={() => handleStepClick(0)}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                handleStepClick(0);
+              }}
             >
               {getStepIcon(0, currentStep === 0)}
               <span className="text-xs text-slate-500 text-center leading-tight">

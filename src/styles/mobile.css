@@ -1,0 +1,72 @@
+/* Touch-optimized slider styles */
+.slider-refined .touch-manipulation {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Increase touch target size for mobile */
+.slider-refined [role="slider"] {
+  width: 20px !important;
+  height: 20px !important;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .slider-refined [role="slider"] {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  
+  /* Larger touch targets for step icons */
+  .touch-step-icon {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Responsive table styles */
+@media (max-width: 768px) {
+  .glass-card {
+    margin: 1rem 0.5rem;
+    padding: 1rem;
+  }
+  
+  .glass-card table {
+    font-size: 12px;
+  }
+  
+  .glass-card th,
+  .glass-card td {
+    padding: 8px 4px;
+  }
+  
+  /* Stack cards on mobile */
+  .occupancy-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .occupancy-card {
+    text-align: center;
+    padding: 1rem;
+  }
+}
+
+/* Horizontal scroll for tables on small screens */
+@media (max-width: 640px) {
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .table-container table {
+    min-width: 500px;
+  }
+}

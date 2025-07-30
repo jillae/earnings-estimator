@@ -2,9 +2,11 @@
 import React from 'react';
 import ResultsTable from '../ResultsTable';
 import { useCalculator } from '@/context/CalculatorContext';
+import { formatCurrency } from '@/utils/formatUtils';
 import { SaveConfigurationButton } from './SaveConfigurationButton';
 import { QuoteRequestButton } from './QuoteRequestButton';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
+import ExportButton from '@/components/ExportButton';
 
 const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null }> = ({ hoveredInput = null }) => {
   const {
