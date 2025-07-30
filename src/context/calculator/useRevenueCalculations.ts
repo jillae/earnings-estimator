@@ -65,8 +65,13 @@ export function useRevenueCalculations({
 
   // Calculate occupancy revenues separately and update when revenue changes
   useEffect(() => {
+    console.log(`useRevenueCalculations - Checking occupancy update trigger:
+      revenue.yearlyRevenueIncVat: ${revenue.yearlyRevenueIncVat}
+      treatmentsPerDay: ${treatmentsPerDay}
+      customerPrice: ${customerPrice}
+    `);
+    
     const calculatedOccupancyRevenues = calculateOccupancyRevenues(revenue.yearlyRevenueIncVat);
-    setOccupancyRevenues(calculatedOccupancyRevenues);
     
     console.log(`useRevenueCalculations uppdaterar beläggningsgrader:
       årsintäkt (inkl moms): ${revenue.yearlyRevenueIncVat}
@@ -74,7 +79,9 @@ export function useRevenueCalculations({
       75% beläggning: ${calculatedOccupancyRevenues.occupancy75}
       100% beläggning: ${calculatedOccupancyRevenues.occupancy100}
     `);
-  }, [revenue.yearlyRevenueIncVat]);
+    
+    setOccupancyRevenues(calculatedOccupancyRevenues);
+  }, [revenue.yearlyRevenueIncVat, treatmentsPerDay, customerPrice]);
 
   // Calculate net results
   useEffect(() => {
