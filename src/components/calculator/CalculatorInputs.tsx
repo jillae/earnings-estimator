@@ -3,7 +3,7 @@ import React from 'react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
 import ClinicSizeSelector from '../ClinicSizeSelector';
-import WorkDaysSettings from '../WorkDaysSettings';
+import TreatmentSettings from '../TreatmentSettings';
 import MachineSelector from '../MachineSelector';
 import OperatingCosts from '../OperatingCosts';
 import LeaseAdjuster from '../LeaseAdjuster';
@@ -77,7 +77,7 @@ const CalculatorInputs: React.FC = () => {
             </div>
             <div className="pt-2">
               <div className="glass-card animate-slide-in" style={{ animationDelay: '200ms' }}>
-                <WorkDaysSettings 
+                <TreatmentSettings 
                   treatmentsPerDay={treatmentsPerDay}
                   customerPrice={customerPrice}
                   onTreatmentsChange={setTreatmentsPerDay}
