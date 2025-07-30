@@ -26,8 +26,9 @@ const CalculatorResults: React.FC = () => {
   `);
 
   return (
-    <div className="h-full flex items-start">
-      <ResultsTable 
+    <div className="h-full">
+      <div className="sticky top-4 z-10">
+        <ResultsTable
         dailyRevenueIncVat={revenue.dailyRevenueIncVat}
         weeklyRevenueIncVat={revenue.weeklyRevenueIncVat}
         monthlyRevenueIncVat={revenue.monthlyRevenueIncVat}
@@ -41,7 +42,8 @@ const CalculatorResults: React.FC = () => {
         occupancy50={occupancyRevenues.occupancy50}
         occupancy75={occupancyRevenues.occupancy75}
         occupancy100={occupancyRevenues.occupancy100}
-      />
+        />
+      </div>
     </div>
   );
 };

@@ -15,6 +15,7 @@ import ContextualInfoBox from './ContextualInfoBox';
 import { formatCurrency } from '@/utils/formatUtils';
 import { leasingPeriods, insuranceOptions } from '@/data/machines'; 
 import FloatingResultsSummary from './FloatingResultsSummary';
+import CreditInfoSection from './CreditInfoSection';
 import { SliderStep } from '@/utils/sliderSteps';
 
 const CalculatorInputs: React.FC = () => {
@@ -67,6 +68,11 @@ const CalculatorInputs: React.FC = () => {
         onChange={setSelectedMachineId}
       />
 
+      {/* Credit Info Section - lägg till före leasingmodellval */}
+      {selectedMachine?.usesCredits && (
+        <CreditInfoSection />
+      )}
+
       {selectedMachine && (
         <>
           <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '250ms' }}>
@@ -110,6 +116,8 @@ const CalculatorInputs: React.FC = () => {
           {/* Flatrate-sektion kommer efter anpassning av investering */}
           <FlatrateSection />
           
+          <OperatingCosts />
+          
           <div className="mt-4">
             <DriftpaketSelector />
             
@@ -118,8 +126,6 @@ const CalculatorInputs: React.FC = () => {
               <ContextualInfoBox />
             </div>
           </div>
-          
-          <OperatingCosts />
         </>
       )}
       

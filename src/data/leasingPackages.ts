@@ -25,16 +25,16 @@ export const LEASING_PACKAGES = {
     id: 'hybridpaket', 
     name: 'Hybridpaket',
     shortName: 'Hybrid',
-    description: 'Flexibel investering - balansera din investeringskostnad med din driftkostnad.',
-    detailedDescription: 'Credits köps separat eller via fastpris enligt ditt val.',
+    description: 'Lägsta månadsavgift för maskinen. Credits debiteras separat per behandling.',
+    detailedDescription: 'Betala endast för det du använder. Ger dig full flexibilitet med rörlig driftskostnad.',
     sliderPosition: 1,
     icon: '⚖️',
     benefits: [
-      'Anpassningsbar månadskostnad',
-      'Credits köps separat eller via fastpris',
-      'Optimera din totala lönsamhet'
+      'Lägsta månadskostnad',
+      'Credits debiteras separat',
+      'Full flexibilitet med valfrihet hur credits betalas'
     ],
-    bestFor: 'Kliniker som vill anpassa sin kostnad'
+    bestFor: 'Låg eller varierande behandlingsvolym'
   },
   
   ALLT_INKLUDERAT: {
@@ -44,11 +44,11 @@ export const LEASING_PACKAGES = {
     description: 'Fullständig kostnadskontroll med fast månadsavgift.',
     detailedDescription: 'Alla credits inkluderade i priset. Perfekt för hög volym och förutsägbar budget.',
     sliderPosition: 2,
-    icon: '⚠️',
+    icon: '📦',
     benefits: [
       'Fast månadsavgift',
       'Alla credits inkluderade', 
-      'Inga variabla kostnader',
+      'Inga extra driftkostnader',
       'Förutsägbar budget'
     ],
     bestFor: 'Hög volym och förutsägbar budget'
