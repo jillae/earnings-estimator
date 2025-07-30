@@ -4,6 +4,7 @@ import ResultsTable from '../ResultsTable';
 import { useCalculator } from '@/context/CalculatorContext';
 import { SaveConfigurationButton } from './SaveConfigurationButton';
 import { QuoteRequestButton } from './QuoteRequestButton';
+import DetailedAnalysisModal from './DetailedAnalysisModal';
 
 const CalculatorResults: React.FC = () => {
   const {
@@ -51,6 +52,7 @@ const CalculatorResults: React.FC = () => {
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <SaveConfigurationButton />
           <QuoteRequestButton />
+          <DetailedAnalysisModal />
         </div>
       </div>
     </div>
