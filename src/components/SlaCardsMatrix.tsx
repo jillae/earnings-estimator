@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Clock, Shield, Headphones, Timer, Zap, CreditCard, Target, ShieldCheck, Check } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useCalculator } from '@/context/CalculatorContext';
@@ -139,170 +140,195 @@ export const SlaCardsMatrix: React.FC = () => {
 
   return (
     <div className="glass-card animate-slide-in" style={{ animationDelay: '300ms' }}>
-      <div className="mb-8">
+      <div className="mb-6">
         <h3 className="text-xl font-bold text-slate-900 mb-3">
           Välj Service & Driftpaket
         </h3>
         <p className="text-slate-600 leading-relaxed">
-          Jämför alternativen och välj det som passar din klinik bäst. Klicka på en kolumn för att välja.
+          Jämför alternativen och välj det som passar din klinik bäst.
         </p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-x-auto overflow-y-visible">
-        <div className="min-w-[700px]">
-          <table className="w-full table-fixed text-sm">{/* Mindre text och minska min-width */}
-          {/* Header */}
-          <thead>
-            <tr className="border-b border-slate-200">
-              <th className="p-3 text-left bg-gradient-to-r from-slate-50 to-slate-100 font-bold text-slate-800 border-r border-slate-100">
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-600">📋</span>
-                  <span>Vad ingår</span>
-                </div>
-              </th>
-              <th 
-                className={getHeaderStyle('Bas')}
-                onClick={() => handleSlaSelect('Bas')}
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-2xl">🔵</span>
-                    <span className="text-xl font-bold">Bas</span>
-                  </div>
-                  <div className="text-sm opacity-80">(Ingår)</div>
-                  <div className="text-2xl font-bold">{formatCurrency(0)}</div>
-                  <div className="text-sm opacity-70">/ mån</div>
-                  {selectedDriftpaket === 'Bas' && (
-                    <div className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">
-                      ✓ VALT
-                    </div>
-                  )}
-                </div>
-              </th>
-              <th 
-                className={getHeaderStyle('Silver')}
-                onClick={() => handleSlaSelect('Silver')}
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-2xl">⚪</span>
-                    <span className="text-xl font-bold">Silver</span>
-                  </div>
-                  <div className="text-sm opacity-80">&nbsp;</div>
-                  <div className="text-2xl font-bold">{formatCurrency(calculatedSlaCostSilver)}</div>
-                  <div className="text-sm opacity-70">/ mån</div>
-                  {selectedDriftpaket === 'Silver' && (
-                    <div className="inline-flex items-center gap-1 px-2 py-1 bg-slate-600 text-white text-xs font-bold rounded-full">
-                      ✓ VALT
-                    </div>
-                  )}
-                </div>
-              </th>
-              <th 
-                className={getHeaderStyle('Guld')}
-                onClick={() => handleSlaSelect('Guld')}
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-2xl">🟡</span>
-                    <span className="text-xl font-bold">Guld</span>
-                  </div>
-                  <div className="text-sm opacity-80">&nbsp;</div>
-                  <div className="text-2xl font-bold">{formatCurrency(calculatedSlaCostGuld)}</div>
-                  <div className="text-sm opacity-70">/ mån</div>
-                  {selectedDriftpaket === 'Guld' && (
-                    <div className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-600 text-white text-xs font-bold rounded-full">
-                      ✓ VALT
-                    </div>
-                  )}
-                </div>
-              </th>
-            </tr>
-          </thead>
+      <Tabs value={selectedDriftpaket} onValueChange={(value) => handleSlaSelect(value as DriftpaketType)} className="w-full">
+        {/* Tab Headers */}
+        <TabsList className="grid w-full grid-cols-3 h-auto bg-muted/30 p-1 rounded-lg">
+          <TabsTrigger 
+            value="Bas" 
+            className="flex-col h-auto py-4 px-3 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-900 data-[state=active]:shadow-md"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">🔵</span>
+              <span className="font-bold text-base">Bas</span>
+            </div>
+            <div className="text-xs opacity-80">(Ingår)</div>
+            <div className="font-bold text-lg">{formatCurrency(0)}</div>
+            <div className="text-xs opacity-70">/ mån</div>
+          </TabsTrigger>
+          
+          <TabsTrigger 
+            value="Silver" 
+            className="flex-col h-auto py-4 px-3 data-[state=active]:bg-slate-100 data-[state=active]:text-slate-900 data-[state=active]:shadow-md"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">⚪</span>
+              <span className="font-bold text-base">Silver</span>
+            </div>
+            <div className="text-xs opacity-80">&nbsp;</div>
+            <div className="font-bold text-lg">{formatCurrency(calculatedSlaCostSilver)}</div>
+            <div className="text-xs opacity-70">/ mån</div>
+          </TabsTrigger>
+          
+          <TabsTrigger 
+            value="Guld" 
+            className="flex-col h-auto py-4 px-3 data-[state=active]:bg-yellow-100 data-[state=active]:text-yellow-900 data-[state=active]:shadow-md"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">🟡</span>
+              <span className="font-bold text-base">Guld</span>
+            </div>
+            <div className="text-xs opacity-80">&nbsp;</div>
+            <div className="font-bold text-lg">{formatCurrency(calculatedSlaCostGuld)}</div>
+            <div className="text-xs opacity-70">/ mån</div>
+          </TabsTrigger>
+        </TabsList>
 
-          {/* Body */}
-          <tbody>
-            {tableRows.map((section, sectionIndex) => (
-              <React.Fragment key={sectionIndex}>
-                {/* Section header */}
-                <tr className="bg-gradient-to-r from-slate-50 to-slate-100">
-                  <td colSpan={4} className="p-4 font-bold text-slate-800 text-sm border-b border-slate-200">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-slate-400 rounded-full"></span>
-                      {section.category}
-                    </div>
-                  </td>
-                </tr>
-                
-                {/* Section rows */}
-                {section.features.map((feature, featureIndex) => (
-                  <tr key={`${sectionIndex}-${featureIndex}`} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                    <td className="p-2 font-medium text-slate-700 bg-slate-50/50 border-r border-slate-100">
-                      <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-slate-400 rounded-full flex-shrink-0"></span>
-                        <span className="leading-tight">{feature.label}</span>
-                      </div>
-                    </td>
-                    <td 
-                      className={getColumnStyle('Bas')}
-                      onClick={() => handleSlaSelect('Bas')}
-                    >
-                      <div className="font-medium text-slate-800 leading-tight">
-                        {feature.bas}
-                      </div>
-                    </td>
-                    <td 
-                      className={getColumnStyle('Silver')}
-                      onClick={() => handleSlaSelect('Silver')}
-                    >
-                      <div className="font-medium text-slate-800 leading-tight">
-                        {feature.silver}
-                      </div>
-                    </td>
-                    <td 
-                      className={getColumnStyle('Guld')}
-                      onClick={() => handleSlaSelect('Guld')}
-                    >
-                      <div className="font-medium text-slate-800 leading-tight">
-                        {feature.guld}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </React.Fragment>
-            ))}
-
-            {/* Bäst för rad */}
-            <tr className="border-t-2 border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100">
-              <td className="p-4 font-bold text-slate-800 bg-slate-100 border-r border-slate-100">
+        {/* Tab Content - Compact Feature Lists */}
+        <div className="mt-6">
+          <TabsContent value="Bas" className="mt-0">
+            <Card className="border-blue-200 bg-blue-50/30">
+              <CardHeader className="pb-3">
                 <div className="flex items-center gap-2">
-                  <Target className="h-4 w-4 text-slate-600" />
-                  <span>Bäst för</span>
+                  <span className="text-2xl">🔵</span>
+                  <div>
+                    <h4 className="text-lg font-bold text-blue-900">Bas-paket</h4>
+                    <p className="text-sm text-blue-700">Grundläggande skydd för nya kliniker</p>
+                  </div>
                 </div>
-              </td>
-              <td 
-                className={getColumnStyle('Bas')}
-                onClick={() => handleSlaSelect('Bas')}
-              >
-                <div className="font-bold text-slate-900 py-2">Nya kliniker</div>
-              </td>
-              <td 
-                className={getColumnStyle('Silver')}
-                onClick={() => handleSlaSelect('Silver')}
-              >
-                <div className="font-bold text-slate-900 py-2">Växande kliniker</div>
-              </td>
-              <td 
-                className={getColumnStyle('Guld')}
-                onClick={() => handleSlaSelect('Guld')}
-              >
-                <div className="font-bold text-slate-900 py-2">Etablerade kliniker</div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                  <div className="space-y-2">
+                    <div className="font-medium text-slate-800">🛡️ Garanti & Support</div>
+                    <ul className="space-y-1 pl-4 text-slate-700">
+                      <li>• 12 månaders garanti</li>
+                      <li>• Grundsupport (vardagar)</li>
+                      <li>• Responstid: 336h</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="font-medium text-slate-800">🔧 Service & Underhåll</div>
+                    <ul className="space-y-1 pl-4 text-slate-700">
+                      <li>• Service vardagar</li>
+                      <li>• Åtgärd inom rimlig tid</li>
+                      <li>• Ingen årlig service</li>
+                      <li>• Ingen lånemaskin</li>
+                    </ul>
+                  </div>
+                </div>
+                {selectedMachine.usesCredits && (
+                  <div className="pt-2 border-t border-blue-200">
+                    <div className="font-medium text-slate-800 mb-1">💳 Credits</div>
+                    <p className="text-slate-700 text-sm">
+                      {useFlatrateOption === 'flatrate' ? 'Flatrate' : `${formatCurrency(creditPrice)} per credit`}
+                    </p>
+                  </div>
+                )}
+                <div className="pt-2 border-t border-blue-200">
+                  <div className="font-medium text-blue-800">🎯 Bäst för: Nya kliniker</div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="Silver" className="mt-0">
+            <Card className="border-slate-300 bg-slate-50/30">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">⚪</span>
+                  <div>
+                    <h4 className="text-lg font-bold text-slate-900">Silver-paket</h4>
+                    <p className="text-sm text-slate-700">Utökad service för växande verksamheter</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                  <div className="space-y-2">
+                    <div className="font-medium text-slate-800">🛡️ Garanti & Support</div>
+                    <ul className="space-y-1 pl-4 text-slate-700">
+                      <li>• 24 månaders garanti</li>
+                      <li>• Prioriterad support (5d/v, 9-15)</li>
+                      <li>• Responstid: 24h</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="font-medium text-slate-800">🔧 Service & Underhåll</div>
+                    <ul className="space-y-1 pl-4 text-slate-700">
+                      <li>• Service vardagar 9-15</li>
+                      <li>• Max åtgärdstid: 72h</li>
+                      <li>• ✅ Årlig service (resekostnad ingår)</li>
+                      <li>• ✅ Lånemaskin vid service</li>
+                    </ul>
+                  </div>
+                </div>
+                {selectedMachine.usesCredits && (
+                  <div className="pt-2 border-t border-slate-300">
+                    <div className="font-medium text-slate-800 mb-1">💳 Credits</div>
+                    <p className="text-slate-700 text-sm">50% rabatt på Flatrate</p>
+                  </div>
+                )}
+                <div className="pt-2 border-t border-slate-300">
+                  <div className="font-medium text-slate-800">🎯 Bäst för: Växande kliniker</div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="Guld" className="mt-0">
+            <Card className="border-yellow-300 bg-yellow-50/30">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🟡</span>
+                  <div>
+                    <h4 className="text-lg font-bold text-yellow-900">Guld-paket</h4>
+                    <p className="text-sm text-yellow-700">Premium-service för etablerade kliniker</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                  <div className="space-y-2">
+                    <div className="font-medium text-slate-800">🛡️ Garanti & Support</div>
+                    <ul className="space-y-1 pl-4 text-slate-700">
+                      <li>• 24 månaders garanti</li>
+                      <li>• Högsta prioritet (7d/v, 00-24)</li>
+                      <li>• Responstid: Omgående</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="font-medium text-slate-800">🔧 Service & Underhåll</div>
+                    <ul className="space-y-1 pl-4 text-slate-700">
+                      <li>• Service alla dagar 00-24</li>
+                      <li>• Max åtgärdstid: 48h</li>
+                      <li>• ✅ Årlig service (res + arbete ingår)</li>
+                      <li>• ✅ Lånemaskin vid service</li>
+                    </ul>
+                  </div>
+                </div>
+                {selectedMachine.usesCredits && (
+                  <div className="pt-2 border-t border-yellow-300">
+                    <div className="font-medium text-slate-800 mb-1">💳 Credits</div>
+                    <p className="text-slate-700 text-sm">Flatrate Credits Ingår (100%)</p>
+                  </div>
+                )}
+                <div className="pt-2 border-t border-yellow-300">
+                  <div className="font-medium text-yellow-800">🎯 Bäst för: Etablerade kliniker</div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </div>
-      </div>
+      </Tabs>
 
       {/* Avtalsinfo */}
       <div className="text-xs text-slate-500 text-center italic mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
