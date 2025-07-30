@@ -17,13 +17,13 @@ const ComparisonTable: React.FC = () => {
     );
   };
 
-  const getSlaColor = (slaLevel: 'Bas' | 'Silver' | 'Guld') => {
+  const getSlaColor = (slaLevel: 'Brons' | 'Silver' | 'Guld') => {
     switch (slaLevel) {
       case 'Guld':
         return 'bg-yellow-100 text-yellow-800 border-yellow-300';
       case 'Silver':
         return 'bg-slate-100 text-slate-800 border-slate-300';
-      case 'Bas':
+      case 'Brons':
         return 'bg-blue-100 text-blue-800 border-blue-300';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-300';
