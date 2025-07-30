@@ -69,7 +69,7 @@ export const KlinikOptimeringHomePlug: React.FC = () => {
                 onClick={() => window.open('/klinik-optimering-coming-soon', '_blank')}
               >
                 <Target className="h-5 w-5 mr-2" />
-                Få personlig kapacitetsanalys
+                Begränsat antal platser - boka nu
                 <ExternalLink className="h-4 w-4 ml-2 opacity-70 group-hover:opacity-100 transition-opacity" />
               </Button>
               
