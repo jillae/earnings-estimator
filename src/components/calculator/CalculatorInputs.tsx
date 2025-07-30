@@ -121,78 +121,45 @@ const CalculatorInputs: React.FC<{
                   hoveredInput={hoveredInput}
                   onHoveredInputChange={onHoveredInputChange}
                 />
-                
                 {paymentOption === 'leasing' ? (
-                  <div className="mt-4">
-                    {/* Layout med leasing och credits sida vid sida för credit-maskiner */}
-                    {selectedMachine?.usesCredits ? (
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Vänster kolumn: Leasingkostnad */}
-                        <div className="space-y-4">
-                          <h4 className="text-sm font-semibold text-slate-700 flex items-center">
-                            <span className="w-2 h-2 bg-orange-400 rounded-sm mr-2"></span>
-                            Månadskostnad Leasing
-                          </h4>
-                          <LeaseAdjuster
-                            minLeaseCost={leasingRange.min}
-                            maxLeaseCost={leasingRange.max}
-                            leaseCost={leasingCost}
-                            currentSliderStep={currentSliderStep}
-                            flatrateThreshold={flatrateThreshold}
-                            showFlatrateIndicator={selectedMachine?.usesCredits}
-                            treatmentsPerDay={treatmentsPerDay}
-                            onSliderStepChange={setCurrentSliderStep}
-                            allowBelowFlatrate={allowBelowFlatrate}
-                            onAllowBelowFlatrateChange={setAllowBelowFlatrate}
-                            hoveredInput={hoveredInput}
-                            onHoveredInputChange={onHoveredInputChange}
-                          />
-                        </div>
-                        
-                        {/* Höger kolumn: Credits/Driftpaket */}
-                        <div className="space-y-4">
-                          <h4 className="text-sm font-semibold text-slate-700 flex items-center">
-                            <span className="w-2 h-2 bg-purple-400 rounded-sm mr-2"></span>
-                            Credits & Driftpaket
-                          </h4>
-                          <div className="bg-slate-50/50 border border-slate-200 rounded-xl p-4">
-                            <DriftpaketSelector 
-                              hoveredInput={hoveredInput}
-                              onHoveredInputChange={onHoveredInputChange}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      /* Standard layout för icke-credit maskiner */
-                      <div className="space-y-4">
-                        <LeaseAdjuster
-                          minLeaseCost={leasingRange.min}
-                          maxLeaseCost={leasingRange.max}
-                          leaseCost={leasingCost}
-                          currentSliderStep={currentSliderStep}
-                          flatrateThreshold={flatrateThreshold}
-                          showFlatrateIndicator={selectedMachine?.usesCredits}
-                          treatmentsPerDay={treatmentsPerDay}
-                          onSliderStepChange={setCurrentSliderStep}
-                          allowBelowFlatrate={allowBelowFlatrate}
-                          onAllowBelowFlatrateChange={setAllowBelowFlatrate}
+                  <div className="mt-4 space-y-4">
+                    <LeaseAdjuster
+                      minLeaseCost={leasingRange.min}
+                      maxLeaseCost={leasingRange.max}
+                      leaseCost={leasingCost}
+                      currentSliderStep={currentSliderStep}
+                      flatrateThreshold={flatrateThreshold}
+                      showFlatrateIndicator={selectedMachine?.usesCredits}
+                      treatmentsPerDay={treatmentsPerDay}
+                      onSliderStepChange={setCurrentSliderStep}
+                      allowBelowFlatrate={allowBelowFlatrate}
+                      onAllowBelowFlatrateChange={setAllowBelowFlatrate}
+                      hoveredInput={hoveredInput}
+                      onHoveredInputChange={onHoveredInputChange}
+                    />
+                    
+                    {/* Credits/Driftpaket direkt efter leasingslider för credit-maskiner */}
+                    {selectedMachine?.usesCredits && (
+                      <div className="bg-slate-50/30 border border-slate-200 rounded-xl p-4">
+                        <h4 className="text-sm font-semibold text-slate-700 mb-3 flex items-center">
+                          <span className="w-2 h-2 bg-purple-400 rounded-sm mr-2"></span>
+                          Credits & Driftpaket
+                        </h4>
+                        <DriftpaketSelector 
                           hoveredInput={hoveredInput}
                           onHoveredInputChange={onHoveredInputChange}
                         />
                       </div>
                     )}
                     
-                    <div className="mt-4">
-                      <LeasingOptions
-                        leasingPeriods={leasingPeriods}
-                        insuranceOptions={insuranceOptions}
-                        selectedLeasingPeriodId={selectedLeasingPeriodId}
-                        selectedInsuranceId={selectedInsuranceId}
-                        onLeasingPeriodChange={setSelectedLeasingPeriodId}
-                        onInsuranceChange={setSelectedInsuranceId}
-                      />
-                    </div>
+                    <LeasingOptions
+                      leasingPeriods={leasingPeriods}
+                      insuranceOptions={insuranceOptions}
+                      selectedLeasingPeriodId={selectedLeasingPeriodId}
+                      selectedInsuranceId={selectedInsuranceId}
+                      onLeasingPeriodChange={setSelectedLeasingPeriodId}
+                      onInsuranceChange={setSelectedInsuranceId}
+                    />
                   </div>
                 ) : (
                   <div className="mt-4">
