@@ -157,7 +157,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         <div className="flex items-center text-sm bg-primary/10 p-2 rounded-md gap-2 shadow-inner border border-primary/20">
           <CreditCard className="w-5 h-5 text-primary shrink-0" />
           <span className="font-semibold text-primary">
-            Credits ingår i priset - inga extra kostnader
+            Credits ingår i priset - inga extra driftskostnader
           </span>
         </div>
       )}
