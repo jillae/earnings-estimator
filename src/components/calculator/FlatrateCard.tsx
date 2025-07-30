@@ -49,7 +49,7 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
         </div>
         
         <p className="text-base text-slate-700 mb-4 leading-relaxed">
-          Den ultimata lösningen för total kostnadskontroll. Med detta paket betalar du <strong>aldrig mer för credits</strong> – du köper dig helt fri från all framtida debitering.
+          Fullständig kostnadskontroll med fast månadsavgift.
         </p>
         
         <div className="space-y-3 mb-4">
@@ -66,26 +66,26 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
           <div className="space-y-2 flex-grow">
             <div className="flex items-center gap-3 text-sm text-slate-600">
               <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-              <span>Noll kostnad per credit, för alltid</span>
+              <span>Fast månadsavgift</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-slate-600">
               <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-              <span>Precis som att äga en "rå" maskin</span>
+              <span>Alla credits inkluderade</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-slate-600">
               <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-              <span>Maximal enkelhet & förutsägbarhet</span>
+              <span>Inga extra driftkostnader</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-slate-600">
               <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-              <span>Unikt erbjudande på marknaden</span>
+              <span>Förutsägbar budget</span>
             </div>
           </div>
         </div>
         
         <div className="mt-auto pt-3 border-t border-slate-100">
           <div className="text-sm text-slate-600">
-            <span className="font-semibold text-slate-700">Bäst för:</span> Hög volym och total kostnadsfrihet
+            <span className="font-semibold text-slate-700">Bäst för:</span> Hög volym och förutsägbar budget
           </div>
           
           {!isEnabled && (
