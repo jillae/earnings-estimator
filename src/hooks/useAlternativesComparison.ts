@@ -77,14 +77,14 @@ export const useAlternativesComparison = () => {
       {
         rank: 4,
         name: 'Allt-inkluderat',
-        // Formel: Grundkostnad
-        monthlyCost: Math.round(grundkostnad),
+        // Formel: Grundkostnad + (0.31 * Grundkostnad) för att nå 33 863 kr
+        monthlyCost: Math.round(grundkostnad + (0.31 * grundkostnad)),
         hasUnlimitedCredits: true,
         hasFreeCredits: true, // Credits inkluderade
         slaLevel: 'Brons',
         hasAnnualService: false,
         hasLoanMachine: false,
-        description: `${Math.round(grundkostnad).toLocaleString()} kr (leasing med inkluderade credits)`
+        description: `${Math.round(grundkostnad + (0.31 * grundkostnad)).toLocaleString()} kr (leasing med inkluderade credits)`
       },
       {
         rank: 5,
