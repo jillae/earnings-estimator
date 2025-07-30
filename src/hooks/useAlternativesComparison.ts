@@ -27,8 +27,8 @@ export const useAlternativesComparison = () => {
 
     const baseLeasingCost = leasingCost;
     const baseSlaPercentage = 0; // Bas SLA
-    const silverSlaPercentage = 0.25; // 25% av grundkostnad
-    const goldSlaPercentage = 0.50; // 50% av grundkostnad
+    const silverSlaPercentage = 0.25; // 25% av leasingkostnad
+    const goldSlaPercentage = 0.50; // 50% av leasingkostnad
     
     // Flatrate kostnad (från operatingCost)
     const flatrateMonthlyCost = operatingCost.totalCost;
@@ -43,7 +43,7 @@ export const useAlternativesComparison = () => {
         slaLevel: 'Guld',
         hasAnnualService: true,
         hasLoanMachine: true,
-        description: `Grundkostnad + ${(goldSlaPercentage * 100)}% av grundkostnad`
+        description: 'Premium service med fullständig support'
       },
       {
         rank: 2,
@@ -54,18 +54,18 @@ export const useAlternativesComparison = () => {
         slaLevel: 'Silver',
         hasAnnualService: false,
         hasLoanMachine: true,
-        description: `Grundkostnad + ${(silverSlaPercentage * 100)}% av grundkostnad`
+        description: 'Förbättrad service med lånemaskin'
       },
       {
         rank: 3,
         name: 'Allt-inkluderat',
-        monthlyCost: baseLeasingCost + flatrateMonthlyCost,
+        monthlyCost: baseLeasingCost, // Credits är inkluderade i priset - INGEN extra kostnad
         hasUnlimitedCredits: true,
         hasFreeCredits: true,
         slaLevel: 'Bas',
         hasAnnualService: false,
         hasLoanMachine: false,
-        description: 'Fast pris för maskin + obegränsade credits'
+        description: 'Fast månadsavgift med obegränsade behandlingar'
       },
       {
         rank: 4,
@@ -76,7 +76,7 @@ export const useAlternativesComparison = () => {
         slaLevel: 'Bas',
         hasAnnualService: false,
         hasLoanMachine: false,
-        description: 'Grundkostnad + Flatrate-amount'
+        description: 'Kombinerat paket med flatrate för credits'
       },
       {
         rank: 5,
@@ -87,7 +87,7 @@ export const useAlternativesComparison = () => {
         slaLevel: 'Bas',
         hasAnnualService: false,
         hasLoanMachine: false,
-        description: 'Endast leasing'
+        description: 'Grundläggande leasingpaket'
       }
     ];
 
