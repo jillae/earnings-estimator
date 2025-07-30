@@ -25,7 +25,7 @@ interface ResultsTableProps {
   customerPrice?: number;
   slaCost?: number;
   creditCost?: number;
-  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null;
 }
 
 const ResultsTable: React.FC<ResultsTableProps> = ({
@@ -115,8 +115,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{treatmentsPerDay || 0}</td>
                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{(treatmentsPerDay || 0) * 252}</td>
             </tr>
-             <tr className="border-b border-slate-200">
-               <td className="py-2 px-3 text-slate-700 text-xs">Nollpunkt (arbetsdagar/månad)</td>
+             <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'workdays' ? 'bg-emerald-100/50 ring-2 ring-emerald-300' : 'bg-emerald-50/10 hover:bg-emerald-50/20'}`}>
+               <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Nollpunkt (arbetsdagar/månad)</td>
                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">
                  {(() => {
                    const monthlyRevenueExVat = safeMonthly / 1.25;
@@ -202,14 +202,12 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               )
             )}
             
-            {/* SLA-kostnad */}
-            {safeSlaOstCost > 0 && (
-              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'sla' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
-                <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">SLA {selectedSlaLevel}</td>
-                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeSlaOstCost)}</td>
-                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeSlaOstCost * 12)}</td>
-              </tr>
-            )}
+            {/* SLA-kostnad - visa alltid, även vid 0 kr */}
+            <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'sla' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
+              <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">SLA {selectedSlaLevel}</td>
+              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeSlaOstCost)}</td>
+              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeSlaOstCost * 12)}</td>
+            </tr>
             
             <tr className="border-b border-slate-200 font-medium bg-slate-50">
               <td className="py-2 px-3 text-slate-800 text-xs font-bold">Total kostnad</td>

@@ -19,8 +19,8 @@ import CreditInfoPopover from './CreditInfoPopover';
 import { SliderStep } from '@/utils/sliderSteps';
 
 const CalculatorInputs: React.FC<{ 
-  hoveredInput: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
-  onHoveredInputChange: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+  hoveredInput: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null;
+  onHoveredInputChange: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null) => void;
 }> = ({ hoveredInput, onHoveredInputChange }) => {
   const {
     clinicSize,
@@ -68,7 +68,9 @@ const CalculatorInputs: React.FC<{
               <ClinicSizeSelector 
                 clinicSize={clinicSize} 
                 netYearlyResult={netResults?.netPerYearExVat || 0}
-                onChange={setClinicSize} 
+                onChange={setClinicSize}
+                hoveredInput={hoveredInput}
+                onHoveredInputChange={onHoveredInputChange}
               />
             </div>
           </div>

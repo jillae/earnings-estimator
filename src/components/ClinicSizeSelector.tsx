@@ -7,12 +7,16 @@ interface ClinicSizeSelectorProps {
   clinicSize: 'small' | 'medium' | 'large';
   netYearlyResult: number;
   onChange: (value: 'small' | 'medium' | 'large') => void;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null) => void;
 }
 
 const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({ 
   clinicSize, 
   netYearlyResult,
-  onChange 
+  onChange,
+  hoveredInput,
+  onHoveredInputChange
 }) => {
   const handleSliderChange = (values: number[]) => {
     // Konvertera numeriskt värde till string-enum
@@ -41,8 +45,16 @@ const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({
   };
 
   return (
-    <div className="glass-card animate-fade-in">
-      <h3 className="text-lg font-semibold mb-4">Klinikstorlek</h3>
+    <div 
+      className="glass-card animate-slide-in bg-blue-50/20 border-blue-200 hover:bg-blue-50/30 hover:shadow-lg transition-all duration-200" 
+      style={{ animationDelay: '100ms' }}
+      onMouseEnter={() => onHoveredInputChange?.('clinic')}
+      onMouseLeave={() => onHoveredInputChange?.(null)}
+    >
+      <h3 className="text-lg font-semibold mb-6 flex items-center">
+        <span className="w-2 h-2 bg-blue-400 rounded-sm mr-2"></span>
+        Klinikstorlek
+      </h3>
       
       <div className="mb-6">
         <div className="flex justify-between items-center mb-2">

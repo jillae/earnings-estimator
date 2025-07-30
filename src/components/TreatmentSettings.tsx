@@ -8,8 +8,8 @@ interface TreatmentSettingsProps {
   customerPrice: number;
   onTreatmentsChange: (value: number) => void;
   onCustomerPriceChange: (value: number) => void;
-  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
-  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null) => void;
 }
 
 const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
@@ -21,7 +21,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   onHoveredInputChange
 }) => {
   const { logSignificantInteraction, workDaysPerMonth, setWorkDaysPerMonth } = useCalculator();
-  const handleHover = (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => {
+  const handleHover = (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null) => {
     onHoveredInputChange?.(input);
   };
 

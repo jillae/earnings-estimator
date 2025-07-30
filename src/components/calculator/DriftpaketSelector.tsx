@@ -7,8 +7,8 @@ import { DriftpaketType } from '@/types/calculator';
 import { Check, Shield, ShieldCheck, Clock, CreditCard } from 'lucide-react';
 
 interface DriftpaketSelectorProps {
-  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
-  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null) => void;
 }
 
 const DriftpaketSelector: React.FC<DriftpaketSelectorProps> = ({ 

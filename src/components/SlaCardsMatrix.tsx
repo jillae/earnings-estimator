@@ -7,8 +7,8 @@ import { useCalculator } from '@/context/CalculatorContext';
 import { DriftpaketType } from '@/types/calculator';
 
 interface SlaCardsMatrixProps {
-  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
-  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null) => void;
 }
 
 export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({ 

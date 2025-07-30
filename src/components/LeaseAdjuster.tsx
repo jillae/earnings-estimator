@@ -22,21 +22,8 @@ interface LeaseAdjusterProps {
   onSliderStepChange: (step: SliderStep) => void;
   allowBelowFlatrate?: boolean;
   onAllowBelowFlatrateChange?: (allow: boolean) => void;
-}
-
-interface LeaseAdjusterProps {
-  minLeaseCost: number;
-  maxLeaseCost: number;
-  leaseCost: number;
-  currentSliderStep: SliderStep;
-  flatrateThreshold?: number;
-  showFlatrateIndicator?: boolean;
-  treatmentsPerDay?: number;
-  onSliderStepChange: (step: SliderStep) => void;
-  allowBelowFlatrate?: boolean;
-  onAllowBelowFlatrateChange?: (allow: boolean) => void;
-  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
-  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null) => void;
 }
 
 const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({

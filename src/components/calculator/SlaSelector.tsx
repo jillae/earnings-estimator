@@ -7,8 +7,8 @@ import { formatCurrency } from '@/utils/formatUtils';
 import { Check, Phone, Headphones, Crown } from 'lucide-react';
 
 interface SlaSelectorProps {
-  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
-  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null) => void;
 }
 
 const SlaSelector: React.FC<SlaSelectorProps> = ({ 
@@ -96,7 +96,7 @@ const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
             </div>
           </div>
 
-          {/* Price Row */}
+          {/* Price Row - hela celler klickbara */}
           <div className="grid grid-cols-4 border-b border-slate-200 bg-slate-25">
             <div className="p-4 font-medium text-slate-700">Månadskostnad</div>
             <div 
@@ -128,18 +128,33 @@ const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
             </div>
           </div>
 
-          {/* Features Matrix */}
+          {/* Features Matrix - hela celler klickbara */}
           <div className="grid grid-cols-4 border-b border-slate-200">
             <div className="p-4 font-medium text-slate-700">Telefonsupport</div>
-            <div className="p-4 text-center border-l border-slate-200">
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Brons' ? 'bg-amber-50' : 'hover:bg-amber-25'
+              }`}
+              onClick={() => handleSlaChange('Brons')}
+            >
               <Check className="h-5 w-5 text-green-600 mx-auto" />
               <div className="text-xs text-slate-600 mt-1">Grundläggande</div>
             </div>
-            <div className="p-4 text-center border-l border-slate-200">
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Silver' ? 'bg-slate-50' : 'hover:bg-slate-25'
+              }`}
+              onClick={() => handleSlaChange('Silver')}
+            >
               <Check className="h-5 w-5 text-green-600 mx-auto" />
               <div className="text-xs text-slate-600 mt-1">Prioriterad</div>
             </div>
-            <div className="p-4 text-center border-l border-slate-200">
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Guld' ? 'bg-yellow-50' : 'hover:bg-yellow-25'
+              }`}
+              onClick={() => handleSlaChange('Guld')}
+            >
               <Check className="h-5 w-5 text-green-600 mx-auto" />
               <div className="text-xs text-slate-600 mt-1">VIP-support</div>
             </div>
@@ -147,26 +162,56 @@ const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
 
           <div className="grid grid-cols-4 border-b border-slate-200">
             <div className="p-4 font-medium text-slate-700">Fjärrhjälp</div>
-            <div className="p-4 text-center border-l border-slate-200">
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Brons' ? 'bg-amber-50' : 'hover:bg-amber-25'
+              }`}
+              onClick={() => handleSlaChange('Brons')}
+            >
               <div className="text-slate-400">-</div>
             </div>
-            <div className="p-4 text-center border-l border-slate-200">
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Silver' ? 'bg-slate-50' : 'hover:bg-slate-25'
+              }`}
+              onClick={() => handleSlaChange('Silver')}
+            >
               <Check className="h-5 w-5 text-green-600 mx-auto" />
             </div>
-            <div className="p-4 text-center border-l border-slate-200">
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Guld' ? 'bg-yellow-50' : 'hover:bg-yellow-25'
+              }`}
+              onClick={() => handleSlaChange('Guld')}
+            >
               <Check className="h-5 w-5 text-green-600 mx-auto" />
             </div>
           </div>
 
           <div className="grid grid-cols-4 border-b border-slate-200">
             <div className="p-4 font-medium text-slate-700">Årlig genomgång på plats</div>
-            <div className="p-4 text-center border-l border-slate-200">
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Brons' ? 'bg-amber-50' : 'hover:bg-amber-25'
+              }`}
+              onClick={() => handleSlaChange('Brons')}
+            >
               <div className="text-slate-400">-</div>
             </div>
-            <div className="p-4 text-center border-l border-slate-200">
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Silver' ? 'bg-slate-50' : 'hover:bg-slate-25'
+              }`}
+              onClick={() => handleSlaChange('Silver')}
+            >
               <div className="text-slate-400">-</div>
             </div>
-            <div className="p-4 text-center border-l border-slate-200">
+            <div 
+              className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                selectedSlaLevel === 'Guld' ? 'bg-yellow-50' : 'hover:bg-yellow-25'
+              }`}
+              onClick={() => handleSlaChange('Guld')}
+            >
               <Check className="h-5 w-5 text-green-600 mx-auto" />
             </div>
           </div>
@@ -174,16 +219,31 @@ const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
           {selectedMachine?.usesCredits && (
             <div className="grid grid-cols-4 border-b border-slate-200 bg-green-25">
               <div className="p-4 font-medium text-slate-700">Flatrate Credits</div>
-              <div className="p-4 text-center border-l border-slate-200">
+              <div 
+                className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                  selectedSlaLevel === 'Brons' ? 'bg-amber-50' : 'hover:bg-amber-25'
+                }`}
+                onClick={() => handleSlaChange('Brons')}
+              >
                 <div className="text-slate-400">-</div>
               </div>
-              <div className="p-4 text-center border-l border-slate-200">
+              <div 
+                className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                  selectedSlaLevel === 'Silver' ? 'bg-slate-50' : 'hover:bg-slate-25'
+                }`}
+                onClick={() => handleSlaChange('Silver')}
+              >
                 <Check className="h-5 w-5 text-green-600 mx-auto" />
                 <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-xs mt-1">
                   Ingår
                 </Badge>
               </div>
-              <div className="p-4 text-center border-l border-slate-200">
+              <div 
+                className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
+                  selectedSlaLevel === 'Guld' ? 'bg-yellow-50' : 'hover:bg-yellow-25'
+                }`}
+                onClick={() => handleSlaChange('Guld')}
+              >
                 <Check className="h-5 w-5 text-green-600 mx-auto" />
                 <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-xs mt-1">
                   Ingår
