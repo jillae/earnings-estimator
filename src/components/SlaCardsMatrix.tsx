@@ -26,151 +26,115 @@ export const SlaCardsMatrix: React.FC = () => {
     );
   }
 
-  // Mappa SLA-nivåer till IDs för jämförelse
-  const slaMap = {
-    'Bas': 'brons',
-    'Silver': 'silver', 
-    'Guld': 'guld'
+  const handleSlaSelect = (slaLevel: DriftpaketType) => {
+    setSelectedDriftpaket(slaLevel);
   };
 
-  const activeTab = slaMap[selectedDriftpaket] || 'brons';
-
-  const slaOptions = [
+  // Definiera alla rader i tabellen
+  const tableRows = [
     {
-      id: 'brons',
-      driftpaket: 'Bas' as DriftpaketType,
-      title: 'Bas',
-      subtitle: '(Ingår)',
-      price: 0,
-      color: 'blue',
+      category: 'Garanti & Support',
       features: [
-        { icon: Clock, text: '12 månader garanti' },
-        { icon: Shield, text: 'Grundsupport (vardagar)' },
-        { icon: Shield, text: 'Servicetid vardagar' },
-        { icon: Shield, text: 'Responstid 336h' },
-        { icon: Shield, text: 'Max åtgärdstid: Inom rimlig tid' }
-      ],
-      additionalFeatures: selectedMachine.usesCredits ? [
-        { 
-          icon: CreditCard, 
-          text: `Credits: ${useFlatrateOption === 'flatrate' ? 'Flatrate' : `${formatCurrency(creditPrice)} per credit`}`,
-          highlight: false
+        {
+          label: 'Garanti',
+          bas: '12 månader',
+          silver: '24 månader',
+          guld: '24 månader'
+        },
+        {
+          label: 'Support',
+          bas: 'Grundsupport (vardagar)',
+          silver: 'Prioriterad (5d/v, 9-15)',
+          guld: 'Högsta prioritet (7d/v, 00-24)'
+        },
+        {
+          label: 'Responstid',
+          bas: '336h',
+          silver: '24h',
+          guld: 'Omgående'
         }
-      ] : [],
-      bestFor: 'Nya kliniker',
-      description: 'Grundläggande support och service'
+      ]
     },
     {
-      id: 'silver',
-      driftpaket: 'Silver' as DriftpaketType,
-      title: 'Silver',
-      subtitle: '',
-      price: calculatedSlaCostSilver,
-      color: 'slate',
+      category: 'Service & Underhåll',
       features: [
-        { icon: Clock, text: '24 månader garanti' },
-        { icon: ShieldCheck, text: 'Prioriterad Support (5 dagar/vecka)' },
-        { icon: ShieldCheck, text: 'Servicetid vardagar 9-15' },
-        { icon: ShieldCheck, text: 'Responstid 24h' },
-        { icon: ShieldCheck, text: 'Max åtgärdstid 72h' },
-        { icon: Check, text: 'Årlig service (resekostnad ingår)' },
-        { icon: Check, text: 'Lånemaskin vid servicebehov' }
-      ],
-      additionalFeatures: selectedMachine.usesCredits ? [
-        { 
-          icon: CreditCard, 
-          text: '50% rabatt på Flatrate Credits',
-          highlight: true
+        {
+          label: 'Servicetid',
+          bas: 'Vardagar',
+          silver: 'Vardagar 9-15',
+          guld: 'Alla dagar 00-24'
+        },
+        {
+          label: 'Max åtgärdstid',
+          bas: 'Inom rimlig tid',
+          silver: '72h',
+          guld: '48h'
+        },
+        {
+          label: 'Årlig service',
+          bas: '❌',
+          silver: '✅ (resekostnad ingår)',
+          guld: '✅ (res + arbetskostnad ingår)'
+        },
+        {
+          label: 'Lånemaskin vid service',
+          bas: '❌',
+          silver: '✅',
+          guld: '✅'
         }
-      ] : [],
-      bestFor: 'Växande kliniker',
-      description: 'Förbättrad support och snabbare service'
-    },
-    {
-      id: 'guld',
-      driftpaket: 'Guld' as DriftpaketType,
-      title: 'Guld',
-      subtitle: '',
-      price: calculatedSlaCostGuld,
-      color: 'yellow',
-      features: [
-        { icon: Clock, text: '24 månader garanti' },
-        { icon: ShieldCheck, text: 'Högsta Prioritet Support (7 dagar/vecka)' },
-        { icon: ShieldCheck, text: 'Servicetid alla dagar 00-24' },
-        { icon: ShieldCheck, text: 'Responstid omgående' },
-        { icon: ShieldCheck, text: 'Max åtgärdstid 48h' },
-        { icon: Check, text: 'Årlig service (res och arbetskostnad ingår)' },
-        { icon: Check, text: 'Lånemaskin vid servicebehov' }
-      ],
-      additionalFeatures: selectedMachine.usesCredits ? [
-        { 
-          icon: CreditCard, 
-          text: 'Flatrate Credits Ingår (100%)',
-          highlight: true
-        }
-      ] : [],
-      bestFor: 'Etablerade kliniker',
-      description: 'Premium support med högsta prioritet'
+      ]
     }
   ];
 
-  const activeOption = slaOptions.find(option => option.id === activeTab) || slaOptions[0];
+  // Lägg till credits-rad om maskinen använder credits
+  if (selectedMachine.usesCredits) {
+    tableRows.push({
+      category: 'Credits',
+      features: [
+        {
+          label: 'Credit-kostnad',
+          bas: useFlatrateOption === 'flatrate' ? 'Flatrate' : `${formatCurrency(creditPrice)} per credit`,
+          silver: '50% rabatt på Flatrate',
+          guld: 'Flatrate Credits Ingår (100%)'
+        }
+      ]
+    });
+  }
 
-  const handleTabChange = (optionId: string) => {
-    const option = slaOptions.find(opt => opt.id === optionId);
-    if (option) {
-      setSelectedDriftpaket(option.driftpaket);
-    }
-  };
-
-  const getTabStyle = (option: any, isActive: boolean) => {
-    const baseStyle = "flex-1 p-4 text-center border-b-2 transition-all duration-300 cursor-pointer hover:bg-slate-50";
+  const getColumnStyle = (slaLevel: DriftpaketType) => {
+    const isSelected = selectedDriftpaket === slaLevel;
+    const baseStyle = "p-4 text-center border cursor-pointer transition-all duration-200 hover:bg-slate-50";
     
-    if (isActive) {
-      switch (option.color) {
-        case 'blue':
-          return `${baseStyle} border-blue-500 bg-blue-50 text-blue-700`;
-        case 'slate':
-          return `${baseStyle} border-slate-500 bg-slate-50 text-slate-700`;
-        case 'yellow':
-          return `${baseStyle} border-yellow-500 bg-yellow-50 text-yellow-700`;
-        default:
-          return `${baseStyle} border-slate-500 bg-slate-50`;
+    if (isSelected) {
+      switch (slaLevel) {
+        case 'Bas':
+          return `${baseStyle} bg-blue-50 border-blue-300 ring-2 ring-blue-400`;
+        case 'Silver':
+          return `${baseStyle} bg-slate-50 border-slate-300 ring-2 ring-slate-400`;
+        case 'Guld':
+          return `${baseStyle} bg-yellow-50 border-yellow-300 ring-2 ring-yellow-400`;
       }
     }
     
-    return `${baseStyle} border-slate-200 text-slate-600 hover:border-slate-300`;
+    return `${baseStyle} border-slate-200`;
   };
 
-  const getPanelStyle = (color: string) => {
-    switch (color) {
-      case 'blue':
-        return 'border-blue-200 bg-gradient-to-br from-blue-50/50 to-white';
-      case 'slate':
-        return 'border-slate-200 bg-gradient-to-br from-slate-50/50 to-white';
-      case 'yellow':
-        return 'border-yellow-200 bg-gradient-to-br from-yellow-50/50 to-white';
-      default:
-        return 'border-slate-200 bg-white';
+  const getHeaderStyle = (slaLevel: DriftpaketType) => {
+    const isSelected = selectedDriftpaket === slaLevel;
+    const baseStyle = "p-4 text-center border font-semibold cursor-pointer transition-all duration-200 hover:bg-slate-50";
+    
+    if (isSelected) {
+      switch (slaLevel) {
+        case 'Bas':
+          return `${baseStyle} bg-blue-100 border-blue-300 text-blue-900 ring-2 ring-blue-400`;
+        case 'Silver':
+          return `${baseStyle} bg-slate-100 border-slate-300 text-slate-900 ring-2 ring-slate-400`;
+        case 'Guld':
+          return `${baseStyle} bg-yellow-100 border-yellow-300 text-yellow-900 ring-2 ring-yellow-400`;
+      }
     }
-  };
-
-  const getIconColor = (color: string) => {
-    switch (color) {
-      case 'blue': return 'text-blue-600';
-      case 'slate': return 'text-slate-600';
-      case 'yellow': return 'text-yellow-600';
-      default: return 'text-slate-600';
-    }
-  };
-
-  const getRadioIcon = (color: string) => {
-    switch (color) {
-      case 'blue': return '🔵';
-      case 'slate': return '⚪';
-      case 'yellow': return '🟡';
-      default: return '⚪';
-    }
+    
+    return `${baseStyle} border-slate-200 bg-slate-50`;
   };
 
   return (
@@ -180,112 +144,132 @@ export const SlaCardsMatrix: React.FC = () => {
           Välj Service & Driftpaket
         </h3>
         <p className="text-sm text-slate-600">
-          Service Level Agreement - jämför alternativen och välj det som passar din klinik
+          Jämför alternativen och välj det som passar din klinik bäst
         </p>
       </div>
 
-      {/* Alla tre kort visas samtidigt */}
-      <div className="grid md:grid-cols-3 gap-4">
-        {slaOptions.map((option) => {
-          const isSelected = option.id === activeTab;
-          
-          return (
-            <Card 
-              key={option.id}
-              onClick={() => handleTabChange(option.id)}
-              className={`cursor-pointer transition-all duration-300 hover:shadow-md ${
-                isSelected 
-                  ? `ring-2 ${
-                      option.color === 'blue' ? 'ring-blue-500 bg-blue-50/50' :
-                      option.color === 'slate' ? 'ring-slate-500 bg-slate-50/50' :
-                      'ring-yellow-500 bg-yellow-50/50'
-                    }` 
-                  : 'hover:shadow-sm border-slate-200'
-              }`}
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">{getRadioIcon(option.color)}</span>
-                    <div>
-                      <h4 className={`font-bold ${isSelected ? 'text-slate-900' : 'text-slate-700'}`}>
-                        {option.title} {option.subtitle}
-                      </h4>
-                      {isSelected && (
-                        <div className="flex items-center gap-1 mt-1">
-                          <div className={`w-2 h-2 rounded-full ${
-                            option.color === 'blue' ? 'bg-blue-500' :
-                            option.color === 'slate' ? 'bg-slate-500' :
-                            'bg-yellow-500'
-                          }`} />
-                          <span className="text-xs text-slate-600 font-medium">VALT</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className={`font-bold ${isSelected ? 'text-slate-900' : 'text-slate-700'}`}>
-                      {formatCurrency(option.price)}
-                    </div>
-                    <div className="text-xs text-slate-500">/ mån</div>
-                  </div>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse rounded-lg overflow-hidden shadow-sm">
+          {/* Header */}
+          <thead>
+            <tr>
+              <th className="p-4 text-left border bg-slate-100 border-slate-200 font-semibold text-slate-700">
+                Vad ingår
+              </th>
+              <th 
+                className={getHeaderStyle('Bas')}
+                onClick={() => handleSlaSelect('Bas')}
+              >
+                <div>
+                  <div className="text-lg font-bold">🔵 Bas</div>
+                  <div className="text-sm">(Ingår)</div>
+                  <div className="text-lg font-bold mt-1">{formatCurrency(0)}</div>
+                  <div className="text-xs">/ mån</div>
+                  {selectedDriftpaket === 'Bas' && (
+                    <div className="text-xs font-bold text-blue-700 mt-1">✓ VALT</div>
+                  )}
                 </div>
-                <p className="text-xs text-slate-600 mt-1">{option.description}</p>
-              </CardHeader>
-
-              <CardContent className="space-y-3">
-                {/* Huvudfunktioner */}
-                <div className="space-y-2">
-                  {option.features.slice(0, 3).map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <feature.icon className={`h-3 w-3 ${getIconColor(option.color)}`} />
-                      <span className="text-xs text-slate-700">{feature.text}</span>
-                    </div>
-                  ))}
+              </th>
+              <th 
+                className={getHeaderStyle('Silver')}
+                onClick={() => handleSlaSelect('Silver')}
+              >
+                <div>
+                  <div className="text-lg font-bold">⚪ Silver</div>
+                  <div className="text-sm">&nbsp;</div>
+                  <div className="text-lg font-bold mt-1">{formatCurrency(calculatedSlaCostSilver)}</div>
+                  <div className="text-xs">/ mån</div>
+                  {selectedDriftpaket === 'Silver' && (
+                    <div className="text-xs font-bold text-slate-700 mt-1">✓ VALT</div>
+                  )}
                 </div>
-
-                {/* Övriga funktioner */}
-                {option.features.length > 3 && (
-                  <div className="space-y-2 pt-2 border-t border-slate-100">
-                    {option.features.slice(3).map((feature, index) => (
-                      <div key={index + 3} className="flex items-center gap-2">
-                        <feature.icon className={`h-3 w-3 ${getIconColor(option.color)}`} />
-                        <span className="text-xs text-slate-700">{feature.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Ytterligare funktioner (credits etc) */}
-                {option.additionalFeatures && option.additionalFeatures.length > 0 && (
-                  <div className="space-y-2 pt-2 border-t border-slate-100">
-                    {option.additionalFeatures.map((feature, index) => (
-                      <div key={`additional-${index}`} className="flex items-center gap-2">
-                        <feature.icon className={`h-3 w-3 ${feature.highlight ? 'text-green-600' : getIconColor(option.color)}`} />
-                        <span className={`text-xs ${feature.highlight ? 'text-green-700 font-medium' : 'text-slate-700'}`}>
-                          {feature.text}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Bäst för */}
-                <div className={`p-2 rounded-md text-center ${
-                  option.color === 'blue' ? 'bg-blue-50 border border-blue-200' :
-                  option.color === 'slate' ? 'bg-slate-50 border border-slate-200' :
-                  'bg-yellow-50 border border-yellow-200'
-                }`}>
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <Target className={`h-3 w-3 ${getIconColor(option.color)}`} />
-                    <span className="text-xs font-semibold text-slate-700">Bäst för:</span>
-                  </div>
-                  <div className="text-xs text-slate-600">{option.bestFor}</div>
+              </th>
+              <th 
+                className={getHeaderStyle('Guld')}
+                onClick={() => handleSlaSelect('Guld')}
+              >
+                <div>
+                  <div className="text-lg font-bold">🟡 Guld</div>
+                  <div className="text-sm">&nbsp;</div>
+                  <div className="text-lg font-bold mt-1">{formatCurrency(calculatedSlaCostGuld)}</div>
+                  <div className="text-xs">/ mån</div>
+                  {selectedDriftpaket === 'Guld' && (
+                    <div className="text-xs font-bold text-yellow-700 mt-1">✓ VALT</div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+              </th>
+            </tr>
+          </thead>
+
+          {/* Body */}
+          <tbody>
+            {tableRows.map((section, sectionIndex) => (
+              <React.Fragment key={sectionIndex}>
+                {/* Section header */}
+                <tr>
+                  <td colSpan={4} className="p-3 bg-slate-100 border border-slate-200 font-semibold text-slate-700 text-sm">
+                    {section.category}
+                  </td>
+                </tr>
+                
+                {/* Section rows */}
+                {section.features.map((feature, featureIndex) => (
+                  <tr key={`${sectionIndex}-${featureIndex}`}>
+                    <td className="p-3 border border-slate-200 font-medium text-slate-700 text-sm">
+                      {feature.label}
+                    </td>
+                    <td 
+                      className={getColumnStyle('Bas')}
+                      onClick={() => handleSlaSelect('Bas')}
+                    >
+                      <span className="text-sm">{feature.bas}</span>
+                    </td>
+                    <td 
+                      className={getColumnStyle('Silver')}
+                      onClick={() => handleSlaSelect('Silver')}
+                    >
+                      <span className="text-sm">{feature.silver}</span>
+                    </td>
+                    <td 
+                      className={getColumnStyle('Guld')}
+                      onClick={() => handleSlaSelect('Guld')}
+                    >
+                      <span className="text-sm">{feature.guld}</span>
+                    </td>
+                  </tr>
+                ))}
+              </React.Fragment>
+            ))}
+
+            {/* Bäst för rad */}
+            <tr>
+              <td className="p-3 border border-slate-200 font-medium text-slate-700 text-sm bg-slate-50">
+                <div className="flex items-center gap-2">
+                  <Target className="h-4 w-4" />
+                  Bäst för
+                </div>
+              </td>
+              <td 
+                className={getColumnStyle('Bas')}
+                onClick={() => handleSlaSelect('Bas')}
+              >
+                <span className="text-sm font-medium">Nya kliniker</span>
+              </td>
+              <td 
+                className={getColumnStyle('Silver')}
+                onClick={() => handleSlaSelect('Silver')}
+              >
+                <span className="text-sm font-medium">Växande kliniker</span>
+              </td>
+              <td 
+                className={getColumnStyle('Guld')}
+                onClick={() => handleSlaSelect('Guld')}
+              >
+                <span className="text-sm font-medium">Etablerade kliniker</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       {/* Avtalsinfo */}
