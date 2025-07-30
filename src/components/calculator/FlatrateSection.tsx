@@ -15,19 +15,13 @@ const FlatrateSection: React.FC = () => {
     selectedDriftpaket,
     treatmentsPerDay,
     creditPrice,
-    selectedSlaLevel,
-    selectedLeasingModel
+    selectedSlaLevel
   } = useCalculator();
 
   const { useFlatrateOption, handleFlatrateChange, canEnableFlatrate } = useFlatrateHandler();
 
   // Visa endast för maskiner som använder credits
   if (!selectedMachine?.usesCredits) {
-    return null;
-  }
-
-  // Dölj när Allt-inkluderat (strategisk leasing) är valt
-  if (selectedLeasingModel === 'strategisk') {
     return null;
   }
 
