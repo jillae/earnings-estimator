@@ -134,7 +134,7 @@ const DetailedAnalysisModal: React.FC = () => {
           variant="outline"
         >
           <TrendingUp className="h-5 w-5" />
-          Detaljerad analys
+          Detaljerad analys & grafik
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto">
