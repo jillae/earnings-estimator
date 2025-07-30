@@ -21,35 +21,44 @@ const CreditInfoPopover: React.FC = () => {
           <div>
             <h4 className="font-semibold text-slate-900 mb-2">Vad är Credits?</h4>
             <p className="text-sm text-slate-700 leading-relaxed">
-              Alla våra maskiner (ej batteridrivna) drivs av ett digitalt pollettsystem. 
-              Credits fylls på online till ditt avtalspris. Varje credit täcker en behandling.
+              Alla våra golvmaskiner (ej batteridrivna) använder ett offline digitalt kreditsystem – godkänt för medicinskt bruk. 
+              Varje credit motsvarar en behandling och beställs enkelt i 25-pack till avtalspris. Påfyllning sker direkt i maskinen – inga internetuppkopplingar krävs.
             </p>
           </div>
           
-          <div className="grid gap-3">
-            <div className="flex items-start gap-2">
-              <BarChart3 className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <div className="font-medium text-blue-900 text-sm">Budgeterbar kostnadsbild</div>
-                <div className="text-blue-700 text-xs">Förutsägbara kostnader för din verksamhet</div>
+          <div>
+            <h5 className="font-semibold text-slate-900 mb-3 text-sm">Dina tre största fördelar</h5>
+            <div className="grid gap-3">
+              <div className="flex items-start gap-2">
+                <span className="text-lg mt-0.5 flex-shrink-0">💰</span>
+                <div>
+                  <div className="font-medium text-blue-900 text-sm">Förutsägbara kostnader</div>
+                  <div className="text-blue-700 text-xs">Du vet exakt vad varje behandling kostar – perfekt för budget och lönsamhet. Välj mellan styckpris eller Fastpris-abonnemang.</div>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-2">
+                <span className="text-lg mt-0.5 flex-shrink-0">🔒</span>
+                <div>
+                  <div className="font-medium text-green-900 text-sm">Säker och kontrollerad användning</div>
+                  <div className="text-green-700 text-xs">Endast auktoriserad personal kan använda maskinen. Du slipper missbruk och får trygg drift.</div>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-2">
+                <span className="text-lg mt-0.5 flex-shrink-0">🤝</span>
+                <div>
+                  <div className="font-medium text-purple-900 text-sm">Dela och tjänar extra</div>
+                  <div className="text-purple-700 text-xs">Hyr ut maskinen, per behandling – precis som en frisör hyr ut en stol. Smidigt och lönsamt.</div>
+                </div>
               </div>
             </div>
-            
-            <div className="flex items-start gap-2">
-              <Shield className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <div className="font-medium text-green-900 text-sm">Ingen missbruk av maskiner</div>
-                <div className="text-green-700 text-xs">Personal kan inte använda din maskin utan tillstånd</div>
-              </div>
-            </div>
-            
-            <div className="flex items-start gap-2">
-              <Users className="h-4 w-4 text-purple-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <div className="font-medium text-purple-900 text-sm">Dela och ta betalt</div>
-                <div className="text-purple-700 text-xs">Precis som en frisörsalong hyr ut en stol</div>
-              </div>
-            </div>
+          </div>
+          
+          <div className="pt-2 border-t border-slate-100">
+            <p className="text-sm text-slate-700 leading-relaxed mb-2">
+              Vill du behandla obegränsat? Då är vårt Fastpris-abonnemang det självklara valet för kliniker med 2+ kunder/dag.
+            </p>
           </div>
           
           <div className="pt-2 border-t border-slate-100">
