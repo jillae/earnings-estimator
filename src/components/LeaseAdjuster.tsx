@@ -136,23 +136,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       onMouseEnter={() => onHoveredInputChange?.('leasing')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
-      {/* Rullande visare OVANFÖR slidern för credit-maskiner */}
-      {usesCredits && selectedLeasingModel === 'grundleasing' && (
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <RollingValueDisplay 
-            value={displayLeaseCost}
-            label="Månadskostnad leasing"
-            className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
-          />
-          <RollingValueDisplay 
-            value={calculatedCreditPrice}
-            label="Krediter per behandling"
-            className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
-          />
-        </div>
-      )}
-
-      {/* Flexibel investering - flyttat upp */}
+      {/* Flexibel investering FÖRST */}
       {usesCredits && selectedLeasingModel === 'grundleasing' && (
         <LeaseSlider 
           currentStep={currentSliderStep}
@@ -168,18 +152,22 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         />
       )}
 
-      <div>
-        <label className="flex items-center justify-between text-base font-semibold mb-2">
-          <span>Månadskostnad leasing</span>
-          {showSlider && <span className="text-sm font-medium text-blue-600">{currentStepLabel}</span>}
-        </label>
-        <CostDisplay 
-          minLeaseCost={exactMinCost}
-          maxLeaseCost={exactMaxCost}
-          leaseCost={displayLeaseCost}
-          showMinMax={showMinMax}
-        />
-      </div>
+      {/* Rullande visare EFTER slidern */}
+      {usesCredits && selectedLeasingModel === 'grundleasing' && (
+        <div className="grid grid-cols-2 gap-4">
+          <RollingValueDisplay 
+            value={displayLeaseCost}
+            label="Månadskostnad leasing"
+            className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
+          />
+          <RollingValueDisplay 
+            value={calculatedCreditPrice}
+            label="Krediter per behandling"
+            className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
+          />
+        </div>
+      )}
+
 
       <div className="flex flex-col md:flex-row items-stretch gap-3 w-full">
         {/* Rekommenderat pris - vi visar alltid detta oavsett maskintyp */}
