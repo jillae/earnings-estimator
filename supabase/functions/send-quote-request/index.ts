@@ -51,7 +51,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
     const { error } = await resend.emails.send({
-      from: "Kalkylator Offertförfrågan <notifications@lovableproject.com>",
+      from: "Kalkylator <onboarding@resend.dev>",
       to: ["gilbert@archacademy.se"],
       subject: `Offertförfrågan från ${userInfo.name} - ${configuration.selectedMachine}`,
       html,
