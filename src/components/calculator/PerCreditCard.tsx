@@ -26,59 +26,61 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
 
   return (
     <Card 
-      className={`cursor-pointer transition-all duration-200 ${
+      className={`cursor-pointer transition-all duration-300 h-full border-2 ${
         isSelected 
-          ? 'ring-2 ring-primary bg-primary/5' 
-          : 'hover:bg-slate-50'
+          ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50 shadow-lg' 
+          : 'border-slate-200 hover:border-blue-300 hover:shadow-md'
       }`}
       onClick={onSelect}
     >
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <Calculator className="h-5 w-5 text-blue-600" />
-            <h3 className="font-semibold text-slate-900">
+      <CardContent className="p-6 h-full flex flex-col">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <Calculator className="h-6 w-6 text-blue-600" />
+            <h3 className="text-xl font-bold text-slate-900">
               Per Credit
             </h3>
           </div>
           {isSelected && (
-            <Badge variant="default" className="text-xs">
+            <Badge variant="default" className="text-sm font-semibold px-3 py-1 bg-blue-600">
               <Check className="h-3 w-3 mr-1" />
               Vald
             </Badge>
           )}
         </div>
         
-        <p className="text-sm text-slate-600 mb-3">
+        <p className="text-base text-slate-700 mb-4 leading-relaxed">
           Betala endast för de credits du faktiskt använder.
         </p>
         
-        <div className="space-y-2">
-          <div className="text-sm text-slate-600">
+        <div className="space-y-3 mb-4 flex-grow">
+          <div className="text-base text-slate-600 bg-slate-50 p-3 rounded-lg">
             {formatCurrency(creditPrice)} × {totalCreditsPerMonth} credits/mån
           </div>
-          <div className="text-lg font-semibold text-blue-600">
-            {formatCurrency(creditsCostPerMonth)}/mån
+          <div className="text-2xl font-bold text-blue-600">
+            {formatCurrency(creditsCostPerMonth)}<span className="text-base font-normal text-slate-500">/mån</span>
           </div>
           
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-              Flexibel användning
+          <div className="space-y-2">
+            <div className="flex items-center gap-3 text-sm text-slate-600">
+              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+              <span>Flexibel användning</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-              Betala endast för faktisk användning
+            <div className="flex items-center gap-3 text-sm text-slate-600">
+              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+              <span>Betala endast för faktisk användning</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-              Variabel kostnad
+            <div className="flex items-center gap-3 text-sm text-slate-600">
+              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+              <span>Variabel kostnad</span>
             </div>
           </div>
         </div>
         
-        <div className="mt-3 text-xs text-slate-500">
-          <strong>Bäst för:</strong> Låg eller varierande behandlingsvolym
+        <div className="mt-auto pt-3 border-t border-slate-100">
+          <div className="text-sm text-slate-600">
+            <span className="font-semibold text-slate-700">Bäst för:</span> Låg eller varierande behandlingsvolym
+          </div>
         </div>
       </CardContent>
     </Card>

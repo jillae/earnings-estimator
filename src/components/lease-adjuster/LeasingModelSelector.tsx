@@ -24,86 +24,93 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
         Välj leasingmodell
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 min-h-0">
-        {/* Grundleasing + Credits */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Hybridpaket - Primär */}
         <Card 
-          className={`cursor-pointer transition-all duration-200 h-full ${
+          className={`cursor-pointer transition-all duration-300 h-full border-2 ${
             selectedModel === 'grundleasing' 
-              ? 'ring-2 ring-primary bg-primary/5' 
-              : 'hover:bg-slate-50'
+              ? 'ring-2 ring-primary border-primary bg-primary/5 shadow-lg' 
+              : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
           }`}
           onClick={() => onModelChange('grundleasing')}
         >
-          <CardContent className="p-4 h-full flex flex-col">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{grundleasingPackage.icon}</span>
-                <h3 className="font-semibold text-slate-900">
+          <CardContent className="p-6 h-full flex flex-col">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{grundleasingPackage.icon}</span>
+                <h3 className="text-xl font-bold text-slate-900">
                   {grundleasingPackage.name}
                 </h3>
               </div>
               {selectedModel === 'grundleasing' && (
-                <Badge variant="default" className="text-xs">Vald</Badge>
+                <Badge variant="default" className="text-sm font-semibold px-3 py-1">
+                  Vald
+                </Badge>
               )}
             </div>
             
-            <p className="text-sm text-slate-600 mb-3">
+            <p className="text-base text-slate-700 mb-4 leading-relaxed">
               {grundleasingPackage.description}
             </p>
             
-            <div className="space-y-1">
+            <div className="space-y-2 mb-4 flex-grow">
               {grundleasingPackage.benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-2 text-xs text-slate-500">
-                  <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-                  {benefit}
+                <div key={index} className="flex items-center gap-3 text-sm text-slate-600">
+                  <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
+                  <span>{benefit}</span>
                 </div>
               ))}
             </div>
             
-            <div className="mt-3 text-xs text-slate-500">
-              <strong>Bäst för:</strong> {grundleasingPackage.bestFor}
+            <div className="mt-auto pt-3 border-t border-slate-100">
+              <div className="text-sm text-slate-600">
+                <span className="font-semibold text-slate-700">Bäst för:</span> {grundleasingPackage.bestFor}
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Strategisk Leasing (Credits ingår) - De-promoterad */}
+        {/* Allt-inkluderat - Sekundär */}
         <Card 
-          className={`cursor-pointer transition-all duration-200 opacity-75 h-full ${
+          className={`cursor-pointer transition-all duration-300 h-full border-2 ${
             selectedModel === 'strategisk' 
-              ? 'ring-2 ring-slate-400 bg-slate-50' 
-              : 'hover:bg-slate-50 border-slate-300'
+              ? 'ring-2 ring-slate-400 border-slate-400 bg-slate-50 shadow-lg' 
+              : 'border-slate-200 hover:border-slate-300 hover:shadow-md opacity-75'
           }`}
           onClick={() => onModelChange('strategisk')}
         >
-          <CardContent className="p-4 opacity-75 h-full flex flex-col">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{strategiskPackage.icon}</span>
-                <h3 className="font-semibold text-slate-700">
+          <CardContent className="p-6 h-full flex flex-col">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{strategiskPackage.icon}</span>
+                <h3 className="text-xl font-bold text-slate-700">
                   {strategiskPackage.name}
                 </h3>
-                
               </div>
               {selectedModel === 'strategisk' && (
-                <Badge variant="secondary" className="text-xs">Vald</Badge>
+                <Badge variant="secondary" className="text-sm font-semibold px-3 py-1">
+                  Vald
+                </Badge>
               )}
             </div>
             
-            <p className="text-sm text-slate-500 mb-3">
+            <p className="text-base text-slate-600 mb-4 leading-relaxed">
               {strategiskPackage.description}
             </p>
             
-            <div className="space-y-1">
+            <div className="space-y-2 mb-4 flex-grow">
               {strategiskPackage.benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-2 text-xs text-slate-400">
-                  <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
-                  {benefit}
+                <div key={index} className="flex items-center gap-3 text-sm text-slate-500">
+                  <div className="w-2 h-2 bg-slate-400 rounded-full flex-shrink-0"></div>
+                  <span>{benefit}</span>
                 </div>
               ))}
             </div>
             
-            <div className="mt-3 text-xs text-slate-400">
-              <strong>Bäst för:</strong> {strategiskPackage.bestFor}
+            <div className="mt-auto pt-3 border-t border-slate-100">
+              <div className="text-sm text-slate-500">
+                <span className="font-semibold text-slate-600">Bäst för:</span> {strategiskPackage.bestFor}
+              </div>
             </div>
           </CardContent>
         </Card>

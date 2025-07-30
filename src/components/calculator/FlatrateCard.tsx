@@ -23,71 +23,73 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
 }) => {
   return (
     <Card 
-      className={`cursor-pointer transition-all duration-200 ${
+      className={`cursor-pointer transition-all duration-300 h-full border-2 ${
         !isEnabled 
-          ? 'opacity-50 cursor-not-allowed bg-slate-50' 
+          ? 'opacity-50 cursor-not-allowed bg-slate-50 border-slate-200' 
           : isSelected 
-            ? 'ring-2 ring-primary bg-primary/5' 
-            : 'hover:bg-slate-50'
+            ? 'ring-2 ring-green-500 border-green-500 bg-green-50 shadow-lg' 
+            : 'border-slate-200 hover:border-green-300 hover:shadow-md'
       }`}
       onClick={isEnabled ? onSelect : undefined}
     >
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5 text-green-600" />
-            <h3 className="font-semibold text-slate-900">
+      <CardContent className="p-6 h-full flex flex-col">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <CreditCard className="h-6 w-6 text-green-600" />
+            <h3 className="text-xl font-bold text-slate-900">
               Flatrate
             </h3>
           </div>
           {isSelected && (
-            <Badge variant="default" className="text-xs">
+            <Badge variant="default" className="text-sm font-semibold px-3 py-1 bg-green-600">
               <Check className="h-3 w-3 mr-1" />
               Vald
             </Badge>
           )}
         </div>
         
-        <p className="text-sm text-slate-600 mb-3">
+        <p className="text-base text-slate-700 mb-4 leading-relaxed">
           Fast månadsavgift för obegränsad användning av credits.
         </p>
         
-        <div className="space-y-2">
-          <div className="text-lg font-semibold text-green-600">
-            {formatCurrency(flatrateCost)}/mån
+        <div className="space-y-3 mb-4">
+          <div className="text-2xl font-bold text-green-600">
+            {formatCurrency(flatrateCost)}<span className="text-base font-normal text-slate-500">/mån</span>
           </div>
           
           {discountText && (
-            <Badge variant="outline" className="text-green-700 border-green-300 text-xs">
+            <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-sm px-2 py-1">
               Med {selectedSlaLevel}: {discountText}
             </Badge>
           )}
           
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-              Obegränsad användning
+          <div className="space-y-2 flex-grow">
+            <div className="flex items-center gap-3 text-sm text-slate-600">
+              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+              <span>Obegränsad användning</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-              Förutsägbar budgetering
+            <div className="flex items-center gap-3 text-sm text-slate-600">
+              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+              <span>Förutsägbar budgetering</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-              Fast kostnad oavsett volym
+            <div className="flex items-center gap-3 text-sm text-slate-600">
+              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+              <span>Fast kostnad oavsett volym</span>
             </div>
           </div>
         </div>
         
-        <div className="mt-3 text-xs text-slate-500">
-          <strong>Bäst för:</strong> Höga behandlingsvolymer med förutsägbar kostnad
-        </div>
-        
-        {!isEnabled && (
-          <div className="mt-2 text-xs text-orange-600">
-            Kräver standard leasingnivå eller högre
+        <div className="mt-auto pt-3 border-t border-slate-100">
+          <div className="text-sm text-slate-600">
+            <span className="font-semibold text-slate-700">Bäst för:</span> Höga behandlingsvolymer med förutsägbar kostnad
           </div>
-        )}
+          
+          {!isEnabled && (
+            <div className="mt-2 text-sm text-orange-600 font-medium">
+              Kräver standard leasingnivå eller högre
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
