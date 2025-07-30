@@ -119,8 +119,12 @@ export const SlaCardsMatrix: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <div className={`w-4 h-4 rounded-full border-2 ${
                     option.radioSelected 
-                      ? `border-${option.color}-500 bg-${option.color}-500` 
-                      : `border-${option.color}-300`
+                      ? option.color === 'blue' ? 'border-blue-500 bg-blue-500' :
+                        option.color === 'slate' ? 'border-slate-500 bg-slate-500' :
+                        'border-yellow-500 bg-yellow-500'
+                      : option.color === 'blue' ? 'border-blue-300' :
+                        option.color === 'slate' ? 'border-slate-300' :
+                        'border-yellow-300'
                   }`}>
                     {option.radioSelected && (
                       <div className="w-full h-full rounded-full bg-white scale-50"></div>
