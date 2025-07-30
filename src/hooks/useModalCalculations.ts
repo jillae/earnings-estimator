@@ -24,6 +24,30 @@ export const useModalCalculations = () => {
     // }
   }, [baseRevenue.dailyRevenueIncVat]);
 
+  // Återställ defaultvärden när maskin byts
+  useEffect(() => {
+    if (selectedMachine) {
+      // Sätt defaults baserat på maskinen
+      if (selectedMachine.id === 'emerald') {
+        setModalTreatmentsPerDay(4);
+        setModalCustomerPrice(3500);
+      } else if (selectedMachine.id === 'zerona') {
+        setModalTreatmentsPerDay(3);
+        setModalCustomerPrice(2800);
+      } else if (selectedMachine.id === 'fx-635') {
+        setModalTreatmentsPerDay(3);
+        setModalCustomerPrice(2200);
+      } else if (selectedMachine.id === 'fx-405') {
+        setModalTreatmentsPerDay(2);
+        setModalCustomerPrice(1800);
+      } else {
+        // Default för övriga maskiner
+        setModalTreatmentsPerDay(2);
+        setModalCustomerPrice(1800);
+      }
+    }
+  }, [selectedMachine?.id]);
+
   // Beräkna modal-specifika värden
   const calculateModalRevenue = () => {
     const VAT_RATE = 0.25;

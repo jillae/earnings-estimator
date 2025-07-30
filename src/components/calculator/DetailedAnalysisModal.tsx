@@ -193,7 +193,7 @@ const DetailedAnalysisModal: React.FC = () => {
         <Tabs defaultValue="graph" className="space-y-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="graph">📈 Grafisk Översikt</TabsTrigger>
-            <TabsTrigger value="table">📊 Tabellöversikt</TabsTrigger>
+            <TabsTrigger value="table">🏥 SLA & Kundalternativ</TabsTrigger>
           </TabsList>
           
           <TabsContent value="graph" className="space-y-6">
