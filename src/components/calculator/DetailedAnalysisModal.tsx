@@ -8,6 +8,7 @@ import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useModalCalculations } from '@/hooks/useModalCalculations';
 import InteractiveControls from './InteractiveControls';
+import GrowthMetrics from './GrowthMetrics';
 
 const DetailedAnalysisModal: React.FC = () => {
   const { 
@@ -287,6 +288,15 @@ const DetailedAnalysisModal: React.FC = () => {
             </div>
           </div>
 
+          {/* Nyckeltal för Tillväxt */}
+          <GrowthMetrics
+            monthlyRevenue={modalRevenue.monthlyRevenueExVat}
+            monthlyNet={modalNetPerMonthExVat}
+            totalMonthlyCost={totalMonthlyCost}
+            treatmentsPerDay={modalTreatmentsPerDay}
+            customerPrice={modalCustomerPrice}
+          />
+
           {/* KPI-Cirkeldiagram - Fokus på klinikens ekonomi */}
           <div className="border-t border-slate-200 pt-4">
             <h2 className="text-lg font-semibold mb-4 text-slate-800 flex items-center gap-2">
@@ -431,31 +441,6 @@ const DetailedAnalysisModal: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Ekonomisk Sammanfattning - Fokus på klinikens framtid */}
-          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-lg border border-emerald-200 p-4">
-            <h3 className="text-base font-semibold mb-3 text-slate-800">Din Ekonomiska Framtidsprognos</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div className="text-center">
-                <div className="text-xl font-bold text-emerald-600">
-                  {((modalNetPerMonthExVat / modalRevenue.monthlyRevenueExVat) * 100).toFixed(1)}%
-                </div>
-                <div className="text-xs text-slate-600">Din vinstmarginal</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-blue-600">
-                  {Math.ceil(totalMonthlyCost / (modalRevenue.monthlyRevenueExVat / 22))}
-                </div>
-                <div className="text-xs text-slate-600">Din nollpunkt (dagar/mån)</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-purple-600">
-                  {formatCurrency(modalNetPerYearExVat * 5)}
-                </div>
-                <div className="text-xs text-slate-600">Din 5-års nettovinst</div>
               </div>
             </div>
           </div>
