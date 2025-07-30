@@ -27,7 +27,7 @@ const CalculatorResults: React.FC = () => {
 
   return (
     <div className="h-full">
-      <div className="sticky top-4 z-10">
+      <div className="sticky top-4 z-20 bg-white/95 backdrop-blur-sm rounded-lg">
         <ResultsTable
         dailyRevenueIncVat={revenue.dailyRevenueIncVat}
         weeklyRevenueIncVat={revenue.weeklyRevenueIncVat}
