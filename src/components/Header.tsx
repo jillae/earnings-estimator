@@ -7,9 +7,15 @@ import { Home, Settings, Phone, FileText, HelpCircle, ExternalLink, Library } fr
 const Header = () => {
   const scrollToWhitepapers = (e: React.MouseEvent) => {
     e.preventDefault();
-    const element = document.getElementById('whitepapers');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    // Kontrollera om vi är på startsidan
+    if (window.location.pathname === '/') {
+      const element = document.getElementById('whitepapers');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Om vi inte är på startsidan, gå till startsidan först
+      window.location.href = '/#whitepapers';
     }
   };
 
