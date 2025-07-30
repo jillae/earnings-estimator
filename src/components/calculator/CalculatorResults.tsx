@@ -6,11 +6,10 @@ import { formatCurrency } from '@/utils/formatUtils';
 import { SaveConfigurationButton } from './SaveConfigurationButton';
 import { QuoteRequestButton } from './QuoteRequestButton';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
-import ROIAnalysisModal from './ROIAnalysisModal';
-import BreakEvenAnalysisModal from './BreakEvenAnalysisModal';
+import AnalysisHubModal from './AnalysisHubModal';
 import ExportButton from '@/components/ExportButton';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, Target } from 'lucide-react';
+import { TrendingUp, Target, LineChart } from 'lucide-react';
 
 const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null }> = ({ hoveredInput = null }) => {
   const {
@@ -29,12 +28,17 @@ const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | 'wor
     selectedMachine
   } = useCalculator();
 
-  // State för modaler
-  const [roiModalOpen, setRoiModalOpen] = useState(false);
-  const [breakEvenModalOpen, setBreakEvenModalOpen] = useState(false);
+  // State för modal
+  const [analysisModalOpen, setAnalysisModalOpen] = useState(false);
+  const [analysisTab, setAnalysisTab] = useState<'growth' | 'roi' | 'breakeven'>('growth');
 
   // Kontrollera om vi har tillräckligt med data för analyserna
   const hasEnoughDataForAnalysis = selectedMachine && treatmentsPerDay > 0 && customerPrice > 0;
+
+  const openAnalysisModal = (tab: 'growth' | 'roi' | 'breakeven') => {
+    setAnalysisTab(tab);
+    setAnalysisModalOpen(true);
+  };
 
   // Lägg till loggning för felsökning
   console.log(`CalculatorResults rendering:
@@ -79,7 +83,17 @@ const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | 'wor
             <h4 className="text-sm font-medium text-gray-700 mb-3">Fördjupad Analys</h4>
             <div className="flex gap-3 flex-wrap">
               <Button
-                onClick={() => setRoiModalOpen(true)}
+                onClick={() => openAnalysisModal('growth')}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <LineChart className="h-4 w-4" />
+                Tillväxtprognos
+              </Button>
+              
+              <Button
+                onClick={() => openAnalysisModal('roi')}
                 variant="outline"
                 size="sm"
                 className="flex items-center gap-2"
@@ -89,7 +103,7 @@ const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | 'wor
               </Button>
               
               <Button
-                onClick={() => setBreakEvenModalOpen(true)}
+                onClick={() => openAnalysisModal('breakeven')}
                 variant="outline"
                 size="sm"
                 className="flex items-center gap-2"
@@ -102,15 +116,11 @@ const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | 'wor
         )}
       </div>
       
-      {/* Modaler */}
-      <ROIAnalysisModal 
-        open={roiModalOpen} 
-        onOpenChange={setRoiModalOpen} 
-      />
-      
-      <BreakEvenAnalysisModal 
-        open={breakEvenModalOpen} 
-        onOpenChange={setBreakEvenModalOpen} 
+      {/* Unified Analysis Modal */}
+      <AnalysisHubModal 
+        open={analysisModalOpen} 
+        onOpenChange={setAnalysisModalOpen}
+        defaultTab={analysisTab}
       />
     </div>
   );
