@@ -6,7 +6,15 @@ import { formatCurrency } from '@/utils/formatUtils';
 import { useCalculator } from '@/context/CalculatorContext';
 import { DriftpaketType } from '@/types/calculator';
 
-export const SlaCardsMatrix: React.FC = () => {
+interface SlaCardsMatrixProps {
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+}
+
+export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({ 
+  hoveredInput, 
+  onHoveredInputChange 
+}) => {
   const { 
     selectedMachine, 
     selectedDriftpaket, 
@@ -180,7 +188,12 @@ export const SlaCardsMatrix: React.FC = () => {
   const levels = ['brons', 'silver', 'guld'];
 
   return (
-    <div className="glass-card animate-slide-in bg-red-50/20 border-red-200 hover:bg-red-50/30 transition-colors" style={{ animationDelay: '300ms' }}>
+    <div 
+      className="glass-card animate-slide-in bg-red-50/20 border-red-200 hover:bg-red-50/30 hover:shadow-lg transition-all duration-200" 
+      style={{ animationDelay: '300ms' }}
+      onMouseEnter={() => onHoveredInputChange?.('sla')}
+      onMouseLeave={() => onHoveredInputChange?.(null)}
+    >
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2 flex items-center">
           <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>

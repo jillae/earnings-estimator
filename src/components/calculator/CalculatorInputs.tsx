@@ -19,9 +19,9 @@ import CreditInfoPopover from './CreditInfoPopover';
 import { SliderStep } from '@/utils/sliderSteps';
 
 const CalculatorInputs: React.FC<{ 
-  hoveredInput: 'treatments' | 'price' | null;
-  setHoveredInput: (input: 'treatments' | 'price' | null) => void;
-}> = ({ hoveredInput, setHoveredInput }) => {
+  hoveredInput: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
+  onHoveredInputChange: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+}> = ({ hoveredInput, onHoveredInputChange }) => {
   const {
     clinicSize,
     setClinicSize,
@@ -86,7 +86,7 @@ const CalculatorInputs: React.FC<{
                   onTreatmentsChange={setTreatmentsPerDay}
                   onCustomerPriceChange={setCustomerPrice}
                   hoveredInput={hoveredInput}
-                  setHoveredInput={setHoveredInput}
+                  onHoveredInputChange={onHoveredInputChange}
                 />
               </div>
             </div>
@@ -114,7 +114,10 @@ const CalculatorInputs: React.FC<{
                   )}
                 </div>
                 
-                <PaymentOptionToggle />
+        <PaymentOptionToggle 
+          hoveredInput={hoveredInput}
+          onHoveredInputChange={onHoveredInputChange}
+        />
                 
                 {paymentOption === 'leasing' ? (
                   <div className="mt-4 space-y-4">
@@ -129,6 +132,8 @@ const CalculatorInputs: React.FC<{
                       onSliderStepChange={setCurrentSliderStep}
                       allowBelowFlatrate={allowBelowFlatrate}
                       onAllowBelowFlatrateChange={setAllowBelowFlatrate}
+                      hoveredInput={hoveredInput}
+                      onHoveredInputChange={onHoveredInputChange}
                     />
                     
                     <LeasingOptions
@@ -160,7 +165,10 @@ const CalculatorInputs: React.FC<{
               STEG 5
             </div>
             <div className="pt-2">
-              <SlaCardsMatrix />
+              <SlaCardsMatrix 
+                hoveredInput={hoveredInput}
+                onHoveredInputChange={onHoveredInputChange}
+              />
             </div>
           </div>
           

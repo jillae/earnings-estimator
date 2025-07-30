@@ -4,11 +4,23 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 
-const PaymentOptionToggle: React.FC = () => {
+interface PaymentOptionToggleProps {
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+}
+
+const PaymentOptionToggle: React.FC<PaymentOptionToggleProps> = ({ 
+  hoveredInput, 
+  onHoveredInputChange 
+}) => {
   const { paymentOption, setPaymentOption, cashPriceSEK } = useCalculator();
 
   return (
-    <div className="mb-4 p-4 bg-red-50/20 border border-red-200 rounded-lg hover:bg-red-50/30 transition-colors">
+    <div 
+      className="mb-4 p-4 bg-red-50/20 border border-red-200 rounded-lg hover:bg-red-50/30 hover:shadow-lg transition-all duration-200"
+      onMouseEnter={() => onHoveredInputChange?.('payment')}
+      onMouseLeave={() => onHoveredInputChange?.(null)}
+    >
       <label className="block text-sm font-medium text-red-800 mb-2 flex items-center">
         <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
         Betalningsalternativ

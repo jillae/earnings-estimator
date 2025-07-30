@@ -24,6 +24,21 @@ interface LeaseAdjusterProps {
   onAllowBelowFlatrateChange?: (allow: boolean) => void;
 }
 
+interface LeaseAdjusterProps {
+  minLeaseCost: number;
+  maxLeaseCost: number;
+  leaseCost: number;
+  currentSliderStep: SliderStep;
+  flatrateThreshold?: number;
+  showFlatrateIndicator?: boolean;
+  treatmentsPerDay?: number;
+  onSliderStepChange: (step: SliderStep) => void;
+  allowBelowFlatrate?: boolean;
+  onAllowBelowFlatrateChange?: (allow: boolean) => void;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+}
+
 const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   minLeaseCost,
   maxLeaseCost,
@@ -34,7 +49,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   treatmentsPerDay = 0,
   onSliderStepChange,
   allowBelowFlatrate = true,
-  onAllowBelowFlatrateChange
+  onAllowBelowFlatrateChange,
+  hoveredInput,
+  onHoveredInputChange
 }) => {
   const { toast } = useToast();
   const { 
@@ -125,7 +142,12 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const currentStepLabel = stepValues[currentSliderStep]?.label || 'Standard';
 
   return (
-    <section className="bg-white rounded-2xl border border-blue-100 shadow-subtle p-5 flex flex-col gap-6 animate-slide-in" style={{ animationDelay: '150ms' }}>
+    <section 
+      className="bg-white rounded-2xl border border-blue-100 shadow-subtle p-5 flex flex-col gap-6 animate-slide-in hover:shadow-lg transition-all duration-200" 
+      style={{ animationDelay: '150ms' }}
+      onMouseEnter={() => onHoveredInputChange?.('leasing')}
+      onMouseLeave={() => onHoveredInputChange?.(null)}
+    >
       {/* Flexibel investering - flyttat upp */}
       {usesCredits && selectedLeasingModel === 'grundleasing' && (
         <LeaseSlider 

@@ -144,3 +144,5 @@ export interface CalculatorContextType {
   workDaysPerMonth: number;
   setWorkDaysPerMonth: (days: number) => void;
 }
+
+export type HoveredInput = 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;

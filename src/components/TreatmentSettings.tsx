@@ -8,8 +8,8 @@ interface TreatmentSettingsProps {
   customerPrice: number;
   onTreatmentsChange: (value: number) => void;
   onCustomerPriceChange: (value: number) => void;
-  hoveredInput?: 'treatments' | 'price' | 'workdays' | null;
-  setHoveredInput?: (input: 'treatments' | 'price' | 'workdays' | null) => void;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
 }
 
 const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
@@ -17,14 +17,12 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   customerPrice,
   onTreatmentsChange,
   onCustomerPriceChange,
-  setHoveredInput
+  hoveredInput,
+  onHoveredInputChange
 }) => {
   const { logSignificantInteraction, workDaysPerMonth, setWorkDaysPerMonth } = useCalculator();
-  const [hoveredInput, setInternalHoveredInput] = useState<'treatments' | 'price' | 'workdays' | null>(null);
-
-  const handleHover = (input: 'treatments' | 'price' | 'workdays' | null) => {
-    setInternalHoveredInput(input);
-    setHoveredInput?.(input);
+  const handleHover = (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => {
+    onHoveredInputChange?.(input);
   };
 
   // Hantera behandlingsantal via slider

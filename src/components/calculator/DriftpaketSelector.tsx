@@ -6,7 +6,15 @@ import { formatCurrency } from '@/utils/formatUtils';
 import { DriftpaketType } from '@/types/calculator';
 import { Check, Shield, ShieldCheck, Clock, CreditCard } from 'lucide-react';
 
-const DriftpaketSelector: React.FC = () => {
+interface DriftpaketSelectorProps {
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
+  onHoveredInputChange?: (input: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null) => void;
+}
+
+const DriftpaketSelector: React.FC<DriftpaketSelectorProps> = ({ 
+  hoveredInput, 
+  onHoveredInputChange 
+}) => {
   const { 
     selectedMachine, 
     selectedDriftpaket, 
@@ -29,9 +37,14 @@ const DriftpaketSelector: React.FC = () => {
   const showCreditInfo = selectedDriftpaket === 'Bas' && selectedMachine.usesCredits;
 
   return (
-    <div className="glass-card mt-4 animate-slide-in bg-red-50/20 border-red-200 hover:bg-red-50/30 transition-colors" style={{ animationDelay: '300ms' }}>
+    <div 
+      className="glass-card mt-4 animate-slide-in bg-emerald-50/20 border-emerald-200 hover:bg-emerald-50/30 hover:shadow-lg transition-all duration-200" 
+      style={{ animationDelay: '300ms' }}
+      onMouseEnter={() => onHoveredInputChange?.('credits')}
+      onMouseLeave={() => onHoveredInputChange?.(null)}
+    >
       <h3 className="text-lg font-semibold mb-4 flex items-center">
-        <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
+        <span className="w-2 h-2 bg-emerald-400 rounded-sm mr-2"></span>
         Välj Service & Driftpaket
       </h3>
       

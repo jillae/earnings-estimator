@@ -9,13 +9,13 @@ import DetailedAnalysisModal from './DetailedAnalysisModal';
 
 const CalculatorLayout: React.FC = () => {
   const { netResults } = useCalculator();
-  const [hoveredInput, setHoveredInput] = useState<'treatments' | 'price' | null>(null);
+  const [hoveredInput, setHoveredInput] = useState<'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null>(null);
   
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
       <div className="grid lg:grid-cols-2 gap-8">
         <div className="space-y-6">
-          <CalculatorInputs hoveredInput={hoveredInput} setHoveredInput={setHoveredInput} />
+          <CalculatorInputs hoveredInput={hoveredInput} onHoveredInputChange={setHoveredInput} />
         </div>
         <div className="space-y-6">
           <CalculatorResults hoveredInput={hoveredInput} />

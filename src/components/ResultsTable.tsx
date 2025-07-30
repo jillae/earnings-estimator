@@ -25,7 +25,7 @@ interface ResultsTableProps {
   customerPrice?: number;
   slaCost?: number;
   creditCost?: number;
-  hoveredInput?: 'treatments' | 'price' | 'workdays' | null;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | null;
 }
 
 const ResultsTable: React.FC<ResultsTableProps> = ({
@@ -166,13 +166,13 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             </tr>
             
             {paymentOption === 'leasing' ? (
-              <tr className="border-b border-slate-200 bg-red-50/10 hover:bg-red-50/20 transition-colors">
+              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'leasing' || hoveredInput === 'payment' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
                 <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Leasingkostnad (ex moms)</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost)}</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost * 12)}</td>
               </tr>
             ) : (
-              <tr className="border-b border-slate-200 bg-red-50/10 hover:bg-red-50/20 transition-colors">
+              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'payment' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
                 <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Kontantköp (ex moms, 5 år)</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCashPrice / 60)}</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency((safeCashPrice / 60) * 12)}</td>
@@ -181,7 +181,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             
             {/* Flatrate eller Credits kostnad */}
             {isFlatrateActive ? (
-              <tr className="border-b border-slate-200 bg-red-50/10 hover:bg-red-50/20 transition-colors">
+              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
                 <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">
                   {selectedSlaLevel === 'Guld' ? 'Flatrate credits (ingår i Guld)' : 'Flatrate credits'}
                 </td>
@@ -194,7 +194,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               </tr>
             ) : (
               safeCreditCost > 0 && (
-                <tr className="border-b border-slate-200 bg-red-50/10 hover:bg-red-50/20 transition-colors">
+                <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
                   <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Credits (per användning)</td>
                   <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCreditCost)}</td>
                   <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCreditCost * 12)}</td>
@@ -204,7 +204,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             
             {/* SLA-kostnad */}
             {safeSlaOstCost > 0 && (
-              <tr className="border-b border-slate-200 bg-red-50/10 hover:bg-red-50/20 transition-colors">
+              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'sla' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
                 <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">SLA {selectedSlaLevel}</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeSlaOstCost)}</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeSlaOstCost * 12)}</td>
