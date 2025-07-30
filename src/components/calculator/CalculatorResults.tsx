@@ -18,7 +18,8 @@ const CalculatorResults: React.FC = () => {
     useFlatrateOption,
     selectedDriftpaket,
     treatmentsPerDay,
-    customerPrice
+    customerPrice,
+    selectedSlaLevel
   } = useCalculator();
 
   // Lägg till loggning för felsökning
@@ -50,9 +51,11 @@ const CalculatorResults: React.FC = () => {
         occupancy75={occupancyRevenues.occupancy75}
         occupancy100={occupancyRevenues.occupancy100}
         isFlatrateActive={useFlatrateOption === 'flatrate'}
-        selectedSlaLevel={selectedDriftpaket}
+        selectedSlaLevel={selectedSlaLevel}
         treatmentsPerDay={treatmentsPerDay}
         customerPrice={customerPrice}
+        slaCost={operatingCost.slaCost}
+        creditCost={operatingCost.costPerMonth}
         />
       </div>
     </div>

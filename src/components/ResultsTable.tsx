@@ -20,9 +20,11 @@ interface ResultsTableProps {
   occupancy75: number;
   occupancy100: number;
   isFlatrateActive?: boolean;
-  selectedSlaLevel?: 'Bas' | 'Silver' | 'Guld';
+  selectedSlaLevel?: 'Brons' | 'Silver' | 'Guld';
   treatmentsPerDay?: number;
   customerPrice?: number;
+  slaCost?: number;
+  creditCost?: number;
 }
 
 const ResultsTable: React.FC<ResultsTableProps> = ({
@@ -40,9 +42,11 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   occupancy75,
   occupancy100,
   isFlatrateActive = false,
-  selectedSlaLevel = 'Bas',
+  selectedSlaLevel = 'Brons',
   treatmentsPerDay = 0,
-  customerPrice = 0
+  customerPrice = 0,
+  slaCost = 0,
+  creditCost = 0
 }) => {
   // Validera värden och se till att de är giltiga nummer
   const safeDaily = isNaN(dailyRevenueIncVat) ? 0 : dailyRevenueIncVat;
@@ -51,17 +55,18 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const safeYearly = isNaN(yearlyRevenueIncVat) ? 0 : yearlyRevenueIncVat;
   const safeLeasingCost = isNaN(leasingCostPerMonth) ? 0 : leasingCostPerMonth;
   // Om Flatrate är aktivt, visa 0 för driftskostnader, annars använd faktisk kostnad
-  const safeOperatingCost = isFlatrateActive ? 0 : (isNaN(operatingCostPerMonth) ? 0 : operatingCostPerMonth);
+  const safeOperatingCost = isNaN(operatingCostPerMonth) ? 0 : operatingCostPerMonth;
   const safeCashPrice = isNaN(cashPriceSEK) ? 0 : cashPriceSEK;
   const safeNetMonth = isNaN(netPerMonthExVat) ? 0 : netPerMonthExVat;
   const safeNetYear = isNaN(netPerYearExVat) ? 0 : netPerYearExVat;
   const safeOcc50 = isNaN(occupancy50) ? 0 : occupancy50;
   const safeOcc75 = isNaN(occupancy75) ? 0 : occupancy75;
   const safeOcc100 = isNaN(occupancy100) ? 0 : occupancy100;
+  const safeSlaOstCost = isNaN(slaCost) ? 0 : slaCost;
+  const safeCreditCost = isNaN(creditCost) ? 0 : creditCost;
 
-  // Calculate total costs per month - include flatrate cost when active
-  const flatrateCost = isFlatrateActive ? (isNaN(operatingCostPerMonth) ? 0 : operatingCostPerMonth) : 0;
-  const totalCostPerMonth = safeLeasingCost + safeOperatingCost + flatrateCost;
+  // Calculate components for display
+  const totalCostPerMonth = safeLeasingCost + safeOperatingCost;
 
   // Lägg till extra loggning för felsökning av beläggningsgrader
   console.log(`[TRACKER] ResultsTable rendering with occupancy values:
@@ -147,27 +152,37 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               </tr>
              )}
             
-            {isFlatrateActive && (
+            {/* Flatrate eller Credits kostnad */}
+            {isFlatrateActive ? (
               <tr className="border-b border-slate-200">
                 <td className="py-2 px-3 text-slate-700 text-xs">
-                  {selectedSlaLevel === 'Guld' ? 'Flatrate (ingår i Guld)' : 'Flatrate credits'}
+                  {selectedSlaLevel === 'Guld' ? 'Flatrate credits (ingår i Guld)' : 'Flatrate credits'}
                 </td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
-                  {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(operatingCostPerMonth)}
+                  {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(safeCreditCost)}
                 </td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
-                  {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(operatingCostPerMonth * 12)}
+                  {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(safeCreditCost * 12)}
                 </td>
               </tr>
+            ) : (
+              safeCreditCost > 0 && (
+                <tr className="border-b border-slate-200">
+                  <td className="py-2 px-3 text-slate-700 text-xs">Credits (per användning)</td>
+                  <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCreditCost)}</td>
+                  <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeCreditCost * 12)}</td>
+                </tr>
+              )
             )}
             
-            <tr className="border-b border-slate-200">
-              <td className="py-2 px-3 text-slate-700 text-xs">
-                {isFlatrateActive ? 'Övrigt' : 'Driftskostnad'}
-              </td>
-              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeOperatingCost)}</td>
-              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeOperatingCost * 12)}</td>
-            </tr>
+            {/* SLA-kostnad */}
+            {safeSlaOstCost > 0 && (
+              <tr className="border-b border-slate-200">
+                <td className="py-2 px-3 text-slate-700 text-xs">SLA {selectedSlaLevel}</td>
+                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeSlaOstCost)}</td>
+                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeSlaOstCost * 12)}</td>
+              </tr>
+            )}
             
             <tr className="border-b border-slate-200 font-medium bg-slate-50">
               <td className="py-2 px-3 text-slate-800 text-xs font-bold">Total kostnad</td>
