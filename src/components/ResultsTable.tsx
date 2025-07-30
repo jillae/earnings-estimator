@@ -17,6 +17,7 @@ interface ResultsTableProps {
   occupancy50: number;
   occupancy75: number;
   occupancy100: number;
+  isFlatrateActive?: boolean;
 }
 
 const ResultsTable: React.FC<ResultsTableProps> = ({
@@ -32,7 +33,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   netPerYearExVat,
   occupancy50,
   occupancy75,
-  occupancy100
+  occupancy100,
+  isFlatrateActive = false
 }) => {
   // Validera värden och se till att de är giltiga nummer
   const safeDaily = isNaN(dailyRevenueIncVat) ? 0 : dailyRevenueIncVat;
@@ -40,7 +42,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const safeMonthly = isNaN(monthlyRevenueIncVat) ? 0 : monthlyRevenueIncVat;
   const safeYearly = isNaN(yearlyRevenueIncVat) ? 0 : yearlyRevenueIncVat;
   const safeLeasingCost = isNaN(leasingCostPerMonth) ? 0 : leasingCostPerMonth;
-  const safeOperatingCost = isNaN(operatingCostPerMonth) ? 0 : operatingCostPerMonth;
+  // Om Flatrate är aktivt, visa 0 för driftskostnader, annars använd faktisk kostnad
+  const safeOperatingCost = isFlatrateActive ? 0 : (isNaN(operatingCostPerMonth) ? 0 : operatingCostPerMonth);
   const safeCashPrice = isNaN(cashPriceSEK) ? 0 : cashPriceSEK;
   const safeNetMonth = isNaN(netPerMonthExVat) ? 0 : netPerMonthExVat;
   const safeNetYear = isNaN(netPerYearExVat) ? 0 : netPerYearExVat;
@@ -54,7 +57,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   // Lägg till extra loggning för felsökning
   console.log(`ResultsTable rendering with values:
     Monthly revenue (inc VAT): ${safeMonthly}
-    Monthly operating cost: ${safeOperatingCost}
+    Monthly operating cost: ${safeOperatingCost} (original: ${operatingCostPerMonth}, flatrate active: ${isFlatrateActive})
     Leasing cost: ${safeLeasingCost}
     Total cost per month: ${totalCostPerMonth}
     Net per month (ex VAT): ${safeNetMonth}
@@ -120,7 +123,10 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             )}
             
             <tr className="border-b border-slate-200">
-              <td className="py-3 px-4 text-slate-700">Driftskostnad (ex moms)</td>
+              <td className="py-3 px-4 text-slate-700">
+                Driftskostnad (ex moms)
+                {isFlatrateActive && <span className="text-emerald-600 text-xs ml-2">(Inkluderat i Flatrate)</span>}
+              </td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700">-</td>
               <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(safeOperatingCost)}</td>

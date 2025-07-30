@@ -13,7 +13,8 @@ const CalculatorResults: React.FC = () => {
     netResults,
     occupancyRevenues,
     paymentOption,
-    cashPriceSEK
+    cashPriceSEK,
+    useFlatrateOption
   } = useCalculator();
 
   // Lägg till loggning för felsökning
@@ -44,6 +45,7 @@ const CalculatorResults: React.FC = () => {
         occupancy50={occupancyRevenues.occupancy50}
         occupancy75={occupancyRevenues.occupancy75}
         occupancy100={occupancyRevenues.occupancy100}
+        isFlatrateActive={useFlatrateOption === 'flatrate'}
         />
         
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
