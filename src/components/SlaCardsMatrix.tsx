@@ -148,8 +148,8 @@ export const SlaCardsMatrix: React.FC = () => {
         </p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
-        <table className="w-full">{/* Remove border-collapse for better control */}
+      <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-x-auto">
+        <table className="w-full min-w-[800px] table-fixed">{/* Fixed table layout för jämna kolumner */}
           {/* Header */}
           <thead>
             <tr className="border-b border-slate-200">
