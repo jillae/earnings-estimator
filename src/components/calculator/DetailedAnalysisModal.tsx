@@ -129,9 +129,32 @@ const DetailedAnalysisModal: React.FC = () => {
       </DialogTrigger>
       <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-emerald-600" />
-            Interaktiv Tillväxtprognos - {selectedMachine?.name || 'Vald maskin'}
+          <DialogTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-emerald-600" />
+              Interaktiv Tillväxtprognos - {selectedMachine?.name || 'Vald maskin'}
+            </div>
+            {/* Export-knappar i header */}
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleOpenInNewWindow}
+                className="gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Nytt fönster
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleSaveChart}
+                className="gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Skriv ut
+              </Button>
+            </div>
           </DialogTitle>
         </DialogHeader>
         
@@ -239,48 +262,8 @@ const DetailedAnalysisModal: React.FC = () => {
               </ResponsiveContainer>
             </ChartContainer>
             
-            {/* Export-knappar */}
-            <div className="mt-4 flex gap-2 justify-end">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleOpenInNewWindow}
-                className="gap-2"
-              >
-                <ExternalLink className="h-4 w-4" />
-                Öppna i nytt fönster
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleSaveChart}
-                className="gap-2"
-              >
-                <Download className="h-4 w-4" />
-                Spara/Skriv ut
-              </Button>
-            </div>
-            
-            {/* Graf-information */}
-            <div className="mt-4 text-sm text-slate-600 bg-blue-50 p-3 rounded-lg">
-              <p className="font-medium text-blue-800 mb-1">📈 Tillväxtprognos</p>
-              <p>Denna graf visar hur din kliniks ekonomi kan utvecklas över 5 år med <strong>{selectedMachine?.name || 'den valda maskinen'}</strong>. 
-              Justera behandlingar per dag och kundpris nedan för att se olika scenarier!</p>
-            </div>
-
-            {/* Disclaimer */}
-            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <div className="flex items-start gap-2">
-                <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-yellow-800">
-                  <p className="font-medium mb-1">⚠️ Ansvarsfriskrivning</p>
-                  <p>Dessa prognoser är baserade på dina inmatade värden och nuvarande marknadsförhållanden. Verifiera alltid siffrorna själv och förlita dig inte blint på automatiska beräkningar för viktiga affärsbeslut. Vi kan inte garantera att algoritmerna är helt korrekta - så dubbelkolla gärna om du ska satsa miljoner! 😅</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Prognos-verktyg: Interaktiva Sliderns */}
-            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-emerald-50 border border-blue-200 rounded-lg">
+            {/* Prognos-verktyg: Interaktiva Sliderns - DIREKT UNDER GRAFEN */}
+            <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-emerald-50 border border-blue-200 rounded-lg">
               <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 text-blue-600" />
                 Prognos-verktyg - Testa Din Kliniks Potential
@@ -342,6 +325,13 @@ const DetailedAnalysisModal: React.FC = () => {
                   <div className="text-lg font-bold text-blue-600">{formatCurrency(modalNetPerMonthExVat)}</div>
                 </div>
               </div>
+            </div>
+            
+            {/* Graf-information */}
+            <div className="mt-4 text-sm text-slate-600 bg-blue-50 p-3 rounded-lg">
+              <p className="font-medium text-blue-800 mb-1">📈 Tillväxtprognos</p>
+              <p>Denna graf visar hur din kliniks ekonomi kan utvecklas över 5 år med <strong>{selectedMachine?.name || 'den valda maskinen'}</strong>. 
+              Justera behandlingar per dag och kundpris ovan för att se olika scenarier!</p>
             </div>
           </div>
 
@@ -498,6 +488,17 @@ const DetailedAnalysisModal: React.FC = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Disclaimer - Flyttad till botten med professionell text */}
+          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+              <div className="text-sm text-yellow-800">
+                <p className="font-medium mb-1">⚠️ Ansvarsfriskrivning</p>
+                <p>Dessa prognoser är baserade på dina inmatade värden och nuvarande marknadsförhållanden. Verifiera alltid siffrorna själv och förlita dig inte blint på automatiska beräkningar för viktiga affärsbeslut. Faktiska resultat kan variera beroende på marknadsutveckling, valutakurser och andra faktorer.</p>
               </div>
             </div>
           </div>
