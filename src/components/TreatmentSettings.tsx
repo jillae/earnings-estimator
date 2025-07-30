@@ -103,35 +103,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
         </div>
       </div>
       
-      {/* Rad 2: Nollpunkt mini-slider */}
-      <div className="w-full max-w-md">
-        <div 
-          className="bg-slate-50/50 border-slate-200 rounded-2xl border px-5 py-4 shadow-subtle hover:bg-slate-100/50 transition-colors cursor-pointer"
-          onMouseEnter={() => handleHover('workdays')}
-          onMouseLeave={() => handleHover(null)}
-        >
-          <label className="text-sm font-semibold text-slate-700 mb-3 flex items-center">
-            <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
-            Nollpunkt (arbetsdagar/månad)
-          </label>
-          <div className="space-y-3">
-            <div className="text-base font-semibold text-slate-800">{workDaysPerMonth} dagar</div>
-            <Slider
-              value={[workDaysPerMonth]}
-              min={1}
-              max={22}
-              step={1}
-              onValueChange={handleWorkDaysSliderChange}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs text-slate-500">
-              <span>1 dag</span>
-              <span>22 dagar</span>
-            </div>
-          </div>
-          <p className="text-xs text-slate-600 mt-2">Påverkar break-even beräkning</p>
-        </div>
-      </div>
+      {/* Nollpunkt borttaget från vänster kolumn - finns kvar i tabellen */}
     </section>
   );
 };
