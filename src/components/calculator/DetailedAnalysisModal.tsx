@@ -130,7 +130,7 @@ const DetailedAnalysisModal: React.FC = () => {
       <DialogTrigger asChild>
         <Button 
           size="default"
-          className="w-full h-12 gap-2 border-2 border-emerald-300 text-emerald-700 bg-white hover:bg-emerald-50 hover:border-emerald-400 hover:text-emerald-800 transition-all duration-200 font-medium"
+          className="w-auto h-12 gap-2 border-2 border-emerald-300 text-emerald-700 bg-white hover:bg-emerald-50 hover:border-emerald-400 hover:text-emerald-800 transition-all duration-200 font-medium"
           variant="outline"
         >
           <TrendingUp className="h-5 w-5" />
