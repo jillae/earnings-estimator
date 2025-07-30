@@ -115,9 +115,9 @@ export const QuoteRequestButton: React.FC = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <Mail size={16} />
-          Skicka offertförfrågan
+        <Button className="w-full h-12 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium">
+          <Mail size={18} />
+          Begär offert
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">

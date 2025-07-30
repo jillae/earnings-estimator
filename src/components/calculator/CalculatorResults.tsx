@@ -51,16 +51,34 @@ const CalculatorResults: React.FC = () => {
         selectedSlaLevel={selectedDriftpaket}
         />
         
-        {/* Action buttons i tydligt eget block */}
-        <div className="mt-8 glass-card p-6 border-2 border-dashed border-blue-200 bg-gradient-to-br from-blue-50/50 to-slate-50/50">
-          <div className="text-center mb-4">
-            <h3 className="text-lg font-semibold text-slate-800 mb-2">Nästa steg</h3>
-            <p className="text-sm text-slate-600">Välj vad du vill göra med din beräkning</p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <SaveConfigurationButton />
-            <QuoteRequestButton />
-            <DetailedAnalysisModal />
+        {/* Förbättrad action section med bättre UX/UI */}
+        <div className="mt-8">
+          {/* Klar separator */}
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent mb-8"></div>
+          
+          {/* Nästa steg sektion */}
+          <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50/30 rounded-2xl border border-slate-200/60 shadow-lg overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-emerald-600 p-4 text-white text-center">
+              <h3 className="text-xl font-bold mb-1">🎯 Nästa steg</h3>
+              <p className="text-blue-100 text-sm">Välj vad du vill göra med din beräkning</p>
+            </div>
+            
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="group">
+                  <SaveConfigurationButton />
+                  <p className="text-xs text-slate-500 mt-2 text-center">Spara för senare användning</p>
+                </div>
+                <div className="group">
+                  <QuoteRequestButton />
+                  <p className="text-xs text-slate-500 mt-2 text-center">Få personlig offert</p>
+                </div>
+                <div className="group">
+                  <DetailedAnalysisModal />
+                  <p className="text-xs text-slate-500 mt-2 text-center">Djupare finansiell analys</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

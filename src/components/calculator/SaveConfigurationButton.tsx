@@ -57,10 +57,10 @@ export const SaveConfigurationButton: React.FC = () => {
     <Button 
       onClick={handleSaveConfiguration}
       variant="outline"
-      className="flex items-center gap-2"
+      className="w-full flex items-center justify-center gap-2 h-12 border-2 border-slate-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 text-slate-700 font-medium"
     >
-      <Save size={16} />
-      Spara min konfiguration
+      <Save size={18} />
+      Spara konfiguration
     </Button>
   );
 };
