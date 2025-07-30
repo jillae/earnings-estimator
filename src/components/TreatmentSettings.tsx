@@ -8,8 +8,8 @@ interface TreatmentSettingsProps {
   customerPrice: number;
   onTreatmentsChange: (value: number) => void;
   onCustomerPriceChange: (value: number) => void;
-  hoveredInput?: 'treatments' | 'price' | null;
-  setHoveredInput?: (input: 'treatments' | 'price' | null) => void;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | null;
+  setHoveredInput?: (input: 'treatments' | 'price' | 'workdays' | null) => void;
 }
 
 const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
@@ -20,9 +20,9 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   setHoveredInput
 }) => {
   const { logSignificantInteraction, workDaysPerMonth, setWorkDaysPerMonth } = useCalculator();
-  const [hoveredInput, setInternalHoveredInput] = useState<'treatments' | 'price' | null>(null);
+  const [hoveredInput, setInternalHoveredInput] = useState<'treatments' | 'price' | 'workdays' | null>(null);
 
-  const handleHover = (input: 'treatments' | 'price' | null) => {
+  const handleHover = (input: 'treatments' | 'price' | 'workdays' | null) => {
     setInternalHoveredInput(input);
     setHoveredInput?.(input);
   };
@@ -107,7 +107,11 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
       
       {/* Rad 2: Nollpunkt mini-slider */}
       <div className="w-full max-w-md">
-        <div className="bg-slate-50/50 border-slate-200 rounded-2xl border px-5 py-4 shadow-subtle hover:bg-slate-100/50 transition-colors">
+        <div 
+          className="bg-slate-50/50 border-slate-200 rounded-2xl border px-5 py-4 shadow-subtle hover:bg-slate-100/50 transition-colors cursor-pointer"
+          onMouseEnter={() => handleHover('workdays')}
+          onMouseLeave={() => handleHover(null)}
+        >
           <label className="text-sm font-semibold text-slate-700 mb-3 flex items-center">
             <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
             Nollpunkt (arbetsdagar/månad)
@@ -127,7 +131,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
               <span>22 dagar</span>
             </div>
           </div>
-          <p className="text-xs text-slate-600 mt-2">Test-funktion för utvärdering</p>
+          <p className="text-xs text-slate-600 mt-2">Påverkar break-even beräkning</p>
         </div>
       </div>
     </section>

@@ -25,7 +25,7 @@ interface ResultsTableProps {
   customerPrice?: number;
   slaCost?: number;
   creditCost?: number;
-  hoveredInput?: 'treatments' | 'price' | null;
+  hoveredInput?: 'treatments' | 'price' | 'workdays' | null;
 }
 
 const ResultsTable: React.FC<ResultsTableProps> = ({
@@ -115,36 +115,36 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{treatmentsPerDay || 0}</td>
                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{(treatmentsPerDay || 0) * 252}</td>
             </tr>
-            <tr className="border-b border-slate-200">
-              <td className="py-2 px-3 text-slate-700 text-xs">Nollpunkt (arbetsdagar/månad)</td>
-              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">
-                {(() => {
-                  const monthlyRevenueExVat = safeMonthly / 1.25; // 22 arbetsdagar per månad
-                  const dailyRevenue = monthlyRevenueExVat / 22;
-                  const breakEvenDays = dailyRevenue > 0 ? totalCostPerMonth / dailyRevenue : 0;
-                  return Math.round(breakEvenDays);
-                })()}
-              </td>
-              <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">
-                {(() => {
-                  const monthlyRevenueExVat = safeMonthly / 1.25;
-                  const dailyRevenue = monthlyRevenueExVat / 22;
-                  const breakEvenDays = dailyRevenue > 0 ? totalCostPerMonth / dailyRevenue : 0;
-                  const currentWorkingDays = treatmentsPerDay > 0 ? 22 : 0; // Antar 22 arbetsdagar om behandlingar görs
-                  
-                  return currentWorkingDays >= breakEvenDays ? (
-                    <span className="text-emerald-600 font-bold">✅ Vinst</span>
-                  ) : (
-                    <span className="text-red-600 font-bold">❌ Förlust</span>
-                  );
-                })()}
-              </td>
+             <tr className="border-b border-slate-200">
+               <td className="py-2 px-3 text-slate-700 text-xs">Nollpunkt (arbetsdagar/månad)</td>
+               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">
+                 {(() => {
+                   const monthlyRevenueExVat = safeMonthly / 1.25;
+                   const dailyRevenue = monthlyRevenueExVat / (22); // Använd standardvärde för nollpunkt beräkning
+                   const breakEvenDays = dailyRevenue > 0 ? totalCostPerMonth / dailyRevenue : 0;
+                   return Math.round(breakEvenDays);
+                 })()} dagar
+               </td>
+               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">
+                 {(() => {
+                   const monthlyRevenueExVat = safeMonthly / 1.25;
+                   const dailyRevenue = monthlyRevenueExVat / (22);
+                   const breakEvenDays = dailyRevenue > 0 ? totalCostPerMonth / dailyRevenue : 0;
+                   const currentWorkingDays = treatmentsPerDay > 0 ? 22 : 0;
+                   
+                   return currentWorkingDays >= breakEvenDays ? (
+                     <span className="text-emerald-600 font-bold">✅ Vinst</span>
+                   ) : (
+                     <span className="text-red-600 font-bold">❌ Förlust</span>
+                   );
+                 })()}
+               </td>
+              </tr>
+              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'price' ? 'bg-emerald-100/50 ring-2 ring-emerald-300' : 'bg-emerald-50/10 hover:bg-emerald-50/20'}`}>
+                <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Intäkt/behandling (ink moms)</td>
+                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{formatCurrency(customerPrice || 0)}</td>
+                <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
              </tr>
-             <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'price' ? 'bg-emerald-100/50 ring-2 ring-emerald-300' : 'bg-emerald-50/10 hover:bg-emerald-50/20'}`}>
-               <td className="py-2 px-3 text-slate-700 text-xs border-l border-emerald-300">Intäkt/behandling (ink moms)</td>
-               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">{formatCurrency(customerPrice || 0)}</td>
-               <td className="py-2 px-2 text-right text-slate-700 font-medium text-xs">-</td>
-            </tr>
             
             {/* INTÄKT SEKTION */}
             <tr className="border-b border-slate-100 bg-emerald-50/30">
