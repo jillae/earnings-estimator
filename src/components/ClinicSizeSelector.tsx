@@ -46,7 +46,11 @@ const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({
 
   return (
     <div 
-      className="glass-card animate-slide-in bg-blue-50/20 border-blue-200 hover:bg-blue-50/30 hover:shadow-lg transition-all duration-200" 
+      className={`glass-card animate-slide-in transition-all duration-200 cursor-pointer ${
+        hoveredInput === 'clinic' 
+          ? 'bg-blue-100/50 border-blue-300 shadow-lg ring-2 ring-blue-300' 
+          : 'bg-blue-50/20 border-blue-200 hover:bg-blue-50/30 hover:shadow-lg'
+      }`}
       style={{ animationDelay: '100ms' }}
       onMouseEnter={() => onHoveredInputChange?.('clinic')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
