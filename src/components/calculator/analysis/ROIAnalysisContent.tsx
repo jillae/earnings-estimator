@@ -117,8 +117,33 @@ const ROIAnalysisContent: React.FC = () => {
     };
   });
 
+  // Kontrollera om vi använder fallback-värden
+  const usingFallbackData = !selectedMachine || revenue.monthlyRevenueExVat === 0 || operatingCost.totalCost === 0;
+
   return (
-    <div className="grid lg:grid-cols-3 gap-6">
+    <div className="space-y-6">
+      {/* Varning om fallback-data */}
+      {usingFallbackData && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <div className="text-yellow-600">⚠️</div>
+            <div>
+              <h4 className="font-medium text-yellow-800 mb-1">Använder exempelvärden</h4>
+              <p className="text-sm text-yellow-700 mb-2">
+                Denna analys baseras på exempelvärden eftersom ingen maskin är vald eller kalkylatorn är tom. 
+                För korrekt analys, gå tillbaka till kalkylatorn och:
+              </p>
+              <ul className="text-sm text-yellow-700 list-disc list-inside space-y-1">
+                <li>Välj en maskin</li>
+                <li>Ange behandlingar per dag</li>
+                <li>Sätt kundpris</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="grid lg:grid-cols-3 gap-6">
       {/* Input Panel */}
       <div className="lg:col-span-1">
         <Card>
@@ -336,6 +361,7 @@ const ROIAnalysisContent: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );
