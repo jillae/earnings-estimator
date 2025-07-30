@@ -159,6 +159,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
             value={displayLeaseCost}
             label="Månadskostnad leasing"
             className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
+            showTrendIcon={true}
+            trendDirection={currentSliderStep <= 1 ? 'down' : 'up'}
           />
           <RollingValueDisplay 
             value={calculatedCreditPrice}
