@@ -162,7 +162,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           />
           <RollingValueDisplay 
             value={calculatedCreditPrice}
-            label="Krediter per behandling"
+            label="Credit-kostnad: Styckepris"
             className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
           />
         </div>
