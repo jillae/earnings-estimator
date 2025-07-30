@@ -65,7 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Skicka e-post till återförsäljaren
     const { error } = await resend.emails.send({
       from: "Kalkylator <onboarding@resend.dev>",
-      to: ["gilbert@archacademy.se"],
+      to: ["mailtillgille@gmail.com"],
       subject,
       html,
     });
