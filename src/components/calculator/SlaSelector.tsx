@@ -15,7 +15,7 @@ const SlaSelector: React.FC = () => {
     leasingMax60mRef
   } = useCalculator();
 
-  const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
+const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
     setSlaLevel(value);
   };
 
@@ -46,9 +46,9 @@ const SlaSelector: React.FC = () => {
                 <h4 className="font-semibold text-slate-900">Brons</h4>
               </div>
               {selectedSlaLevel === 'Brons' && (
-                <Badge variant="default" className="text-xs bg-amber-600">
+                <Badge variant="default" className="text-xs font-bold bg-amber-600 shadow-md ring-2 ring-amber-300">
                   <Check className="h-3 w-3 mr-1" />
-                  Vald
+                  VALD
                 </Badge>
               )}
             </div>
@@ -85,9 +85,9 @@ const SlaSelector: React.FC = () => {
                 <h4 className="font-semibold text-slate-900">Silver</h4>
               </div>
               {selectedSlaLevel === 'Silver' && (
-                <Badge variant="default" className="text-xs bg-slate-600">
+                <Badge variant="default" className="text-xs font-bold bg-slate-600 shadow-md ring-2 ring-slate-300">
                   <Check className="h-3 w-3 mr-1" />
-                  Vald
+                  VALD
                 </Badge>
               )}
             </div>
@@ -134,9 +134,9 @@ const SlaSelector: React.FC = () => {
                 <h4 className="font-semibold text-slate-900">Guld</h4>
               </div>
               {selectedSlaLevel === 'Guld' && (
-                <Badge variant="default" className="text-xs bg-yellow-600">
+                <Badge variant="default" className="text-xs font-bold bg-yellow-600 shadow-md ring-2 ring-yellow-300">
                   <Check className="h-3 w-3 mr-1" />
-                  Vald
+                  VALD
                 </Badge>
               )}
             </div>

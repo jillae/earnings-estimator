@@ -41,15 +41,15 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
             </h3>
           </div>
           {isSelected && (
-            <Badge variant="default" className="text-sm font-semibold px-3 py-1 bg-green-600">
-              <Check className="h-3 w-3 mr-1" />
-              Vald
+            <Badge variant="default" className="text-sm font-bold px-3 py-1.5 bg-green-600 shadow-md ring-2 ring-green-300">
+              <Check className="h-4 w-4 mr-1" />
+              VALD
             </Badge>
           )}
         </div>
         
         <p className="text-base text-slate-700 mb-4 leading-relaxed">
-          Fast månadsavgift för obegränsad användning av credits.
+          Fast månadsavgift för obegränsad användning av credits. Lönsamt vid mer än 2 behandlingar per dag.
         </p>
         
         <div className="space-y-3 mb-4">

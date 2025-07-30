@@ -206,13 +206,13 @@ const DriftpaketSelector: React.FC = () => {
       
       <div className="mt-4 space-y-2">
         <div className="text-center">
-          <a 
-            href="#" 
-            target="_blank" 
-            className="text-sm text-blue-600 hover:underline inline-flex items-center gap-1"
+          <button 
+            className="text-sm text-slate-400 cursor-not-allowed inline-flex items-center gap-1"
+            disabled
+            title="Länk kommer snart"
           >
-            Jämför paketen / Läs fullständiga villkor
-          </a>
+            Jämför paketen / Läs fullständiga villkor (kommer snart)
+          </button>
         </div>
         <div className="text-xs text-gray-500 text-center italic">
           *Avtalet är obundet löpande 3 månader (kvartalsvis) och faktureras i förskott

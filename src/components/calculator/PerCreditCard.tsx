@@ -42,9 +42,9 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
             </h3>
           </div>
           {isSelected && (
-            <Badge variant="default" className="text-sm font-semibold px-3 py-1 bg-blue-600">
-              <Check className="h-3 w-3 mr-1" />
-              Vald
+            <Badge variant="default" className="text-sm font-bold px-3 py-1.5 bg-blue-600 shadow-md ring-2 ring-blue-300">
+              <Check className="h-4 w-4 mr-1" />
+              VALD
             </Badge>
           )}
         </div>

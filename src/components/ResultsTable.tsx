@@ -113,7 +113,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                     onClick={() => window.open('https://bit.ly/leasingeen', '_blank')}
                   >
                     <Download className="h-4 w-4 mr-2" />
-                    För leasingoffert ansök här
+                     För leasingoffert, ansök här
                   </Button>
                 </td>
               </tr>
@@ -176,7 +176,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               onClick={() => window.open('https://bit.ly/leasingeen', '_blank')}
             >
               <Download className="h-3 w-3 mr-1" />
-              För leasingoffert ansök här
+              För leasingoffert, ansök här
             </Button>
           </span>
         )}

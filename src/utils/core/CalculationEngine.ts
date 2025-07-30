@@ -268,8 +268,15 @@ export class CalculationEngine {
     } else {
       // Grundleasing: Slider justerar inom ett snävt intervall runt grundkostnaden
       const sliderPosition = Math.max(0, Math.min(2, inputs.currentSliderStep));
-      const adjustmentRange = leasingCostBase * 0.1; // ±10% justering för bättre kontroll
-      leasingCost = leasingCostBase + (sliderPosition - 1) * adjustmentRange;
+      
+      if (sliderPosition === 1) {
+        // Position 1 (Standard) = exakt grundkostnad
+        leasingCost = leasingCostBase;
+      } else {
+        // Position 0-1 och 1-2: interpolera korrekt
+        const adjustmentRange = leasingCostBase * 0.1; // ±10% justering
+        leasingCost = leasingCostBase + (sliderPosition - 1) * adjustmentRange;
+      }
     }
     
     // RANGE: Olika beroende på läge

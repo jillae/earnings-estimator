@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DealerRevenueReport from '@/components/DealerRevenueReport';
 import TestRunner from '@/components/TestRunner';
 import MachineDataManager from '@/components/MachineDataManager';
+import ScrollToTop from '@/components/ScrollToTop';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { setActiveTariffYear } from '@/utils/leasingTariffUtils';
@@ -111,6 +112,8 @@ const Admin = () => {
           </div>
         </TabsContent>
       </Tabs>
+      
+      <ScrollToTop />
     </div>
   );
 };

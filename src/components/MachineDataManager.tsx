@@ -16,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Edit2, Trash2, Save, X, AlertCircle, Loader2, Check } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, AlertCircle, Loader2, Check, Copy } from 'lucide-react';
 import { machineApiClient, type Machine } from '@/utils/machineApiClient';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -206,6 +206,44 @@ const MachineDataManager: React.FC = () => {
       toast({
         title: "Fel",
         description: `Kunde inte radera maskin: ${error instanceof Error ? error.message : 'Okänt fel'}`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDuplicate = async (machine: Machine) => {
+    try {
+      const duplicateData = {
+        name: `Kopia av ${machine.name}`,
+        price_eur: machine.price_eur,
+        is_premium: machine.is_premium,
+        uses_credits: machine.uses_credits,
+        credit_min: machine.credit_min,
+        credit_max: machine.credit_max,
+        flatrate_amount: machine.flatrate_amount,
+        default_customer_price: machine.default_customer_price,
+        default_leasing_period: machine.default_leasing_period,
+        leasing_min: machine.leasing_min,
+        leasing_max: machine.leasing_max,
+        credits_per_treatment: machine.credits_per_treatment,
+        description: machine.description || '',
+        category: machine.category,
+        is_active: machine.is_active,
+        leasing_tariffs: machine.leasing_tariffs
+      };
+
+      await machineApiClient.createMachine(duplicateData);
+      await fetchMachines();
+      
+      toast({
+        title: "Framgång",
+        description: `Maskinen "${machine.name}" kopierades framgångsrikt`,
+      });
+    } catch (error) {
+      console.error('Error duplicating machine:', error);
+      toast({
+        title: "Fel",
+        description: `Kunde inte kopiera maskin: ${error instanceof Error ? error.message : 'Okänt fel'}`,
         variant: "destructive",
       });
     }
@@ -552,26 +590,36 @@ const MachineDataManager: React.FC = () => {
                              </Button>
                            </div>
                          ) : (
-                           <div className="flex gap-2">
-                             <Button
-                               variant="outline"
-                               size="sm"
-                               onClick={() => startEditing(machine)}
-                               className="flex items-center gap-1"
-                             >
-                               <Edit2 className="w-3 h-3" />
-                               Redigera
-                             </Button>
-                             <Button
-                               variant="outline"
-                               size="sm"
-                               onClick={() => handleDelete(machine.id, machine.name)}
-                               className="flex items-center gap-1 text-destructive hover:text-destructive"
-                             >
-                               <Trash2 className="w-3 h-3" />
-                               Radera
-                             </Button>
-                           </div>
+                            <div className="flex gap-1">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => startEditing(machine)}
+                                className="flex items-center gap-1"
+                              >
+                                <Edit2 className="w-3 h-3" />
+                                Redigera
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDuplicate(machine)}
+                                className="flex items-center gap-1 text-blue-600 hover:text-blue-700"
+                                title="Skapa kopia av denna maskin"
+                              >
+                                <Copy className="w-3 h-3" />
+                                Kopiera
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDelete(machine.id, machine.name)}
+                                className="flex items-center gap-1 text-destructive hover:text-destructive"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                Radera
+                              </Button>
+                            </div>
                          )}
                        </div>
                      </TableCell>

@@ -40,38 +40,42 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
 
   // Visa alltid dropdown-väljaren, oavsett vald maskin
   return (
-    <div className="input-group animate-slide-in" style={{ animationDelay: '100ms' }}>
-      <label htmlFor="machine-select" className="input-label mb-4">
-        Välj maskin
-      </label>
-      
-      {/* Traditionell dropdown för maskinval som backup/alternativ */}
-      <div>
-        <Select 
-          value={selectedMachineId} 
-          onValueChange={handleMachineChange}
-          onOpenChange={(open) => {
-            if (open) {
-              console.log("MachineSelector: Dropdown öppnades");
-            }
-          }}
-        >
-          <SelectTrigger className="w-full h-auto py-3 min-h-[50px]" id="machine-select">
-            <SelectValue placeholder="Växla maskin här" />
-          </SelectTrigger>
-          
-          <SelectContent position="item-aligned" className="w-full max-h-[400px] bg-white z-50">
-            <SelectItem value="select-machine">Växla maskin här</SelectItem>
-            {machines.map((machine) => (
-              <SelectItem key={machine.id} value={machine.id}>
-                <div className="flex flex-col py-1">
-                  <span className="font-medium">{machine.name}</span>
-                  <span className="text-xs text-slate-500">{machine.description}</span>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '100ms' }}>
+      <div className="text-center">
+        <label htmlFor="machine-select" className="text-lg font-semibold block mb-4">
+          Välj maskin
+        </label>
+        
+        {/* Centrerad dropdown för maskinval */}
+        <div className="flex justify-center">
+          <div className="w-full max-w-md">
+            <Select 
+              value={selectedMachineId} 
+              onValueChange={handleMachineChange}
+              onOpenChange={(open) => {
+                if (open) {
+                  console.log("MachineSelector: Dropdown öppnades");
+                }
+              }}
+            >
+              <SelectTrigger className="w-full h-auto py-3 min-h-[50px] text-center" id="machine-select">
+                <SelectValue placeholder="Växla maskin här" />
+              </SelectTrigger>
+              
+              <SelectContent position="item-aligned" className="w-full max-h-[400px] bg-white z-50">
+                <SelectItem value="select-machine">Växla maskin här</SelectItem>
+                {machines.map((machine) => (
+                  <SelectItem key={machine.id} value={machine.id}>
+                    <div className="flex flex-col py-1">
+                      <span className="font-medium">{machine.name}</span>
+                      <span className="text-xs text-slate-500">{machine.description}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
     </div>
   );

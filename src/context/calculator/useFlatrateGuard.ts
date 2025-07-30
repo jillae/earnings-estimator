@@ -24,8 +24,8 @@ export function useFlatrateGuard({
     // NYTT VILLKOR:
     // Bara vid leasing och step < 1 ska vi tvinga per-credit
     if (paymentOption === 'leasing' && currentSliderStep < 1 && useFlatrateOption === 'flatrate') {
-      console.log('Återställer flatrate-val till perCredit då slider < 1 och leasing');
+      console.log('🔄 useFlatrateGuard: Återställer flatrate-val till perCredit då slider < 1 och leasing');
       setUseFlatrateOption('perCredit');
     }
-  }, [currentSliderStep, setUseFlatrateOption, paymentOption]); // Ta bort useFlatrateOption från dependencies för att undvika loop
+  }, [currentSliderStep, setUseFlatrateOption, paymentOption, useFlatrateOption]); // Nu inkluderar useFlatrateOption för korrekt guard-logik
 }

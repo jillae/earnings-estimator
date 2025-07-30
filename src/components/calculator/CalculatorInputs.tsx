@@ -117,8 +117,6 @@ const CalculatorInputs: React.FC = () => {
           {/* Flatrate-sektion kommer efter anpassning av investering */}
           <FlatrateSection />
           
-          <OperatingCosts />
-          
           <div className="mt-4">
             <DriftpaketSelector />
             
@@ -127,6 +125,8 @@ const CalculatorInputs: React.FC = () => {
               <ContextualInfoBox />
             </div>
           </div>
+          
+          <OperatingCosts />
         </>
       )}
       

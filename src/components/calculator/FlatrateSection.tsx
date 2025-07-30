@@ -116,7 +116,7 @@ const FlatrateSection: React.FC = () => {
           <div className="flex items-start gap-2">
             <Info className="h-4 w-4 text-blue-600 mt-0.5" />
             <div className="text-sm text-blue-700">
-              <strong>Tips:</strong> Flatrate är ekonomiskt fördelaktigt vid högre behandlingsvolymer. 
+              <strong>Tips:</strong> Flatrate är ekonomiskt fördelaktigt vid mer än 2 behandlingar per dag. 
               Med Silver/Guld SLA-paket får du ytterligare rabatt på Flatrate-kostnaden.
             </div>
           </div>
