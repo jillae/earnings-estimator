@@ -49,13 +49,6 @@ const CalculatorInputs: React.FC = () => {
     <div className="w-full space-y-6">
       {selectedMachine ? (
         <>
-          {/* Växla maskin - enkelt tillgängligt */}
-          <MachineSelector 
-            machines={machineData}
-            selectedMachineId={selectedMachineId}
-            onChange={setSelectedMachineId}
-          />
-
           {/* Nästa steg banner */}
           <div className="bg-gradient-to-r from-blue-50 to-emerald-50 border border-blue-200 rounded-lg p-3 text-center animate-slide-in">
             <div className="text-sm font-medium text-slate-700">
@@ -93,6 +86,13 @@ const CalculatorInputs: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Växla maskin */}
+          <MachineSelector 
+            machines={machineData}
+            selectedMachineId={selectedMachineId}
+            onChange={setSelectedMachineId}
+          />
 
           {/* Steg 4: Betalning */}
           <div className="relative">
