@@ -168,9 +168,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         {selectedMachine?.usesCredits && selectedLeasingModel === 'grundleasing' && (
           <div className="flex flex-1 items-center text-sm bg-green-50 p-2 rounded-md gap-2 shadow-inner border border-emerald-100">
             {currentSliderStep <= 1 ? (
-              <TrendingDown className="w-5 h-5 text-green-600 shrink-0" />
+              <TrendingUp className="w-5 h-5 text-green-600 shrink-0" />
             ) : (
-              <TrendingUp className="w-5 h-5 text-emerald-600 shrink-0" />
+              <TrendingDown className="w-5 h-5 text-emerald-600 shrink-0" />
             )}
             <span>
               Credit-kostnad:&nbsp;
