@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, ReferenceLine } from 'recharts';
 import { TrendingUp, DollarSign, PieChart as PieChartIcon, ExternalLink, Download, AlertTriangle, Users } from 'lucide-react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
@@ -256,6 +256,14 @@ const DetailedAnalysisModal: React.FC = () => {
                     name="Din Kumulativa Netto"
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
+                  />
+                  {/* Nollpunkt - horisontell linje vid y=0 */}
+                  <ReferenceLine 
+                    y={0} 
+                    stroke="#64748b" 
+                    strokeWidth={2} 
+                    strokeDasharray="5 5" 
+                    label={{ value: "Nollpunkt (Break-even)", position: "insideTopRight", style: { fontSize: 12, fill: "#64748b", fontWeight: "bold" } }}
                   />
                 </LineChart>
               </ResponsiveContainer>
