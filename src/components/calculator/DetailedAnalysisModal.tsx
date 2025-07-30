@@ -19,18 +19,31 @@ const DetailedAnalysisModal: React.FC = () => {
     cashPriceSEK
   } = useCalculator();
 
-  // Data för huvudgrafen - månadsvis utveckling över 5 år
+  // Data för huvudgrafen - månadsvis utveckling över 5 år (förbättrad)
   const monthlyData = [];
+  const monthlyRevenue = revenue.monthlyRevenueExVat;
+  const monthlyCost = leasingCost + operatingCost.totalCost;
+  const monthlyNet = netResults.netPerMonthExVat;
+  
   for (let month = 1; month <= 60; month++) {
-    const cumulativeRevenue = revenue.monthlyRevenueExVat * month;
-    const cumulativeCosts = (leasingCost + operatingCost.totalCost) * month;
-    const cumulativeNet = cumulativeRevenue - cumulativeCosts;
+    // Kumulativa värden över tid
+    const cumulativeRevenue = monthlyRevenue * month;
+    const cumulativeCosts = monthlyCost * month;
+    const cumulativeNet = monthlyNet * month;
     
+    // Månadsvis värden (för bättre läsbarhet)
     monthlyData.push({
-      month: `Mån ${month}`,
-      intakt: cumulativeRevenue,
-      kostnad: cumulativeCosts,
-      netto: cumulativeNet
+      month: month,
+      monthLabel: `Mån ${month}`,
+      yearLabel: `År ${Math.ceil(month / 12)}`,
+      // Månadsvis data
+      intaktManad: monthlyRevenue,
+      kostnadManad: monthlyCost,
+      nettoManad: monthlyNet,
+      // Kumulativa data  
+      intaktKumulativ: cumulativeRevenue,
+      kostnadKumulativ: cumulativeCosts,
+      nettoKumulativ: cumulativeNet
     });
   }
 
@@ -98,185 +111,254 @@ const DetailedAnalysisModal: React.FC = () => {
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-6">
-          {/* Huvudgraf */}
+        <div className="space-y-8">
+          {/* Huvudgraf - Förbättrad med bättre visualisering */}
           <div className="bg-white rounded-lg border border-slate-200 p-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-blue-600" />
-              Kumulativ utveckling över 5 år
+              Ekonomisk Utveckling över 5 år - {selectedMachine?.name || 'Vald maskin'}
             </h3>
-            <ChartContainer config={chartConfig} className="h-80">
+            
+            {/* Månadsvis nyckelvärden för vald maskin */}
+            <div className="grid grid-cols-3 gap-4 mb-6 p-4 bg-slate-50 rounded-lg">
+              <div className="text-center">
+                <div className="text-sm text-slate-600">Månatlig Intäkt</div>
+                <div className="text-lg font-bold text-emerald-600">{formatCurrency(monthlyRevenue)}</div>
+                <div className="text-xs text-slate-500">ex moms</div>
+              </div>
+              <div className="text-center">
+                <div className="text-sm text-slate-600">Månatlig Kostnad</div>
+                <div className="text-lg font-bold text-red-600">{formatCurrency(monthlyCost)}</div>
+                <div className="text-xs text-slate-500">ex moms</div>
+              </div>
+              <div className="text-center">
+                <div className="text-sm text-slate-600">Månatlig Netto</div>
+                <div className="text-lg font-bold text-blue-600">{formatCurrency(monthlyNet)}</div>
+                <div className="text-xs text-slate-500">ex moms</div>
+              </div>
+            </div>
+
+            <ChartContainer config={chartConfig} className="h-96">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                <LineChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis 
                     dataKey="month" 
-                    tick={{ fontSize: 12 }}
-                    interval="preserveStartEnd"
+                    tick={{ fontSize: 11 }}
+                    interval={11} // Visa varje 12:e månad (årtal)
+                    tickFormatter={(value) => `År ${Math.ceil(value / 12)}`}
                   />
                   <YAxis 
-                    tick={{ fontSize: 12 }}
-                    tickFormatter={(value) => `${Math.round(value / 1000)}k`}
+                    tick={{ fontSize: 11 }}
+                    tickFormatter={(value) => `${Math.round(value / 1000)}k kr`}
                   />
                   <ChartTooltip 
-                    content={<ChartTooltipContent 
-                      formatter={(value) => formatCurrency(value as number)}
-                    />}
+                    content={({ active, payload, label }) => {
+                      if (active && payload && payload.length) {
+                        const monthNum = label as number;
+                        const year = Math.ceil(monthNum / 12);
+                        const monthInYear = ((monthNum - 1) % 12) + 1;
+                        
+                        return (
+                          <div className="bg-white p-4 border border-slate-200 rounded-lg shadow-lg">
+                            <p className="font-medium mb-2">
+                              År {year}, Månad {monthInYear} (Månad {monthNum})
+                            </p>
+                            {payload.map((entry, index) => (
+                              <div key={index} className="flex items-center justify-between gap-4">
+                                <div className="flex items-center gap-2">
+                                  <div 
+                                    className="w-3 h-3 rounded-full" 
+                                    style={{ backgroundColor: entry.color }}
+                                  />
+                                  <span className="text-sm">{entry.name}</span>
+                                </div>
+                                <span className="font-medium">
+                                  {formatCurrency(entry.value as number)}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
                   />
                   <Line 
                     type="monotone" 
-                    dataKey="intakt" 
+                    dataKey="intaktKumulativ" 
                     stroke={chartConfig.intakt.color}
-                    strokeWidth={2}
-                    name="Intäkt"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="kostnad" 
-                    stroke={chartConfig.kostnad.color}
-                    strokeWidth={2}
-                    name="Kostnad"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="netto" 
-                    stroke={chartConfig.netto.color}
                     strokeWidth={3}
-                    name="Netto"
+                    name="Kumulativ Intäkt"
+                    dot={{ r: 3 }}
+                    activeDot={{ r: 5 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="kostnadKumulativ" 
+                    stroke={chartConfig.kostnad.color}
+                    strokeWidth={3}
+                    name="Kumulativ Kostnad"
+                    dot={{ r: 3 }}
+                    activeDot={{ r: 5 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="nettoKumulativ" 
+                    stroke={chartConfig.netto.color}
+                    strokeWidth={4}
+                    name="Kumulativ Netto"
+                    dot={{ r: 4 }}
+                    activeDot={{ r: 6 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
             </ChartContainer>
+            
+            {/* Graf-information */}
+            <div className="mt-4 text-sm text-slate-600 bg-blue-50 p-3 rounded-lg">
+              <p className="font-medium text-blue-800 mb-1">📈 Grafvisualisering</p>
+              <p>Denna graf visar den kumulativa ekonomiska utvecklingen över 5 år för <strong>{selectedMachine?.name || 'den valda maskinen'}</strong>. 
+              Grafen uppdateras automatiskt när du byter maskin och återspeglar alla dina aktuella inställningar.</p>
+            </div>
           </div>
 
-          {/* KPI Cirkeldiagram */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Cirkeldiagram 1: Kostnadsfördelning */}
-            <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <PieChartIcon className="h-5 w-5 text-blue-600" />
-                Månatlig Kostnadsfördelning
-              </h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={costDistributionData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={40}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                    >
-                      {costDistributionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                      ))}
-                    </Pie>
-                    <ChartTooltip 
-                      content={({ active, payload }) => {
-                        if (active && payload && payload.length) {
-                          const data = payload[0];
-                          return (
-                            <div className="bg-white p-3 border border-slate-200 rounded shadow-lg">
-                              <p className="font-medium">{data.name}</p>
-                              <p className="text-sm text-slate-600">
-                                {formatCurrency(data.value as number)}
-                              </p>
-                              <p className="text-xs text-slate-500">
-                                {((data.value as number / totalMonthlyCost) * 100).toFixed(1)}% av total
-                              </p>
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="space-y-2 mt-4">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    <span>Leasingkostnad</span>
-                  </div>
-                  <span className="font-medium">{formatCurrency(leasingCost)}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
-                    <span>Driftskostnad</span>
-                  </div>
-                  <span className="font-medium">{formatCurrency(operatingCost.totalCost)}</span>
-                </div>
-              </div>
-            </div>
+          {/* Separator mellan huvudgraf och KPI-cirkeldiagram */}
+          <div className="border-t border-slate-200 pt-6">
+            <h2 className="text-xl font-semibold mb-6 text-slate-800 flex items-center gap-2">
+              <PieChartIcon className="h-5 w-5 text-emerald-600" />
+              KPI-Cirkeldiagram
+            </h2>
 
-            {/* Cirkeldiagram 2: Lönsamhet per månadsintäkt */}
-            <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-emerald-600" />
-                Nettoandel av Månadsintäkt
-              </h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={profitabilityData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={40}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                    >
-                      {profitabilityData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                      ))}
-                    </Pie>
-                    <ChartTooltip 
-                      content={({ active, payload }) => {
-                        if (active && payload && payload.length) {
-                          const data = payload[0];
-                          const totalRevenue = revenue.monthlyRevenueExVat;
-                          return (
-                            <div className="bg-white p-3 border border-slate-200 rounded shadow-lg">
-                              <p className="font-medium">{data.name}</p>
-                              <p className="text-sm text-slate-600">
-                                {formatCurrency(data.value as number)}
-                              </p>
-                              <p className="text-xs text-slate-500">
-                                {((data.value as number / totalRevenue) * 100).toFixed(1)}% av intäkt
-                              </p>
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
+            {/* KPI Cirkeldiagram */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Cirkeldiagram 1: Kostnadsfördelning */}
+              <div className="bg-white rounded-lg border border-slate-200 p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <PieChartIcon className="h-5 w-5 text-blue-600" />
+                  Månatlig Kostnadsfördelning
+                </h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={costDistributionData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {costDistributionData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <ChartTooltip 
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const data = payload[0];
+                            return (
+                              <div className="bg-white p-3 border border-slate-200 rounded shadow-lg">
+                                <p className="font-medium">{data.name}</p>
+                                <p className="text-sm text-slate-600">
+                                  {formatCurrency(data.value as number)}
+                                </p>
+                                <p className="text-xs text-slate-500">
+                                  {((data.value as number / totalMonthlyCost) * 100).toFixed(1)}% av total
+                                </p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="space-y-2 mt-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span>Leasingkostnad</span>
+                    </div>
+                    <span className="font-medium">{formatCurrency(leasingCost)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                      <span>Driftskostnad</span>
+                    </div>
+                    <span className="font-medium">{formatCurrency(operatingCost.totalCost)}</span>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2 mt-4">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-emerald-600 rounded-full"></div>
-                    <span>Nettoresultat</span>
-                  </div>
-                  <span className="font-medium text-emerald-600">{formatCurrency(netResults.netPerMonthExVat)}</span>
+
+              {/* Cirkeldiagram 2: Lönsamhet per månadsintäkt */}
+              <div className="bg-white rounded-lg border border-slate-200 p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-emerald-600" />
+                  Nettoandel av Månadsintäkt
+                </h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={profitabilityData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {profitabilityData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <ChartTooltip 
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const data = payload[0];
+                            const totalRevenue = revenue.monthlyRevenueExVat;
+                            return (
+                              <div className="bg-white p-3 border border-slate-200 rounded shadow-lg">
+                                <p className="font-medium">{data.name}</p>
+                                <p className="text-sm text-slate-600">
+                                  {formatCurrency(data.value as number)}
+                                </p>
+                                <p className="text-xs text-slate-500">
+                                  {((data.value as number / totalRevenue) * 100).toFixed(1)}% av intäkt
+                                </p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-600 rounded-full"></div>
-                    <span>Totala kostnader</span>
+                <div className="space-y-2 mt-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-emerald-600 rounded-full"></div>
+                      <span>Nettoresultat</span>
+                    </div>
+                    <span className="font-medium text-emerald-600">{formatCurrency(netResults.netPerMonthExVat)}</span>
                   </div>
-                  <span className="font-medium">{formatCurrency(totalMonthlyCost)}</span>
-                </div>
-                <div className="pt-2 border-t border-slate-100">
-                  <div className="flex items-center justify-between text-sm font-medium">
-                    <span>Total månadsintäkt</span>
-                    <span>{formatCurrency(revenue.monthlyRevenueExVat)}</span>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-red-600 rounded-full"></div>
+                      <span>Totala kostnader</span>
+                    </div>
+                    <span className="font-medium">{formatCurrency(totalMonthlyCost)}</span>
+                  </div>
+                  <div className="pt-2 border-t border-slate-100">
+                    <div className="flex items-center justify-between text-sm font-medium">
+                      <span>Total månadsintäkt</span>
+                      <span>{formatCurrency(revenue.monthlyRevenueExVat)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -285,7 +367,7 @@ const DetailedAnalysisModal: React.FC = () => {
 
           {/* Sammanfattning */}
           <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-lg border border-emerald-200 p-6">
-            <h3 className="text-lg font-semibold mb-4 text-slate-800">Sammanfattning</h3>
+            <h3 className="text-lg font-semibold mb-4 text-slate-800">Ekonomisk Sammanfattning</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-emerald-600">
