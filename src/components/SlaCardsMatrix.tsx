@@ -148,8 +148,9 @@ export const SlaCardsMatrix: React.FC = () => {
         </p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-x-auto">
-        <table className="w-full min-w-[800px] table-fixed">{/* Fixed table layout för jämna kolumner */}
+      <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-x-auto overflow-y-visible">
+        <div className="min-w-[900px]">
+          <table className="w-full table-fixed">{/* Fixed table layout för jämna kolumner */}
           {/* Header */}
           <thead>
             <tr className="border-b border-slate-200">
@@ -300,12 +301,13 @@ export const SlaCardsMatrix: React.FC = () => {
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Avtalsinfo */}
       <div className="text-xs text-slate-500 text-center italic mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
         <span className="font-medium">📄 Avtalsvillkor:</span> Avtalet är obundet löpande 3 månader (kvartalsvis) och faktureras i förskott
-    </div>
+      </div>
     </div>
   );
 };
