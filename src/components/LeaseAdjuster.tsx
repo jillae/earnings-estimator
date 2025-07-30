@@ -164,6 +164,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
             value={calculatedCreditPrice}
             label="Credit-kostnad: Styckepris"
             className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
+            showTrendIcon={true}
+            trendDirection={currentSliderStep <= 1 ? 'up' : 'down'}
           />
         </div>
       )}
@@ -181,11 +183,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         {/* Kreditkostnad-indikator för grundleasing */}
         {selectedMachine?.usesCredits && selectedLeasingModel === 'grundleasing' && (
           <div className="flex flex-1 items-center text-sm bg-green-50 p-2 rounded-md gap-2 shadow-inner border border-emerald-100">
-            {currentSliderStep <= 1 ? (
-              <TrendingUp className="w-5 h-5 text-green-600 shrink-0" />
-            ) : (
-              <TrendingDown className="w-5 h-5 text-emerald-600 shrink-0" />
-            )}
             <span>
               Credit-kostnad:&nbsp;
               <span className="font-semibold">{formatCurrency(calculatedCreditPrice)}/credit</span>

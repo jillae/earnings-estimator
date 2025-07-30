@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface RollingValueDisplayProps {
   value: number;
   label: string;
   className?: string;
+  showTrendIcon?: boolean;
+  trendDirection?: 'up' | 'down';
 }
 
 const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({ 
   value, 
   label, 
-  className = "" 
+  className = "",
+  showTrendIcon = false,
+  trendDirection = 'up'
 }) => {
   const [displayValue, setDisplayValue] = useState(value);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -48,8 +53,15 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
 
   return (
     <div className={`flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-sm ${className}`}>
-      <div className="text-xs font-medium text-blue-700 mb-1">
-        {label}
+      <div className="flex items-center gap-1 text-xs font-medium text-blue-700 mb-1">
+        {showTrendIcon && (
+          trendDirection === 'up' ? (
+            <TrendingUp className="w-4 h-4 text-green-600 shrink-0" />
+          ) : (
+            <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0" />
+          )
+        )}
+        <span>{label}</span>
       </div>
       <div className={`text-lg font-bold text-blue-900 transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
         {formatCurrency(displayValue)}
