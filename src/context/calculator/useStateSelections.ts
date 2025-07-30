@@ -9,8 +9,8 @@ import { machineData } from '@/data/machines';
 
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
-  // Sätt Emerald som standard vid sidladdning
-  const [selectedMachineId, setSelectedMachineId] = useState<string>('emerald');
+  // Ingen förvald maskin vid sidladdning
+  const [selectedMachineId, setSelectedMachineId] = useState<string>('');
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60'); // Default till 60 månader
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
@@ -44,8 +44,9 @@ export function useStateSelections() {
 
   // Härled den valda maskinen från maskin-ID  
   const selectedMachine = useMemo(() => {
+    if (!selectedMachineId) return null; // Ingen maskin vald
     const machine = machineData.find(machine => machine.id === selectedMachineId);
-    return machine || machineData.find(m => m.id === 'emerald'); // Fallback till Emerald
+    return machine || null; // Ingen fallback
   }, [selectedMachineId]);
 
   // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen
