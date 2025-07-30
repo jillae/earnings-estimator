@@ -213,7 +213,7 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
           <span>{formatCurrency(displayValue)}</span>
         </div>
         <div className="text-xs text-blue-600">
-          /månad
+          {label.includes('Styckepris') ? '/st' : '/månad'}
         </div>
       </div>
     </div>

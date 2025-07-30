@@ -64,7 +64,7 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
             <SelectValue placeholder="Välj period" />
           </SelectTrigger>
           
-          <SelectContent>
+          <SelectContent className="min-w-[200px] bg-white border shadow-lg z-50">
             {leasingPeriods.map((period) => (
               <SelectItem key={period.id} value={period.id}>
                 {period.name}
@@ -90,7 +90,7 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
             <SelectValue placeholder="Välj försäkring" />
           </SelectTrigger>
           
-          <SelectContent>
+          <SelectContent className="min-w-[200px] bg-white border shadow-lg z-50">
             {insuranceOptions.map((option) => (
               <SelectItem key={option.id} value={option.id}>
                 {option.name}
