@@ -10,15 +10,47 @@ import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { formatCurrency } from '@/utils/formatUtils';
+import { useCalculator } from '@/context/CalculatorContext';
 
 const ROIAnalysis = () => {
+  const {
+    selectedMachine,
+    machinePriceSEK,
+    cashPriceSEK,
+    paymentOption,
+    revenue,
+    operatingCost,
+    netResults,
+    leasingCost
+  } = useCalculator();
+
+  // Beräkna dynamiska startvärden från kalkylatorn
+  const getInitialInvestment = () => {
+    if (paymentOption === 'cash') {
+      return cashPriceSEK || 250000;
+    }
+    // För leasing, använd första årets totala leasingkostnader som initial kostnad
+    return (leasingCost * 12) || 120000;
+  };
+
+  // State som uppdateras med kalkylatorn men kan justeras manuellt
   const [analysisData, setAnalysisData] = useState({
-    initialInvestment: 250000,
-    monthlyRevenue: 45000,
-    monthlyCosts: 15000,
+    initialInvestment: getInitialInvestment(),
+    monthlyRevenue: revenue.monthlyRevenueExVat || 45000,
+    monthlyCosts: operatingCost.totalCost || 15000,
     timeHorizon: 60, // månader
     growthRate: 2 // % per år
   });
+
+  // Uppdatera värden när kalkylatorn ändras
+  React.useEffect(() => {
+    setAnalysisData(prev => ({
+      ...prev,
+      initialInvestment: getInitialInvestment(),
+      monthlyRevenue: revenue.monthlyRevenueExVat || prev.monthlyRevenue,
+      monthlyCosts: operatingCost.totalCost || prev.monthlyCosts,
+    }));
+  }, [paymentOption, cashPriceSEK, leasingCost, revenue.monthlyRevenueExVat, operatingCost.totalCost]);
 
   // Beräkna ROI data
   const calculateROIData = () => {
@@ -120,7 +152,15 @@ const ROIAnalysis = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Analysparametrar</CardTitle>
-                <CardDescription>Justera värden för att se olika scenarier</CardDescription>
+                <CardDescription>
+                  Värden hämtas automatiskt från kalkylatorn och kan justeras för scenarioanalys
+                </CardDescription>
+                {selectedMachine && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    Synkroniserat med {selectedMachine.name} ({paymentOption === 'cash' ? 'Kontant' : 'Leasing'})
+                  </div>
+                )}
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
