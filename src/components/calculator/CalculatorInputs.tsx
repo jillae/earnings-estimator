@@ -10,7 +10,7 @@ import LeaseAdjuster from '../LeaseAdjuster';
 import LeasingOptions from '../LeasingOptions';
 import FlatrateSection from './FlatrateSection';
 import PaymentOptionToggle from './PaymentOptionToggle';
-import DriftpaketSelector from './DriftpaketSelector';
+import { SlaCardsMatrix } from '../SlaCardsMatrix';
 import ContextualInfoBox from './ContextualInfoBox';
 import { formatCurrency } from '@/utils/formatUtils';
 import { leasingPeriods, insuranceOptions } from '@/data/machines'; 
@@ -118,7 +118,7 @@ const CalculatorInputs: React.FC = () => {
           <FlatrateSection />
           
           <div className="mt-4">
-            <DriftpaketSelector />
+            <SlaCardsMatrix />
             
             {/* Lägg till ContextualInfoBox här i driftssektionen */}
             <div className="mt-2">

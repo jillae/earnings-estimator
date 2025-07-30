@@ -6,7 +6,7 @@ import WhitePaperLibrary from '@/components/WhitePaperLibrary';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import { KlinikOptimeringHomePlug } from '@/components/KlinikOptimeringHomePlug';
-import { SlaCardsMatrix } from '@/components/SlaCardsMatrix';
+
 import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
@@ -20,7 +20,6 @@ const Index = () => {
       <Header />
       <main className="flex-grow py-6">
         <Calculator />
-        <SlaCardsMatrix />
         <KlinikOptimeringHomePlug />
         <WhitePaperLibrary />
       </main>
