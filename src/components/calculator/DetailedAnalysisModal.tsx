@@ -196,8 +196,8 @@ const DetailedAnalysisModal: React.FC = () => {
                 </div>
               </div>
 
-              {/* Flytande ruta för Nollpunkt */}
-              <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg border border-slate-200 p-4 z-10">
+              {/* Flytande ruta för Nollpunkt - STICKY */}
+              <div className="sticky top-4 right-4 float-right bg-white rounded-lg shadow-lg border border-slate-200 p-4 z-10 mb-4 ml-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                     <Target className="h-6 w-6 text-blue-600" />
