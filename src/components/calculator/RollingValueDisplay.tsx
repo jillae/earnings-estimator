@@ -8,6 +8,8 @@ interface RollingValueDisplayProps {
   className?: string;
   showTrendIcon?: boolean;
   trendDirection?: 'up' | 'down';
+  showStandardBadge?: boolean;
+  isStandardPosition?: boolean;
 }
 
 const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({ 
@@ -15,7 +17,9 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
   label, 
   className = "",
   showTrendIcon = false,
-  trendDirection = 'up'
+  trendDirection = 'up',
+  showStandardBadge = false,
+  isStandardPosition = false
 }) => {
   const [displayValue, setDisplayValue] = useState(value);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -63,8 +67,13 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
         )}
         <span>{label}</span>
       </div>
-      <div className={`text-lg font-bold text-blue-900 transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
-        {formatCurrency(displayValue)}
+      <div className={`text-lg font-bold text-blue-900 transition-all duration-300 flex items-center gap-2 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
+        <span>{formatCurrency(displayValue)}</span>
+        {showStandardBadge && isStandardPosition && (
+          <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full font-medium">
+            Standard
+          </span>
+        )}
       </div>
       <div className="text-xs text-blue-600">
         /månad

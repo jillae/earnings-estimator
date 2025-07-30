@@ -157,10 +157,12 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         <div className="grid grid-cols-2 gap-4">
           <RollingValueDisplay 
             value={displayLeaseCost}
-            label="Månadskostnad leasing"
+            label="Rekommenderat pris"
             className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
             showTrendIcon={true}
             trendDirection={currentSliderStep <= 1 ? 'down' : 'up'}
+            showStandardBadge={true}
+            isStandardPosition={currentSliderStep === 1}
           />
           <RollingValueDisplay 
             value={calculatedCreditPrice}
