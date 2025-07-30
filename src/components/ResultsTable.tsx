@@ -69,8 +69,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const safeSlaOstCost = isNaN(slaCost) ? 0 : slaCost;
   const safeCreditCost = isNaN(creditCost) ? 0 : creditCost;
 
-  // Calculate components for display
-  const totalCostPerMonth = safeLeasingCost + safeOperatingCost;
+  // Calculate components for display - inkluderar nu SLA-kostnad korrekt
+  const totalCostPerMonth = safeLeasingCost + safeOperatingCost + safeSlaOstCost;
 
   return (
     <div className="glass-card mt-8 animate-slide-in bg-white/95 backdrop-blur-sm shadow-xl border border-slate-200" style={{
@@ -159,23 +159,24 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                   <div className="flex flex-col">
                     <span className="font-medium">Total månadskostnad</span>
                     <div className="text-xs text-slate-500 mt-1">
-                      <div>• Leasing: {formatCurrency(safeLeasingCost)}</div>
+                     <div>• Leasing: {formatCurrency(safeLeasingCost)}</div>
                       {isFlatrateActive ? (
                         <div>• {selectedSlaLevel === 'Guld' ? 'Flatrate (ingår i Guld)' : `Flatrate: ${formatCurrency(safeCreditCost)}`}</div>
                       ) : (
                         safeCreditCost > 0 && <div>• Credits: {formatCurrency(safeCreditCost)}</div>
                       )}
+                      {safeSlaOstCost > 0 && <div>• SLA {selectedSlaLevel}: {formatCurrency(safeSlaOstCost)}</div>}
                     </div>
                   </div>
                 </td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
                   <div className="font-semibold">
-                    {formatCurrency(safeLeasingCost + (selectedSlaLevel === 'Guld' ? 0 : safeCreditCost))}
+                    {formatCurrency(safeLeasingCost + (selectedSlaLevel === 'Guld' ? 0 : safeCreditCost) + safeSlaOstCost)}
                   </div>
                 </td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
                   <div className="font-semibold">
-                    {formatCurrency((safeLeasingCost + (selectedSlaLevel === 'Guld' ? 0 : safeCreditCost)) * 12)}
+                    {formatCurrency((safeLeasingCost + (selectedSlaLevel === 'Guld' ? 0 : safeCreditCost) + safeSlaOstCost) * 12)}
                   </div>
                 </td>
               </tr>

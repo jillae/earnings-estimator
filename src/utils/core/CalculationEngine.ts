@@ -96,6 +96,7 @@ export class CalculationEngine {
    */
   static async calculate(inputs: CalculationInputs): Promise<CalculationResults> {
     console.log('🔢 CalculationEngine.calculate() startar med inputs:', inputs);
+    console.log(`BERÄKNAR FÖR MASKIN: ${inputs.machine?.name}, Period: ${inputs.selectedLeasingPeriodId}, SLA: ${inputs.selectedSlaLevel}`);
     
     // Steg 1: Validera input
     const validation = this.validateInputs(inputs);
@@ -386,13 +387,14 @@ export class CalculationEngine {
        costPerMonth = creditsPerTreatment * treatmentsPerMonth * creditPrice;
      }
      
-     // SLA-kostnad baserat på nivå
-     let slaCost = 0;
-     if (inputs.selectedSlaLevel === 'Silver') {
-       slaCost = roundToHundredEndingSix(leasingCalcs.leasingMax60mRef * 0.25); // 25%
-     } else if (inputs.selectedSlaLevel === 'Guld') {
-       slaCost = roundToHundredEndingSix(leasingCalcs.leasingMax60mRef * 0.50); // 50%
-     }
+    // SLA-kostnad baserat på nivå - SKA ALLTID användas tariff-baserad grundkostnad för SLA-beräkningar
+    let slaCost = 0;
+    const slaBaseValue = leasingCalcs.leasingCostBase; // Använd ALLTID grundkostnad för SLA-beräkningar
+    if (inputs.selectedSlaLevel === 'Silver') {
+      slaCost = Math.round(slaBaseValue * 0.25); // 25% av grundkostnad
+    } else if (inputs.selectedSlaLevel === 'Guld') {
+      slaCost = Math.round(slaBaseValue * 0.50); // 50% av grundkostnad
+    }
      
      const totalCost = costPerMonth + slaCost;
      

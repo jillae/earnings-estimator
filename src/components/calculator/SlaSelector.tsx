@@ -115,7 +115,7 @@ const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
               onClick={() => handleSlaChange('Silver')}
             >
               <div className="text-lg font-bold text-slate-600">{formatCurrency(slaCosts.Silver)}</div>
-              <div className="text-xs text-slate-500">per månad</div>
+              <div className="text-xs text-slate-500">per månad (25% av grundkostnad)</div>
             </div>
             <div 
               className={`p-4 text-center border-l border-slate-200 cursor-pointer transition-colors ${
@@ -124,7 +124,7 @@ const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
               onClick={() => handleSlaChange('Guld')}
             >
               <div className="text-lg font-bold text-yellow-600">{formatCurrency(slaCosts.Guld)}</div>
-              <div className="text-xs text-slate-500">per månad</div>
+              <div className="text-xs text-slate-500">per månad (50% av grundkostnad)</div>
             </div>
           </div>
 

@@ -9,6 +9,7 @@ import type { Machine } from '@/data/machines/types';
 export class SlaEngine {
   /**
    * Beräknar SLA-kostnad för given nivå
+   * VIKTIGT: leasingMax60mRef ska ALLTID vara tariff-baserad grundkostnad
    */
   static calculateCost(
     machine: Machine | undefined, 
@@ -17,13 +18,15 @@ export class SlaEngine {
   ): number {
     if (!machine || !leasingMax60mRef) return 0;
 
+    console.log(`SlaEngine.calculateCost: ${machine.name}, ${slaLevel}, grundkostnad: ${leasingMax60mRef}`);
+
     switch (slaLevel) {
       case 'Brons':
         return 0; // Brons är alltid gratis
       case 'Silver':
-        return leasingMax60mRef * SLA_PERCENT_SILVER;
+        return Math.round(leasingMax60mRef * SLA_PERCENT_SILVER);
       case 'Guld':
-        return leasingMax60mRef * SLA_PERCENT_GULD;
+        return Math.round(leasingMax60mRef * SLA_PERCENT_GULD);
       default:
         return 0;
     }
