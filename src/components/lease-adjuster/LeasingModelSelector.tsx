@@ -24,17 +24,17 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
         Välj leasingmodell
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 min-h-0">
         {/* Grundleasing + Credits */}
         <Card 
-          className={`cursor-pointer transition-all duration-200 ${
+          className={`cursor-pointer transition-all duration-200 h-full ${
             selectedModel === 'grundleasing' 
               ? 'ring-2 ring-primary bg-primary/5' 
               : 'hover:bg-slate-50'
           }`}
           onClick={() => onModelChange('grundleasing')}
         >
-          <CardContent className="p-4">
+          <CardContent className="p-4 h-full flex flex-col">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <span className="text-lg">{grundleasingPackage.icon}</span>
@@ -68,14 +68,14 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
 
         {/* Strategisk Leasing (Credits ingår) - De-promoterad */}
         <Card 
-          className={`cursor-pointer transition-all duration-200 opacity-75 ${
+          className={`cursor-pointer transition-all duration-200 opacity-75 h-full ${
             selectedModel === 'strategisk' 
               ? 'ring-2 ring-slate-400 bg-slate-50' 
               : 'hover:bg-slate-50 border-slate-300'
           }`}
           onClick={() => onModelChange('strategisk')}
         >
-          <CardContent className="p-4 opacity-75">
+          <CardContent className="p-4 opacity-75 h-full flex flex-col">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <span className="text-lg">{strategiskPackage.icon}</span>

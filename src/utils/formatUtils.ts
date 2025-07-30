@@ -19,26 +19,18 @@ export function formatCurrency(amount: number | undefined, addVAT: boolean = fal
   // Lägg till moms om det behövs
   const finalAmount = addVAT ? amount * (1 + VAT_RATE) : amount;
   
-  // För kreditpriser, visa alltid som heltal utan decimaler för konsistens
-  if (!endWith6) {
-    // Avrunda till heltal för alla icke-leasing värden
-    const roundedAmount = Math.round(finalAmount);
-    return roundedAmount.toLocaleString('sv-SE') + ' kr';
-  }
+  // KONSEKVENT AVRUNDNING TILL HELTAL för alla pengavärden
+  let roundedAmount = Math.round(finalAmount);
   
-  // För leasingkostnader, avrunda till heltal och säkerställ slutsiffra 6
+  // För leasingkostnader, säkerställ slutsiffra 6 endast om endWith6 är true
   if (endWith6) {
-    let roundedAmount = Math.round(finalAmount);
     const lastDigit = roundedAmount % 10;
     if (lastDigit !== 6) {
       roundedAmount = roundedAmount - lastDigit + 6;
     }
-    return roundedAmount.toLocaleString('sv-SE') + ' kr';
-  } else {
-    // För andra belopp än leasingkostnader, avrunda till heltal för konsistens
-    const roundedAmount = Math.round(finalAmount);
-    return roundedAmount.toLocaleString('sv-SE') + ' kr';
   }
+  
+  return roundedAmount.toLocaleString('sv-SE') + ' kr';
 }
 
 /**

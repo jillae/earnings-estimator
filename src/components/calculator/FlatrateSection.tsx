@@ -1,12 +1,12 @@
 import React from 'react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { useFlatrateHandler } from '@/hooks/useFlatrateHandler';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/utils/formatUtils';
-import { CreditCard, Calculator, Info, CheckCircle2, XCircle } from 'lucide-react';
+import { Info, CheckCircle2, XCircle } from 'lucide-react';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
+import FlatrateCard from './FlatrateCard';
+import PerCreditCard from './PerCreditCard';
 
 const FlatrateSection: React.FC = () => {
   const {
@@ -49,6 +49,15 @@ const FlatrateSection: React.FC = () => {
     return '';
   };
 
+  // Handler för kort-val
+  const handlePerCreditSelect = () => {
+    handleFlatrateChange(false);
+  };
+
+  const handleFlatrateSelect = () => {
+    handleFlatrateChange(true);
+  };
+
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '350ms' }}>
       <div className="flex items-center justify-between mb-4">
@@ -58,82 +67,27 @@ const FlatrateSection: React.FC = () => {
         </Badge>
       </div>
       
-      {/* Toggle med förbättrad UI */}
+      {/* Kort-baserad val */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2">
-              <Switch 
-                id="flatrate-toggle"
-                checked={useFlatrateOption === 'flatrate'}
-                onCheckedChange={handleFlatrateChange}
-                disabled={!canEnableFlatrate}
-              />
-              <Label htmlFor="flatrate-toggle" className="font-medium">
-                Aktivera Flatrate
-              </Label>
-            </div>
-            {getFlatrateDiscount() && (
-              <Badge variant="outline" className="text-green-700 border-green-300">
-                {getFlatrateDiscount()}
-              </Badge>
-            )}
-          </div>
-          
-          {!canEnableFlatrate && paymentOption === 'leasing' && (
-            <div className="text-xs text-orange-600 flex items-center gap-1">
-              <Info className="h-3 w-3" />
-              Kräver standard leasingnivå eller högre
-            </div>
-          )}
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Per Credit Card */}
+          <PerCreditCard
+            isSelected={useFlatrateOption === 'perCredit'}
+            onSelect={handlePerCreditSelect}
+            creditPrice={creditPrice || 0}
+            creditsPerTreatment={creditsPerTreatment}
+            treatmentsPerDay={treatmentsPerDay}
+          />
 
-        {/* Kostnadsjämförelse */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Per Credit Option */}
-          <div className={`p-4 border rounded-lg ${useFlatrateOption === 'perCredit' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
-            <div className="flex items-center gap-2 mb-2">
-              <Calculator className="h-4 w-4 text-blue-600" />
-              <h4 className="font-medium">Per Credit</h4>
-              {useFlatrateOption === 'perCredit' && <CheckCircle2 className="h-4 w-4 text-green-600" />}
-            </div>
-            <div className="space-y-1">
-              <div className="text-sm text-gray-600">
-                {formatCurrency(creditPrice || 0)} × {totalCreditsPerMonth} credits/mån
-              </div>
-              <div className="text-lg font-semibold text-blue-600">
-                {formatCurrency(creditsCostPerMonth)}/mån
-              </div>
-              <div className="text-xs text-gray-500">
-                Flexibel - betala endast för vad du använder
-              </div>
-            </div>
-          </div>
-
-          {/* Flatrate Option */}
-          <div className={`p-4 border rounded-lg ${useFlatrateOption === 'flatrate' ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
-            <div className="flex items-center gap-2 mb-2">
-              <CreditCard className="h-4 w-4 text-green-600" />
-              <h4 className="font-medium">Flatrate</h4>
-              {useFlatrateOption === 'flatrate' && <CheckCircle2 className="h-4 w-4 text-green-600" />}
-            </div>
-            <div className="space-y-1">
-              <div className="text-sm text-gray-600">
-                Obegränsad användning
-              </div>
-              <div className="text-lg font-semibold text-green-600">
-                {formatCurrency(flatrateCost)}/mån
-              </div>
-              <div className="text-xs text-gray-500">
-                Fast kostnad - förutsägbar budgetering
-              </div>
-              {getFlatrateDiscount() && (
-                <div className="text-xs font-medium text-green-700">
-                  Med {selectedSlaLevel}: {getFlatrateDiscount()}
-                </div>
-              )}
-            </div>
-          </div>
+          {/* Flatrate Card */}
+          <FlatrateCard
+            isSelected={useFlatrateOption === 'flatrate'}
+            isEnabled={canEnableFlatrate}
+            onSelect={handleFlatrateSelect}
+            flatrateCost={flatrateCost}
+            discountText={getFlatrateDiscount()}
+            selectedSlaLevel={selectedSlaLevel}
+          />
         </div>
 
         {/* Besparingsindikator */}
