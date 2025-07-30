@@ -98,7 +98,7 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
           label: 'Credit-kostnad',
           brons: useFlatrateOption === 'flatrate' ? 'Flatrate' : `${formatCurrency(creditPrice)}/credit`,
           silver: '50% rabatt på Flatrate',
-          guld: 'Flatrate Credits Ingår'
+          guld: '0 kr' // Visa 0 kr istället för text för Guld-paketet
         }
       ]
     });
@@ -133,7 +133,7 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
     if (isSelected) {
       return `${baseClasses} bg-red-100 border-red-300 font-semibold text-slate-900`;
     } else if (isPreviousSelection) {
-      return `${baseClasses} bg-slate-50 text-slate-400 line-through opacity-75`;
+      return `${baseClasses} bg-slate-50 text-slate-400 opacity-50`; // Ta bort line-through, endast gråat
     } else {
       return `${baseClasses} bg-white text-slate-600`;
     }
@@ -168,13 +168,13 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
     if (isPreviousSelection) {
       return (
         <div>
-          <div className="line-through">{levelText}</div>
-          <div className="text-xs line-through">{formatCurrency(cost)}/mån</div>
-          <Badge variant="secondary" className="text-xs mt-1 opacity-75">
+          <div className="opacity-50">{levelText}</div>
+          <div className="text-xs opacity-50">{formatCurrency(cost)}/mån</div>
+          <Badge variant="secondary" className="text-xs mt-1 opacity-50">
             Ingår
           </Badge>
         </div>
-      );
+      ); // Ta bort line-through, använd endast opacity
     }
     
     return (

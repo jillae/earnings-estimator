@@ -26,7 +26,7 @@ export function useStateSelections() {
   const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true);
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
-  const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit');
+  const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit'); // Default till perCredit istället för flatrate
   
   // Nytt state för leasingmodell-val
   const [selectedLeasingModel, setSelectedLeasingModel] = useState<'grundleasing' | 'strategisk'>('grundleasing');
@@ -74,7 +74,7 @@ export function useStateSelections() {
       setSlaLevel('Brons');
       setSelectedDriftpaket('Bas');
       setPaymentOption('leasing');
-      setUseFlatrateOption('perCredit');
+      setUseFlatrateOption('perCredit'); // Återställ till perCredit som standard
       setAllowBelowFlatrate(true);
       setSelectedLeasingModel('grundleasing');
       setWorkDaysPerMonth(22); // Återställ nollpunkt till standard
