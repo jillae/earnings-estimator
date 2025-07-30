@@ -19,6 +19,7 @@ interface ResultsTableProps {
   occupancy75: number;
   occupancy100: number;
   isFlatrateActive?: boolean;
+  selectedSlaLevel?: 'Bas' | 'Silver' | 'Guld';
 }
 
 const ResultsTable: React.FC<ResultsTableProps> = ({
@@ -35,7 +36,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   occupancy50,
   occupancy75,
   occupancy100,
-  isFlatrateActive = false
+  isFlatrateActive = false,
+  selectedSlaLevel = 'Bas'
 }) => {
   // Validera värden och se till att de är giltiga nummer
   const safeDaily = isNaN(dailyRevenueIncVat) ? 0 : dailyRevenueIncVat;
@@ -129,11 +131,17 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             
             {isFlatrateActive && (
               <tr className="border-b border-slate-200">
-                <td className="py-3 px-4 text-slate-700">Flatrate credits (ex moms)</td>
+                <td className="py-3 px-4 text-slate-700">
+                  {selectedSlaLevel === 'Guld' ? 'Flatrate credits (ingår i Guld SLA)' : 'Flatrate credits (ex moms)'}
+                </td>
                 <td className="py-3 px-4 text-right text-slate-700">-</td>
                 <td className="py-3 px-4 text-right text-slate-700">-</td>
-                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(operatingCostPerMonth)}</td>
-                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">{formatCurrency(operatingCostPerMonth * 12)}</td>
+                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">
+                  {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(operatingCostPerMonth)}
+                </td>
+                <td className="py-3 px-4 text-right text-slate-700 whitespace-nowrap">
+                  {selectedSlaLevel === 'Guld' ? 'Ingår' : formatCurrency(operatingCostPerMonth * 12)}
+                </td>
               </tr>
             )}
             
