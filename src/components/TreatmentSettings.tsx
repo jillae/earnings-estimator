@@ -33,8 +33,9 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   return (
     <section className="w-full flex flex-row gap-4 md:gap-6">
       {/* Antal behandlingar */}
-      <div className="flex-1 flex flex-col justify-between bg-white rounded-2xl border border-blue-100 px-5 py-6 shadow-subtle min-h-[164px]">
-        <label htmlFor="treatments-per-day" className="text-sm font-semibold text-slate-600 mb-3">
+      <div className="flex-1 flex flex-col justify-between bg-emerald-50/20 border-emerald-200 rounded-2xl border px-5 py-6 shadow-subtle min-h-[164px] hover:bg-emerald-50/30 transition-colors">
+        <label htmlFor="treatments-per-day" className="text-sm font-semibold text-emerald-800 mb-3 flex items-center">
+          <span className="w-2 h-2 bg-emerald-400 rounded-sm mr-2"></span>
           Antal behandlingar per dag
         </label>
         <div className="space-y-4">
@@ -52,11 +53,12 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             <span>12 st</span>
           </div>
         </div>
-        <p className="text-xs text-gray-400">Justera med sliden</p>
+        <p className="text-xs text-emerald-600">Påverkar intäkter • Justera med sliden</p>
       </div>
       {/* Kundpris */}
-      <div className="flex-1 flex flex-col justify-between bg-white rounded-2xl border border-blue-100 px-5 py-6 shadow-subtle min-h-[164px]">
-        <label htmlFor="customer-price" className="text-sm font-semibold text-slate-600 mb-3">
+      <div className="flex-1 flex flex-col justify-between bg-emerald-50/20 border-emerald-200 rounded-2xl border px-5 py-6 shadow-subtle min-h-[164px] hover:bg-emerald-50/30 transition-colors">
+        <label htmlFor="customer-price" className="text-sm font-semibold text-emerald-800 mb-3 flex items-center">
+          <span className="w-2 h-2 bg-emerald-400 rounded-sm mr-2"></span>
           Kundpris per behandling (kr, inkl moms)
         </label>
         <div className="space-y-4">
@@ -74,7 +76,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
             <span>8 000 kr</span>
           </div>
         </div>
-        <p className="text-xs text-gray-400">Justera med sliden</p>
+        <p className="text-xs text-emerald-600">Påverkar intäkter • Justera med sliden</p>
       </div>
     </section>
   );
