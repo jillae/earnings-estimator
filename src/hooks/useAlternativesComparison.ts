@@ -27,74 +27,71 @@ export const useAlternativesComparison = () => {
       return [];
     }
 
-    const baseLeasingCost = leasingCost; // 25 835 kr
+    const baseLeasingCost = leasingCost;
     
     // Använd de riktiga SLA-kostnaderna från slaCosts
-    const slaBronsCost = slaCosts.Brons || 0; // 0 kr
-    const slaSilverCost = slaCosts.Silver || 0; // 6 459 kr (25% av leasingMax60mRef)
-    const slaGuldCost = slaCosts.Guld || 0; // 12 916 kr (50% av leasingMax60mRef)
+    const slaBronsCost = slaCosts.Brons || 0;
+    const slaSilverCost = slaCosts.Silver || 0;
+    const slaGuldCost = slaCosts.Guld || 0;
     
-    // Flatrate kostnad - fast värde 5 996 kr
-    const flatrateMonthlyCost = 5996;
-    
-    // Allt-inkluderat pris - fast värde baserat på dina data
-    const alltInkluderatCost = 33863;
+    // Använd flatrate-kostnad från maskinen
+    const flatrateMonthlyCost = selectedMachine.flatrateAmount || 0;
 
     const options: AlternativeOption[] = [
       {
         rank: 1,
         name: 'Standard + SLA Guld',
-        monthlyCost: baseLeasingCost + slaGuldCost, // 25 835 + 12 916 = 38 751
+        monthlyCost: baseLeasingCost + slaGuldCost,
         hasUnlimitedCredits: true,
-        hasFreeCredits: true, // Flatrate 100% rabatt
+        hasFreeCredits: true, // SLA Guld inkluderar gratis credits
         slaLevel: 'Guld',
         hasAnnualService: true,
         hasLoanMachine: true,
-        description: `${baseLeasingCost.toLocaleString()} (leasing) + ${slaGuldCost.toLocaleString()} (SLA Guld)`
+        description: 'Premium service med fullständig support'
       },
       {
         rank: 2,
         name: 'Standard + SLA Silver',
-        monthlyCost: baseLeasingCost + slaSilverCost + (flatrateMonthlyCost * 0.5), // 25 835 + 6 459 + 2 998 = 35 292
+        monthlyCost: baseLeasingCost + slaSilverCost,
         hasUnlimitedCredits: true,
-        hasFreeCredits: false, // Flatrate 50% rabatt
+        hasFreeCredits: false, // SLA Silver har inte gratis credits
         slaLevel: 'Silver',
         hasAnnualService: false,
         hasLoanMachine: true,
-        description: `${baseLeasingCost.toLocaleString()} (leasing) + ${slaSilverCost.toLocaleString()} (SLA Silver) + ${(flatrateMonthlyCost * 0.5).toLocaleString()} (Flatrate)`
+        description: 'Förbättrad service med lånemaskin'
       },
       {
         rank: 3,
         name: 'Allt-inkluderat',
-        monthlyCost: alltInkluderatCost, // 33 863 kr
+        monthlyCost: baseLeasingCost, // Allt-inkluderat är bara leasingkostnaden
         hasUnlimitedCredits: true,
         hasFreeCredits: true,
         slaLevel: 'Brons',
         hasAnnualService: false,
         hasLoanMachine: false,
-        description: 'Fast pris för maskin + obegränsade credits'
+        description: 'Fast månadsavgift med obegränsade behandlingar'
       },
       {
         rank: 4,
         name: 'Standard + Flatrate',
-        monthlyCost: baseLeasingCost + flatrateMonthlyCost, // 25 835 + 5 996 = 30 205
+        monthlyCost: baseLeasingCost + flatrateMonthlyCost,
         hasUnlimitedCredits: true,
         hasFreeCredits: false,
         slaLevel: 'Brons',
         hasAnnualService: false,
         hasLoanMachine: false,
-        description: `${baseLeasingCost.toLocaleString()} (leasing) + ${flatrateMonthlyCost.toLocaleString()} (Flatrate)`
+        description: 'Kombinerat paket med flatrate för credits'
       },
       {
         rank: 5,
         name: 'Standard + SLA Brons',
-        monthlyCost: baseLeasingCost + slaBronsCost, // 25 835 + 0 = 25 835
+        monthlyCost: baseLeasingCost + slaBronsCost,
         hasUnlimitedCredits: false,
         hasFreeCredits: false,
         slaLevel: 'Brons',
         hasAnnualService: false,
         hasLoanMachine: false,
-        description: 'Endast leasing'
+        description: 'Grundläggande leasingpaket'
       }
     ];
 
