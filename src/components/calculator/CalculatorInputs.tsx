@@ -47,41 +47,10 @@ const CalculatorInputs: React.FC = () => {
   
   return (
     <div className="w-full space-y-6">
-      {/* Steg 1: Klinikstorlek */}
+      {/* Steg 1: Maskinval */}
       <div className="relative">
         <div className="absolute -top-3 left-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
           STEG 1
-        </div>
-        <div className="pt-2">
-          <ClinicSizeSelector 
-            clinicSize={clinicSize} 
-            netYearlyResult={netResults?.netPerYearExVat || 0}
-            onChange={setClinicSize} 
-          />
-        </div>
-      </div>
-
-      {/* Steg 2: Behandlingsvolym */}
-      <div className="relative">
-        <div className="absolute -top-3 left-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
-          STEG 2
-        </div>
-        <div className="pt-2">
-          <div className="glass-card animate-slide-in" style={{ animationDelay: '200ms' }}>
-            <TreatmentSettings 
-              treatmentsPerDay={treatmentsPerDay}
-              customerPrice={customerPrice}
-              onTreatmentsChange={setTreatmentsPerDay}
-              onCustomerPriceChange={setCustomerPrice}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Steg 3: Maskinval */}
-      <div className="relative">
-        <div className="absolute -top-3 left-0 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
-          STEG 3
         </div>
         <div className="pt-2">
           <MachineSelector 
@@ -97,7 +66,38 @@ const CalculatorInputs: React.FC = () => {
           {/* Nästa steg banner */}
           <div className="bg-gradient-to-r from-blue-50 to-emerald-50 border border-blue-200 rounded-lg p-3 text-center animate-slide-in">
             <div className="text-sm font-medium text-slate-700">
-              🎯 Bra! Nu väljer du betalningsalternativ och service
+              🎯 Perfekt! Nu anpassar vi {selectedMachine.name} för din klinik
+            </div>
+          </div>
+
+          {/* Steg 2: Klinikstorlek */}
+          <div className="relative">
+            <div className="absolute -top-3 left-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+              STEG 2
+            </div>
+            <div className="pt-2">
+              <ClinicSizeSelector 
+                clinicSize={clinicSize} 
+                netYearlyResult={netResults?.netPerYearExVat || 0}
+                onChange={setClinicSize} 
+              />
+            </div>
+          </div>
+
+          {/* Steg 3: Behandlingsvolym */}
+          <div className="relative">
+            <div className="absolute -top-3 left-0 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+              STEG 3
+            </div>
+            <div className="pt-2">
+              <div className="glass-card animate-slide-in" style={{ animationDelay: '200ms' }}>
+                <TreatmentSettings 
+                  treatmentsPerDay={treatmentsPerDay}
+                  customerPrice={customerPrice}
+                  onTreatmentsChange={setTreatmentsPerDay}
+                  onCustomerPriceChange={setCustomerPrice}
+                />
+              </div>
             </div>
           </div>
 
@@ -187,7 +187,7 @@ const CalculatorInputs: React.FC = () => {
         <div className="bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 rounded-lg p-4 text-center">
           <div className="text-slate-600 mb-2">👆</div>
           <div className="text-sm font-medium text-slate-700">
-            Välj en maskin ovan för att fortsätta
+            Välj din maskin ovan för att börja beräkningen
           </div>
         </div>
       )}
