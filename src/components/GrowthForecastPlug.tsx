@@ -29,6 +29,21 @@ export const GrowthForecastPlug: React.FC = () => {
             <CardDescription className="text-base text-slate-600 max-w-2xl mx-auto">
               Se hur din investering utvecklas över tid med interaktiva grafer och scenario-analyser
             </CardDescription>
+            
+            {/* Testa nu knapp */}
+            <div className="mt-4">
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="bg-white hover:bg-emerald-50 border-emerald-300 text-emerald-700 hover:text-emerald-800 px-8 py-3 font-semibold shadow-sm hover:shadow-md transition-all duration-200"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  console.log('Testa nu klickad');
+                }}
+              >
+                Testa nu!
+              </Button>
+            </div>
           </CardHeader>
           
           <CardContent className="space-y-6">

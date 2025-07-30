@@ -31,9 +31,11 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
   };
 
   return (
-    <section className="w-full flex flex-row gap-4 md:gap-6">
-      {/* Antal behandlingar */}
-      <div className="flex-1 flex flex-col justify-between bg-emerald-50/20 border-emerald-200 rounded-2xl border px-5 py-6 shadow-subtle min-h-[164px] hover:bg-emerald-50/30 transition-colors">
+    <section className="w-full space-y-4">
+      {/* Rad 1: Behandlingar och Kundpris */}
+      <div className="flex flex-row gap-4 md:gap-6">
+        {/* Antal behandlingar */}
+        <div className="flex-1 flex flex-col justify-between bg-emerald-50/20 border-emerald-200 rounded-2xl border px-5 py-6 shadow-subtle min-h-[164px] hover:bg-emerald-50/30 transition-colors">
         <label htmlFor="treatments-per-day" className="text-sm font-semibold text-emerald-800 mb-3 flex items-center">
           <span className="w-2 h-2 bg-emerald-400 rounded-sm mr-2"></span>
           Antal behandlingar per dag
@@ -77,6 +79,32 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
           </div>
         </div>
         <p className="text-xs text-emerald-600">Justera med sliden</p>
+        </div>
+      </div>
+      
+      {/* Rad 2: Nollpunkt mini-slider */}
+      <div className="w-full max-w-md">
+        <div className="bg-blue-50/20 border-blue-200 rounded-2xl border px-5 py-4 shadow-subtle hover:bg-blue-50/30 transition-colors">
+          <label className="text-sm font-semibold text-blue-800 mb-3 flex items-center">
+            <span className="w-2 h-2 bg-blue-400 rounded-sm mr-2"></span>
+            Nollpunkt (arbetsdagar/månad)
+          </label>
+          <div className="space-y-3">
+            <div className="text-base font-semibold text-slate-800">22 dagar</div>
+            <Slider
+              value={[22]}
+              min={1}
+              max={22}
+              step={1}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-slate-500">
+              <span>1 dag</span>
+              <span>22 dagar</span>
+            </div>
+          </div>
+          <p className="text-xs text-blue-600 mt-2">Test-funktion för utvärdering</p>
+        </div>
       </div>
     </section>
   );

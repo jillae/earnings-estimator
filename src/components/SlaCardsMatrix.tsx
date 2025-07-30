@@ -196,7 +196,7 @@ export const SlaCardsMatrix: React.FC = () => {
           
           {/* Header Row */}
           <div className="grid grid-cols-4 bg-slate-50 border-b border-slate-200">
-            <div className="p-4 font-semibold text-slate-700 border-r border-slate-200">Funktioner</div>
+            <div className="p-4 font-semibold text-slate-700 border-r border-slate-200 text-base">Funktioner</div>
             {levels.map((level, index) => (
               <div 
                 key={level}
@@ -221,17 +221,17 @@ export const SlaCardsMatrix: React.FC = () => {
               {/* Features */}
               {category.features.map((feature, featureIndex) => (
                 <div key={featureIndex} className="grid grid-cols-4 border-b border-slate-100 last:border-b-0">
-                  <div className="p-3 text-left text-slate-700 font-medium text-sm border-r border-slate-200 bg-slate-25">
+                  <div className="p-3 text-left text-slate-700 font-medium text-base border-r border-slate-200 bg-slate-25">
                     {feature.label}
                   </div>
                   <div className={getColumnStyle(0, feature.brons)}>
-                    <div className="text-sm leading-tight">{feature.brons}</div>
+                    <div className="text-base leading-tight">{feature.brons}</div>
                   </div>
                   <div className={getColumnStyle(1, feature.silver)}>
-                    <div className="text-sm leading-tight">{feature.silver}</div>
+                    <div className="text-base leading-tight">{feature.silver}</div>
                   </div>
                   <div className={getColumnStyle(2, feature.guld)}>
-                    <div className="text-sm leading-tight">{feature.guld}</div>
+                    <div className="text-base leading-tight">{feature.guld}</div>
                   </div>
                 </div>
               ))}

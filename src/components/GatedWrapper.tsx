@@ -12,25 +12,17 @@ export const GatedWrapper: React.FC<GatedWrapperProps> = ({
   action, 
   data 
 }) => {
-  const { isUnlocked, triggerOptIn, logInteraction } = useCalculator();
+  // Temporärt dold gate - alltid upplåst
+  const isUnlocked = true;
+  const { logInteraction } = useCalculator();
 
   const handleClick = (e: React.MouseEvent) => {
-    if (!isUnlocked) {
-      e.preventDefault();
-      e.stopPropagation();
-      triggerOptIn();
-      return;
-    }
-    
-    // Logga interaktionen om användaren är upplåst
+    // Logga interaktionen
     logInteraction(action, data);
   };
 
   return (
-    <div 
-      onClick={handleClick}
-      className={!isUnlocked ? 'pointer-events-none opacity-60' : ''}
-    >
+    <div onClick={handleClick}>
       {children}
     </div>
   );
