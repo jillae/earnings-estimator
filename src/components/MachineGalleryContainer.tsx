@@ -46,18 +46,13 @@ const MachineGalleryContainer: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto mb-6">
-      <div className="relative">
-        <div className="absolute -top-3 left-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
-          STEG 1
-        </div>
-        <div className="glass-card animate-slide-in pt-2" style={{ animationDelay: '200ms' }}>
-          <h2 className="text-xl font-semibold mb-4">Välj din maskin</h2>
-          <MachineGallery
-            machines={filteredMachines}
-            selectedMachineId={selectedMachineId}
-            onChange={handleMachineSelection}
-          />
-        </div>
+      <div className="glass-card animate-slide-in" style={{ animationDelay: '200ms' }}>
+        <h2 className="text-xl font-semibold mb-4">Välj din maskin</h2>
+        <MachineGallery
+          machines={filteredMachines}
+          selectedMachineId={selectedMachineId}
+          onChange={handleMachineSelection}
+        />
       </div>
     </div>
   );
