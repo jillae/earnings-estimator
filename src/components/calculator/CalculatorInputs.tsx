@@ -4,7 +4,7 @@ import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
 import ClinicSizeSelector from '../ClinicSizeSelector';
 import TreatmentSettings from '../TreatmentSettings';
-import MachineSelector from '../MachineSelector';
+
 import OperatingCosts from '../OperatingCosts';
 import LeaseAdjuster from '../LeaseAdjuster';
 import LeasingOptions from '../LeasingOptions';
@@ -47,13 +47,6 @@ const CalculatorInputs: React.FC = () => {
   
   return (
     <div className="w-full space-y-6">
-      {/* Välj maskin - enkelt att växla */}
-      <MachineSelector 
-        machines={machineData}
-        selectedMachineId={selectedMachineId}
-        onChange={setSelectedMachineId}
-      />
-
       {selectedMachine ? (
         <>
           {/* Nästa steg banner */}
