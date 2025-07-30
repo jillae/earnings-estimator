@@ -21,8 +21,10 @@ const CreditInfoPopover: React.FC = () => {
           <div>
             <h4 className="font-semibold text-slate-900 mb-2">Vad är Credits?</h4>
             <p className="text-sm text-slate-700 leading-relaxed">
-              Alla våra golvmaskiner (ej batteridrivna) använder ett offline digitalt kreditsystem – godkänt för medicinskt bruk. 
-              Varje credit motsvarar en behandling och beställs enkelt i 25-pack till avtalspris. Påfyllning sker direkt i maskinen – inga internetuppkopplingar krävs.
+              Alla våra golvmaskiner använder ett digitalt kreditsystem, godkänt för medicinskt bruk.
+              Varje credit motsvarar en behandling och beställs i 25-pack till ditt avtalspris. Påfyllning sker direkt i maskinens display med en voucher – ingen internetuppkoppling krävs.
+              Välj mellan styckepris eller fastpris.
+              Fastpris är för dig som gör fler än 2 behandlingar per dag – då blir det mest lönsamt.
             </p>
           </div>
           
