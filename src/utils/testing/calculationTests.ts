@@ -31,7 +31,8 @@ export async function testCalculations() {
     useFlatrateOption: 'perCredit' as const,
     currentSliderStep: 1, // Standard-läge
     selectedLeasingModel: 'grundleasing' as const,
-    exchangeRate: 11.4926 // Standard växelkurs
+    exchangeRate: 11.4926, // Standard växelkurs
+    workDaysPerMonth: 22
   };
   
   console.log('📋 TESTPARAMETRAR:');
@@ -179,7 +180,8 @@ export async function testAllMachines() {
       useFlatrateOption: 'perCredit' as const,
       currentSliderStep: 1,
       selectedLeasingModel: 'grundleasing' as const,
-      exchangeRate: 11.4926
+      exchangeRate: 11.4926,
+      workDaysPerMonth: 22
     };
     
     try {

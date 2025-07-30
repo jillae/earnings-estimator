@@ -73,6 +73,8 @@ export function useStateSelections() {
       setUseFlatrateOption('perCredit');
       setAllowBelowFlatrate(true);
       setSelectedLeasingModel('grundleasing');
+      setWorkDaysPerMonth(22); // Återställ nollpunkt till standard
+      setTreatmentsPerDay(4); // Återställ behandlingar till standard
     }
   }, [selectedMachine]);
 

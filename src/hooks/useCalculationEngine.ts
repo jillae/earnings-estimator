@@ -23,6 +23,7 @@ interface UseCalculationEngineProps {
   currentSliderStep: number;
   selectedLeasingModel: 'grundleasing' | 'strategisk';
   exchangeRate?: number;
+  workDaysPerMonth: number;
 }
 
 export function useCalculationEngine(props: UseCalculationEngineProps) {
@@ -45,7 +46,8 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
       useFlatrateOption: props.useFlatrateOption,
       currentSliderStep: props.currentSliderStep,
       selectedLeasingModel: props.selectedLeasingModel,
-      exchangeRate: props.exchangeRate
+      exchangeRate: props.exchangeRate,
+      workDaysPerMonth: props.workDaysPerMonth
     };
   }, [
     props.machine?.id, // Bara ID för att undvika djupa jämförelser
@@ -60,7 +62,8 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     props.useFlatrateOption,
     props.currentSliderStep,
     props.selectedLeasingModel,
-    props.exchangeRate
+    props.exchangeRate,
+    props.workDaysPerMonth
   ]);
 
   // Huvudberäkning

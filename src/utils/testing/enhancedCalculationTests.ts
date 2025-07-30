@@ -67,7 +67,8 @@ export async function testMachineCalculations(machineId: string): Promise<TestRe
       useFlatrateOption: 'perCredit' as const,
       currentSliderStep: 1 as const,
       selectedLeasingModel: 'grundleasing' as const,
-      exchangeRate: 11.4926
+      exchangeRate: 11.4926,
+      workDaysPerMonth: 22
     };
 
     // Validera input
@@ -198,7 +199,8 @@ export async function testLeasingModelPricing(): Promise<TestResult> {
         useFlatrateOption: 'perCredit' as const,
         currentSliderStep: 1,
         selectedLeasingModel: 'grundleasing' as const,
-        exchangeRate: 11.4926
+        exchangeRate: 11.4926,
+        workDaysPerMonth: 22
       };
 
       const results = await CalculationEngine.calculate(testInputs);
@@ -361,7 +363,8 @@ export async function testLeasingModelScenario(
       useFlatrateOption: 'perCredit' as const,
       currentSliderStep: selectedLeasingModel === 'grundleasing' ? 1 : 2,
       selectedLeasingModel: selectedLeasingModel,
-      exchangeRate: 11.4926
+      exchangeRate: 11.4926,
+      workDaysPerMonth: 22
     };
 
     const results = await CalculationEngine.calculate(testInputs);

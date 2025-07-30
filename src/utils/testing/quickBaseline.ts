@@ -29,7 +29,8 @@ export async function runQuickBaseline() {
         leaseAdjustmentFactor: 0.5,
         useFlatrateOption: 'perCredit',
         currentSliderStep: 1,
-        selectedLeasingModel: 'grundleasing'
+        selectedLeasingModel: 'grundleasing',
+        workDaysPerMonth: 22
       }
     },
     
@@ -48,7 +49,8 @@ export async function runQuickBaseline() {
         leaseAdjustmentFactor: 0.5,
         useFlatrateOption: 'flatrate',
         currentSliderStep: 1,
-        selectedLeasingModel: 'strategisk'
+        selectedLeasingModel: 'strategisk',
+        workDaysPerMonth: 22
       }
     },
     
@@ -67,7 +69,8 @@ export async function runQuickBaseline() {
         leaseAdjustmentFactor: 0.5,
         useFlatrateOption: 'flatrate',
         currentSliderStep: 1,
-        selectedLeasingModel: 'grundleasing'
+        selectedLeasingModel: 'grundleasing',
+        workDaysPerMonth: 22
       }
     },
     
@@ -86,7 +89,8 @@ export async function runQuickBaseline() {
         leaseAdjustmentFactor: 0.5,
         useFlatrateOption: 'perCredit',
         currentSliderStep: 1,
-        selectedLeasingModel: 'grundleasing'
+        selectedLeasingModel: 'grundleasing',
+        workDaysPerMonth: 22
       }
     }
   ];

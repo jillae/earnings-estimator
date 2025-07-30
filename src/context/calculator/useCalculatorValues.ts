@@ -22,7 +22,8 @@ export function useCalculatorValues() {
     leaseAdjustmentFactor: 0.5,
     useFlatrateOption: state.useFlatrateOption,
     currentSliderStep: state.currentSliderStep,
-    selectedLeasingModel: state.selectedLeasingModel
+    selectedLeasingModel: state.selectedLeasingModel,
+    workDaysPerMonth: state.workDaysPerMonth
   });
 
   // Beräkna step-värden (diskreta värdepunkter för slider) - behövs fortfarande för UI

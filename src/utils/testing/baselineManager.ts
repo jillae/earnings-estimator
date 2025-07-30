@@ -96,7 +96,8 @@ function generateTestCases(): BaselineTestCase[] {
                     leaseAdjustmentFactor: 0.5,
                     useFlatrateOption: slaLevel === 'Brons' ? 'perCredit' : 'flatrate',
                     currentSliderStep: sliderStep,
-                    selectedLeasingModel: leasingModel
+                    selectedLeasingModel: leasingModel,
+                    workDaysPerMonth: 22
                   }
                 });
               }
@@ -123,7 +124,8 @@ function generateTestCases(): BaselineTestCase[] {
         leaseAdjustmentFactor: 0.5,
         useFlatrateOption: 'perCredit',
         currentSliderStep: 1,
-        selectedLeasingModel: 'grundleasing'
+        selectedLeasingModel: 'grundleasing',
+        workDaysPerMonth: 22
       }
     });
   }

@@ -27,6 +27,7 @@ export interface CalculationInputs {
   currentSliderStep: number;
   selectedLeasingModel: 'grundleasing' | 'strategisk';
   exchangeRate?: number;
+  workDaysPerMonth: number;
 }
 
 // Output-interface för alla resultat
