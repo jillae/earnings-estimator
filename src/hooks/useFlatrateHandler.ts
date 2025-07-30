@@ -40,19 +40,37 @@ export function useFlatrateHandler() {
     const newOption = checked ? 'flatrate' : 'perCredit';
     console.log(`Ändrar Flatrate-option till: ${newOption} (${checked ? 'enabled' : 'disabled'})`);
     
-    // Om försöker aktivera flatrate men inte uppfyller villkoren
-    if (checked && !canEnableFlatrate && paymentOption === 'leasing' && currentSliderStep < 1) {
-      // Återställ slidern till standardläget (1)
+    // VIKTIG REGEL: När flatrate aktiveras, hoppa ALLTID till Standard (position 1)
+    if (checked) {
+      // Om vi aktiverar flatrate och slider inte redan är på Standard
+      if (currentSliderStep !== 1) {
+        console.log('Flyttar slider till Standard (1) då flatrate aktiveras');
+        setCurrentSliderStep(1);
+        
+        // Visa ett meddelande till användaren
+        toast({
+          title: "Slidern har justerats till Standard",
+          description: "Flatrate kräver och fungerar bäst med standardnivå.",
+          variant: "default"
+        });
+      }
+      
+      // Aktivera flatrate (med eventuell fördröjning om slider flyttades)
+      const delay = currentSliderStep !== 1 ? 300 : 0;
+      setTimeout(() => {
+        setUseFlatrateOption(newOption);
+      }, delay);
+      
+    } else if (!checked && !canEnableFlatrate && paymentOption === 'leasing' && currentSliderStep < 1) {
+      // Om försöker deaktivera flatrate men slider är för låg för leasing
       setCurrentSliderStep(1);
       
-      // Visa ett meddelande till användaren
       toast({
-        title: "Slidern har justerats till standard",
-        description: "Flatrate kräver minst standardnivå på leasingbalansen.",
+        title: "Slidern har justerats till Standard", 
+        description: "Minst standardnivå krävs för denna leasingkonfiguration.",
         variant: "default"
       });
       
-      // Fördröj uppdateringen av flatrate-option tills slidern har ändrats
       setTimeout(() => {
         setUseFlatrateOption(newOption);
       }, 300);
@@ -67,10 +85,17 @@ export function useFlatrateHandler() {
     if (selectedMachine?.usesCredits && (selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld')) {
       if (useFlatrateOption !== 'flatrate') {
         console.log(`Aktiverar automatisk flatrate för ${selectedDriftpaket}-paket`);
+        
+        // VIKTIG: När Silver/Guld automatiskt aktiverar flatrate, flytta slider till Standard
+        if (currentSliderStep !== 1) {
+          console.log('Flyttar slider till Standard (1) då Silver/Guld aktiverar flatrate automatiskt');
+          setCurrentSliderStep(1);
+        }
+        
         setUseFlatrateOption('flatrate');
       }
     }
-  }, [selectedDriftpaket, selectedMachine?.usesCredits, setUseFlatrateOption]); // Ta bort useFlatrateOption från dependencies för att undvika loop
+  }, [selectedDriftpaket, selectedMachine?.usesCredits, setUseFlatrateOption, currentSliderStep, setCurrentSliderStep]);
 
   return {
     handleFlatrateChange,
