@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, DollarSign, PieChart as PieChartIcon } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart as PieChartIcon, ExternalLink, Download, AlertTriangle } from 'lucide-react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 
@@ -18,6 +18,46 @@ const DetailedAnalysisModal: React.FC = () => {
     paymentOption,
     cashPriceSEK
   } = useCalculator();
+
+  // Funktioner för att hantera export och nytt fönster
+  const handleOpenInNewWindow = () => {
+    const newWindow = window.open('', '_blank', 'width=1200,height=800');
+    if (newWindow) {
+      newWindow.document.write(`
+        <html>
+          <head>
+            <title>Finansiell Analys - ${selectedMachine?.name || 'Vald maskin'}</title>
+            <style>
+              body { font-family: system-ui, -apple-system, sans-serif; margin: 20px; }
+              .header { text-align: center; margin-bottom: 30px; }
+              .disclaimer { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 8px; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Finansiell Analys - ${selectedMachine?.name || 'Vald maskin'}</h1>
+              <h2>Ekonomiska Nyckeltal</h2>
+              <p><strong>Månatlig Intäkt:</strong> ${formatCurrency(monthlyRevenue)} (ex moms)</p>
+              <p><strong>Månatlig Kostnad:</strong> ${formatCurrency(monthlyCost)} (ex moms)</p>
+              <p><strong>Månatlig Netto:</strong> ${formatCurrency(monthlyNet)} (ex moms)</p>
+              <p><strong>Vinstmarginal:</strong> ${((netResults.netPerMonthExVat / revenue.monthlyRevenueExVat) * 100).toFixed(1)}%</p>
+              <p><strong>5-års nettovinst:</strong> ${formatCurrency(netResults.netPerYearExVat * 5)}</p>
+            </div>
+            <div class="disclaimer">
+              <strong>⚠️ Viktig information:</strong> Dessa beräkningar är approximationer baserade på dina inmatade värden. 
+              Verifiera alltid siffrorna själv och förlita dig inte blint på automatiska beräkningar för viktiga affärsbeslut.
+              Faktiska resultat kan variera beroende på marknadsutveckling, valutakurser och andra faktorer.
+            </div>
+          </body>
+        </html>
+      `);
+    }
+  };
+
+  const handleSaveChart = () => {
+    // Enkel implementation - öppnar print-dialog
+    window.print();
+  };
 
   // Data för huvudgrafen - månadsvis utveckling över 5 år (förbättrad)
   const monthlyData = [];
@@ -215,11 +255,44 @@ const DetailedAnalysisModal: React.FC = () => {
               </ResponsiveContainer>
             </ChartContainer>
             
+            {/* Export-knappar */}
+            <div className="mt-4 flex gap-2 justify-end">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleOpenInNewWindow}
+                className="gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Öppna i nytt fönster
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleSaveChart}
+                className="gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Spara/Skriv ut
+              </Button>
+            </div>
+            
             {/* Graf-information */}
             <div className="mt-4 text-sm text-slate-600 bg-blue-50 p-3 rounded-lg">
               <p className="font-medium text-blue-800 mb-1">📈 Grafvisualisering</p>
               <p>Denna graf visar den kumulativa ekonomiska utvecklingen över 5 år för <strong>{selectedMachine?.name || 'den valda maskinen'}</strong>. 
               Grafen uppdateras automatiskt när du byter maskin och återspeglar alla dina aktuella inställningar.</p>
+            </div>
+
+            {/* Disclaimer */}
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-yellow-800">
+                  <p className="font-medium mb-1">⚠️ Ansvarsfriskrivning</p>
+                  <p>Dessa beräkningar är approximationer baserade på dina inmatade värden. Verifiera alltid siffrorna själv och förlita dig inte blint på automatiska beräkningar för viktiga affärsbeslut. Vi kan inte garantera att algoritmerna är helt korrekta - så dubbelkolla gärna om du ska satsa miljoner! 😅</p>
+                </div>
+              </div>
             </div>
           </div>
 
