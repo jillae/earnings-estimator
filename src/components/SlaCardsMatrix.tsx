@@ -2,11 +2,13 @@ import React from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Shield, Headphones, Timer, Zap, CreditCard, Target } from 'lucide-react';
-import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 
 export const SlaCardsMatrix: React.FC = () => {
-  const { selectedMachine, leasingMax60mRef, slaCosts } = useCalculator();
+  // Statiska värden för showcase (inte beroende av Calculator context)
+  const baseLeasingCost = 25835; // Exempel för Emerald
+  const silverCost = Math.round(baseLeasingCost * 0.25); // 25% av leasing
+  const guldCost = Math.round(baseLeasingCost * 0.50);   // 50% av leasing
 
   const slaOptions = [
     {
@@ -29,7 +31,7 @@ export const SlaCardsMatrix: React.FC = () => {
     {
       id: 'silver',
       title: 'Silver',
-      price: slaCosts?.Silver || 0,
+      price: silverCost,
       color: 'slate',
       radioSelected: false,
       features: [
@@ -39,14 +41,14 @@ export const SlaCardsMatrix: React.FC = () => {
         { icon: Shield, text: '72h omfattande fel' },
         { icon: Zap, text: 'Lånemaskin vid service' }
       ],
-      credits: selectedMachine?.flatrateAmount ? Math.round((selectedMachine.flatrateAmount || 0) * 0.5) : 2998,
+      credits: 2998, // 50% rabatt på flatrate
       bestFor: 'Växande kliniker',
       description: 'Förbättrad support och snabbare service'
     },
     {
       id: 'guld',
       title: 'Guld',
-      price: slaCosts?.Guld || 0,
+      price: guldCost,
       color: 'yellow',
       radioSelected: false,
       features: [
