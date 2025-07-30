@@ -29,11 +29,11 @@ const machineOrder = [
   "zerona",
   "fx-635",
   "fx-405",
-  "xlr8",
   "evrl",
+  "xlr8",
   "gvl",
-  "base-station",
-  "lunula"
+  "lunula",
+  "base-station"
 ];
 
 // Kombinera alla maskiner och sortera dem enligt den specificerade ordningen
