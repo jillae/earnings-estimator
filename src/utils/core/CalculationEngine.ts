@@ -121,7 +121,17 @@ export class CalculationEngine {
     // Steg 7: Beräkna nettoresultat
     const netResults = this.calculateNetResults(revenue, operatingCost, leasingCalcs.leasingCost, inputs.paymentOption, machinePricing.cashPriceSEK);
     
-    // Steg 8: Beräkna beläggningsgrader
+    console.log(`[TRACKER] CalculationEngine - Key values for occupancy:
+      customerPrice: ${inputs.customerPrice}
+      treatmentsPerDay: ${inputs.treatmentsPerDay}
+      currentSliderStep: ${inputs.currentSliderStep}
+      selectedLeasingModel: ${inputs.selectedLeasingModel}
+      leasingCost: ${leasingCalcs.leasingCost}
+      yearlyRevenueIncVat: ${revenue.yearlyRevenueIncVat}
+      netPerYearExVat: ${netResults.netPerYearExVat}
+    `);
+    
+    // Steg 8: Beräkna beläggningsgrader - BRUTTOINTÄKTER vid olika kapaciteter
     const occupancyRevenues = this.calculateOccupancyRevenues(revenue.yearlyRevenueIncVat);
     
     const result: CalculationResults = {
@@ -443,14 +453,26 @@ export class CalculationEngine {
   }
   
   /**
-   * BELÄGGNINGSGRADER
+   * BELÄGGNINGSGRADER - BRUTTOINTÄKTER vid olika kapacitetsgrader
    */
   private static calculateOccupancyRevenues(yearlyRevenueIncVat: number) {
-    return {
+    console.log(`[TRACKER] calculateOccupancyRevenues called with:
+      yearlyRevenueIncVat: ${yearlyRevenueIncVat}
+    `);
+    
+    const result = {
       occupancy50: yearlyRevenueIncVat * 0.5,
       occupancy75: yearlyRevenueIncVat * 0.75,
       occupancy100: yearlyRevenueIncVat
     };
+    
+    console.log(`[TRACKER] Calculated occupancy values (gross revenue):
+      50%: ${result.occupancy50}
+      75%: ${result.occupancy75}  
+      100%: ${result.occupancy100}
+    `);
+    
+    return result;
   }
   
   /**

@@ -75,7 +75,13 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     }
 
     setIsCalculating(true);
-    console.log('🔢 useCalculationEngine: Startar beräkning med inputs:', inputs);
+    console.log(`[TRACKER] useCalculationEngine: Startar beräkning på grund av förändring i:
+      currentSliderStep: ${inputs.currentSliderStep}
+      selectedLeasingModel: ${inputs.selectedLeasingModel}
+      treatmentsPerDay: ${inputs.treatmentsPerDay}
+      customerPrice: ${inputs.customerPrice}
+    `);
+    console.log('🔢 useCalculationEngine: Alla inputs:', inputs);
 
     try {
       const newResults = await CalculationEngine.calculate(inputs);
