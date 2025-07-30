@@ -51,7 +51,7 @@ const Header = () => {
               className="flex items-center hover:text-primary-foreground/80 transition-colors"
             >
               <ExternalLink className="h-4 w-4 mr-1" />
-              <span className="text-sm">Produkter</span>
+              <span className="text-sm">Produktbeskrivningar</span>
             </a>
             <a 
               href="https://bit.ly/EENHelpdesk" 
