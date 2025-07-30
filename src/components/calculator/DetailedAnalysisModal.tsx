@@ -1,23 +1,32 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, DollarSign, PieChart as PieChartIcon, ExternalLink, Download, AlertTriangle } from 'lucide-react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
+import { useModalCalculations } from '@/hooks/useModalCalculations';
+import InteractiveControls from './InteractiveControls';
 
 const DetailedAnalysisModal: React.FC = () => {
   const { 
-    revenue, 
-    netResults, 
     leasingCost,
     operatingCost,
-    selectedMachineId,
-    selectedMachine,
-    paymentOption,
-    cashPriceSEK
+    selectedMachine
   } = useCalculator();
+
+  const {
+    modalTreatmentsPerDay,
+    setModalTreatmentsPerDay,
+    modalCustomerPrice,
+    setModalCustomerPrice,
+    modalRevenue,
+    modalNetPerMonthExVat,
+    modalNetPerYearExVat,
+    totalMonthlyCost,
+    monthlyData
+  } = useModalCalculations();
 
   // Funktioner för att hantera export och nytt fönster
   const handleOpenInNewWindow = () => {
@@ -26,7 +35,7 @@ const DetailedAnalysisModal: React.FC = () => {
       newWindow.document.write(`
         <html>
           <head>
-            <title>Finansiell Analys - ${selectedMachine?.name || 'Vald maskin'}</title>
+            <title>Tillväxtprognos - ${selectedMachine?.name || 'Vald maskin'}</title>
             <style>
               body { font-family: system-ui, -apple-system, sans-serif; margin: 20px; }
               .header { text-align: center; margin-bottom: 30px; }
@@ -35,16 +44,18 @@ const DetailedAnalysisModal: React.FC = () => {
           </head>
           <body>
             <div class="header">
-              <h1>Finansiell Analys - ${selectedMachine?.name || 'Vald maskin'}</h1>
-              <h2>Ekonomiska Nyckeltal</h2>
-              <p><strong>Månatlig Intäkt:</strong> ${formatCurrency(monthlyRevenue)} (ex moms)</p>
-              <p><strong>Månatlig Kostnad:</strong> ${formatCurrency(monthlyCost)} (ex moms)</p>
-              <p><strong>Månatlig Netto:</strong> ${formatCurrency(monthlyNet)} (ex moms)</p>
-              <p><strong>Vinstmarginal:</strong> ${((netResults.netPerMonthExVat / revenue.monthlyRevenueExVat) * 100).toFixed(1)}%</p>
-              <p><strong>5-års nettovinst:</strong> ${formatCurrency(netResults.netPerYearExVat * 5)}</p>
+              <h1>Tillväxtprognos för Din Klinik - ${selectedMachine?.name || 'Vald maskin'}</h1>
+              <h2>Dina Ekonomiska Nyckeltal</h2>
+              <p><strong>Din månatliga intäkt:</strong> ${formatCurrency(modalRevenue.monthlyRevenueExVat)} (ex moms)</p>
+              <p><strong>Dina månatliga kostnader:</strong> ${formatCurrency(totalMonthlyCost)} (ex moms)</p>
+              <p><strong>Din månatliga netto:</strong> ${formatCurrency(modalNetPerMonthExVat)} (ex moms)</p>
+              <p><strong>Din vinstmarginal:</strong> ${((modalNetPerMonthExVat / modalRevenue.monthlyRevenueExVat) * 100).toFixed(1)}%</p>
+              <p><strong>Din 5-års nettovinst:</strong> ${formatCurrency(modalNetPerYearExVat * 5)}</p>
+              <p><strong>Behandlingar per dag:</strong> ${modalTreatmentsPerDay}</p>
+              <p><strong>Kundpris per behandling:</strong> ${formatCurrency(modalCustomerPrice)} (ink moms)</p>
             </div>
             <div class="disclaimer">
-              <strong>⚠️ Viktig information:</strong> Dessa beräkningar är approximationer baserade på dina inmatade värden. 
+              <strong>⚠️ Viktig information:</strong> Dessa beräkningar är prognoser baserade på dina inmatade värden. 
               Verifiera alltid siffrorna själv och förlita dig inte blint på automatiska beräkningar för viktiga affärsbeslut.
               Faktiska resultat kan variera beroende på marknadsutveckling, valutakurser och andra faktorer.
             </div>
@@ -55,40 +66,10 @@ const DetailedAnalysisModal: React.FC = () => {
   };
 
   const handleSaveChart = () => {
-    // Enkel implementation - öppnar print-dialog
     window.print();
   };
 
-  // Data för huvudgrafen - månadsvis utveckling över 5 år (förbättrad)
-  const monthlyData = [];
-  const monthlyRevenue = revenue.monthlyRevenueExVat;
-  const monthlyCost = leasingCost + operatingCost.totalCost;
-  const monthlyNet = netResults.netPerMonthExVat;
-  
-  for (let month = 1; month <= 60; month++) {
-    // Kumulativa värden över tid
-    const cumulativeRevenue = monthlyRevenue * month;
-    const cumulativeCosts = monthlyCost * month;
-    const cumulativeNet = monthlyNet * month;
-    
-    // Månadsvis värden (för bättre läsbarhet)
-    monthlyData.push({
-      month: month,
-      monthLabel: `Mån ${month}`,
-      yearLabel: `År ${Math.ceil(month / 12)}`,
-      // Månadsvis data
-      intaktManad: monthlyRevenue,
-      kostnadManad: monthlyCost,
-      nettoManad: monthlyNet,
-      // Kumulativa data  
-      intaktKumulativ: cumulativeRevenue,
-      kostnadKumulativ: cumulativeCosts,
-      nettoKumulativ: cumulativeNet
-    });
-  }
-
   // Data för cirkeldiagram 1: Kostnadsfördelning
-  const totalMonthlyCost = leasingCost + operatingCost.totalCost;
   const costDistributionData = [
     {
       name: 'Leasingkostnad',
@@ -105,12 +86,12 @@ const DetailedAnalysisModal: React.FC = () => {
   // Data för cirkeldiagram 2: Lönsamhet per månadsintäkt
   const profitabilityData = [
     {
-      name: 'Nettoresultat',
-      value: netResults.netPerMonthExVat,
+      name: 'Din nettoresultat',
+      value: modalNetPerMonthExVat,
       fill: '#059669'
     },
     {
-      name: 'Totala kostnader',
+      name: 'Dina totala kostnader',
       value: totalMonthlyCost,
       fill: '#dc2626'
     }
@@ -119,15 +100,15 @@ const DetailedAnalysisModal: React.FC = () => {
   // Konfiguration för charts
   const chartConfig = {
     intakt: {
-      label: "Intäkt",
+      label: "Din Intäkt",
       color: "#10b981",
     },
     kostnad: {
-      label: "Kostnad", 
+      label: "Dina Kostnader", 
       color: "#dc2626",
     },
     netto: {
-      label: "Netto",
+      label: "Din Netto",
       color: "#3b82f6",
     }
   };
@@ -140,40 +121,50 @@ const DetailedAnalysisModal: React.FC = () => {
           className="gap-2 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-semibold px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300"
         >
           <TrendingUp className="h-5 w-5" />
-          📊 Visa Detaljerad Analys
+          📈 Tillväxtprognos för Din Klinik
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-emerald-600" />
-            Detaljerad Finansiell Analys - {selectedMachine?.name || 'Vald maskin'}
+            Interaktiv Tillväxtprognos - {selectedMachine?.name || 'Vald maskin'}
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6">
-          {/* Huvudgraf - Förbättrad med bättre visualisering */}
+          {/* Interaktiva kontroller */}
+          <InteractiveControls
+            treatmentsPerDay={modalTreatmentsPerDay}
+            onTreatmentsChange={setModalTreatmentsPerDay}
+            customerPrice={modalCustomerPrice}
+            onCustomerPriceChange={setModalCustomerPrice}
+            monthlyRevenue={modalRevenue.monthlyRevenueExVat}
+            monthlyNet={modalNetPerMonthExVat}
+          />
+
+          {/* Huvudgraf - Fokus på klinikens tillväxt */}
           <div className="bg-white rounded-lg border border-slate-200 p-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-blue-600" />
-              Ekonomisk Utveckling över 5 år - {selectedMachine?.name || 'Vald maskin'}
+              Din Kliniks Ekonomiska Utveckling över 5 år
             </h3>
             
-            {/* Månadsvis nyckelvärden för vald maskin */}
+            {/* Månadsvis nyckelvärden för kliniken */}
             <div className="grid grid-cols-3 gap-4 mb-6 p-4 bg-slate-50 rounded-lg">
               <div className="text-center">
-                <div className="text-sm text-slate-600">Månatlig Intäkt</div>
-                <div className="text-lg font-bold text-emerald-600">{formatCurrency(monthlyRevenue)}</div>
+                <div className="text-sm text-slate-600">Din Månatliga Intäkt</div>
+                <div className="text-lg font-bold text-emerald-600">{formatCurrency(modalRevenue.monthlyRevenueExVat)}</div>
                 <div className="text-xs text-slate-500">ex moms</div>
               </div>
               <div className="text-center">
-                <div className="text-sm text-slate-600">Månatlig Kostnad</div>
-                <div className="text-lg font-bold text-red-600">{formatCurrency(monthlyCost)}</div>
+                <div className="text-sm text-slate-600">Dina Månatliga Kostnader</div>
+                <div className="text-lg font-bold text-red-600">{formatCurrency(totalMonthlyCost)}</div>
                 <div className="text-xs text-slate-500">ex moms</div>
               </div>
               <div className="text-center">
-                <div className="text-sm text-slate-600">Månatlig Netto</div>
-                <div className="text-lg font-bold text-blue-600">{formatCurrency(monthlyNet)}</div>
+                <div className="text-sm text-slate-600">Din Månatliga Netto</div>
+                <div className="text-lg font-bold text-blue-600">{formatCurrency(modalNetPerMonthExVat)}</div>
                 <div className="text-xs text-slate-500">ex moms</div>
               </div>
             </div>
@@ -185,7 +176,7 @@ const DetailedAnalysisModal: React.FC = () => {
                   <XAxis 
                     dataKey="month" 
                     tick={{ fontSize: 11 }}
-                    interval={11} // Visa varje 12:e månad (årtal)
+                    interval={11}
                     tickFormatter={(value) => `År ${Math.ceil(value / 12)}`}
                   />
                   <YAxis 
@@ -229,7 +220,7 @@ const DetailedAnalysisModal: React.FC = () => {
                     dataKey="intaktKumulativ" 
                     stroke={chartConfig.intakt.color}
                     strokeWidth={3}
-                    name="Kumulativ Intäkt"
+                    name="Din Kumulativa Intäkt"
                     dot={{ r: 3 }}
                     activeDot={{ r: 5 }}
                   />
@@ -238,7 +229,7 @@ const DetailedAnalysisModal: React.FC = () => {
                     dataKey="kostnadKumulativ" 
                     stroke={chartConfig.kostnad.color}
                     strokeWidth={3}
-                    name="Kumulativ Kostnad"
+                    name="Dina Kumulativa Kostnader"
                     dot={{ r: 3 }}
                     activeDot={{ r: 5 }}
                   />
@@ -247,7 +238,7 @@ const DetailedAnalysisModal: React.FC = () => {
                     dataKey="nettoKumulativ" 
                     stroke={chartConfig.netto.color}
                     strokeWidth={4}
-                    name="Kumulativ Netto"
+                    name="Din Kumulativa Netto"
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
                   />
@@ -279,9 +270,9 @@ const DetailedAnalysisModal: React.FC = () => {
             
             {/* Graf-information */}
             <div className="mt-4 text-sm text-slate-600 bg-blue-50 p-3 rounded-lg">
-              <p className="font-medium text-blue-800 mb-1">📈 Grafvisualisering</p>
-              <p>Denna graf visar den kumulativa ekonomiska utvecklingen över 5 år för <strong>{selectedMachine?.name || 'den valda maskinen'}</strong>. 
-              Grafen uppdateras automatiskt när du byter maskin och återspeglar alla dina aktuella inställningar.</p>
+              <p className="font-medium text-blue-800 mb-1">📈 Tillväxtprognos</p>
+              <p>Denna graf visar hur din kliniks ekonomi kan utvecklas över 5 år med <strong>{selectedMachine?.name || 'den valda maskinen'}</strong>. 
+              Justera behandlingar per dag och kundpris ovan för att se olika scenarier!</p>
             </div>
 
             {/* Disclaimer */}
@@ -290,25 +281,25 @@ const DetailedAnalysisModal: React.FC = () => {
                 <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
                 <div className="text-sm text-yellow-800">
                   <p className="font-medium mb-1">⚠️ Ansvarsfriskrivning</p>
-                  <p>Dessa beräkningar är approximationer baserade på dina inmatade värden. Verifiera alltid siffrorna själv och förlita dig inte blint på automatiska beräkningar för viktiga affärsbeslut. Vi kan inte garantera att algoritmerna är helt korrekta - så dubbelkolla gärna om du ska satsa miljoner! 😅</p>
+                  <p>Dessa prognoser är baserade på dina inmatade värden och nuvarande marknadsförhållanden. Verifiera alltid siffrorna själv och förlita dig inte blint på automatiska beräkningar för viktiga affärsbeslut. Vi kan inte garantera att algoritmerna är helt korrekta - så dubbelkolla gärna om du ska satsa miljoner! 😅</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* KPI-Cirkeldiagram - Kompakt horisontell layout */}
+          {/* KPI-Cirkeldiagram - Fokus på klinikens ekonomi */}
           <div className="border-t border-slate-200 pt-4">
             <h2 className="text-lg font-semibold mb-4 text-slate-800 flex items-center gap-2">
               <PieChartIcon className="h-4 w-4 text-emerald-600" />
-              KPI-Översikt
+              Din Ekonomiska Översikt
             </h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Cirkeldiagram 1: Kostnadsfördelning - Horisontell layout */}
+              {/* Cirkeldiagram 1: Kostnadsfördelning */}
               <div className="bg-white rounded-lg border border-slate-200 p-4">
                 <h3 className="text-base font-semibold mb-3 flex items-center gap-2">
                   <PieChartIcon className="h-4 w-4 text-blue-600" />
-                  Månatlig Kostnadsfördelning
+                  Dina Månatliga Kostnader
                 </h3>
                 <div className="flex items-center gap-4">
                   <div className="h-24 w-24 flex-shrink-0">
@@ -363,7 +354,7 @@ const DetailedAnalysisModal: React.FC = () => {
                     </div>
                     <div className="pt-1 border-t border-slate-100">
                       <div className="flex items-center justify-between text-sm font-medium">
-                        <span>Total</span>
+                        <span>Totalt</span>
                         <span>{formatCurrency(totalMonthlyCost)}</span>
                       </div>
                     </div>
@@ -371,11 +362,11 @@ const DetailedAnalysisModal: React.FC = () => {
                 </div>
               </div>
 
-              {/* Cirkeldiagram 2: Lönsamhet per månadsintäkt - Horisontell layout */}
+              {/* Cirkeldiagram 2: Lönsamhet per månadsintäkt */}
               <div className="bg-white rounded-lg border border-slate-200 p-4">
                 <h3 className="text-base font-semibold mb-3 flex items-center gap-2">
                   <DollarSign className="h-4 w-4 text-emerald-600" />
-                  Nettoandel av Månadsintäkt
+                  Din Lönsamhetsfördelning
                 </h3>
                 <div className="flex items-center gap-4">
                   <div className="h-24 w-24 flex-shrink-0">
@@ -398,7 +389,7 @@ const DetailedAnalysisModal: React.FC = () => {
                           content={({ active, payload }) => {
                             if (active && payload && payload.length) {
                               const data = payload[0];
-                              const totalRevenue = revenue.monthlyRevenueExVat;
+                              const totalRevenue = modalRevenue.monthlyRevenueExVat;
                               return (
                                 <div className="bg-white p-2 border border-slate-200 rounded shadow-lg">
                                   <p className="font-medium text-sm">{data.name}</p>
@@ -406,7 +397,7 @@ const DetailedAnalysisModal: React.FC = () => {
                                     {formatCurrency(data.value as number)}
                                   </p>
                                   <p className="text-xs text-slate-500">
-                                    {((data.value as number / totalRevenue) * 100).toFixed(1)}% av intäkt
+                                    {((data.value as number / totalRevenue) * 100).toFixed(1)}% av din intäkt
                                   </p>
                                 </div>
                               );
@@ -421,21 +412,21 @@ const DetailedAnalysisModal: React.FC = () => {
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
-                        <span>Netto</span>
+                        <span>Din netto</span>
                       </div>
-                      <span className="font-medium text-emerald-600">{formatCurrency(netResults.netPerMonthExVat)}</span>
+                      <span className="font-medium text-emerald-600">{formatCurrency(modalNetPerMonthExVat)}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-                        <span>Kostnader</span>
+                        <span>Dina kostnader</span>
                       </div>
                       <span className="font-medium">{formatCurrency(totalMonthlyCost)}</span>
                     </div>
                     <div className="pt-1 border-t border-slate-100">
                       <div className="flex items-center justify-between text-sm font-medium">
-                        <span>Intäkt</span>
-                        <span>{formatCurrency(revenue.monthlyRevenueExVat)}</span>
+                        <span>Din intäkt</span>
+                        <span>{formatCurrency(modalRevenue.monthlyRevenueExVat)}</span>
                       </div>
                     </div>
                   </div>
@@ -444,27 +435,27 @@ const DetailedAnalysisModal: React.FC = () => {
             </div>
           </div>
 
-          {/* Ekonomisk Sammanfattning */}
+          {/* Ekonomisk Sammanfattning - Fokus på klinikens framtid */}
           <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-lg border border-emerald-200 p-4">
-            <h3 className="text-base font-semibold mb-3 text-slate-800">Ekonomisk Sammanfattning</h3>
+            <h3 className="text-base font-semibold mb-3 text-slate-800">Din Ekonomiska Framtidsprognos</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="text-center">
                 <div className="text-xl font-bold text-emerald-600">
-                  {((netResults.netPerMonthExVat / revenue.monthlyRevenueExVat) * 100).toFixed(1)}%
+                  {((modalNetPerMonthExVat / modalRevenue.monthlyRevenueExVat) * 100).toFixed(1)}%
                 </div>
-                <div className="text-xs text-slate-600">Vinstmarginal</div>
+                <div className="text-xs text-slate-600">Din vinstmarginal</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold text-blue-600">
-                  {Math.ceil(totalMonthlyCost / (revenue.monthlyRevenueExVat / 22))}
+                  {Math.ceil(totalMonthlyCost / (modalRevenue.monthlyRevenueExVat / 22))}
                 </div>
-                <div className="text-xs text-slate-600">Nollpunkt (dagar/mån)</div>
+                <div className="text-xs text-slate-600">Din nollpunkt (dagar/mån)</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold text-purple-600">
-                  {formatCurrency(netResults.netPerYearExVat * 5)}
+                  {formatCurrency(modalNetPerYearExVat * 5)}
                 </div>
-                <div className="text-xs text-slate-600">5-års nettovinst</div>
+                <div className="text-xs text-slate-600">Din 5-års nettovinst</div>
               </div>
             </div>
           </div>
