@@ -174,7 +174,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
             trendDirection={currentSliderStep <= 1 ? 'down' : 'up'}
             showStandardBadge={true}
             isStandardPosition={currentSliderStep === 1}
-            animationStyle="slotmachine"
+            animationStyle="rolodex"
           />
           <RollingValueDisplay 
             value={calculatedCreditPrice}

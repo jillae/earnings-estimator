@@ -8,7 +8,7 @@ export interface UserData {
 }
 
 export function useGatedAccess() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(true); // TEMPORÄRT: Alltid unlocked
   const [userData, setUserData] = useState<UserData | null>(null);
   const [showOptIn, setShowOptIn] = useState(false);
   const [interactionCount, setInteractionCount] = useState(0);
