@@ -5,7 +5,7 @@ import { CalculatorState } from '@/context/calculator/types';
 // Initial state values for the calculator
 export const initialState: CalculatorState = {
   clinicSize: 'medium',
-  selectedMachineId: "select-machine", // Default to "select-machine"
+  selectedMachineId: "", // Tom sträng som default
   paymentOption: "leasing", // Default till leasing
   selectedLeasingPeriodId: "60", // Default till 60 månader (KORRIGERAT)
   selectedInsuranceId: "yes", // Default to include insurance
@@ -24,6 +24,7 @@ export const initialState: CalculatorState = {
   calculatedSlaCostSilver: 0,
   calculatedSlaCostGuld: 0,
   flatrateThreshold: 0,
+  
   operatingCost: { 
     costPerMonth: 0, 
     useFlatrate: false,

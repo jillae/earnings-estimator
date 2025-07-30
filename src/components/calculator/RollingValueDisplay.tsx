@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 
 interface RollingValueDisplayProps {
   value: number;
@@ -188,29 +188,33 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
   }, [value, displayValue, animationStyle]);
 
   return (
-    <div className={`flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-sm ${className}`}>
-      <div className="flex items-center gap-1 text-xs font-medium text-blue-700 mb-1">
-        {showTrendIcon && (
-          trendDirection === 'up' ? (
-            <TrendingUp className="w-4 h-4 text-green-600 shrink-0" />
-          ) : trendDirection === 'down' ? (
-            <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0" />
-          ) : (
-            <Minus className="w-4 h-4 text-blue-600 shrink-0" />
-          )
-        )}
-        <span>{label}</span>
-        {showStandardBadge && isStandardPosition && (
-          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium border border-blue-200 ml-2">
+    <div className="relative">
+      {showStandardBadge && isStandardPosition && (
+        <div className="absolute -top-2 -right-2 z-10">
+          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium border border-blue-200 shadow-sm">
             Standard
           </span>
-        )}
-      </div>
-      <div className={`text-lg font-bold text-blue-900 transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
-        <span>{formatCurrency(displayValue)}</span>
-      </div>
-      <div className="text-xs text-blue-600">
-        /månad
+        </div>
+      )}
+      <div className={`flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-sm ${className}`}>
+        <div className="flex items-center gap-1 text-xs font-medium text-blue-700 mb-1">
+          {showTrendIcon && (
+            trendDirection === 'up' ? (
+              <TrendingUp className="w-4 h-4 text-green-600 shrink-0" />
+            ) : trendDirection === 'down' ? (
+              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0" />
+            ) : (
+              <ArrowRight className="w-4 h-4 text-blue-600 shrink-0" />
+            )
+          )}
+          <span>{label}</span>
+        </div>
+        <div className={`text-lg font-bold text-blue-900 transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
+          <span>{formatCurrency(displayValue)}</span>
+        </div>
+        <div className="text-xs text-blue-600">
+          /månad
+        </div>
       </div>
     </div>
   );

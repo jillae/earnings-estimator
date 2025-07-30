@@ -97,7 +97,7 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
         {
           label: 'Credit-kostnad',
           brons: useFlatrateOption === 'flatrate' ? 'Flatrate' : `${formatCurrency(creditPrice)}/credit`,
-          silver: '50% rabatt på Flatrate',
+          silver: 'Med Silver: 50% rabatt',
           guld: '0 kr' // Visa 0 kr istället för text för Guld-paketet
         }
       ]
@@ -133,7 +133,7 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
     if (isSelected) {
       return `${baseClasses} bg-red-100 border-red-300 font-semibold text-slate-900`;
     } else if (isPreviousSelection) {
-      return `${baseClasses} bg-slate-50 text-slate-400 opacity-50`; // Ta bort line-through, endast gråat
+      return `${baseClasses} bg-slate-50 text-slate-500 opacity-70`; // Mindre gråat så text syns bättre
     } else {
       return `${baseClasses} bg-white text-slate-600`;
     }
@@ -155,7 +155,7 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
         return `${baseClasses} bg-purple-200 border-purple-300 text-purple-900 ring-2 ring-purple-300`;
       }
     } else if (isPreviousSelection) {
-      return `${baseClasses} bg-slate-100 text-slate-400 opacity-75`;
+      return `${baseClasses} bg-slate-100 text-slate-500 opacity-70`;
     } else {
       return `${baseClasses} bg-slate-50 text-slate-700 hover:bg-slate-100`;
     }
@@ -168,13 +168,13 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
     if (isPreviousSelection) {
       return (
         <div>
-          <div className="opacity-50">{levelText}</div>
-          <div className="text-xs opacity-50">{formatCurrency(cost)}/mån</div>
-          <Badge variant="secondary" className="text-xs mt-1 opacity-50">
+          <div className="opacity-70">{levelText}</div>
+          <div className="text-xs opacity-70">{formatCurrency(cost)}/mån</div>
+          <Badge variant="secondary" className="text-xs mt-1 opacity-70">
             Ingår
           </Badge>
         </div>
-      ); // Ta bort line-through, använd endast opacity
+      ); // Mindre opacity så text syns bättre
     }
     
     return (
