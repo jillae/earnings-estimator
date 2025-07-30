@@ -26,8 +26,11 @@ const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
   // Ta bort denna logg för att undvika loops
 
   return (
-    <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '350ms' }}>
-      <h3 className="text-lg font-semibold mb-6">Serviceavtal (SLA) - Jämförelsetabell</h3>
+    <div className="glass-card mt-4 animate-slide-in bg-red-50/20 border-red-200 hover:bg-red-50/30 transition-colors" style={{ animationDelay: '350ms' }}>
+      <h3 className="text-lg font-semibold mb-6 flex items-center">
+        <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
+        Serviceavtal (SLA) - Jämförelsetabell
+      </h3>
       
       {/* Matrix Header */}
       <div className="overflow-x-auto">

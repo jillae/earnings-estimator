@@ -245,17 +245,17 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           Budgeterbar intäkt vid olika beläggningsgrad
         </h3>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="p-4 rounded-lg bg-emerald-50/10 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:bg-emerald-50/20 transition-all duration-200">
-            <div className="text-sm text-emerald-700 mb-1 font-medium">Beläggning 50%, år 1 (ink moms)</div>
-            <div className="text-xl font-bold text-emerald-800 whitespace-nowrap">{formatCurrency(safeOcc50)}</div>
+          <div className="p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-blue-50 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:shadow-md transition-all duration-200">
+            <div className="text-sm text-blue-700 mb-1 font-medium">Beläggning 50%, år 1 (ink moms)</div>
+            <div className="text-xl font-bold text-blue-800 whitespace-nowrap">{formatCurrency(safeOcc50)}</div>
           </div>
-          <div className="p-4 rounded-lg bg-emerald-50/10 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:bg-emerald-50/20 transition-all duration-200">
+          <div className="p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:shadow-md transition-all duration-200">
             <div className="text-sm text-emerald-700 mb-1 font-medium">Beläggning 75%, år 2 (ink moms)</div>
             <div className="text-xl font-bold text-emerald-800 whitespace-nowrap">{formatCurrency(safeOcc75)}</div>
           </div>
-          <div className="p-4 rounded-lg bg-emerald-50/10 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:bg-emerald-50/20 transition-all duration-200">
-            <div className="text-sm text-emerald-700 mb-1 font-medium">Beläggning 100%, år 3 (ink moms)</div>
-            <div className="text-xl font-bold text-emerald-800 whitespace-nowrap">{formatCurrency(safeOcc100)}</div>
+          <div className="p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-purple-50 border border-emerald-200/50 border-l-4 border-l-emerald-300 hover:shadow-md transition-all duration-200">
+            <div className="text-sm text-purple-700 mb-1 font-medium">Beläggning 100%, år 3 (ink moms)</div>
+            <div className="text-xl font-bold text-purple-800 whitespace-nowrap">{formatCurrency(safeOcc100)}</div>
           </div>
         </div>
         

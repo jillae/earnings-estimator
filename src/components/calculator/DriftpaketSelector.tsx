@@ -29,8 +29,11 @@ const DriftpaketSelector: React.FC = () => {
   const showCreditInfo = selectedDriftpaket === 'Bas' && selectedMachine.usesCredits;
 
   return (
-    <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '300ms' }}>
-      <h3 className="text-lg font-semibold mb-4">Välj Service & Driftpaket</h3>
+    <div className="glass-card mt-4 animate-slide-in bg-red-50/20 border-red-200 hover:bg-red-50/30 transition-colors" style={{ animationDelay: '300ms' }}>
+      <h3 className="text-lg font-semibold mb-4 flex items-center">
+        <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
+        Välj Service & Driftpaket
+      </h3>
       
       {/* Bas-paket med integrerad kreditinformation */}
       <div className={`p-3 border rounded-md mb-4 ${selectedDriftpaket === 'Bas' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>

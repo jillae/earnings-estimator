@@ -50,10 +50,11 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
     onInsuranceChange(id);
   };
   return (
-    <div className="calculator-grid animate-slide-in" style={{ animationDelay: '200ms' }}>
+    <div className="calculator-grid animate-slide-in bg-red-50/20 border border-red-200 rounded-lg p-4 hover:bg-red-50/30 transition-colors" style={{ animationDelay: '200ms' }}>
       <div className="input-group">
         <div className="h-14 flex items-center">
-          <label htmlFor="leasing-period" className="input-label">
+          <label htmlFor="leasing-period" className="input-label text-red-800 flex items-center">
+            <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
             Leasingperiod
           </label>
         </div>
@@ -75,9 +76,10 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
       
       <div className="input-group">
         <div className="h-14 flex items-center">
-          <label htmlFor="insurance" className="input-label">
+          <label htmlFor="insurance" className="input-label text-red-800 flex items-center">
+            <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
             Försäkring
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="text-xs text-red-600 mt-1">
               Försäkring - fullvärdesförsäkring, självrisk 1500 kr
             </div>
           </label>
@@ -97,6 +99,7 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
           </SelectContent>
         </Select>
       </div>
+      <p className="text-xs text-red-600 col-span-2 mt-2">Påverkar kostnader • Välj period och försäkring</p>
     </div>
   );
 };

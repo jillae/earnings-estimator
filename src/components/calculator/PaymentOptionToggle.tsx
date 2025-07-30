@@ -8,8 +8,11 @@ const PaymentOptionToggle: React.FC = () => {
   const { paymentOption, setPaymentOption, cashPriceSEK } = useCalculator();
 
   return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-2">Betalningsalternativ</label>
+    <div className="mb-4 p-4 bg-red-50/20 border border-red-200 rounded-lg hover:bg-red-50/30 transition-colors">
+      <label className="block text-sm font-medium text-red-800 mb-2 flex items-center">
+        <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
+        Betalningsalternativ
+      </label>
       <ToggleGroup 
         type="single"
         variant="outline" 
@@ -26,6 +29,7 @@ const PaymentOptionToggle: React.FC = () => {
           <span className="mr-2">Kontant ({formatCurrency(cashPriceSEK)})</span>
         </ToggleGroupItem>
       </ToggleGroup>
+      <p className="text-xs text-red-600 mt-2">Påverkar kostnader • Välj betalningsalternativ</p>
     </div>
   );
 };
