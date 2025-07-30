@@ -156,10 +156,6 @@ const CalculatorInputs: React.FC = () => {
             </div>
             <div className="pt-2">
               <SlaCardsMatrix />
-              
-              <div className="mt-2">
-                <ContextualInfoBox />
-              </div>
             </div>
           </div>
           
