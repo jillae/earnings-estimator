@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useCalculator } from '@/context/CalculatorContext';
+import { getStrategicLeasingCost } from '@/data/strategicLeasingConstants';
 
 export interface AlternativeOption {
   rank: number;
@@ -77,14 +78,14 @@ export const useAlternativesComparison = () => {
       {
         rank: 4,
         name: 'Allt-inkluderat',
-        // Formel: Grundkostnad + (0.31 * Grundkostnad) för att nå 33 863 kr
-        monthlyCost: Math.round(grundkostnad + (0.31 * grundkostnad)),
+        // Använd den ursprungliga strategiska leasingkostnaden från STRATEGIC_LEASING_COSTS
+        monthlyCost: getStrategicLeasingCost(selectedMachine) || Math.round(grundkostnad),
         hasUnlimitedCredits: true,
         hasFreeCredits: true, // Credits inkluderade
         slaLevel: 'Brons',
         hasAnnualService: false,
         hasLoanMachine: false,
-        description: `${Math.round(grundkostnad + (0.31 * grundkostnad)).toLocaleString()} kr (leasing med inkluderade credits)`
+        description: `${(getStrategicLeasingCost(selectedMachine) || Math.round(grundkostnad)).toLocaleString()} kr (leasing med inkluderade credits)`
       },
       {
         rank: 5,
