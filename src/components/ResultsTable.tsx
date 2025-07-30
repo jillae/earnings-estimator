@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Download, TrendingUp } from 'lucide-react';
 import DetailedAnalysisModal from './calculator/DetailedAnalysisModal';
 import { OccupancyAnalysisPlug } from './OccupancyAnalysisPlug';
+import { GrowthForecastPlug } from './GrowthForecastPlug';
 
 interface ResultsTableProps {
   dailyRevenueIncVat: number;
@@ -181,6 +182,9 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             <div className="text-xl font-bold text-purple-800 whitespace-nowrap">{formatCurrency(safeOcc100)}</div>
           </div>
         </div>
+        
+        {/* Tillväxtprognos plugg */}
+        <GrowthForecastPlug />
         
         {/* Kapacitetsanalys plugg */}
         <OccupancyAnalysisPlug />
