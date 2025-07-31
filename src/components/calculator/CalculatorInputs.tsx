@@ -57,7 +57,7 @@ const CalculatorInputs: React.FC<{
           <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4 text-center animate-slide-in mb-4">
             <div className="flex items-center justify-center gap-2 mb-2">
               <span className="text-2xl">🏥</span>
-              <span className="text-lg font-bold text-blue-700">Detta påverkar hur många behandlingar du kan göra per dag</span>
+              <span className="text-lg font-bold text-blue-700">Klinikstorlek</span>
             </div>
             <div className="text-sm text-blue-600">
               Fortsätt här
