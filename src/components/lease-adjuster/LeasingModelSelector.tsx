@@ -14,6 +14,12 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
   onModelChange,
   currentSliderStep
 }) => {
+  // Förhindra scroll-hopp vid klick
+  const handleModelChange = (model: 'grundleasing' | 'strategisk', event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onModelChange(model);
+  };
   // Statiska paketrubriker - ska aldrig ändras dynamiskt
   const grundleasingPackage = LEASING_PACKAGES.HYBRIDPAKET;
   const strategiskPackage = LEASING_PACKAGES.ALLT_INKLUDERAT;
@@ -32,7 +38,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
               ? 'ring-2 ring-primary border-primary bg-primary/5 shadow-lg' 
               : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
           }`}
-          onClick={() => onModelChange('grundleasing')}
+          onClick={(e) => handleModelChange('grundleasing', e)}
         >
           <CardContent className="p-4 h-full flex flex-col">
             <div className="flex items-center justify-between mb-2">
@@ -77,7 +83,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
               ? 'ring-2 ring-slate-400 border-slate-400 bg-slate-50 shadow-lg' 
               : 'border-slate-200 hover:border-slate-300 hover:shadow-md opacity-75'
           }`}
-          onClick={() => onModelChange('strategisk')}
+          onClick={(e) => handleModelChange('strategisk', e)}
         >
           <CardContent className="p-4 h-full flex flex-col">
             <div className="flex items-center justify-between mb-2">
