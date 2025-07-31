@@ -78,7 +78,7 @@ const CreditInfoAccordion: React.FC = () => {
               
               <div className="pt-2 border-t border-slate-100">
                 <a 
-                  href="https://github.com/jillae/earnings-estimator/blob/main/public/lovable-uploads/Whitepaper_Kreditmodellen%20fo%CC%88r%20Golvmaskiner.pdf"
+                  href="/lovable-uploads/Whitepaper_Kreditmodellen%20för%20Golvmaskiner.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:text-primary/80 text-xs font-medium transition-colors duration-200"
