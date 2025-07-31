@@ -53,6 +53,14 @@ const CalculatorInputs: React.FC<{
     <div className="w-full space-y-6">
       {selectedMachine ? (
         <>
+          {/* Välkomstbanner efter maskinval */}
+          <div className="bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-lg p-4 text-center animate-slide-in mb-4">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-2xl">🎯</span>
+              <span className="text-lg font-bold text-green-700">Perfekt! Nu anpassar vi {selectedMachine.name} för din klinik</span>
+            </div>
+          </div>
+
           {/* Tips banner för steg 2 */}
           <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4 text-center animate-slide-in mb-4">
             <div className="flex items-center justify-center gap-2 mb-2">
