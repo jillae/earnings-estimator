@@ -67,7 +67,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
           <Computer className="h-10 w-10 text-slate-400" />
         ) : (
           <img 
-            src={getPlaceholderImageForMachine(machine.id)} 
+            src={machine.imageUrl || getPlaceholderImageForMachine(machine.id)} 
             alt={machine.name}
             className="w-full h-full object-contain"
             loading="lazy"
