@@ -233,7 +233,7 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
 
           {/* Feature Rows */}
           {tableRows.map((category, categoryIndex) => (
-            <React.Fragment key={categoryIndex}>
+            <div key={categoryIndex}>
               {/* Category Header */}
               <div className="grid grid-cols-4 bg-slate-25 border-b border-slate-100">
                 <div className="p-3 font-medium text-slate-800 text-sm border-r border-slate-200 col-span-4">
@@ -258,7 +258,7 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
                   </div>
                 </div>
               ))}
-            </React.Fragment>
+            </div>
           ))}
         </div>
       </div>
