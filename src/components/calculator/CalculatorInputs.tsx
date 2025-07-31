@@ -57,10 +57,10 @@ const CalculatorInputs: React.FC<{
           <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4 text-center animate-slide-in mb-4">
             <div className="flex items-center justify-center gap-2 mb-2">
               <span className="text-2xl">🏥</span>
-              <span className="text-lg font-bold text-blue-700">Välj din klinikstorlek</span>
+              <span className="text-lg font-bold text-blue-700">Detta påverkar hur många behandlingar du kan göra per dag</span>
             </div>
             <div className="text-sm text-blue-600">
-              Detta påverkar hur många behandlingar du kan göra per dag
+              Fortsätt här
             </div>
           </div>
 
@@ -121,10 +121,10 @@ const CalculatorInputs: React.FC<{
           <div className="bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4 text-center animate-slide-in mb-4">
             <div className="flex items-center justify-center gap-2 mb-2">
               <span className="text-2xl">💰</span>
-              <span className="text-lg font-bold text-purple-700">Välj betalningssätt</span>
+              <span className="text-lg font-bold text-purple-700">Välj betalningsform</span>
             </div>
             <div className="text-sm text-purple-600">
-              Leasing eller kontant - anpassa efter din ekonomiska situation
+              Leasing eller kontant - efter dina preferenser. <a href="#" className="text-purple-800 underline hover:text-purple-900">Fördelarna med leasing - läs mer</a>
             </div>
           </div>
 
