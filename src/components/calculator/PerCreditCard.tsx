@@ -57,32 +57,33 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
           Maximal flexibilitet – betala bara för det du använder
         </p>
         
-        {/* Pris sektion - samma höjd som flatrate */}
+        {/* Pris sektion - förenklad design */}
         <div className="mb-6">
-          <div className="text-3xl font-bold text-blue-600 mb-2">
+          <div className="text-3xl font-bold text-blue-600 mb-1">
             {formatCurrency(creditPrice)} × {totalCreditsPerMonth}
-            <div className="text-lg font-normal text-slate-500">
-              credits/mån = {formatCurrency(creditsCostPerMonth)}/mån (exempel)
-            </div>
           </div>
+          <div className="text-lg font-semibold text-slate-600 mb-1">
+            = {formatCurrency(creditsCostPerMonth)}<span className="text-base font-normal text-slate-500">/mån</span>
+          </div>
+          <div className="text-sm text-slate-500">(exempel vid nuvarande användning)</div>
         </div>
         
-        {/* Fördelar sektion - samma höjd */}
-        <div className="space-y-2 mb-6 flex-grow min-h-[8rem]">
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <span className="text-blue-600 font-bold">✔</span>
+        {/* Fördelar sektion - kompaktare */}
+        <div className="space-y-2.5 mb-6 flex-grow min-h-[7rem]">
+          <div className="flex items-start gap-3 text-sm text-slate-600">
+            <span className="text-blue-600 font-bold text-base">✔</span>
             <span>Betala enbart per behandling</span>
           </div>
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <span className="text-blue-600 font-bold">✔</span>
+          <div className="flex items-start gap-3 text-sm text-slate-600">
+            <span className="text-blue-600 font-bold text-base">✔</span>
             <span>Ingen bindning – full frihet</span>
           </div>
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <span className="text-blue-600 font-bold">✔</span>
+          <div className="flex items-start gap-3 text-sm text-slate-600">
+            <span className="text-blue-600 font-bold text-base">✔</span>
             <span>Anpassa efter faktisk användning</span>
           </div>
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <span className="text-blue-600 font-bold">✔</span>
+          <div className="flex items-start gap-3 text-sm text-slate-600">
+            <span className="text-blue-600 font-bold text-base">✔</span>
             <span>Perfekt vid ojämnt kundflöde eller lägre volym</span>
           </div>
         </div>

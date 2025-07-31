@@ -52,35 +52,35 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
           Fullständig kostnadskontroll med fast månadsavgift
         </p>
         
-        {/* Pris sektion - samma höjd som styckepris */}
+        {/* Pris sektion - förenklad design */}
         <div className="mb-6">
-          <div className="text-3xl font-bold text-green-600 mb-2">
+          <div className="text-3xl font-bold text-green-600 mb-1">
             {formatCurrency(flatrateCost)}<span className="text-lg font-normal text-slate-500">/mån</span>
           </div>
           
           {discountText && (
-            <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-sm px-2 py-1">
+            <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-sm px-2 py-1 mt-2">
               {discountText}
             </Badge>
           )}
         </div>
         
-        {/* Fördelar sektion - samma höjd */}
-        <div className="space-y-2 mb-6 flex-grow min-h-[8rem]">
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <span className="text-green-600 font-bold">✔</span>
+        {/* Fördelar sektion - kompaktare */}
+        <div className="space-y-2.5 mb-6 flex-grow min-h-[7rem]">
+          <div className="flex items-start gap-3 text-sm text-slate-600">
+            <span className="text-green-600 font-bold text-base">✔</span>
             <span>Fast månadspris</span>
           </div>
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <span className="text-green-600 font-bold">✔</span>
+          <div className="flex items-start gap-3 text-sm text-slate-600">
+            <span className="text-green-600 font-bold text-base">✔</span>
             <span>Alla credits inkluderade</span>
           </div>
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <span className="text-green-600 font-bold">✔</span>
+          <div className="flex items-start gap-3 text-sm text-slate-600">
+            <span className="text-green-600 font-bold text-base">✔</span>
             <span>Inga extra driftkostnader</span>
           </div>
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <span className="text-green-600 font-bold">✔</span>
+          <div className="flex items-start gap-3 text-sm text-slate-600">
+            <span className="text-green-600 font-bold text-base">✔</span>
             <span>Förutsägbar budget – inga överraskningar</span>
           </div>
         </div>
