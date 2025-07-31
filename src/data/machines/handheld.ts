@@ -18,7 +18,7 @@ export const handheldMachines: Machine[] = [
     usesCredits: false,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 500,
-    imageUrl: "https://drive.google.com/uc?export=view&id=1dG9Y0t10aQ_T6f2I7i6Z6D5A2HjX3L6p"
+    imageUrl: "https://i.imgur.com/RZIgGZY.png"
   },
   {
     id: "evrl",
@@ -36,7 +36,7 @@ export const handheldMachines: Machine[] = [
     usesCredits: false,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 800,
-    imageUrl: "https://drive.google.com/uc?export=view&id=1eO2pQ9o9tJ4vX8eN5i3W4K-w5S9i1V2j"
+    imageUrl: "https://i.imgur.com/cuTXUCb.png"
   },
   {
     id: "gvl",
@@ -54,6 +54,6 @@ export const handheldMachines: Machine[] = [
     usesCredits: false, // Bekräftat att GVL INTE använder krediter
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200,
-    imageUrl: "https://drive.google.com/uc?export=view&id=1fJ5A_7g1tL5nJ4tW0H9tT7pM9h5I2Q2X"
+    imageUrl: "https://i.imgur.com/8G0fOsI.png"
   }
 ];
