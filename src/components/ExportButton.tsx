@@ -382,12 +382,17 @@ Prognos,Årlig vinst,${data.annualProfit}`;
             </CardHeader>
             <CardContent>
               <div className="bg-gray-50 p-4 rounded-lg text-sm space-y-2">
-                <div><strong>Maskin:</strong> {selectedMachine?.name}</div>
+                <div><strong>Maskin:</strong> {selectedMachine?.name || 'Ingen maskin vald'}</div>
                 <div><strong>Månatlig nettovinst:</strong> {formatCurrency(netResults?.netPerMonthExVat || 0)}</div>
                 <div><strong>Årlig projekterad vinst:</strong> {formatCurrency((netResults?.netPerMonthExVat || 0) * 12)}</div>
-                <div><strong>Format:</strong> {exportOptions.format.toUpperCase()}</div>
-                {exportOptions.recipientEmail && (
+                <div><strong>Format:</strong> {exportOptions?.format?.toUpperCase() || 'PDF'}</div>
+                {exportOptions?.recipientEmail && (
                   <div><strong>Skickas till:</strong> {exportOptions.recipientEmail}</div>
+                )}
+                {!selectedMachine && (
+                  <div className="text-orange-600 mt-2 p-2 bg-orange-50 rounded">
+                    ⚠️ Välj en maskin för att se korrekt förhandsvisning
+                  </div>
                 )}
               </div>
             </CardContent>

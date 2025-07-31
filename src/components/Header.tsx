@@ -14,8 +14,13 @@ const Header = () => {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      // Om vi inte är på startsidan, gå till startsidan först
-      window.location.href = '/#whitepapers';
+      // Använd React Router för navigering istället för window.location
+      const navigate = () => {
+        setTimeout(() => {
+          window.location.href = '/#whitepapers';
+        }, 100);
+      };
+      navigate();
     }
   };
 
