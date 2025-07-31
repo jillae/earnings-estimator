@@ -136,6 +136,15 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       onMouseEnter={() => onHoveredInputChange?.('leasing')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
+      {/* Microcopy för slider-området */}
+      <div className="text-center">
+        <h3 className="text-lg font-semibold text-slate-800 mb-1">
+          Anpassa din investering
+        </h3>
+        <p className="text-sm text-slate-600">
+          Skräddarsy ditt avtal: Välj själv hur mycket du vill investera nu och spara på driften framåt.
+        </p>
+      </div>
       {/* Flexibel investering FÖRST */}
       {usesCredits && selectedLeasingModel === 'grundleasing' && (
         <LeaseSlider 
