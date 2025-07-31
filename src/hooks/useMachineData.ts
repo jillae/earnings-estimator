@@ -66,6 +66,22 @@ export const useMachineData = () => {
   const { toast } = useToast();
 
   const convertToCalculatorFormat = (dbMachine: DatabaseMachine): CalculatorMachine => {
+    // Använd samma bildlogik som MachineThumbnail
+    const getPlaceholderImageForMachine = (machineId: string) => {
+      const placeholders: {[key: string]: string} = {
+        "emerald": "https://i.imgur.com/IRED95Z.png",
+        "zerona": "https://i.imgur.com/2LGOVPB.png", 
+        "fx-635": "https://i.imgur.com/TQK3vZ3.png",
+        "fx-405": "https://i.imgur.com/pYqFUUT.png",
+        "xlr8": "https://i.imgur.com/RZIgGZY.png",
+        "evrl": "https://i.imgur.com/cuTXUCb.png",
+        "gvl": "https://i.imgur.com/8G0fOsI.png",
+        "base-station": "https://i.imgur.com/lnCem77.png",
+        "lunula": "https://i.imgur.com/QHbeZpX.jpg"
+      };
+      return placeholders[machineId] || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=200&q=80";
+    };
+    
     return {
       id: dbMachine.id, // Använd det riktiga UUID:t från databasen istället för konstruerat ID
       name: dbMachine.name,
@@ -87,7 +103,7 @@ export const useMachineData = () => {
       maxLeaseMultiplier: 1.5,
       defaultLeaseMultiplier: 1.0,
       creditPriceMultiplier: 1.0,
-      imageUrl: `https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=300&fit=crop` // Placeholder till dess bilderna läggs till i DB
+      imageUrl: getPlaceholderImageForMachine(dbMachine.name.toLowerCase()) // Använd existerande maskinbilder
     };
   };
 
