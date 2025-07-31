@@ -95,13 +95,11 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               .table-fixed th:nth-child(3) {
                 font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
                 font-variant-numeric: tabular-nums;
-                letter-spacing: -0.025em;
                 white-space: nowrap;
               }
               .table-fixed .currency-cell {
                 font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
                 font-variant-numeric: tabular-nums;
-                letter-spacing: -0.025em;
                 font-feature-settings: "tnum";
               }
             `
