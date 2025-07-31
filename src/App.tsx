@@ -31,7 +31,11 @@ function App() {
               <GrowthForecast />
             </CalculatorProvider>
           } />
-          <Route path="/roi-analysis" element={<ROIAnalysisWithProvider />} />
+          <Route path="/roi-analysis" element={
+            <CalculatorProvider>
+              <ROIAnalysisWithProvider />
+            </CalculatorProvider>
+          } />
           <Route path="/break-even" element={<BreakEvenAnalysisWithProvider />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin-login" element={<AdminLogin />} />
