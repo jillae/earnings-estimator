@@ -2,6 +2,7 @@
 import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
+import CreditInfoPopover from '@/components/calculator/CreditInfoPopover';
 
 interface CreditCostDetailsProps {
   useFlatrateOption: string;
@@ -37,7 +38,10 @@ const CreditCostDetails: React.FC<CreditCostDetailsProps> = ({
       {useFlatrateOption === 'perCredit' ? (
         <>
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm">Pris per credit</span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm">Pris per credit</span>
+              <CreditInfoPopover />
+            </div>
             <span className="text-lg font-semibold">{formatCurrency(creditPrice || 0, false)}</span>
           </div>
           <div className="flex justify-between items-center mb-2">
