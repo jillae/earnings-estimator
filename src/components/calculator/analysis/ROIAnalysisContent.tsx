@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { TrendingUp, Calendar } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { DollarSign, TrendingUp, Calendar, AlertTriangle, Target, Zap } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useCalculator } from '@/context/CalculatorContext';
 
@@ -13,358 +12,340 @@ const ROIAnalysisContent: React.FC = () => {
     selectedMachine,
     machinePriceSEK,
     cashPriceSEK,
-    paymentOption,
     revenue,
+    netResults,
     operatingCost,
-    leasingCost
+    leasingCost,
+    paymentOption,
+    treatmentsPerDay,
+    customerPrice
   } = useCalculator();
 
-  // Beräkna dynamiska startvärden från kalkylatorn
-  const getInitialInvestment = () => {
-    if (paymentOption === 'cash') {
-      return cashPriceSEK || 250000;
-    }
-    return (leasingCost * 12) || 120000;
-  };
+  // ROI-parametrar
+  const [analysisYears, setAnalysisYears] = useState(5);
+  const [initialInvestment, setInitialInvestment] = useState(
+    paymentOption === 'cash' ? (cashPriceSEK || 0) : 0
+  );
+  const [monthlyOperatingCost, setMonthlyOperatingCost] = useState(
+    operatingCost.totalCost || 0
+  );
 
-  const [analysisData, setAnalysisData] = useState({
-    initialInvestment: getInitialInvestment(),
-    monthlyRevenue: revenue.monthlyRevenueExVat || 0,
-    monthlyCosts: operatingCost.totalCost || 0,
-    timeHorizon: 60,
-    growthRate: 2
-  });
-
-  // Uppdatera värden när kalkylatorn ändras
+  // Dynamiskt uppdatera värden från kalkylatorn
   React.useEffect(() => {
-    setAnalysisData(prev => ({
-      ...prev,
-      initialInvestment: getInitialInvestment(),
-      monthlyRevenue: revenue.monthlyRevenueExVat || prev.monthlyRevenue,
-      monthlyCosts: operatingCost.totalCost || prev.monthlyCosts,
-    }));
-  }, [paymentOption, cashPriceSEK, leasingCost, revenue.monthlyRevenueExVat, operatingCost.totalCost]);
+    setInitialInvestment(paymentOption === 'cash' ? (cashPriceSEK || 0) : 0);
+    setMonthlyOperatingCost(operatingCost.totalCost || 0);
+  }, [paymentOption, cashPriceSEK, operatingCost.totalCost]);
 
-  // Beräkna ROI data
-  const calculateROIData = () => {
+  // Beräkna ROI-data
+  const generateROIData = () => {
     const data = [];
-    let cumulativeProfit = -analysisData.initialInvestment;
-    let monthlyNet = analysisData.monthlyRevenue - analysisData.monthlyCosts;
+    const monthlyRevenue = revenue?.monthlyRevenueExVat || 0;
+    const monthlyNet = netResults?.netPerMonthExVat || 0;
     
-    for (let month = 0; month <= analysisData.timeHorizon; month++) {
-      const growthFactor = Math.pow(1 + (analysisData.growthRate / 100), month / 12);
-      const adjustedNet = monthlyNet * growthFactor;
-      
-      if (month > 0) {
-        cumulativeProfit += adjustedNet;
+    let cumulativeInvestment = initialInvestment;
+    let cumulativeProfit = -initialInvestment; // Börja med negativt för initial investering
+    
+    for (let month = 0; month <= analysisYears * 12; month++) {
+      // För leasing lägg till månadskostnad som del av investering
+      if (paymentOption === 'leasing' && month > 0) {
+        cumulativeInvestment += leasingCost || 0;
       }
       
-      const roi = analysisData.initialInvestment > 0 ? 
-        ((cumulativeProfit + analysisData.initialInvestment) / analysisData.initialInvestment) * 100 : 0;
+      // Lägg till månatligt netto (minus operativa kostnader redan räknade)
+      if (month > 0) {
+        cumulativeProfit += monthlyNet;
+      }
+      
+      // Beräkna ROI
+      const roi = cumulativeInvestment > 0 ? 
+        ((cumulativeProfit + cumulativeInvestment) / cumulativeInvestment) * 100 : 0;
+      
+      // Payback period (månader till break-even)
+      const isPaybackAchieved = cumulativeProfit >= 0;
       
       data.push({
         month,
+        year: Math.floor(month / 12),
+        cumulativeInvestment: Math.round(cumulativeInvestment),
         cumulativeProfit: Math.round(cumulativeProfit),
-        monthlyNet: Math.round(adjustedNet),
+        monthlyNet: Math.round(monthlyNet),
         roi: Math.round(roi * 10) / 10,
-        breakEven: cumulativeProfit >= 0
+        isPaybackAchieved
       });
     }
     
     return data;
   };
 
-  const roiData = calculateROIData();
-  const breakEvenMonth = roiData.find(d => d.breakEven)?.month || analysisData.timeHorizon;
+  const roiData = generateROIData();
+  
+  // Hitta payback period
+  const paybackMonth = roiData.find(d => d.cumulativeProfit >= 0)?.month || analysisYears * 12;
+  const paybackYears = Math.floor(paybackMonth / 12);
+  const paybackMonths = paybackMonth % 12;
+  
+  // Slutlig ROI
   const finalROI = roiData[roiData.length - 1]?.roi || 0;
-  const totalProfit = roiData[roiData.length - 1]?.cumulativeProfit || 0;
-
-  // Scenario analys
-  const scenarios = [
-    {
-      name: 'Pessimistisk',
-      growth: analysisData.growthRate - 1,
-      revenue: analysisData.monthlyRevenue * 0.8,
-      color: '#ef4444'
-    },
-    {
-      name: 'Realistisk', 
-      growth: analysisData.growthRate,
-      revenue: analysisData.monthlyRevenue,
-      color: '#3b82f6'
-    },
-    {
-      name: 'Optimistisk',
-      growth: analysisData.growthRate + 2,
-      revenue: analysisData.monthlyRevenue * 1.2,
-      color: '#22c55e'
-    }
-  ];
-
-  const scenarioData = scenarios.map(scenario => {
-    let cumulativeProfit = -analysisData.initialInvestment;
-    let monthlyNet = scenario.revenue - analysisData.monthlyCosts;
-    
-    for (let month = 1; month <= analysisData.timeHorizon; month++) {
-      const growthFactor = Math.pow(1 + (scenario.growth / 100), month / 12);
-      cumulativeProfit += monthlyNet * growthFactor;
-    }
-    
-    return {
-      ...scenario,
-      finalProfit: Math.round(cumulativeProfit),
-      roi: Math.round(((cumulativeProfit + analysisData.initialInvestment) / analysisData.initialInvestment) * 100)
-    };
-  });
-
-  // Kontrollera om vi använder fallback-värden
-  const usingFallbackData = !selectedMachine || revenue.monthlyRevenueExVat === 0 || operatingCost.totalCost === 0;
+  const finalProfit = roiData[roiData.length - 1]?.cumulativeProfit || 0;
+  
+  // Månadsvis data för trendanalys
+  const monthlyTrendData = roiData.filter((_, index) => index % 3 === 0); // Var tredje månad
 
   return (
     <div className="space-y-6">
-      {/* Varning om saknad data */}
-      {usingFallbackData && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-          <div className="text-red-600 text-4xl mb-4">📊</div>
-          <h3 className="text-xl font-semibold text-red-800 mb-2">Ingen data att analysera</h3>
-          <p className="text-red-700 mb-4">
-            För att göra en ROI-analys behöver du först göra en beräkning i kalkylatorn.
-          </p>
-          <p className="text-sm text-red-600 mb-4">
-            Vi visar inga exempelvärden för att undvika missförstånd.
-          </p>
-          <a 
-            href="/" 
-            className="inline-block bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Gå till Kalkylatorn
-          </a>
-        </div>
-      )}
+      {/* Header */}
+      <div className="text-center mb-6">
+        <h3 className="text-2xl font-bold mb-2">ROI-analys</h3>
+        <p className="text-slate-600">
+          Avkastning på investering för {selectedMachine?.name || 'den valda maskinen'}
+        </p>
+      </div>
 
-      {/* Visa analysen endast om vi har data */}
-      {!usingFallbackData && (
-      <div className="grid lg:grid-cols-3 gap-6">
-      {/* Input Panel */}
-      <div className="lg:col-span-1">
-        <Card>
-          <CardHeader>
-            <CardTitle>Analysparametrar</CardTitle>
-            <CardDescription>Justera för scenarioanalys</CardDescription>
-            {selectedMachine && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                Baserat på {selectedMachine.name} ({paymentOption === 'cash' ? 'Kontant' : 'Leasing'})
-              </div>
-            )}
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="investment">Initial investering (kr)</Label>
-              <Input
-                id="investment"
-                type="number"
-                value={analysisData.initialInvestment}
-                onChange={(e) => setAnalysisData(prev => ({
-                  ...prev, 
-                  initialInvestment: Number(e.target.value)
-                }))}
-              />
+      {/* Snabba KPI:er */}
+      <div className="grid md:grid-cols-4 gap-4">
+        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <DollarSign className="w-4 h-4 text-green-600" />
+              <span className="text-sm font-medium text-green-900">ROI ({analysisYears} år)</span>
             </div>
-
-            <div>
-              <Label htmlFor="revenue">Månatlig intäkt (kr)</Label>
-              <Input
-                id="revenue"
-                type="number"
-                value={analysisData.monthlyRevenue}
-                onChange={(e) => setAnalysisData(prev => ({
-                  ...prev, 
-                  monthlyRevenue: Number(e.target.value)
-                }))}
-              />
+            <div className="text-2xl font-bold text-green-700">
+              {finalROI.toFixed(1)}%
             </div>
-
-            <div>
-              <Label htmlFor="costs">Månatlig kostnad (kr)</Label>
-              <Input
-                id="costs"
-                type="number"
-                value={analysisData.monthlyCosts}
-                onChange={(e) => setAnalysisData(prev => ({
-                  ...prev, 
-                  monthlyCosts: Number(e.target.value)
-                }))}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="timeHorizon">Tidshorisont</Label>
-              <Select 
-                value={analysisData.timeHorizon.toString()}
-                onValueChange={(value) => setAnalysisData(prev => ({
-                  ...prev, 
-                  timeHorizon: Number(value)
-                }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="24">2 år</SelectItem>
-                  <SelectItem value="36">3 år</SelectItem>
-                  <SelectItem value="48">4 år</SelectItem>
-                  <SelectItem value="60">5 år</SelectItem>
-                  <SelectItem value="84">7 år</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="growth">Årlig tillväxt (%)</Label>
-              <Input
-                id="growth"
-                type="number"
-                step="0.5"
-                value={analysisData.growthRate}
-                onChange={(e) => setAnalysisData(prev => ({
-                  ...prev, 
-                  growthRate: Number(e.target.value)
-                }))}
-              />
-            </div>
+            <p className="text-xs text-green-600 mt-1">
+              Total avkastning
+            </p>
           </CardContent>
         </Card>
 
-        {/* Key Metrics */}
-        <Card className="mt-4">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Calendar className="w-4 h-4 text-blue-600" />
+              <span className="text-sm font-medium text-blue-900">Payback-tid</span>
+            </div>
+            <div className="text-2xl font-bold text-blue-700">
+              {paybackYears}.{paybackMonths}
+            </div>
+            <p className="text-xs text-blue-600 mt-1">
+              År till break-even
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <TrendingUp className="w-4 h-4 text-purple-600" />
+              <span className="text-sm font-medium text-purple-900">Total Vinst</span>
+            </div>
+            <div className="text-2xl font-bold text-purple-700">
+              {(finalProfit / 1000000).toFixed(1)}M
+            </div>
+            <p className="text-xs text-purple-600 mt-1">
+              SEK efter {analysisYears} år
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Target className="w-4 h-4 text-orange-600" />
+              <span className="text-sm font-medium text-orange-900">Månatligt</span>
+            </div>
+            <div className="text-2xl font-bold text-orange-700">
+              {((netResults?.netPerMonthExVat || 0) / 1000).toFixed(0)}k
+            </div>
+            <p className="text-xs text-orange-600 mt-1">
+              Netto per månad
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* ROI-graf */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-blue-600" />
+            ROI-utveckling över tid
+          </CardTitle>
+          <CardDescription>
+            Kumulativ avkastning och vinst över {analysisYears} år
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={monthlyTrendData}>
+                <defs>
+                  <linearGradient id="roiGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                <XAxis 
+                  dataKey="year" 
+                  tickFormatter={(value) => `År ${value}`}
+                />
+                <YAxis 
+                  yAxisId="roi"
+                  orientation="left"
+                  tickFormatter={(value) => `${value}%`}
+                />
+                <YAxis 
+                  yAxisId="profit"
+                  orientation="right"
+                  tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
+                />
+                <Tooltip 
+                  formatter={(value, name) => {
+                    if (name === 'roi') {
+                      return [`${Number(value).toFixed(1)}%`, 'ROI'];
+                    } else {
+                      return [formatCurrency(Number(value)), 'Kumulativ Vinst'];
+                    }
+                  }}
+                  labelFormatter={(year) => `År ${year}`}
+                />
+                <Line
+                  yAxisId="roi"
+                  type="monotone"
+                  dataKey="roi"
+                  stroke="#3b82f6"
+                  strokeWidth={3}
+                  dot={{ fill: '#3b82f6', strokeWidth: 2 }}
+                />
+                <Line
+                  yAxisId="profit"
+                  type="monotone"
+                  dataKey="cumulativeProfit"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={{ fill: '#10b981', strokeWidth: 2 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Parametrar och Scenarioanalys */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card>
           <CardHeader>
-            <CardTitle>Nyckeltal</CardTitle>
+            <CardTitle>Investeringsparametrar</CardTitle>
+            <CardDescription>Justera värden för mer exakt analys</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-3 bg-red-50 rounded-lg">
-                <Calendar className="h-5 w-5 mx-auto mb-1 text-red-600" />
-                <p className="text-xl font-bold text-red-700">{breakEvenMonth}</p>
-                <p className="text-xs text-red-600">Månader till break-even</p>
-              </div>
-              <div className="text-center p-3 bg-green-50 rounded-lg">
-                <TrendingUp className="h-5 w-5 mx-auto mb-1 text-green-600" />
-                <p className="text-xl font-bold text-green-700">{finalROI}%</p>
-                <p className="text-xs text-green-600">Total ROI</p>
-              </div>
+            <div>
+              <Label htmlFor="analysisYears">Analysperiod (år)</Label>
+              <Input
+                id="analysisYears"
+                type="number"
+                value={analysisYears}
+                onChange={(e) => setAnalysisYears(Number(e.target.value))}
+                min="1"
+                max="10"
+                className="mt-1"
+              />
             </div>
             
-            <div className="pt-4 border-t">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Total vinst:</span>
-                <span className="font-bold text-green-600">
-                  {formatCurrency(totalProfit)}
-                </span>
+            <div>
+              <Label htmlFor="initialInvestment">Initial investering</Label>
+              <Input
+                id="initialInvestment"
+                type="number"
+                value={initialInvestment}
+                onChange={(e) => setInitialInvestment(Number(e.target.value))}
+                className="mt-1"
+                disabled={paymentOption === 'leasing'}
+              />
+              {paymentOption === 'leasing' && (
+                <p className="text-xs text-slate-500 mt-1">
+                  Beräknas automatiskt för leasing
+                </p>
+              )}
+            </div>
+            
+            <div>
+              <Label htmlFor="monthlyOperating">Månatlig driftskostnad</Label>
+              <Input
+                id="monthlyOperating"
+                type="number"
+                value={monthlyOperatingCost}
+                onChange={(e) => setMonthlyOperatingCost(Number(e.target.value))}
+                className="mt-1"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="w-5 h-5 text-purple-600" />
+              ROI-optimering
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <h5 className="font-medium text-green-900 mb-2">🚀 Förbättringsmöjligheter</h5>
+              <ul className="space-y-2 text-sm text-green-700">
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2"></span>
+                  <span>Öka behandlingar/dag med 1 → +{formatCurrency((customerPrice * 22) || 0)}/mån</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2"></span>
+                  <span>Höj pris med 10% → +{formatCurrency(((revenue?.monthlyRevenueExVat || 0) * 0.1))}/mån</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2"></span>
+                  <span>Optimera kostnader → Förbättrad ROI</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h5 className="font-medium text-blue-900 mb-2">📊 Branschbenchmark</h5>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-blue-700">Branschsnitt ROI:</span>
+                  <span className="font-medium">15-25%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-blue-700">Din ROI:</span>
+                  <span className={`font-medium ${finalROI > 20 ? 'text-green-600' : 'text-orange-600'}`}>
+                    {finalROI.toFixed(1)}%
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-blue-700">Payback tid (snitt):</span>
+                  <span className="font-medium">2-3 år</span>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
 
-      {/* Analysis Results */}
-      <div className="lg:col-span-2 space-y-4">
-        {/* ROI Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Kumulativ Lönsamhet</CardTitle>
-            <CardDescription>
-              Utveckling av ackumulerad vinst över tid
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={roiData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="month" 
-                    tickFormatter={(value) => `${value}m`}
-                  />
-                  <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
-                  <Tooltip 
-                    formatter={(value: any, name) => [
-                      formatCurrency(value), 
-                      name === 'cumulativeProfit' ? 'Ackumulerad vinst' : 'ROI'
-                    ]}
-                    labelFormatter={(label) => `Månad ${label}`}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="cumulativeProfit" 
-                    stroke="#3b82f6" 
-                    strokeWidth={3}
-                    dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey={() => 0}
-                    stroke="#ef4444" 
-                    strokeDasharray="5 5"
-                    strokeWidth={1}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Scenario Analysis */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Scenarioanalys</CardTitle>
-            <CardDescription>
-              Jämförelse av olika tillväxtscenarier efter {analysisData.timeHorizon} månader
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-48 mb-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={scenarioData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
-                  <Tooltip 
-                    formatter={(value: any, name) => [
-                      name === 'finalProfit' ? formatCurrency(value) : `${value}%`,
-                      name === 'finalProfit' ? 'Total vinst' : 'ROI'
-                    ]}
-                  />
-                  <Bar 
-                    dataKey="finalProfit" 
-                    fill="#3b82f6"
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              {scenarioData.map((scenario, index) => (
-                <div key={index} className="text-center p-3 border rounded-lg">
-                  <h4 className="font-medium mb-2" style={{ color: scenario.color }}>
-                    {scenario.name}
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-1">
-                    ROI: <span className="font-bold">{scenario.roi}%</span>
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Tillväxt: <span className="font-bold">{scenario.growth}%/år</span>
-                  </p>
+            {finalROI < 15 && (
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                <div className="flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 text-orange-600 mt-0.5" />
+                  <div>
+                    <h5 className="font-medium text-orange-900 mb-1">Optimering rekommenderad</h5>
+                    <p className="text-sm text-orange-700">
+                      ROI under branschsnitt. Överväg att justera priser eller öka volym.
+                    </p>
+                  </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
-      </div>
-      )}
     </div>
   );
 };
