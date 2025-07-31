@@ -6,10 +6,12 @@ import { useCalculator } from '@/context/CalculatorContext';
 import { SaveConfigurationButton } from './SaveConfigurationButton';
 import { QuoteRequestButton } from './QuoteRequestButton';
 import { Button } from '@/components/ui/button';
+import { AnalysisHubModal } from './AnalysisHubModal';
 
 const CalculatorLayout: React.FC = () => {
   const { netResults } = useCalculator();
   const [hoveredInput, setHoveredInput] = useState<'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null>(null);
+  const [showAnalysisModal, setShowAnalysisModal] = useState(false);
   
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
@@ -47,14 +49,14 @@ const CalculatorLayout: React.FC = () => {
                   </p>
                 </div>
                 
-                {/* Action cards - 5 kort i en rad */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
+                {/* Action cards - 3 enkla kort */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
                   <div className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6">
                     <div className="mb-4">
                       <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
                         <span className="text-2xl">💾</span>
                       </div>
-                      <h4 className="font-semibold text-slate-900 mb-2">Spara din konfiguration</h4>
+                      <h4 className="font-semibold text-slate-900 mb-2">Spara konfiguration</h4>
                       <p className="text-sm text-slate-600 mb-4">Behåll alla dina inställningar för framtida användning</p>
                     </div>
                     <SaveConfigurationButton />
@@ -65,57 +67,25 @@ const CalculatorLayout: React.FC = () => {
                       <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-3">
                         <span className="text-2xl">📝</span>
                       </div>
-                      <h4 className="font-semibold text-slate-900 mb-2">Begär personlig offert</h4>
-                      <p className="text-sm text-slate-600 mb-4">Offert för denna konfiguration och maskin. Ytterligare maskiner kräver ny beräkning.</p>
+                      <h4 className="font-semibold text-slate-900 mb-2">Begär offert</h4>
+                      <p className="text-sm text-slate-600 mb-4">Få en personlig offert för denna konfiguration</p>
                     </div>
                     <QuoteRequestButton />
                   </div>
                   
                   <div className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6">
                     <div className="mb-4">
-                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <span className="text-2xl">📈</span>
-                      </div>
-                      <h4 className="font-semibold text-slate-900 mb-2">Tillväxtprognos</h4>
-                      <p className="text-sm text-slate-600 mb-4">Visualisera din framtida tillväxt och intäktsutveckling</p>
-                    </div>
-                    <Button 
-                      onClick={() => window.open('/klinik-optimering-coming-soon', '_blank')}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      Öppna prognos
-                    </Button>
-                  </div>
-                  
-                  <div className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6">
-                    <div className="mb-4">
-                      <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <span className="text-2xl">💰</span>
-                      </div>
-                      <h4 className="font-semibold text-slate-900 mb-2">ROI Analys</h4>
-                      <p className="text-sm text-slate-600 mb-4">Beräkna avkastning på investering över tid</p>
-                    </div>
-                    <Button 
-                      onClick={() => window.open('/roi-analysis', '_blank')}
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-                    >
-                      Beräkna ROI
-                    </Button>
-                  </div>
-                  
-                  <div className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6">
-                    <div className="mb-4">
                       <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <span className="text-2xl">🎯</span>
+                        <span className="text-2xl">📊</span>
                       </div>
-                      <h4 className="font-semibold text-slate-900 mb-2">Break-Even Analys</h4>
-                      <p className="text-sm text-slate-600 mb-4">Hitta din nollpunkt och lönsamhetsgräns</p>
+                      <h4 className="font-semibold text-slate-900 mb-2">Finansiell analys</h4>
+                      <p className="text-sm text-slate-600 mb-4">Detaljerad tillväxt-, ROI- och break-even analys</p>
                     </div>
                     <Button 
-                      onClick={() => window.open('/break-even', '_blank')}
+                      onClick={() => setShowAnalysisModal(true)}
                       className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                     >
-                      Analysera break-even
+                      Öppna analyser
                     </Button>
                   </div>
                 </div>
@@ -132,6 +102,11 @@ const CalculatorLayout: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      <AnalysisHubModal 
+        open={showAnalysisModal}
+        onOpenChange={setShowAnalysisModal}
+      />
     </div>
   );
 };
