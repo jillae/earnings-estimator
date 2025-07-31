@@ -4,7 +4,7 @@ import { CalculatorState } from '@/context/calculator/types';
 // Initial state values for the calculator
 export const initialState: CalculatorState = {
   clinicSize: 'medium',
-  selectedMachineId: "", // Tom sträng som default - kommer att sättas från databas-data
+  selectedMachineId: "", // Tom sträng som default - ingen maskin vald
   paymentOption: "leasing", // Default till leasing
   selectedLeasingPeriodId: "60", // Default till 60 månader (KORRIGERAT)
   selectedInsuranceId: "yes", // Default to include insurance

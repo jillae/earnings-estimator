@@ -23,7 +23,7 @@ export const treatmentMachines: Machine[] = [
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 900,
-    imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=300&h=200&q=80"
+    imageUrl: "https://i.imgur.com/2HkJ9vx.jpg"
   },
   {
     id: "fx-405",
@@ -46,6 +46,6 @@ export const treatmentMachines: Machine[] = [
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200,
-    imageUrl: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?auto=format&fit=crop&w=300&h=200&q=80"
+    imageUrl: "https://i.imgur.com/8mKF3nq.jpg"
   }
 ];

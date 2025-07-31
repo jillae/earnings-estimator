@@ -18,7 +18,7 @@ export const specialMachines: Machine[] = [
     usesCredits: false,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 3600,
-    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=200&q=80"
+    imageUrl: "https://i.imgur.com/7GkH3pN.jpg"
   },
   {
     id: "lunula",
@@ -36,6 +36,6 @@ export const specialMachines: Machine[] = [
     usesCredits: false,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 4000,
-    imageUrl: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?auto=format&fit=crop&w=300&h=200&q=80"
+    imageUrl: "https://i.imgur.com/2QxM8vR.jpg"
   }
 ];
