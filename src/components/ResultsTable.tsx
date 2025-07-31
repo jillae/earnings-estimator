@@ -176,7 +176,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             {/* SEPARATA RADER för alla typer */}
             {paymentOption === 'leasing' ? (
               <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'leasing' || hoveredInput === 'payment' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
-                <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Leasing</td>
+                <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">Leasingkostnad</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost)}</td>
                 <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">{formatCurrency(safeLeasingCost * 12)}</td>
               </tr>
@@ -188,24 +188,24 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
               </tr>
             )}
             
-            {/* Credits kostnad - INTE för strategisk leasing */}
-            {selectedLeasingModel !== 'strategisk' && (
-              <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
-                <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">
-                  {isFlatrateActive ? (
-                    selectedSlaLevel === 'Guld' ? 'Flatrate (ingår i Guld)' : 'Flatrate Credits'
-                  ) : (
-                    'Credits'
-                  )}
-                </td>
-                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
-                  {selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost)}
-                </td>
-                <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
-                  {selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost * 12)}
-                </td>
-              </tr>
-            )}
+            {/* Credits kostnad - visa alltid, även för strategisk leasing (då 0 kr) */}
+            <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
+              <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">
+                {selectedLeasingModel === 'strategisk' ? (
+                  'Credits (ingår)'
+                ) : isFlatrateActive ? (
+                  selectedSlaLevel === 'Guld' ? 'Flatrate (ingår i Guld)' : 'Flatrate Credits'
+                ) : (
+                  'Credits'
+                )}
+              </td>
+              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
+                {selectedLeasingModel === 'strategisk' || selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost)}
+              </td>
+              <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs">
+                {selectedLeasingModel === 'strategisk' || selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost * 12)}
+              </td>
+            </tr>
             
             {/* SLA-kostnad - visa alltid, även vid 0 kr */}
             <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'sla' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
