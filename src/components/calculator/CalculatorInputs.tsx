@@ -75,7 +75,7 @@ const CalculatorInputs: React.FC<{
               STEG 2
             </div>
             <div className="glass-card animate-slide-in pt-2" style={{ animationDelay: '200ms' }}>
-              <ClinicSizeSelector 
+              <ClinicSizeSelector
                 clinicSize={clinicSize} 
                 netYearlyResult={netResults?.netPerYearExVat || 0}
                 onChange={setClinicSize}
