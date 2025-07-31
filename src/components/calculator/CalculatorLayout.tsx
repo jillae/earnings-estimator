@@ -66,7 +66,7 @@ const CalculatorLayout: React.FC = () => {
                         <span className="text-2xl">📝</span>
                       </div>
                       <h4 className="font-semibold text-slate-900 mb-2">Begär personlig offert</h4>
-                      <p className="text-sm text-slate-600 mb-4">Få en skräddarsydd offert baserad på din konfiguration</p>
+                      <p className="text-sm text-slate-600 mb-4">Offert för denna konfiguration och maskin. Ytterligare maskiner kräver ny beräkning.</p>
                     </div>
                     <QuoteRequestButton />
                   </div>
@@ -80,7 +80,7 @@ const CalculatorLayout: React.FC = () => {
                       <p className="text-sm text-slate-600 mb-4">Visualisera din framtida tillväxt och intäktsutveckling</p>
                     </div>
                     <Button 
-                      onClick={() => window.open('/roi-analysis', '_blank')}
+                      onClick={() => window.open('/growth-forecast', '_blank')}
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       Öppna prognos

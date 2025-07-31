@@ -4,15 +4,17 @@ import { Toaster } from './components/ui/toaster';
 import { HelmetProvider } from 'react-helmet-async';
 import Index from './pages/Index';
 import Dashboard from './pages/Dashboard';
-import ROIAnalysisWithProvider from './pages/ROIAnalysisWithProvider';
+import GrowthForecast from './pages/GrowthForecast';
 import BreakEvenAnalysisWithProvider from './pages/BreakEvenAnalysisWithProvider';
+import ROIAnalysisWithProvider from './pages/ROIAnalysisWithProvider';
 import Contact from './pages/Contact';
 import Manual from './pages/Manual';
 import AdminLogin from './pages/AdminLogin';
-import Admin from './pages/Admin';
 import KlinikOptimeringComingSoon from './pages/KlinikOptimeringComingSoon';
-import AdminProtectedRoute from './components/AdminProtectedRoute';
+import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
+
 import './App.css';
 
 function App() {
@@ -23,11 +25,12 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/calculator" element={<Index />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/growth-forecast" element={<GrowthForecast />} />
           <Route path="/roi-analysis" element={<ROIAnalysisWithProvider />} />
           <Route path="/break-even" element={<BreakEvenAnalysisWithProvider />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/manual" element={<Manual />} />
           <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/manual" element={<Manual />} />
           <Route
             path="/admin"
             element={

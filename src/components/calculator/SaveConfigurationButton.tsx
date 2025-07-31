@@ -56,8 +56,7 @@ export const SaveConfigurationButton: React.FC = () => {
   return (
     <Button 
       onClick={handleSaveConfiguration}
-      variant="outline"
-      className="w-full flex items-center justify-center gap-2 h-12 border-2 border-slate-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 text-slate-700 font-medium"
+      className="w-full flex items-center justify-center gap-2 h-12 bg-slate-100 hover:bg-slate-200 border border-slate-300 hover:border-slate-400 text-slate-700 hover:text-slate-800 transition-all duration-200 font-medium"
     >
       <Save size={18} />
       Spara konfiguration
