@@ -71,8 +71,8 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const safeCreditCost = isNaN(creditCost) ? 0 : creditCost;
 
   // Calculate components for display - inkluderar nu SLA-kostnad korrekt
-  // För strategisk leasing: endast leasing kostnad (credits ingår)
-  const totalCostPerMonth = selectedLeasingModel === 'strategisk' 
+  // För strategimodell: endast leasing kostnad (credits ingår)
+  const totalCostPerMonth = selectedLeasingModel === 'strategimodell'
     ? safeLeasingCost + safeSlaOstCost
     : safeLeasingCost + safeOperatingCost + safeSlaOstCost;
 
@@ -198,7 +198,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             {/* Credits kostnad - visa alltid, även för strategisk leasing (då 0 kr) */}
             <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
               <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">
-                {selectedLeasingModel === 'strategisk' ? (
+                {selectedLeasingModel === 'strategimodell' ? (
                   'Credits (ingår)'
                 ) : isFlatrateActive ? (
                   selectedSlaLevel === 'Guld' ? 'Flatrate (ingår i Guld)' : 'Flatrate Credits'
@@ -207,10 +207,10 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                 )}
               </td>
               <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs currency-cell">
-                {selectedLeasingModel === 'strategisk' || selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost)}
+                {selectedLeasingModel === 'strategimodell' || selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost)}
               </td>
               <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs currency-cell">
-                {selectedLeasingModel === 'strategisk' || selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost * 12)}
+                {selectedLeasingModel === 'strategimodell' || selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost * 12)}
               </td>
             </tr>
             

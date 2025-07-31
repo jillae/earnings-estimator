@@ -29,7 +29,7 @@ export function useStateSelections() {
   const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit'); // Default till perCredit istället för flatrate
   
   // Nytt state för leasingmodell-val
-  const [selectedLeasingModel, setSelectedLeasingModel] = useState<'grundleasing' | 'strategisk'>('grundleasing');
+  const [selectedLeasingModel, setSelectedLeasingModel] = useState<'hybridmodell' | 'strategimodell'>('hybridmodell');
   
   // Nollpunkt state
   const [workDaysPerMonth, setWorkDaysPerMonth] = useState<number>(22);
@@ -37,10 +37,10 @@ export function useStateSelections() {
   // Nytt state för info-rutan
   const [currentInfoText, setCurrentInfoText] = useState<InfoText | null>(null);
 
-  // Återställ slider till standard när man byter till grundleasing
+  // Återställ slider till standard när man byter till hybridmodell
   useEffect(() => {
-    if (selectedLeasingModel === 'grundleasing' && currentSliderStep !== 1) {
-      console.log('Återställer slider till standard (1) vid byte till grundleasing');
+    if (selectedLeasingModel === 'hybridmodell' && currentSliderStep !== 1) {
+      console.log('Återställer slider till standard (1) vid byte till hybridmodell');
       setCurrentSliderStep(1);
     }
   }, [selectedLeasingModel]);
@@ -76,7 +76,7 @@ export function useStateSelections() {
       setPaymentOption('leasing');
       setUseFlatrateOption('perCredit'); // Återställ till perCredit som standard
       setAllowBelowFlatrate(true);
-      setSelectedLeasingModel('grundleasing');
+      setSelectedLeasingModel('hybridmodell');
       setWorkDaysPerMonth(22); // Återställ nollpunkt till standard
       setTreatmentsPerDay(4); // Återställ behandlingar till standard
     }

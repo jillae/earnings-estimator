@@ -21,7 +21,7 @@ interface UseCalculationEngineProps {
   leaseAdjustmentFactor: number;
   useFlatrateOption: 'flatrate' | 'perCredit';
   currentSliderStep: number;
-  selectedLeasingModel: 'grundleasing' | 'strategisk';
+  selectedLeasingModel: 'hybridmodell' | 'strategimodell';
   exchangeRate?: number;
   workDaysPerMonth: number;
 }

@@ -25,7 +25,7 @@ export interface CalculationInputs {
   leaseAdjustmentFactor: number;
   useFlatrateOption: 'flatrate' | 'perCredit';
   currentSliderStep: number;
-  selectedLeasingModel: 'grundleasing' | 'strategisk';
+  selectedLeasingModel: 'hybridmodell' | 'strategimodell';
   exchangeRate?: number;
   workDaysPerMonth: number;
 }
@@ -271,7 +271,7 @@ export class CalculationEngine {
     const leasingCostStrategic = inputs.machine.leasingMax || leasingCostBase;
     
     // AKTIV KOSTNAD: Beror på valt leasingpaket (grundleasing eller strategisk)
-    const useStrategicPricing = inputs.selectedLeasingModel === 'strategisk';
+    const useStrategicPricing = inputs.selectedLeasingModel === 'strategimodell';
     
     let leasingCost: number;
     if (useStrategicPricing) {

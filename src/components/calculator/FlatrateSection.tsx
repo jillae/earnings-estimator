@@ -21,8 +21,8 @@ const FlatrateSection: React.FC = () => {
 
   const { useFlatrateOption, handleFlatrateChange, canEnableFlatrate } = useFlatrateHandler();
 
-  // Visa endast för maskiner som använder credits OCH inte är i strategisk leasing-läge
-  if (!selectedMachine?.usesCredits || selectedLeasingModel === 'strategisk') {
+  // Visa endast för maskiner som använder credits OCH inte är i strategimodell-läge
+  if (!selectedMachine?.usesCredits || selectedLeasingModel === 'strategimodell') {
     return null;
   }
 

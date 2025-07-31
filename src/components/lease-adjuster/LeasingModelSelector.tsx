@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { LEASING_PACKAGES, PACKAGE_LOCK_WARNING } from '@/data/leasingPackages';
 
 interface LeasingModelSelectorProps {
-  selectedModel: 'grundleasing' | 'strategisk';
-  onModelChange: (model: 'grundleasing' | 'strategisk') => void;
+  selectedModel: 'hybridmodell' | 'strategimodell';
+  onModelChange: (model: 'hybridmodell' | 'strategimodell') => void;
   currentSliderStep: number;
 }
 
@@ -15,14 +15,14 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
   currentSliderStep
 }) => {
   // Förhindra scroll-hopp vid klick
-  const handleModelChange = (model: 'grundleasing' | 'strategisk', event: React.MouseEvent) => {
+  const handleModelChange = (model: 'hybridmodell' | 'strategimodell', event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
     onModelChange(model);
   };
   // Statiska paketrubriker - ska aldrig ändras dynamiskt
-  const grundleasingPackage = LEASING_PACKAGES.HYBRIDPAKET;
-  const strategiskPackage = LEASING_PACKAGES.ALLT_INKLUDERAT;
+  const hybridmodellPackage = LEASING_PACKAGES.HYBRIDPAKET;
+  const strategimodellPackage = LEASING_PACKAGES.ALLT_INKLUDERAT;
 
   return (
     <div className="space-y-4 mb-6">
@@ -32,94 +32,96 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Hybridmodell - Primär */}
-        <Card 
-          className={`cursor-pointer transition-all duration-300 h-full border-2 ${
-            selectedModel === 'grundleasing' 
-              ? 'ring-2 ring-primary border-primary bg-primary/5 shadow-lg' 
-              : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
-          }`}
-          onClick={(e) => handleModelChange('grundleasing', e)}
+        <div 
+          className={`
+            ${selectedModel === 'hybridmodell' 
+              ? 'border-2 border-emerald-400 bg-emerald-50 shadow-lg scale-[1.02]' 
+              : 'border border-slate-200 bg-white hover:border-emerald-300 hover:shadow-md'
+            } 
+            rounded-xl p-4 transition-all cursor-pointer group
+          `}
+          onClick={(e) => handleModelChange('hybridmodell', e)}
         >
-          <CardContent className="p-4 h-full flex flex-col">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{grundleasingPackage.icon}</span>
-                <h3 className="text-lg font-bold text-slate-900">
-                  {grundleasingPackage.name}
-                </h3>
-              </div>
-              {selectedModel === 'grundleasing' && (
-                <Badge variant="default" className="text-sm font-semibold px-3 py-1">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 bg-emerald-100 rounded-lg group-hover:bg-emerald-200 transition-colors">
+                <span className="text-lg">{hybridmodellPackage.icon}</span>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-slate-800 flex items-center gap-2">
+                {hybridmodellPackage.name}
+              </h4>
+              {selectedModel === 'hybridmodell' && (
+                <div className="flex items-center text-xs text-emerald-600 mt-1">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></div>
                   Vald
-                </Badge>
+                </div>
               )}
             </div>
-            
-            <p className="text-sm text-slate-700 mb-3 leading-relaxed">
-              {grundleasingPackage.description}
-            </p>
-            
-            <div className="space-y-1 mb-3 flex-grow">
-              {grundleasingPackage.benefits.slice(0, 3).map((benefit, index) => (
-                <div key={index} className="flex items-center gap-2 text-xs text-slate-600">
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0"></div>
-                  <span>{benefit}</span>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-auto pt-2 border-t border-slate-100">
-              <div className="text-xs text-slate-600">
-                <span className="font-semibold text-slate-700">Bäst för:</span> {grundleasingPackage.bestFor}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          
+          <p className="text-sm text-slate-600 mb-3 leading-relaxed">
+            {hybridmodellPackage.description}
+          </p>
+          
+          <ul className="space-y-1.5 mb-3">
+            {hybridmodellPackage.benefits.slice(0, 3).map((benefit, index) => (
+              <li key={index} className="text-xs text-slate-600 flex items-start gap-2">
+                <span className="w-1 h-1 bg-emerald-500 rounded-full mt-1.5 shrink-0"></span>
+                {benefit}
+              </li>
+            ))}
+          </ul>
+          
+          <div className="text-xs text-slate-500 pt-2 border-t border-slate-100">
+            <span className="font-semibold text-slate-700">Bäst för:</span> {hybridmodellPackage.bestFor}
+          </div>
+        </div>
 
-        {/* Strategimodell - Sekundär */}
-        <Card 
-          className={`cursor-pointer transition-all duration-300 h-full border-2 ${
-            selectedModel === 'strategisk' 
-              ? 'ring-2 ring-slate-400 border-slate-400 bg-slate-50 shadow-lg' 
-              : 'border-slate-200 hover:border-slate-300 hover:shadow-md opacity-75'
-          }`}
-          onClick={(e) => handleModelChange('strategisk', e)}
+        {/* Strategimodell */}
+        <div 
+          className={`
+            ${selectedModel === 'strategimodell' 
+              ? 'border-2 border-blue-400 bg-blue-50 shadow-lg scale-[1.02]' 
+              : 'border border-slate-200 bg-white hover:border-blue-300 hover:shadow-md'
+            } 
+            rounded-xl p-4 transition-all cursor-pointer group
+          `}
+          onClick={(e) => handleModelChange('strategimodell', e)}
         >
-          <CardContent className="p-4 h-full flex flex-col">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{strategiskPackage.icon}</span>
-                <h3 className="text-lg font-bold text-slate-700">
-                  {strategiskPackage.name}
-                </h3>
-              </div>
-              {selectedModel === 'strategisk' && (
-                <Badge variant="secondary" className="text-sm font-semibold px-3 py-1">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
+                <span className="text-lg">{strategimodellPackage.icon}</span>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-slate-800 flex items-center gap-2">
+                {strategimodellPackage.name}
+              </h4>
+              {selectedModel === 'strategimodell' && (
+                <div className="flex items-center text-xs text-blue-600 mt-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
                   Vald
-                </Badge>
+                </div>
               )}
             </div>
-            
-            <p className="text-sm text-slate-600 mb-3 leading-relaxed">
-              {strategiskPackage.description}
-            </p>
-            
-            <div className="space-y-1 mb-3 flex-grow">
-              {strategiskPackage.benefits.slice(0, 3).map((benefit, index) => (
-                <div key={index} className="flex items-center gap-2 text-xs text-slate-500">
-                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full flex-shrink-0"></div>
-                  <span>{benefit}</span>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-auto pt-2 border-t border-slate-100">
-              <div className="text-xs text-slate-500">
-                <span className="font-semibold text-slate-600">Bäst för:</span> {strategiskPackage.bestFor}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          
+          <p className="text-sm text-slate-600 mb-3 leading-relaxed">
+            {strategimodellPackage.description}
+          </p>
+          
+          <ul className="space-y-1.5 mb-3">
+            {strategimodellPackage.benefits.slice(0, 3).map((benefit, index) => (
+              <li key={index} className="text-xs text-slate-600 flex items-start gap-2">
+                <span className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 shrink-0"></span>
+                {benefit}
+              </li>
+            ))}
+          </ul>
+          
+          <div className="text-xs text-slate-500 pt-2 border-t border-slate-100">
+            <span className="font-semibold text-slate-600">Bäst för:</span> {strategimodellPackage.bestFor}
+          </div>
+        </div>
       </div>
 
       {/* Varning om att valet låses - flyttad till sist */}

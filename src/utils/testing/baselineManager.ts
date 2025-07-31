@@ -70,7 +70,7 @@ function generateTestCases(): BaselineTestCase[] {
   const sliderSteps = [0, 1, 2];
   
   // Olika leasingmodeller
-  const leasingModels: Array<'grundleasing' | 'strategisk'> = ['grundleasing', 'strategisk'];
+  const leasingModels: Array<'hybridmodell' | 'strategimodell'> = ['hybridmodell', 'strategimodell'];
 
   for (const machine of importantMachines) {
     for (const leasingPeriod of leasingPeriods) {
@@ -79,7 +79,7 @@ function generateTestCases(): BaselineTestCase[] {
           for (const treatments of treatmentVolumes) {
             for (const leasingModel of leasingModels) {
               // För grundleasing, testa olika slidersteg
-              const stepsToTest = leasingModel === 'grundleasing' ? sliderSteps : [1];
+              const stepsToTest = leasingModel === 'hybridmodell' ? sliderSteps : [1];
               
               for (const sliderStep of stepsToTest) {
                 testCases.push({
@@ -124,7 +124,7 @@ function generateTestCases(): BaselineTestCase[] {
         leaseAdjustmentFactor: 0.5,
         useFlatrateOption: 'perCredit',
         currentSliderStep: 1,
-        selectedLeasingModel: 'grundleasing',
+        selectedLeasingModel: 'hybridmodell',
         workDaysPerMonth: 22
       }
     });

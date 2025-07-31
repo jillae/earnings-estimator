@@ -66,7 +66,7 @@ export async function testMachineCalculations(machineId: string): Promise<TestRe
       leaseAdjustmentFactor: 1.0,
       useFlatrateOption: 'perCredit' as const,
       currentSliderStep: 1 as const,
-      selectedLeasingModel: 'grundleasing' as const,
+        selectedLeasingModel: 'hybridmodell' as const,
       exchangeRate: 11.4926,
       workDaysPerMonth: 22
     };
@@ -198,7 +198,7 @@ export async function testLeasingModelPricing(): Promise<TestResult> {
         leaseAdjustmentFactor: 1.0,
         useFlatrateOption: 'perCredit' as const,
         currentSliderStep: 1,
-        selectedLeasingModel: 'grundleasing' as const,
+        selectedLeasingModel: 'hybridmodell' as const,
         exchangeRate: 11.4926,
         workDaysPerMonth: 22
       };
@@ -334,7 +334,7 @@ export async function runAllTests(): Promise<TestSuite> {
  */
 export async function testLeasingModelScenario(
   machineId: string,
-  selectedLeasingModel: 'grundleasing' | 'strategisk',
+  selectedLeasingModel: 'hybridmodell' | 'strategimodell',
   treatments: number = 2
 ): Promise<TestResult> {
   const testName = `${machineId} - ${selectedLeasingModel} (${treatments} beh/dag)`;
@@ -361,7 +361,7 @@ export async function testLeasingModelScenario(
       selectedDriftpaket: 'Bas' as const,
       leaseAdjustmentFactor: 1.0,
       useFlatrateOption: 'perCredit' as const,
-      currentSliderStep: selectedLeasingModel === 'grundleasing' ? 1 : 2,
+      currentSliderStep: selectedLeasingModel === 'hybridmodell' ? 1 : 2,
       selectedLeasingModel: selectedLeasingModel,
       exchangeRate: 11.4926,
       workDaysPerMonth: 22
@@ -371,7 +371,7 @@ export async function testLeasingModelScenario(
     
     // Validera att rätt kostnad används baserat på leasingmodell
     let expectedLeasingCost: number;
-    if (selectedLeasingModel === 'strategisk' && machine.leasingMax) {
+    if (selectedLeasingModel === 'strategimodell' && machine.leasingMax) {
       expectedLeasingCost = machine.leasingMax;
     } else {
       expectedLeasingCost = results.leasingCostBase;
@@ -381,7 +381,7 @@ export async function testLeasingModelScenario(
     const warnings: string[] = [];
 
     // Kontrollera kostnadskonsistens
-    const actualCost = selectedLeasingModel === 'strategisk' ? results.leasingCostStrategic : results.leasingCost;
+    const actualCost = selectedLeasingModel === 'strategimodell' ? results.leasingCostStrategic : results.leasingCost;
     if (actualCost && Math.abs(actualCost - expectedLeasingCost) > 100) {
       errors.push(`Kostnad inte konsistent: Förväntad ${expectedLeasingCost}, fick ${actualCost}`);
     }

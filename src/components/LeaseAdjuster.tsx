@@ -56,15 +56,15 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const exactMinCost = noMachineSelected ? 0 : minLeaseCost;
   const exactMaxCost = noMachineSelected ? 0 : maxLeaseCost;
   
-  // För strategisk leasing, visa fast kostnad från maskindata
+  // För strategimodell, visa fast kostnad från maskindata
   let displayLeaseCost = noMachineSelected ? 0 : leaseCost;
-  if (selectedLeasingModel === 'strategisk' && !noMachineSelected && selectedMachine.leasingMax) {
+  if (selectedLeasingModel === 'strategimodell' && !noMachineSelected && selectedMachine.leasingMax) {
     // Använd verklig strategisk kostnad från maskindata (t.ex. 33 863 kr för Emerald)
     displayLeaseCost = selectedMachine.leasingMax;
   }
   
-  // KORRIGERING: För grundleasing, visa den exakta aktuella leasingkostnaden baserat på slider
-  if (selectedLeasingModel === 'grundleasing' && !noMachineSelected && stepValues[currentSliderStep]) {
+  // KORRIGERING: För hybridmodell, visa den exakta aktuella leasingkostnaden baserat på slider
+  if (selectedLeasingModel === 'hybridmodell' && !noMachineSelected && stepValues[currentSliderStep]) {
     displayLeaseCost = stepValues[currentSliderStep].leasingCost;
   }
   
@@ -146,7 +146,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
         </p>
       </div>
       {/* Flexibel investering FÖRST */}
-      {usesCredits && selectedLeasingModel === 'grundleasing' && (
+      {usesCredits && selectedLeasingModel === 'hybridmodell' && (
         <LeaseSlider 
           currentStep={currentSliderStep}
           onStepChange={handleSliderStepChange}
@@ -157,12 +157,12 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           onToggleAdjustment={handleToggleAdjustment}
           showAdjustmentCheckbox={false}
           showSlider={showSlider}
-          isGrundleasingMode={selectedLeasingModel === 'grundleasing'}
+          isGrundleasingMode={selectedLeasingModel === 'hybridmodell'}
         />
       )}
       
-      {/* Strategisk leasing indikator - behåll denna */}
-      {selectedMachine?.usesCredits && selectedLeasingModel === 'strategisk' && (
+      {/* Strategimodell indikator - behåll denna */}
+      {selectedMachine?.usesCredits && selectedLeasingModel === 'strategimodell' && (
         <div className="flex items-center text-sm bg-primary/10 p-2 rounded-md gap-2 shadow-inner border border-primary/20">
           <CreditCard className="w-5 h-5 text-primary shrink-0" />
           <span className="font-semibold text-primary">
@@ -173,7 +173,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 
 
       {/* Rullande visare EFTER slidern - prova olika animationer */}
-      {usesCredits && selectedLeasingModel === 'grundleasing' && (
+      {usesCredits && selectedLeasingModel === 'hybridmodell' && (
         <div className="flex items-center gap-4">
           <div className="flex-1">
             <RollingValueDisplay 
