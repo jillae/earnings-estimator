@@ -29,7 +29,7 @@ const GrowthMetrics: React.FC<GrowthMetricsProps> = ({
   const totalNetProfit5Years = monthlyNet * 12 * 5;
   
   // Potentiell årlig intäkt (100% beläggning)
-  const maxDailyTreatments = 20; // Maximalt antal behandlingar per dag
+  const maxDailyTreatments = 10; // Realistiskt max för en laserklinik
   const maxDailyRevenue = maxDailyTreatments * customerPrice;
   const maxYearlyRevenue = (maxDailyRevenue * 22 * 12) / 1.25; // ex moms
 
@@ -56,7 +56,7 @@ const GrowthMetrics: React.FC<GrowthMetricsProps> = ({
       icon: <TrendingUp className="h-5 w-5 text-orange-600" />,
       label: "Potentiell Årlig Intäkt",
       value: formatCurrency(maxYearlyRevenue),
-      description: "Vid 100% beläggning (20 beh/dag)"
+      description: "Vid 100% beläggning (10 beh/dag)"
     }
   ];
 

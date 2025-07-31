@@ -44,7 +44,7 @@ const InteractiveControls: React.FC<InteractiveControlsProps> = ({
               <Slider
                 id="modal-treatments"
                 min={1}
-                max={20}
+                max={12}
                 step={1}
                 value={[treatmentsPerDay]}
                 onValueChange={(value) => onTreatmentsChange(value[0])}
@@ -53,7 +53,7 @@ const InteractiveControls: React.FC<InteractiveControlsProps> = ({
               <div className="flex justify-between text-xs text-slate-500">
                 <span>1 beh/dag</span>
                 <span className="font-semibold text-blue-600">{treatmentsPerDay} behandlingar/dag</span>
-                <span>20 beh/dag</span>
+                <span>12 beh/dag</span>
               </div>
             </div>
           </div>
