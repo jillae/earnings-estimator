@@ -47,7 +47,7 @@ const BaseDriftpaketDetails: React.FC<BaseDriftpaketDetailsProps> = ({
       {/* Förtydliga vad som ingår */}
       {(selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld') && useFlatrateOption === 'flatrate' && (
         <div className="text-xs text-green-700 bg-green-50 p-2 rounded mb-3">
-          ✓ Credits ingår i {selectedDriftpaket}-modellen och debiteras inte separat
+          ✓ Credits ingår i {selectedDriftpaket}-paketet och debiteras inte separat
         </div>
       )}
       
