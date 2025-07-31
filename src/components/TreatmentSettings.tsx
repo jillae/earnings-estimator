@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { useCalculator } from '@/context/CalculatorContext';
-import CreditInfoPopover from '@/components/calculator/CreditInfoPopover';
 
 interface TreatmentSettingsProps {
   treatmentsPerDay: number;
@@ -54,13 +53,10 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
           onMouseEnter={() => handleHover('treatments')}
           onMouseLeave={() => handleHover(null)}
         >
-        <div className="flex items-center justify-between mb-3">
-          <label htmlFor="treatments-per-day" className="text-sm font-semibold text-slate-700 flex items-center">
-            <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
-            Antal behandlingar per dag
-          </label>
-          <CreditInfoPopover />
-        </div>
+        <label htmlFor="treatments-per-day" className="text-sm font-semibold text-slate-700 mb-3 flex items-center">
+          <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
+          Antal behandlingar per dag
+        </label>
         <div className="space-y-4">
           <div className="text-lg font-semibold text-slate-800">{treatmentsPerDay} st</div>
           <Slider
