@@ -30,11 +30,11 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
         Välj leasingmodell
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
         {/* Hybridmodell - Primär */}
         <div 
           className={`
-            relative
+            relative h-full flex flex-col
             ${selectedModel === 'hybridmodell' 
               ? 'border-2 border-emerald-400 bg-emerald-50 shadow-lg scale-[1.02]' 
               : 'border border-slate-200 bg-white hover:border-emerald-300 hover:shadow-md'
@@ -70,7 +70,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
             {hybridmodellPackage.description}
           </p>
           
-          <ul className="space-y-2 mb-3">
+          <ul className="space-y-2 mb-4 flex-grow">
             {hybridmodellPackage.benefits.map((benefit, index) => (
               <li key={index} className="text-xs text-slate-600 flex items-start gap-2">
                 <span className="w-1 h-1 bg-emerald-500 rounded-full mt-1.5 shrink-0"></span>
@@ -79,7 +79,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
             ))}
           </ul>
           
-          <div className="text-xs text-slate-500 pt-2 border-t border-slate-100">
+          <div className="text-xs text-slate-500 pt-2 border-t border-slate-100 mt-auto">
             <span className="font-semibold text-slate-700">Bäst för:</span> {hybridmodellPackage.bestFor}
           </div>
         </div>
@@ -87,7 +87,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
         {/* Strategimodell */}
         <div 
           className={`
-            relative
+            relative h-full flex flex-col
             ${selectedModel === 'strategimodell' 
               ? 'border-2 border-blue-400 bg-blue-50 shadow-lg scale-[1.02]' 
               : 'border border-slate-200 bg-white hover:border-blue-300 hover:shadow-md'
@@ -123,7 +123,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
             {strategimodellPackage.description}
           </p>
           
-          <ul className="space-y-2 mb-3">
+          <ul className="space-y-2 mb-4 flex-grow">
             {strategimodellPackage.benefits.map((benefit, index) => (
               <li key={index} className="text-xs text-slate-600 flex items-start gap-2">
                 <span className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 shrink-0"></span>
@@ -132,7 +132,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
             ))}
           </ul>
           
-          <div className="text-xs text-slate-500 pt-2 border-t border-slate-100">
+          <div className="text-xs text-slate-500 pt-2 border-t border-slate-100 mt-auto">
             <span className="font-semibold text-slate-600">Bäst för:</span> {strategimodellPackage.bestFor}
           </div>
         </div>
