@@ -23,7 +23,7 @@ export const premiumMachines: Machine[] = [
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 3500,
-    imageUrl: "https://i.imgur.com/KzJ8vYm.jpg"
+    imageUrl: "https://i.imgur.com/IRED95Z.png"
   },
   {
     id: "zerona",
@@ -46,6 +46,6 @@ export const premiumMachines: Machine[] = [
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1800,
-    imageUrl: "https://i.imgur.com/vwP7Qxj.jpg"
+    imageUrl: "https://i.imgur.com/2LGOVPB.png"
   }
 ];

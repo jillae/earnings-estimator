@@ -23,7 +23,7 @@ export const treatmentMachines: Machine[] = [
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 900,
-    imageUrl: "https://i.imgur.com/2HkJ9vx.jpg"
+    imageUrl: "https://i.imgur.com/TQK3vZ3.png"
   },
   {
     id: "fx-405",
@@ -46,6 +46,6 @@ export const treatmentMachines: Machine[] = [
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200,
-    imageUrl: "https://i.imgur.com/8mKF3nq.jpg"
+    imageUrl: "https://i.imgur.com/pYqFUUT.png"
   }
 ];
