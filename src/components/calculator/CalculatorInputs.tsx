@@ -60,6 +60,13 @@ const CalculatorInputs: React.FC<{
             </div>
           </div>
 
+          {/* Tips banner för steg 2 */}
+          <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-lg p-3 text-center animate-slide-in">
+            <div className="text-sm font-medium text-slate-700">
+              🏥 Nu bestämmer vi klinikens storlek och arbetsdagar
+            </div>
+          </div>
+
           {/* Steg 2: Klinikstorlek */}
           <div className="relative">
             <div className="absolute -top-3 left-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
@@ -73,6 +80,13 @@ const CalculatorInputs: React.FC<{
                 hoveredInput={hoveredInput}
                 onHoveredInputChange={onHoveredInputChange}
               />
+            </div>
+          </div>
+
+          {/* Tips banner för steg 3 */}
+          <div className="bg-gradient-to-r from-purple-50 to-violet-50 border border-purple-200 rounded-lg p-3 text-center animate-slide-in">
+            <div className="text-sm font-medium text-slate-700">
+              📊 Ställ in behandlingsvolym och prismodell
             </div>
           </div>
 
@@ -101,6 +115,13 @@ const CalculatorInputs: React.FC<{
             selectedMachineId={selectedMachineId}
             onChange={setSelectedMachineId}
           />
+
+          {/* Tips banner för steg 4 */}
+          <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-3 text-center animate-slide-in">
+            <div className="text-sm font-medium text-slate-700">
+              💰 Välj finansieringsmodell - leasing eller kontant
+            </div>
+          </div>
 
           {/* Steg 4: Betalning */}
           <div className="relative">
@@ -159,6 +180,13 @@ const CalculatorInputs: React.FC<{
           {/* Flatrate-sektion */}
           <FlatrateSection />
           
+          {/* Tips banner för steg 5 */}
+          <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg p-3 text-center animate-slide-in">
+            <div className="text-sm font-medium text-slate-700">
+              🛠️ Välj servicenivå och driftpaket
+            </div>
+          </div>
+
           {/* Steg 5: Service & SLA */}
           <div className="relative">
             <div className="absolute -top-3 left-0 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
