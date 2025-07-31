@@ -47,7 +47,10 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
                 <span className="text-lg">{hybridmodellPackage.icon}</span>
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-slate-800 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-900 mb-1">
+                {hybridmodellPackage.primaryTitle}
+              </h3>
+              <h4 className="font-medium text-slate-700 text-sm">
                 {hybridmodellPackage.name}
               </h4>
               {selectedModel === 'hybridmodell' && (
@@ -63,8 +66,8 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
             {hybridmodellPackage.description}
           </p>
           
-          <ul className="space-y-1.5 mb-3">
-            {hybridmodellPackage.benefits.slice(0, 3).map((benefit, index) => (
+          <ul className="space-y-2 mb-3">
+            {hybridmodellPackage.benefits.map((benefit, index) => (
               <li key={index} className="text-xs text-slate-600 flex items-start gap-2">
                 <span className="w-1 h-1 bg-emerald-500 rounded-full mt-1.5 shrink-0"></span>
                 {benefit}
@@ -93,7 +96,10 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
                 <span className="text-lg">{strategimodellPackage.icon}</span>
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-slate-800 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-900 mb-1">
+                {strategimodellPackage.primaryTitle}
+              </h3>
+              <h4 className="font-medium text-slate-700 text-sm">
                 {strategimodellPackage.name}
               </h4>
               {selectedModel === 'strategimodell' && (
@@ -109,8 +115,8 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
             {strategimodellPackage.description}
           </p>
           
-          <ul className="space-y-1.5 mb-3">
-            {strategimodellPackage.benefits.slice(0, 3).map((benefit, index) => (
+          <ul className="space-y-2 mb-3">
+            {strategimodellPackage.benefits.map((benefit, index) => (
               <li key={index} className="text-xs text-slate-600 flex items-start gap-2">
                 <span className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 shrink-0"></span>
                 {benefit}

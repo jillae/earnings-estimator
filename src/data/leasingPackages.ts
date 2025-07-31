@@ -7,6 +7,7 @@
 export const LEASING_PACKAGES = {
   GRUNDLEASING: {
     id: 'grundleasing',
+    primaryTitle: 'Grundleasing',
     name: 'Grundleasing',
     shortName: 'Grund',
     description: 'Lägsta månadsavgift för maskinen. Credits debiteras separat per behandling.',
@@ -23,6 +24,7 @@ export const LEASING_PACKAGES = {
   
   HYBRIDPAKET: {
     id: 'hybridmodell', 
+    primaryTitle: 'Hybridmodell',
     name: 'Flexibilitet att växa med din klinik',
     shortName: 'Hybrid',
     description: 'Betala låg grundleasing för maskinen, och styr driften separat.',
@@ -32,6 +34,7 @@ export const LEASING_PACKAGES = {
     benefits: [
       'Lägre månadsavgift',
       'Full valfrihet mellan styckepris och flatrate',
+      'Växla smidigt mellan avtalsmodellerna styckpris och Flatrate när du vill. Notera att Flatrate-abonnemanget har en löpande uppsägningstid på tre månader.',
       'Enkel att skala upp eller ned'
     ],
     bestFor: 'dig som vill hålla låg fast kostnad – och ha total kontroll över användningen'
@@ -39,6 +42,7 @@ export const LEASING_PACKAGES = {
   
   ALLT_INKLUDERAT: {
     id: 'strategimodell',
+    primaryTitle: 'Strategimodell',
     name: 'Säkra framtiden – köp dig fri från administration och prishöjningar', 
     shortName: 'Strategi',
     description: 'Du betalar en fast summa och slipper framtida driftkostnader helt. Ingen mer hantering av credits, avtal eller beställningar – oavsett användning.',
@@ -47,8 +51,9 @@ export const LEASING_PACKAGES = {
     icon: '🎯',
     benefits: [
       'Alltid noll kronor per behandling',
+      'Detta ger dig frihet att maximera maskinens användning! Erbjud fler behandlingspaket per kund, håll öppna hus, demos och events – även personalen kan behandla sig utan extra kostnad.',
       'Inga fler påfyllningar eller fakturor – all drift ingår',
-      'Ingen administrativ belastning – och skydd mot framtida prisjusteringar'
+      'Ingen administrativ belastning – och skydd mot framtida prishöjningar'
     ],
     bestFor: 'kliniker med hög och stabil behandlingsvolym som vill ha full kostnadskontroll över tid'
   }
