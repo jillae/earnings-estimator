@@ -41,13 +41,15 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
       cancelAnimationFrame(animationRef.current);
     }
 
-    // Direkt uppdatering för första gången eller när värdet är 0
-    if (displayValue === 0 || value === 0) {
+    // Om värdet är helt nytt eller första gången, uppdatera direkt
+    if (displayValue === 0 && value > 0) {
+      console.log(`RollingValueDisplay [${label}]: Första värdet, sätter direkt till ${value}`);
       setDisplayValue(value);
       return;
     }
 
-    if (displayValue !== value && !isAnimating) {
+    // Om värdet har ändrats, starta animation
+    if (Math.abs(displayValue - value) > 0.01 && !isAnimating) {
       // Debounce för att undvika för många animationer
       timeoutRef.current = setTimeout(() => {
         setIsAnimating(true);
