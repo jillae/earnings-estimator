@@ -16,7 +16,7 @@ import ContextualInfoBox from './ContextualInfoBox';
 import { formatCurrency } from '@/utils/formatUtils';
 import { leasingPeriods, insuranceOptions } from '@/data/machines'; 
 import FloatingResultsSummary from './FloatingResultsSummary';
-import CreditInfoPopover from './CreditInfoPopover';
+import CreditInfoAccordion from './CreditInfoAccordion';
 import { SliderStep } from '@/utils/sliderSteps';
 
 const CalculatorInputs: React.FC<{ 
@@ -111,10 +111,6 @@ const CalculatorInputs: React.FC<{
               <div className="glass-card animate-slide-in" style={{ animationDelay: '250ms' }}>
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-lg font-semibold">Investeringskostnad</div>
-                  {/* Diskret Credits-info endast för credit-maskiner */}
-                  {selectedMachine?.usesCredits && (
-                    <CreditInfoPopover />
-                  )}
                 </div>
                 
                 <PaymentOptionToggle 
@@ -158,6 +154,11 @@ const CalculatorInputs: React.FC<{
               </div>
             </div>
           </div>
+          
+          {/* Credits-info accordion för credit-maskiner */}
+          {selectedMachine?.usesCredits && (
+            <CreditInfoAccordion />
+          )}
           
           {/* Flatrate-sektion */}
           <FlatrateSection />
