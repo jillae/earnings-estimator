@@ -63,9 +63,16 @@ const FlatrateSection: React.FC = () => {
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '350ms' }}>
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Betalningsmodell för Credits</h3>
-        <Badge variant={useFlatrateOption === 'flatrate' ? 'default' : 'secondary'}>
-          {useFlatrateOption === 'flatrate' ? 'Flatrate' : 'Per Credit'}
-        </Badge>
+        <div className="relative">
+          <Badge 
+            className={`${useFlatrateOption === 'flatrate' 
+              ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+              : 'bg-emerald-500 hover:bg-emerald-600 text-white'
+            } text-xs px-3 py-1 shadow-md`}
+          >
+            ✓ {useFlatrateOption === 'flatrate' ? 'Flatrate' : 'Per Credit'}
+          </Badge>
+        </div>
       </div>
       
       {/* Kort-baserad val */}
