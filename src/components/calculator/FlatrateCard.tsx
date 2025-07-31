@@ -57,11 +57,6 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
             {formatCurrency(flatrateCost)}<span className="text-base font-normal text-slate-500">/mån</span>
           </div>
           
-          {discountText && (
-            <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-sm px-2 py-1">
-              {discountText}
-            </Badge>
-          )}
           
           <div className="space-y-2 flex-grow">
             <div className="flex items-center gap-3 text-sm text-slate-600">
