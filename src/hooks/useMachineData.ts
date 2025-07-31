@@ -117,8 +117,33 @@ export const useMachineData = () => {
       // Filtrera endast aktiva maskiner för kalkylatorn
       const activeMachines = data.filter(machine => machine.is_active);
       
+      // Definiera önskad ordning (samma som i statisk data)
+      const machineOrder = [
+        "emerald",
+        "zerona", 
+        "fx-635",
+        "fx-405",
+        "gvl",
+        "xlr8",
+        "evrl",
+        "lunula",
+        "base-station"
+      ];
+      
+      // Konvertera och sortera enligt önskad ordning
+      const convertedMachines = activeMachines.map(convertToCalculatorFormat);
+      const sortedMachines = convertedMachines.sort((a, b) => {
+        const indexA = machineOrder.indexOf(a.name.toLowerCase());
+        const indexB = machineOrder.indexOf(b.name.toLowerCase());
+        // Om maskin inte finns i listan, placera den i slutet
+        if (indexA === -1 && indexB === -1) return 0;
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        return indexA - indexB;
+      });
+      
       setMachines(data);
-      setCalculatorMachines(activeMachines.map(convertToCalculatorFormat));
+      setCalculatorMachines(sortedMachines);
       
     } catch (error) {
       console.error('Error fetching machines:', error);
