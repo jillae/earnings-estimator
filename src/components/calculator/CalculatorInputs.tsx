@@ -160,6 +160,7 @@ const CalculatorInputs: React.FC<{
             <CreditInfoAccordion />
           )}
           
+          
           {/* Flatrate-sektion */}
           <FlatrateSection />
           
