@@ -80,7 +80,7 @@ const CalculatorLayout: React.FC = () => {
                       <p className="text-sm text-slate-600 mb-4">Visualisera din framtida tillväxt och intäktsutveckling</p>
                     </div>
                     <Button 
-                      onClick={() => window.open('/growth-forecast', '_blank')}
+                      onClick={() => window.open('/klinik-optimering-coming-soon', '_blank')}
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       Öppna prognos

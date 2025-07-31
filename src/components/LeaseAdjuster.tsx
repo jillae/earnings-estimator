@@ -165,25 +165,37 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 
       {/* Rullande visare EFTER slidern - prova olika animationer */}
       {usesCredits && selectedLeasingModel === 'grundleasing' && (
-        <div className="grid grid-cols-2 gap-4">
-          <RollingValueDisplay 
-            value={displayLeaseCost}
-            label="Leasing"
-            className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
-            showTrendIcon={true}
-            trendDirection={currentSliderStep === 1 ? 'neutral' : (currentSliderStep <= 1 ? 'down' : 'up')}
-            showStandardBadge={true}
-            isStandardPosition={currentSliderStep === 1}
-            animationStyle="rolodex"
-          />
-          <RollingValueDisplay 
-            value={calculatedCreditPrice}
-            label="Credits"
-            className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
-            showTrendIcon={true}
-            trendDirection={currentSliderStep === 1 ? 'neutral' : (currentSliderStep <= 1 ? 'up' : 'down')}
-            animationStyle="rolodex"
-          />
+        <div className="flex items-center gap-4">
+          <div className="flex-1">
+            <RollingValueDisplay 
+              value={displayLeaseCost}
+              label="Leasing"
+              className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
+              showTrendIcon={true}
+              trendDirection={currentSliderStep === 1 ? 'neutral' : (currentSliderStep <= 1 ? 'down' : 'up')}
+              showStandardBadge={true}
+              isStandardPosition={currentSliderStep === 1}
+              animationStyle="rolodex"
+            />
+          </div>
+          
+          {/* Vågskål mellan boxarna */}
+          <div className="flex items-center justify-center">
+            <div className="w-8 h-8 flex items-center justify-center text-slate-400 text-2xl">
+              ⚖️
+            </div>
+          </div>
+          
+          <div className="flex-1">
+            <RollingValueDisplay 
+              value={calculatedCreditPrice}
+              label="Credits"
+              className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
+              showTrendIcon={true}
+              trendDirection={currentSliderStep === 1 ? 'neutral' : (currentSliderStep <= 1 ? 'up' : 'down')}
+              animationStyle="rolodex"
+            />
+          </div>
         </div>
       )}
       
