@@ -207,7 +207,7 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
               <ArrowRight className="w-4 h-4 text-blue-600 shrink-0" />
             )
           )}
-          <span>Leasing</span>
+          <span>{label}</span>
         </div>
         <div className={`text-lg font-bold text-blue-900 transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
           <span>{formatCurrency(displayValue)}</span>
