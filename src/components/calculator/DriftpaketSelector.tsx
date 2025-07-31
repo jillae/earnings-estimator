@@ -43,8 +43,7 @@ const DriftpaketSelector: React.FC<DriftpaketSelectorProps> = ({
       onMouseEnter={() => onHoveredInputChange?.('credits')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
-      <h3 className="text-lg font-semibold mb-4 flex items-center">
-        <span className="w-2 h-2 bg-emerald-400 rounded-sm mr-2"></span>
+      <h3 className="text-lg font-semibold mb-4">
         Välj Service & Driftpaket
       </h3>
       

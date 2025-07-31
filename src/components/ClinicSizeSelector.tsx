@@ -51,8 +51,7 @@ const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({
       onMouseEnter={() => onHoveredInputChange?.('clinic')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
-      <h3 className="text-lg font-semibold mb-6 flex items-center">
-        <span className="w-2 h-2 bg-blue-400 rounded-sm mr-2"></span>
+      <h3 className="text-lg font-semibold mb-6">
         Klinikstorlek
       </h3>
       

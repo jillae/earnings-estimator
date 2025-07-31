@@ -86,8 +86,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
   return (
     <div className="mb-4">
       <div className="mb-4">
-        <h4 className="text-lg font-semibold text-slate-900 mb-2 flex items-center">
-          <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
+        <h4 className="text-lg font-semibold text-slate-900 mb-2">
           Flexibel investering
         </h4>
         <p className="text-sm text-slate-600 leading-relaxed">

@@ -40,8 +40,7 @@ const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
       onMouseEnter={() => onHoveredInputChange?.('sla')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
-      <h3 className="text-lg font-semibold mb-6 flex items-center">
-        <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
+      <h3 className="text-lg font-semibold mb-6">
         Serviceavtal (SLA) - Jämförelsetabell
       </h3>
       

@@ -53,8 +53,7 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
     <div className="calculator-grid animate-slide-in bg-slate-50/20 border border-slate-200 rounded-lg p-4 hover:bg-slate-50/30 transition-colors" style={{ animationDelay: '200ms' }}>
       <div className="input-group">
         <div className="h-14 flex items-center">
-          <label htmlFor="leasing-period" className="input-label text-slate-800 flex items-center">
-            <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
+          <label htmlFor="leasing-period" className="input-label text-slate-800">
             Leasingperiod
           </label>
         </div>
@@ -76,8 +75,7 @@ const LeasingOptions: React.FC<LeasingOptionsProps> = ({
       
       <div className="input-group">
         <div className="h-14 flex items-center">
-          <label htmlFor="insurance" className="input-label text-slate-800 flex items-center">
-            <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
+          <label htmlFor="insurance" className="input-label text-slate-800">
             Försäkring
             <div className="text-xs text-slate-600 mt-1">
               Försäkring - fullvärdesförsäkring, självrisk 1500 kr

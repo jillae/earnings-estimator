@@ -53,8 +53,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
           onMouseEnter={() => handleHover('treatments')}
           onMouseLeave={() => handleHover(null)}
         >
-        <label htmlFor="treatments-per-day" className="text-sm font-semibold text-slate-700 mb-3 flex items-center">
-          <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
+        <label htmlFor="treatments-per-day" className="text-sm font-semibold text-slate-700 mb-3">
           Antal behandlingar per dag
         </label>
         <div className="space-y-4">
@@ -80,8 +79,7 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
         onMouseEnter={() => handleHover('price')}
         onMouseLeave={() => handleHover(null)}
       >
-        <label htmlFor="customer-price" className="text-sm font-semibold text-slate-700 mb-3 flex items-center">
-          <span className="w-2 h-2 bg-slate-400 rounded-sm mr-2"></span>
+        <label htmlFor="customer-price" className="text-sm font-semibold text-slate-700 mb-3">
           Kundpris per behandling (kr, inkl moms)
         </label>
         <div className="space-y-4">

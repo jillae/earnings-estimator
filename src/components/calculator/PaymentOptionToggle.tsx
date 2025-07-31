@@ -21,8 +21,7 @@ const PaymentOptionToggle: React.FC<PaymentOptionToggleProps> = ({
       onMouseEnter={() => onHoveredInputChange?.('payment')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
-      <label className="block text-sm font-medium text-red-800 mb-2 flex items-center">
-        <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
+      <label className="block text-sm font-medium text-red-800 mb-2">
         Betalningsalternativ
       </label>
       <ToggleGroup 

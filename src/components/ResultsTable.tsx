@@ -252,8 +252,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
       </div>
       
       <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-3 flex items-center">
-          <span className="w-2 h-2 bg-emerald-400 rounded-sm mr-2"></span>
+        <h3 className="text-lg font-semibold mb-3">
           Budgeterbar intäkt vid olika beläggningsgrad
         </h3>
         <div className="occupancy-grid grid grid-cols-1 lg:grid-cols-3 gap-4">

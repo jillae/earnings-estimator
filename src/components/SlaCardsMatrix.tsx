@@ -206,8 +206,7 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2 flex items-center">
-          <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
+        <h3 className="text-lg font-semibold mb-2">
           Välj Service & Driftpaket
         </h3>
         <p className="text-slate-600 text-sm">
