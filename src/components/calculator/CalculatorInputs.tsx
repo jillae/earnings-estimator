@@ -53,6 +53,17 @@ const CalculatorInputs: React.FC<{
     <div className="w-full space-y-6">
       {selectedMachine ? (
         <>
+          {/* Tips banner för steg 2 */}
+          <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4 text-center animate-slide-in mb-4">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-2xl">🏥</span>
+              <span className="text-lg font-bold text-blue-700">Välj din klinikstorlek</span>
+            </div>
+            <div className="text-sm text-blue-600">
+              Detta påverkar hur många behandlingar du kan göra per dag
+            </div>
+          </div>
+
           {/* Steg 2: Klinikstorlek */}
           <div className="relative">
             <div className="absolute -top-3 left-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
@@ -67,6 +78,17 @@ const CalculatorInputs: React.FC<{
                 hoveredInput={hoveredInput}
                 onHoveredInputChange={onHoveredInputChange}
               />
+            </div>
+          </div>
+
+          {/* Tips banner för steg 3 */}
+          <div className="bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-lg p-4 text-center animate-slide-in mb-4">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-2xl">📊</span>
+              <span className="text-lg font-bold text-green-700">Ställ in behandlingsvolym</span>
+            </div>
+            <div className="text-sm text-green-600">
+              Antal behandlingar per dag och kundpris påverkar din lönsamhet
             </div>
           </div>
 
@@ -94,6 +116,17 @@ const CalculatorInputs: React.FC<{
             selectedMachineId={selectedMachineId}
             onChange={setSelectedMachineId}
           />
+
+          {/* Tips banner för steg 4 */}
+          <div className="bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4 text-center animate-slide-in mb-4">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-2xl">💰</span>
+              <span className="text-lg font-bold text-purple-700">Välj betalningssätt</span>
+            </div>
+            <div className="text-sm text-purple-600">
+              Leasing eller kontant - anpassa efter din ekonomiska situation
+            </div>
+          </div>
 
           {/* Steg 4: Betalning */}
           <div className="relative">
@@ -148,6 +181,17 @@ const CalculatorInputs: React.FC<{
           {/* Flatrate-sektion */}
           <FlatrateSection />
           
+          {/* Tips banner för steg 5 */}
+          <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-lg p-4 text-center animate-slide-in mb-4">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-2xl">🛠️</span>
+              <span className="text-lg font-bold text-orange-700">Välj service & support</span>
+            </div>
+            <div className="text-sm text-orange-600">
+              Säkerställ driftsäkerhet med rätt servicenivå för din verksamhet
+            </div>
+          </div>
+
           {/* Steg 5: Service & SLA */}
           <div className="relative">
             <div className="absolute -top-3 left-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
