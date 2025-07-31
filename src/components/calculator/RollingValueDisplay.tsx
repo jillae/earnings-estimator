@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import CreditInfoPopover from './CreditInfoPopover';
@@ -26,167 +26,182 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
 }) => {
   const [displayValue, setDisplayValue] = useState(value);
   const [isAnimating, setIsAnimating] = useState(false);
+  const animationRef = useRef<number | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (displayValue !== value) {
-      setIsAnimating(true);
-      
-      const animateValue = () => {
-        switch (animationStyle) {
-          case 'slotmachine': {
-            // Slotmaskin - snurrar snabbt genom många värden
-            const duration = 800;
-            const startTime = Date.now();
-            const startValue = displayValue;
-            const endValue = value;
-            
-            const animate = () => {
-              const elapsed = Date.now() - startTime;
-              const progress = Math.min(elapsed / duration, 1);
-              
-              if (progress < 0.8) {
-                // Snurra snabbt genom slumpmässiga värden
-                const randomValue = Math.floor(Math.random() * 50000) + Math.min(startValue, endValue);
-                setDisplayValue(randomValue);
-              } else {
-                // Sakta ner och landa på rätt värde
-                const finalProgress = (progress - 0.8) / 0.2;
-                const currentValue = startValue + (endValue - startValue) * finalProgress;
-                setDisplayValue(Math.round(currentValue));
-              }
-              
-              if (progress < 1) {
-                requestAnimationFrame(animate);
-              } else {
-                setDisplayValue(endValue);
-                setIsAnimating(false);
-              }
-            };
-            
-            requestAnimationFrame(animate);
-            break;
-          }
-          
-          case 'rolodex': {
-            // Rolodex - blädrar genom kort-liknande värden (DUBBELT SNABBARE)
-            const duration = 50; // Halverat från 100ms till 50ms för dubbel hastighet
-            const startTime = Date.now();
-            const startValue = displayValue;
-            const endValue = value;
-            const steps = 8;
-            
-            const animate = () => {
-              const elapsed = Date.now() - startTime;
-              const progress = Math.min(elapsed / duration, 1);
-              
-              // Skapa "bläddrings" effekt
-              const stepProgress = Math.floor(progress * steps) / steps;
-              const easing = 1 - Math.pow(1 - stepProgress, 2); // Ease out
-              
-              const currentValue = startValue + (endValue - startValue) * easing;
-              setDisplayValue(Math.round(currentValue));
-              
-              if (progress < 1) {
-                requestAnimationFrame(animate);
-              } else {
-                setDisplayValue(endValue);
-                setIsAnimating(false);
-              }
-            };
-            
-            requestAnimationFrame(animate);
-            break;
-          }
-          
-          case 'digitalflip': {
-            // Digital flip - som gamla digitala klockor
-            const duration = 300;
-            const startTime = Date.now();
-            const startValue = displayValue;
-            const endValue = value;
-            
-            const animate = () => {
-              const elapsed = Date.now() - startTime;
-              const progress = Math.min(elapsed / duration, 1);
-              
-              // Flip-effekt med snabba hopp
-              if (progress < 0.5) {
-                setDisplayValue(startValue);
-              } else {
-                setDisplayValue(endValue);
-              }
-              
-              if (progress < 1) {
-                requestAnimationFrame(animate);
-              } else {
-                setIsAnimating(false);
-              }
-            };
-            
-            requestAnimationFrame(animate);
-            break;
-          }
-          
-          case 'typewriter': {
-            // Typewriter - "skriver" siffrorna
-            const duration = 400;
-            const startTime = Date.now();
-            const endValue = value;
-            const endString = endValue.toString();
-            
-            const animate = () => {
-              const elapsed = Date.now() - startTime;
-              const progress = Math.min(elapsed / duration, 1);
-              
-              const charIndex = Math.floor(progress * endString.length);
-              const partialValue = parseInt(endString.substring(0, charIndex + 1)) || 0;
-              setDisplayValue(partialValue);
-              
-              if (progress < 1) {
-                requestAnimationFrame(animate);
-              } else {
-                setDisplayValue(endValue);
-                setIsAnimating(false);
-              }
-            };
-            
-            requestAnimationFrame(animate);
-            break;
-          }
-          
-          default: {
-            // Standard rolling animation
-            const duration = 150;
-            const startValue = displayValue;
-            const endValue = value;
-            const startTime = Date.now();
-            const steps = 3;
-            
-            const animate = () => {
-              const elapsed = Date.now() - startTime;
-              const progress = Math.min(elapsed / duration, 1);
-              
-              const stepProgress = Math.floor(progress * steps) / steps;
-              const currentValue = startValue + (endValue - startValue) * stepProgress;
-              setDisplayValue(Math.round(currentValue));
-              
-              if (progress < 1) {
-                requestAnimationFrame(animate);
-              } else {
-                setDisplayValue(endValue);
-                setIsAnimating(false);
-              }
-            };
-            
-            requestAnimationFrame(animate);
-            break;
-          }
-        }
-      };
-      
-      animateValue();
+    // Rensa tidigare timeout och animation
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
-  }, [value, displayValue, animationStyle]);
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+
+    if (displayValue !== value && !isAnimating) {
+      // Debounce för att undvika för många animationer
+      timeoutRef.current = setTimeout(() => {
+        setIsAnimating(true);
+        
+        const animateValue = () => {
+          switch (animationStyle) {
+            case 'slotmachine': {
+              const duration = 800;
+              const startTime = Date.now();
+              const startValue = displayValue;
+              const endValue = value;
+              
+              const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                if (progress < 0.8) {
+                  const randomValue = Math.floor(Math.random() * 50000) + Math.min(startValue, endValue);
+                  setDisplayValue(randomValue);
+                } else {
+                  const finalProgress = (progress - 0.8) / 0.2;
+                  const currentValue = startValue + (endValue - startValue) * finalProgress;
+                  setDisplayValue(Math.round(currentValue));
+                }
+                
+                if (progress < 1) {
+                  animationRef.current = requestAnimationFrame(animate);
+                } else {
+                  setDisplayValue(endValue);
+                  setIsAnimating(false);
+                }
+              };
+              
+              animationRef.current = requestAnimationFrame(animate);
+              break;
+            }
+            
+            case 'rolodex': {
+              const duration = 50;
+              const startTime = Date.now();
+              const startValue = displayValue;
+              const endValue = value;
+              const steps = 8;
+              
+              const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const stepProgress = Math.floor(progress * steps) / steps;
+                const easing = 1 - Math.pow(1 - stepProgress, 2);
+                
+                const currentValue = startValue + (endValue - startValue) * easing;
+                setDisplayValue(Math.round(currentValue));
+                
+                if (progress < 1) {
+                  animationRef.current = requestAnimationFrame(animate);
+                } else {
+                  setDisplayValue(endValue);
+                  setIsAnimating(false);
+                }
+              };
+              
+              animationRef.current = requestAnimationFrame(animate);
+              break;
+            }
+            
+            case 'digitalflip': {
+              const duration = 300;
+              const startTime = Date.now();
+              const startValue = displayValue;
+              const endValue = value;
+              
+              const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                if (progress < 0.5) {
+                  setDisplayValue(startValue);
+                } else {
+                  setDisplayValue(endValue);
+                }
+                
+                if (progress < 1) {
+                  animationRef.current = requestAnimationFrame(animate);
+                } else {
+                  setIsAnimating(false);
+                }
+              };
+              
+              animationRef.current = requestAnimationFrame(animate);
+              break;
+            }
+            
+            case 'typewriter': {
+              const duration = 400;
+              const startTime = Date.now();
+              const endValue = value;
+              const endString = endValue.toString();
+              
+              const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const charIndex = Math.floor(progress * endString.length);
+                const partialValue = parseInt(endString.substring(0, charIndex + 1)) || 0;
+                setDisplayValue(partialValue);
+                
+                if (progress < 1) {
+                  animationRef.current = requestAnimationFrame(animate);
+                } else {
+                  setDisplayValue(endValue);
+                  setIsAnimating(false);
+                }
+              };
+              
+              animationRef.current = requestAnimationFrame(animate);
+              break;
+            }
+            
+            default: {
+              // Standard rolling animation - MER SMOOTH
+              const duration = 200; // Långsammare för mindre flimmer
+              const startValue = displayValue;
+              const endValue = value;
+              const startTime = Date.now();
+              
+              const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Smooth easing
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const currentValue = startValue + (endValue - startValue) * easeProgress;
+                setDisplayValue(Math.round(currentValue));
+                
+                if (progress < 1) {
+                  animationRef.current = requestAnimationFrame(animate);
+                } else {
+                  setDisplayValue(endValue);
+                  setIsAnimating(false);
+                }
+              };
+              
+              animationRef.current = requestAnimationFrame(animate);
+              break;
+            }
+          }
+        };
+        
+        animateValue();
+      }, 100); // Ökad debounce till 100ms för mindre flimmer
+    }
+
+    // Cleanup
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [value, displayValue, animationStyle, isAnimating]);
 
   return (
     <div className="relative">
@@ -216,7 +231,7 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
           )}
           <span>{label}</span>
         </div>
-        <div className={`text-lg font-bold text-blue-900 transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
+        <div className={`text-lg font-bold text-blue-900 transition-all duration-200 ${isAnimating ? 'scale-105' : 'scale-100'}`}>
           <span>{formatCurrency(displayValue)}</span>
         </div>
         <div className="text-xs text-blue-600">
