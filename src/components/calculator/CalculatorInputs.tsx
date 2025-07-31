@@ -53,42 +53,39 @@ const CalculatorInputs: React.FC<{
     <div className="w-full space-y-6">
       {selectedMachine ? (
         <>
-          {/* Nästa steg banner */}
-          <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg p-3 text-center animate-slide-in">
-            <div className="text-sm font-medium text-primary">
-              🎯 Perfekt! Nu anpassar vi {selectedMachine.name} för din klinik
-            </div>
-          </div>
-
           {/* Steg 2: Klinikstorlek */}
-          <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg p-3 mb-4 text-center">
-            <div className="text-sm font-medium text-primary">
-              🏥 Bestäm klinikens storlek och arbetsdagar
+          <div className="relative">
+            <div className="absolute -top-3 left-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+              STEG 2
+            </div>
+            <div className="glass-card animate-slide-in pt-2" style={{ animationDelay: '200ms' }}>
+              <h3 className="text-lg font-semibold mb-4">Klinikstorlek</h3>
+              <ClinicSizeSelector 
+                clinicSize={clinicSize} 
+                netYearlyResult={netResults?.netPerYearExVat || 0}
+                onChange={setClinicSize}
+                hoveredInput={hoveredInput}
+                onHoveredInputChange={onHoveredInputChange}
+              />
             </div>
           </div>
-          <ClinicSizeSelector 
-            clinicSize={clinicSize} 
-            netYearlyResult={netResults?.netPerYearExVat || 0}
-            onChange={setClinicSize}
-            hoveredInput={hoveredInput}
-            onHoveredInputChange={onHoveredInputChange}
-          />
 
           {/* Steg 3: Behandlingsvolym */}
-          <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg p-3 mb-4 text-center">
-            <div className="text-sm font-medium text-primary">
-              📊 Ställ in behandlingsvolym och prismodell
+          <div className="relative">
+            <div className="absolute -top-3 left-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+              STEG 3
             </div>
-          </div>
-          <div className="glass-card animate-slide-in" style={{ animationDelay: '200ms' }}>
-            <TreatmentSettings 
-              treatmentsPerDay={treatmentsPerDay}
-              customerPrice={customerPrice}
-              onTreatmentsChange={setTreatmentsPerDay}
-              onCustomerPriceChange={setCustomerPrice}
-              hoveredInput={hoveredInput}
-              onHoveredInputChange={onHoveredInputChange}
-            />
+            <div className="glass-card animate-slide-in pt-2" style={{ animationDelay: '200ms' }}>
+              <h3 className="text-lg font-semibold mb-4">Behandlingsvolym</h3>
+              <TreatmentSettings 
+                treatmentsPerDay={treatmentsPerDay}
+                customerPrice={customerPrice}
+                onTreatmentsChange={setTreatmentsPerDay}
+                onCustomerPriceChange={setCustomerPrice}
+                hoveredInput={hoveredInput}
+                onHoveredInputChange={onHoveredInputChange}
+              />
+            </div>
           </div>
 
           {/* Växla maskin */}
@@ -99,15 +96,12 @@ const CalculatorInputs: React.FC<{
           />
 
           {/* Steg 4: Betalning */}
-          <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg p-3 mb-4 text-center">
-            <div className="text-sm font-medium text-primary">
-              💰 Välj finansieringsmodell - leasing eller kontant
+          <div className="relative">
+            <div className="absolute -top-3 left-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+              STEG 4
             </div>
-          </div>
-          <div className="glass-card animate-slide-in" style={{ animationDelay: '250ms' }}>
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-lg font-semibold">Investeringskostnad</div>
-            </div>
+            <div className="glass-card animate-slide-in pt-2" style={{ animationDelay: '250ms' }}>
+              <h3 className="text-lg font-semibold mb-4">Investeringskostnad</h3>
             
             <PaymentOptionToggle 
               hoveredInput={hoveredInput}
@@ -146,7 +140,8 @@ const CalculatorInputs: React.FC<{
                 <div className="text-2xl font-bold text-blue-600">{formatCurrency(cashPriceSEK, false, true)}</div>
                 <div className="text-xs text-slate-500 mt-1">exkl. moms, inkl. frakt & installation</div>
               </div>
-            )}
+              )}
+            </div>
           </div>
           
 
@@ -154,17 +149,20 @@ const CalculatorInputs: React.FC<{
           <FlatrateSection />
           
           {/* Steg 5: Service & SLA */}
-          <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg p-3 mb-4 text-center">
-            <div className="text-sm font-medium text-primary">
-              🛠️ Välj servicenivå och driftpaket
+          <div className="relative">
+            <div className="absolute -top-3 left-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
+              STEG 5
+            </div>
+            <div className="glass-card animate-slide-in pt-2" style={{ animationDelay: '300ms' }}>
+              <h3 className="text-lg font-semibold mb-4">Service & support</h3>
+              <SlaCardsMatrix 
+                hoveredInput={hoveredInput}
+                onHoveredInputChange={onHoveredInputChange}
+              />
+              
+              <OperatingCosts />
             </div>
           </div>
-          <SlaCardsMatrix 
-            hoveredInput={hoveredInput}
-            onHoveredInputChange={onHoveredInputChange}
-          />
-          
-          <OperatingCosts />
 
           {/* Klart banner */}
           <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg p-4 text-center animate-slide-in">
