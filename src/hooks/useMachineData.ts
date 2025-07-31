@@ -87,7 +87,7 @@ export const useMachineData = () => {
       maxLeaseMultiplier: 1.5,
       defaultLeaseMultiplier: 1.0,
       creditPriceMultiplier: 1.0,
-      imageUrl: `/machines/${dbMachine.name.toLowerCase()}.jpg` // Standard bildväg
+      imageUrl: `https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=300&fit=crop` // Placeholder till dess bilderna läggs till i DB
     };
   };
 
