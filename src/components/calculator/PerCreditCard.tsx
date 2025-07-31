@@ -42,7 +42,7 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
           <div className="flex items-center gap-3">
             <Calculator className="h-6 w-6 text-blue-600" />
             <h3 className="text-xl font-bold text-slate-900">
-              Per Credit
+              Styckepris
             </h3>
           </div>
           {isSelected && (
