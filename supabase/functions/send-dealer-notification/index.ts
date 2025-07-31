@@ -62,7 +62,11 @@ const handler = async (req: Request): Promise<Response> => {
       React.createElement(DealerNotificationEmail, emailData)
     );
 
-    // Skicka e-post till återförsäljaren
+    // Skicka e-post till återförsäljaren - TILLFÄLLIGT AVSTÄNGT
+    console.log("E-post skulle ha skickats till:", ["mailtillgille@gmail.com"], "Ämne:", subject);
+    
+    // Kommenterad ut för att stänga av e-postutskick
+    /*
     const { error } = await resend.emails.send({
       from: "Kalkylator <onboarding@resend.dev>",
       to: ["mailtillgille@gmail.com"],
