@@ -48,13 +48,14 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
           )}
         </div>
         
-        <p className="text-base text-slate-700 mb-4 leading-relaxed">
+        <p className="text-base text-slate-700 mb-6 leading-relaxed min-h-[3rem] flex items-center">
           Fullständig kostnadskontroll med fast månadsavgift
         </p>
         
-        <div className="space-y-3 mb-4">
-          <div className="text-2xl font-bold text-green-600">
-            {formatCurrency(flatrateCost)}<span className="text-base font-normal text-slate-500">/mån</span>
+        {/* Pris sektion - samma höjd som styckepris */}
+        <div className="mb-6">
+          <div className="text-3xl font-bold text-green-600 mb-2">
+            {formatCurrency(flatrateCost)}<span className="text-lg font-normal text-slate-500">/mån</span>
           </div>
           
           {discountText && (
@@ -62,29 +63,31 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
               {discountText}
             </Badge>
           )}
-          
-          <div className="space-y-2 flex-grow">
-            <div className="flex items-center gap-3 text-sm text-slate-600">
-              <span className="text-green-600 font-bold">✔</span>
-              <span>Fast månadspris</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-slate-600">
-              <span className="text-green-600 font-bold">✔</span>
-              <span>Alla credits inkluderade</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-slate-600">
-              <span className="text-green-600 font-bold">✔</span>
-              <span>Inga extra driftkostnader</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-slate-600">
-              <span className="text-green-600 font-bold">✔</span>
-              <span>Förutsägbar budget – inga överraskningar</span>
-            </div>
+        </div>
+        
+        {/* Fördelar sektion - samma höjd */}
+        <div className="space-y-2 mb-6 flex-grow min-h-[8rem]">
+          <div className="flex items-center gap-3 text-sm text-slate-600">
+            <span className="text-green-600 font-bold">✔</span>
+            <span>Fast månadspris</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm text-slate-600">
+            <span className="text-green-600 font-bold">✔</span>
+            <span>Alla credits inkluderade</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm text-slate-600">
+            <span className="text-green-600 font-bold">✔</span>
+            <span>Inga extra driftkostnader</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm text-slate-600">
+            <span className="text-green-600 font-bold">✔</span>
+            <span>Förutsägbar budget – inga överraskningar</span>
           </div>
         </div>
         
+        {/* Bottom sektion - samma struktur */}
         <div className="mt-auto pt-3 border-t border-slate-100">
-          <div className="text-sm text-slate-700 mb-2">
+          <div className="text-sm text-slate-700 mb-3 min-h-[2.5rem] flex items-center">
             <span className="font-semibold">Bäst för dig som gör fler än 2 behandlingar per dag</span>
           </div>
           

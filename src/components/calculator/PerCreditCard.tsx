@@ -53,37 +53,43 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
           )}
         </div>
         
-        <p className="text-base text-slate-700 mb-4 leading-relaxed">
+        <p className="text-base text-slate-700 mb-6 leading-relaxed min-h-[3rem] flex items-center">
           Maximal flexibilitet – betala bara för det du använder
         </p>
         
-        <div className="space-y-3 mb-4 flex-grow">
-          <div className="text-base text-slate-600 bg-slate-50 p-3 rounded-lg">
-            {formatCurrency(creditPrice)} × {totalCreditsPerMonth} credits/mån = {formatCurrency(creditsCostPerMonth)}/mån (exempel)
-          </div>
-          
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 text-sm text-slate-600">
-              <span className="text-blue-600 font-bold">✔</span>
-              <span>Betala enbart per behandling</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-slate-600">
-              <span className="text-blue-600 font-bold">✔</span>
-              <span>Ingen bindning – full frihet</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-slate-600">
-              <span className="text-blue-600 font-bold">✔</span>
-              <span>Anpassa efter faktisk användning</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-slate-600">
-              <span className="text-blue-600 font-bold">✔</span>
-              <span>Perfekt vid ojämnt kundflöde eller lägre volym</span>
+        {/* Pris sektion - samma höjd som flatrate */}
+        <div className="mb-6">
+          <div className="text-3xl font-bold text-blue-600 mb-2">
+            {formatCurrency(creditPrice)} × {totalCreditsPerMonth}
+            <div className="text-lg font-normal text-slate-500">
+              credits/mån = {formatCurrency(creditsCostPerMonth)}/mån (exempel)
             </div>
           </div>
         </div>
         
+        {/* Fördelar sektion - samma höjd */}
+        <div className="space-y-2 mb-6 flex-grow min-h-[8rem]">
+          <div className="flex items-center gap-3 text-sm text-slate-600">
+            <span className="text-blue-600 font-bold">✔</span>
+            <span>Betala enbart per behandling</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm text-slate-600">
+            <span className="text-blue-600 font-bold">✔</span>
+            <span>Ingen bindning – full frihet</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm text-slate-600">
+            <span className="text-blue-600 font-bold">✔</span>
+            <span>Anpassa efter faktisk användning</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm text-slate-600">
+            <span className="text-blue-600 font-bold">✔</span>
+            <span>Perfekt vid ojämnt kundflöde eller lägre volym</span>
+          </div>
+        </div>
+        
+        {/* Bottom sektion - samma struktur */}
         <div className="mt-auto pt-3 border-t border-slate-100">
-          <div className="text-sm text-slate-700 mb-2">
+          <div className="text-sm text-slate-700 mb-3 min-h-[2.5rem] flex items-center">
             <span className="font-semibold">Bäst för dig som gör upp till 2 behandlingar per dag</span>
           </div>
           
