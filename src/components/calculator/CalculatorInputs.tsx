@@ -189,10 +189,7 @@ const CalculatorInputs: React.FC<{
           <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-lg p-4 text-center animate-slide-in mb-4">
             <div className="flex items-center justify-center gap-2 mb-2">
               <span className="text-2xl">🛠️</span>
-              <span className="text-lg font-bold text-orange-700">Välj service & support</span>
-            </div>
-            <div className="text-sm text-orange-600">
-              Säkerställ driftsäkerhet med rätt servicenivå för din verksamhet
+              <span className="text-lg font-bold text-orange-700">Service & support</span>
             </div>
           </div>
 
@@ -202,7 +199,6 @@ const CalculatorInputs: React.FC<{
               STEG 5
             </div>
             <div className="glass-card animate-slide-in pt-2" style={{ animationDelay: '300ms' }}>
-              <h3 className="text-lg font-semibold mb-4">Service & support</h3>
               <SlaCardsMatrix 
                 hoveredInput={hoveredInput}
                 onHoveredInputChange={onHoveredInputChange}

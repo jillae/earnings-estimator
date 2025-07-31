@@ -205,10 +205,7 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
       onMouseEnter={() => onHoveredInputChange?.('sla')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">
-          Välj Service & Driftpaket
-        </h3>
+      <div className="mb-4">
         <p className="text-slate-600 text-sm">
           Jämför paketen och välj det som passar din klinik bäst.
         </p>
@@ -247,13 +244,22 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
                   <div className="p-3 text-left text-slate-700 font-medium text-base border-r border-slate-200 bg-slate-25">
                     {feature.label}
                   </div>
-                  <div className={getColumnStyle(0, feature.brons)}>
+                  <div 
+                    className={`${getColumnStyle(0, feature.brons)} cursor-pointer hover:bg-emerald-50`}
+                    onClick={() => handleSlaSelect(getSlaLevel('brons'))}
+                  >
                     <div className="text-base leading-tight">{feature.brons}</div>
                   </div>
-                  <div className={getColumnStyle(1, feature.silver)}>
+                  <div 
+                    className={`${getColumnStyle(1, feature.silver)} cursor-pointer hover:bg-blue-50`}
+                    onClick={() => handleSlaSelect(getSlaLevel('silver'))}
+                  >
                     <div className="text-base leading-tight">{feature.silver}</div>
                   </div>
-                  <div className={getColumnStyle(2, feature.guld)}>
+                  <div 
+                    className={`${getColumnStyle(2, feature.guld)} cursor-pointer hover:bg-purple-50`}
+                    onClick={() => handleSlaSelect(getSlaLevel('guld'))}
+                  >
                     <div className="text-base leading-tight">{feature.guld}</div>
                   </div>
                 </div>
