@@ -116,24 +116,7 @@ const DetailedAnalysisContent: React.FC = () => {
         </div>
       </div>
 
-      <Tabs defaultValue="graph" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 h-12 bg-gradient-to-r from-blue-50 to-emerald-50 border border-slate-300 rounded-xl p-1">
-          <TabsTrigger 
-            value="graph" 
-            className="rounded-lg h-10 font-medium text-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-700 data-[state=active]:border data-[state=active]:border-blue-200 text-slate-600 hover:text-blue-600 transition-all duration-200"
-          >
-            📈 Grafisk Översikt
-          </TabsTrigger>
-          <TabsTrigger 
-            value="table" 
-            className="rounded-lg h-10 font-medium text-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-emerald-700 data-[state=active]:border data-[state=active]:border-emerald-200 text-slate-600 hover:text-emerald-600 transition-all duration-200"
-          >
-            🏥 SLA & Kundalternativ
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="graph" className="space-y-6">
-          {/* Huvudgraf - Fokus på klinikens tillväxt */}
+      {/* Huvudgraf - Fokus på klinikens tillväxt */}
           <div className="bg-white rounded-lg border border-slate-200 p-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-blue-600" />
@@ -264,12 +247,6 @@ const DetailedAnalysisContent: React.FC = () => {
             treatmentsPerDay={modalTreatmentsPerDay}
             customerPrice={modalCustomerPrice}
           />
-        </TabsContent>
-        
-        <TabsContent value="table" className="space-y-6">
-          <ComparisonTable />
-        </TabsContent>
-      </Tabs>
     </div>
   );
 };

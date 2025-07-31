@@ -16,13 +16,13 @@ import { Download, Share, Printer, BookOpen, X } from 'lucide-react';
 interface AnalysisHubModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  defaultTab?: 'detailed' | 'growth' | 'roi' | 'breakeven';
+  defaultTab?: 'overview' | 'alternatives' | 'economics';
 }
 
 export const AnalysisHubModal: React.FC<AnalysisHubModalProps> = ({
   open,
   onOpenChange,
-  defaultTab = 'detailed'
+  defaultTab = 'overview'
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,40 +34,35 @@ export const AnalysisHubModal: React.FC<AnalysisHubModalProps> = ({
         </DialogHeader>
         
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="detailed" className="flex items-center gap-2">
-              <span className="text-lg">📊</span>
-              Detaljerad Analys
-            </TabsTrigger>
-            <TabsTrigger value="growth" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview" className="flex items-center gap-2">
               <span className="text-lg">📈</span>
-              Tillväxtanalys
+              Grafisk Översikt
             </TabsTrigger>
-            <TabsTrigger value="roi" className="flex items-center gap-2">
+            <TabsTrigger value="alternatives" className="flex items-center gap-2">
+              <span className="text-lg">🏥</span>
+              Kundalternativ
+            </TabsTrigger>
+            <TabsTrigger value="economics" className="flex items-center gap-2">
               <span className="text-lg">💰</span>
-              ROI Analys
-            </TabsTrigger>
-            <TabsTrigger value="breakeven" className="flex items-center gap-2">
-              <span className="text-lg">🎯</span>
-              Break-Even
+              Ekonomisk Analys
             </TabsTrigger>
           </TabsList>
           
           <div className="mt-6 overflow-y-auto max-h-[calc(90vh-200px)]">
-            <TabsContent value="detailed" className="space-y-6">
+            <TabsContent value="overview" className="space-y-6">
               <DetailedAnalysisContent />
             </TabsContent>
             
-            <TabsContent value="growth" className="space-y-6">
+            <TabsContent value="alternatives" className="space-y-6">
               <GrowthAnalysisContent />
             </TabsContent>
             
-            <TabsContent value="roi" className="space-y-6">
-              <ROIAnalysisContent />
-            </TabsContent>
-            
-            <TabsContent value="breakeven" className="space-y-6">
-              <BreakEvenAnalysisContent />
+            <TabsContent value="economics" className="space-y-6">
+              <div className="grid gap-6">
+                <ROIAnalysisContent />
+                <BreakEvenAnalysisContent />
+              </div>
             </TabsContent>
           </div>
           
