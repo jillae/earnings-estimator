@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import CostDisplay from './lease-adjuster/CostDisplay';
 import LeaseSlider from './lease-adjuster/LeaseSlider';
 import LeasingModelSelector from './lease-adjuster/LeasingModelSelector';
+import CreditInfoAccordion from './calculator/CreditInfoAccordion';
 import FlatrateTooltip from './lease-adjuster/FlatrateTooltip';
 import { Info, CreditCard, TrendingDown, TrendingUp } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatUtils';
@@ -210,14 +211,17 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
       
             {/* Ta bort nollpunkt från vänster kolumn - förklaring: detta är ett enkelt GUI element utan komplexitet */}
             
+            {/* Credits-info accordion före leasingmodellval - endast för credit-maskiner */}
+            {usesCredits && <CreditInfoAccordion />}
+            
             {/* Leasingmodellval - visas endast för maskiner som använder credits */}
-      {usesCredits && (
-        <LeasingModelSelector
-          selectedModel={selectedLeasingModel}
-          onModelChange={setSelectedLeasingModel}
-          currentSliderStep={currentSliderStep}
-        />
-      )}
+        {usesCredits && (
+          <LeasingModelSelector
+            selectedModel={selectedLeasingModel}
+            onModelChange={setSelectedLeasingModel}
+            currentSliderStep={currentSliderStep}
+          />
+        )}
     </section>
   );
 };

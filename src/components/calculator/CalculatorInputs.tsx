@@ -16,7 +16,7 @@ import ContextualInfoBox from './ContextualInfoBox';
 import { formatCurrency } from '@/utils/formatUtils';
 import { leasingPeriods, insuranceOptions } from '@/data/machines'; 
 import FloatingResultsSummary from './FloatingResultsSummary';
-import CreditInfoAccordion from './CreditInfoAccordion';
+
 import { SliderStep } from '@/utils/sliderSteps';
 
 const CalculatorInputs: React.FC<{ 
@@ -155,11 +155,6 @@ const CalculatorInputs: React.FC<{
             </div>
           </div>
           
-          
-          {/* Credits-info accordion för credit-maskiner */}
-          {selectedMachine?.usesCredits && (
-            <CreditInfoAccordion />
-          )}
 
           {/* Flatrate-sektion */}
           <FlatrateSection />
