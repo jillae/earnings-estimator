@@ -23,37 +23,34 @@ export const LEASING_PACKAGES = {
   
   HYBRIDPAKET: {
     id: 'hybridmodell', 
-    name: 'Hybridmodell',
+    name: 'Flexibilitet att växa med din klinik',
     shortName: 'Hybrid',
-    description: 'En flexibel investering som låter dig växa med din klinik. Du betalar en låg grundleasing för maskinen och anpassar enkelt din driftskostnad utifrån behov och volym.',
-    detailedDescription: 'En smart investering som växer med din verksamhet. Full kontroll över driftskostnader med möjlighet att anpassa efter behov.',
+    description: 'Betala låg grundleasing för maskinen, och styr driften separat.',
+    detailedDescription: 'Lägre månadsavgift, full valfrihet mellan styckepris och flatrate, enkel att skala upp eller ned.',
     sliderPosition: 1,
     icon: '⚖️',
     benefits: [
-      'Låg månadsavgift för maskinen',
-      'Växla smidigt mellan styckpris och Flatrate när du vill',
-      'Full kontroll över dina driftskostnader',
-      'Investera smart: Betala endast för de credits du använder eller välj fastpris'
+      'Lägre månadsavgift',
+      'Full valfrihet mellan styckepris och flatrate',
+      'Enkel att skala upp eller ned'
     ],
-    bestFor: 'Låg eller varierande behandlingsvolym, och kliniker som vill anpassa sin investering över tid'
+    bestFor: 'dig som vill hålla låg fast kostnad – och ha total kontroll över användningen'
   },
   
   ALLT_INKLUDERAT: {
     id: 'strategimodell',
-    name: 'Strategimodell', 
+    name: 'Säkra framtiden – köp dig fri från administration och prishöjningar', 
     shortName: 'Strategi',
-    description: 'Den ultimata lösningen för total kostnadskontroll. Med denna modell betalar du **aldrig mer för credits** – du köper dig helt fri från all framtida debitering, oavsett användning.',
-    detailedDescription: 'Alla credits inkluderade i priset. Perfekt för hög volym och förutsägbar budget.',
+    description: 'Du betalar en fast summa och slipper framtida driftkostnader helt. Ingen mer hantering av credits, avtal eller beställningar – oavsett användning.',
+    detailedDescription: 'Alltid noll kronor per behandling, inga fler påfyllningar eller fakturor – all drift ingår, ingen administrativ belastning – och skydd mot framtida prisjusteringar.',
     sliderPosition: 2,
     icon: '🎯',
     benefits: [
-      'Noll kostnad per credit, för alltid',
-      'Fullständig frihet från credit-hantering',
-      'Maximal enkelhet & förutsägbarhet',
-      'Din modell innehåller ett exceptionellt värde som säkrar din framtida lönsamhet.',
-      'Unikt erbjudande på marknaden (då vi fortfarande har egen kostnad för credits)'
+      'Alltid noll kronor per behandling',
+      'Inga fler påfyllningar eller fakturor – all drift ingår',
+      'Ingen administrativ belastning – och skydd mot framtida prisjusteringar'
     ],
-    bestFor: 'Hög volym och total kostnadsfrihet'
+    bestFor: 'kliniker med hög och stabil behandlingsvolym som vill ha full kostnadskontroll över tid'
   }
 } as const;
 

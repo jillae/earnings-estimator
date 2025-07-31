@@ -49,7 +49,7 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
         </div>
         
         <p className="text-base text-slate-700 mb-6 leading-relaxed min-h-[3rem] flex items-center">
-          Fullständig kostnadskontroll med fast månadsavgift
+          Obegränsad användning till fast månadskostnad
         </p>
         
         {/* Pris sektion - förenklad design */}
@@ -69,33 +69,29 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
         <div className="space-y-2.5 mb-6 flex-grow min-h-[7rem]">
           <div className="flex items-start gap-3 text-sm text-slate-600">
             <span className="text-green-600 font-bold text-base">✔</span>
-            <span>Fast månadspris</span>
-          </div>
-          <div className="flex items-start gap-3 text-sm text-slate-600">
-            <span className="text-green-600 font-bold text-base">✔</span>
             <span>Alla credits inkluderade</span>
           </div>
           <div className="flex items-start gap-3 text-sm text-slate-600">
             <span className="text-green-600 font-bold text-base">✔</span>
-            <span>Inga extra driftkostnader</span>
+            <span>Ingen risk för extra kostnader</span>
           </div>
           <div className="flex items-start gap-3 text-sm text-slate-600">
             <span className="text-green-600 font-bold text-base">✔</span>
-            <span>Förutsägbar budget – inga överraskningar</span>
+            <span>Minimalt med administration</span>
           </div>
         </div>
         
         {/* Bottom sektion - samma struktur */}
         <div className="mt-auto pt-3 border-t border-slate-100">
           <div className="text-sm text-slate-700 mb-3 min-h-[2.5rem] flex items-center">
-            <span className="font-semibold">Bäst för dig som gör fler än 2 behandlingar per dag</span>
+            <span className="font-semibold">Passar dig som gör fler än 2 behandlingar per dag – och vill slippa tänka på saldo, inköp eller variation.</span>
           </div>
           
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
             <div className="flex items-start gap-2">
               <span className="text-blue-600 font-bold">💡</span>
               <div className="text-blue-700">
-                <span className="font-medium">Tips:</span> Gör du i snitt mer än 2 behandlingar per dag? Då är Flatrate mer lönsam än styckepris.
+                <span className="font-medium">Tips:</span> En trygg lösning som skyddar mot ökade kostnader när verksamheten växer.
               </div>
             </div>
           </div>

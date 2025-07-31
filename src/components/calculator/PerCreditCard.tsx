@@ -54,7 +54,7 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
         </div>
         
         <p className="text-base text-slate-700 mb-6 leading-relaxed min-h-[3rem] flex items-center">
-          Maximal flexibilitet – betala bara för det du använder
+          Betala endast för den användning du faktiskt har
         </p>
         
         {/* Pris sektion - förenklad design */}
@@ -72,33 +72,29 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
         <div className="space-y-2.5 mb-6 flex-grow min-h-[7rem]">
           <div className="flex items-start gap-3 text-sm text-slate-600">
             <span className="text-blue-600 font-bold text-base">✔</span>
-            <span>Betala enbart per behandling</span>
+            <span>Betala per faktisk behandling</span>
           </div>
           <div className="flex items-start gap-3 text-sm text-slate-600">
             <span className="text-blue-600 font-bold text-base">✔</span>
-            <span>Ingen bindning – full frihet</span>
+            <span>Ingen bindning</span>
           </div>
           <div className="flex items-start gap-3 text-sm text-slate-600">
             <span className="text-blue-600 font-bold text-base">✔</span>
-            <span>Anpassa efter faktisk användning</span>
-          </div>
-          <div className="flex items-start gap-3 text-sm text-slate-600">
-            <span className="text-blue-600 font-bold text-base">✔</span>
-            <span>Perfekt vid ojämnt kundflöde eller lägre volym</span>
+            <span>Perfekt för låg eller varierande volym</span>
           </div>
         </div>
         
         {/* Bottom sektion - samma struktur */}
         <div className="mt-auto pt-3 border-t border-slate-100">
           <div className="text-sm text-slate-700 mb-3 min-h-[2.5rem] flex items-center">
-            <span className="font-semibold">Bäst för dig som gör upp till 2 behandlingar per dag</span>
+            <span className="font-semibold">Passar dig som gör upp till 2 behandlingar per dag.</span>
           </div>
           
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
             <div className="flex items-start gap-2">
               <span className="text-blue-600 font-bold">💡</span>
               <div className="text-blue-700">
-                <span className="font-medium">Tips:</span> Överstiger du 2 behandlingar per dag i snitt? Då kan vårt Flatrate-abonnemang bli mer lönsamt.
+                <span className="font-medium">Tips:</span> Gör du fler än 2? Då är Flatrate sannolikt mer kostnadseffektivt.
               </div>
             </div>
           </div>

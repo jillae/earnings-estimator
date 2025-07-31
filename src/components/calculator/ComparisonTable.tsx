@@ -70,9 +70,9 @@ const ComparisonTable: React.FC = () => {
                 <TableHead className="w-12">Rang</TableHead>
                 <TableHead className="min-w-48">Alternativ</TableHead>
                 <TableHead className="text-right">Månadskostnad (SEK)</TableHead>
-                <TableHead className="text-center">Fastpris (Obegränsad)</TableHead>
-                <TableHead className="text-center">Kostnadsfria Credits</TableHead>
-                <TableHead className="text-center">SLA-nivå</TableHead>
+                <TableHead className="text-center">Leasingmodell (Typ)</TableHead>
+                <TableHead className="text-center">Betalningsmodell (Typ)</TableHead>
+                <TableHead className="text-center">Servicenivå (Typ)</TableHead>
                 <TableHead className="text-center">Årlig Service</TableHead>
                 <TableHead className="text-center">Lånemaskin</TableHead>
               </TableRow>
@@ -95,14 +95,18 @@ const ComparisonTable: React.FC = () => {
                     {formatCurrency(alternative.monthlyCost)}
                   </TableCell>
                   <TableCell className="text-center">
-                    <StatusIcon status={alternative.hasUnlimitedCredits} />
+                    <Badge variant="outline" className="text-xs">
+                      {alternative.hasUnlimitedCredits ? 'Strategimodell' : 'Hybridmodell'}
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-center">
-                    <StatusIcon status={alternative.hasFreeCredits} />
+                    <Badge variant="outline" className="text-xs">
+                      {alternative.hasFreeCredits ? 'Flatrate' : 'Styckepris'}
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-center">
                     <Badge className={getSlaColor(alternative.slaLevel)} variant="outline">
-                      {alternative.slaLevel}
+                      SLA {alternative.slaLevel}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-center">
@@ -120,9 +124,9 @@ const ComparisonTable: React.FC = () => {
         <div className="mt-4 space-y-2">
           <h4 className="text-sm font-medium text-slate-800">Förklaring:</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-slate-600">
-            <div><strong>Fastpris (Obegränsad):</strong> Obegränsade behandlingar utan extra kostnad per credit</div>
-            <div><strong>Kostnadsfria Credits:</strong> Credits ingår utan extra månadsavgift (0 kr/mån för credits)</div>
-            <div><strong>SLA-nivå:</strong> Service Level Agreement - support och garantinivå</div>
+            <div><strong>Leasingmodell (Typ):</strong> Hybridmodell / Strategimodell</div>
+            <div><strong>Betalningsmodell (Typ):</strong> Styckepris / Flatrate</div>
+            <div><strong>Servicenivå (Typ):</strong> SLA Brons / Silver / Guld</div>
             <div><strong>Årlig Service:</strong> Inkluderar årlig service med resa och arbete</div>
             <div><strong>Lånemaskin:</strong> Tillgång till lånemaskin vid service/reparation</div>
           </div>
