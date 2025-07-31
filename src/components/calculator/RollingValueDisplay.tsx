@@ -30,12 +30,21 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    // Debug logging
+    console.log(`RollingValueDisplay [${label}]: value=${value}, displayValue=${displayValue}`);
+    
     // Rensa tidigare timeout och animation
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
+    }
+
+    // Direkt uppdatering för första gången eller när värdet är 0
+    if (displayValue === 0 || value === 0) {
+      setDisplayValue(value);
+      return;
     }
 
     if (displayValue !== value && !isAnimating) {

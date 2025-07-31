@@ -62,7 +62,7 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
                 <SelectValue placeholder="Välj en maskin" />
               </SelectTrigger>
               
-              <SelectContent className="w-full max-h-[400px] bg-white dark:bg-gray-800 border shadow-lg z-[9999]">
+              <SelectContent className="w-full max-h-[400px] bg-white dark:bg-gray-800 border shadow-lg z-[9999]" sideOffset={5}>
                 {machines.map((machine) => (
                   <SelectItem 
                     key={machine.id} 

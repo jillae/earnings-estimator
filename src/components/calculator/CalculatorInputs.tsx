@@ -67,9 +67,6 @@ const CalculatorInputs: React.FC<{
               <span className="text-2xl">🏥</span>
               <span className="text-lg font-bold text-blue-700">Klinikstorlek</span>
             </div>
-            <div className="text-sm text-blue-600">
-              Fortsätt här
-            </div>
           </div>
 
           {/* Steg 2: Klinikstorlek */}
@@ -78,7 +75,6 @@ const CalculatorInputs: React.FC<{
               STEG 2
             </div>
             <div className="glass-card animate-slide-in pt-2" style={{ animationDelay: '200ms' }}>
-              <h3 className="text-lg font-semibold mb-4">Klinikstorlek</h3>
               <ClinicSizeSelector 
                 clinicSize={clinicSize} 
                 netYearlyResult={netResults?.netPerYearExVat || 0}
