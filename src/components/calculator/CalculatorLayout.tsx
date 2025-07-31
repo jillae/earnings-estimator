@@ -5,7 +5,7 @@ import CalculatorResults from './CalculatorResults';
 import { useCalculator } from '@/context/CalculatorContext';
 import { SaveConfigurationButton } from './SaveConfigurationButton';
 import { QuoteRequestButton } from './QuoteRequestButton';
-import DetailedAnalysisModal from './DetailedAnalysisModal';
+import { Button } from '@/components/ui/button';
 
 const CalculatorLayout: React.FC = () => {
   const { netResults } = useCalculator();
@@ -47,8 +47,8 @@ const CalculatorLayout: React.FC = () => {
                   </p>
                 </div>
                 
-                {/* Action cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {/* Action cards - 5 kort i en rad */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
                   <div className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6">
                     <div className="mb-4">
                       <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -73,13 +73,50 @@ const CalculatorLayout: React.FC = () => {
                   
                   <div className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6">
                     <div className="mb-4">
-                      <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <span className="text-2xl">📊</span>
+                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <span className="text-2xl">📈</span>
                       </div>
-                      <h4 className="font-semibold text-slate-900 mb-2">Djupare analys</h4>
-                      <p className="text-sm text-slate-600 mb-4">Utforska detaljerade prognoser och tillväxtmöjligheter</p>
+                      <h4 className="font-semibold text-slate-900 mb-2">Tillväxtprognos</h4>
+                      <p className="text-sm text-slate-600 mb-4">Visualisera din framtida tillväxt och intäktsutveckling</p>
                     </div>
-                    <DetailedAnalysisModal />
+                    <Button 
+                      onClick={() => window.open('/roi-analysis', '_blank')}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      Öppna prognos
+                    </Button>
+                  </div>
+                  
+                  <div className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6">
+                    <div className="mb-4">
+                      <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <span className="text-2xl">💰</span>
+                      </div>
+                      <h4 className="font-semibold text-slate-900 mb-2">ROI Analys</h4>
+                      <p className="text-sm text-slate-600 mb-4">Beräkna avkastning på investering över tid</p>
+                    </div>
+                    <Button 
+                      onClick={() => window.open('/roi-analysis', '_blank')}
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                    >
+                      Beräkna ROI
+                    </Button>
+                  </div>
+                  
+                  <div className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6">
+                    <div className="mb-4">
+                      <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <span className="text-2xl">🎯</span>
+                      </div>
+                      <h4 className="font-semibold text-slate-900 mb-2">Break-Even Analys</h4>
+                      <p className="text-sm text-slate-600 mb-4">Hitta din nollpunkt och lönsamhetsgräns</p>
+                    </div>
+                    <Button 
+                      onClick={() => window.open('/break-even', '_blank')}
+                      className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                    >
+                      Analysera break-even
+                    </Button>
                   </div>
                 </div>
                 
