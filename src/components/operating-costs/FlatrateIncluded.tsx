@@ -21,11 +21,11 @@ const FlatrateIncluded: React.FC<FlatrateIncludedProps> = ({
         <div className="flex items-center gap-2 mb-2">
           <Info className="h-5 w-5 text-blue-600" />
           <p className="text-blue-700 font-medium">
-            Flatrate Credits Ingår i ditt valda {selectedDriftpaket}-paket
+            Credits ingår i ditt valda {selectedDriftpaket}-paket
           </p>
         </div>
         <p className="text-sm text-blue-600 pl-7">
-          Du får obegränsad användning av credits utan extra kostnader.
+          Obegränsad användning av credits utan extra kostnader.
         </p>
       </div>
       
