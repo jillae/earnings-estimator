@@ -62,9 +62,9 @@ const FlatrateSection: React.FC = () => {
   return (
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '350ms' }}>
       {/* Microcopy för jämförelseområdet */}
-      <div className="text-center mb-6">
-        <p className="text-sm font-medium text-slate-700">
-          Jämför! Få full transparens kring vad som ingår – se skillnaden på investering, drift och service.
+      <div className="text-center mb-6 p-3 bg-blue-50 rounded-lg border border-blue-100">
+        <p className="text-sm font-medium text-blue-800">
+          💡 Jämför! Få full transparens kring vad som ingår – se skillnaden på investering, drift och service.
         </p>
       </div>
       
