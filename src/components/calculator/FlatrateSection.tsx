@@ -45,7 +45,7 @@ const FlatrateSection: React.FC = () => {
 
   // Hämta rabattinformation
   const getFlatrateDiscount = () => {
-    if (selectedSlaLevel === 'Silver') return '50% rabatt';
+    if (selectedSlaLevel === 'Silver') return 'Med SLA Silver: 50% rabatt';
     if (selectedSlaLevel === 'Guld') return 'Med SLA Guld: Gratis (100% rabatt)';
     return '';
   };
