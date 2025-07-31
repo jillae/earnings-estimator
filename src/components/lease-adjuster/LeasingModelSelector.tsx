@@ -76,7 +76,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
           </CardContent>
         </Card>
 
-        {/* Allt-inkluderat - Sekundär */}
+        {/* Strategipaket - Sekundär */}
         <Card 
           className={`cursor-pointer transition-all duration-300 h-full border-2 ${
             selectedModel === 'strategisk' 

@@ -39,13 +39,13 @@ export const LEASING_PACKAGES = {
   },
   
   ALLT_INKLUDERAT: {
-    id: 'allt-inkluderat',
-    name: 'Allt-inkluderat', 
-    shortName: 'Allt-ink',
+    id: 'strategipaket',
+    name: 'Strategipaket', 
+    shortName: 'Strategi',
     description: 'Den ultimata lösningen för total kostnadskontroll. Med detta paket betalar du **aldrig mer för credits** – du köper dig helt fri från all framtida debitering, oavsett användning.',
     detailedDescription: 'Alla credits inkluderade i priset. Perfekt för hög volym och förutsägbar budget.',
     sliderPosition: 2,
-    icon: '📦',
+    icon: '🎯',
     benefits: [
       'Noll kostnad per credit, för alltid',
       'Fullständig frihet från credit-hantering',

@@ -77,7 +77,7 @@ export const useAlternativesComparison = () => {
       },
       {
         rank: 4,
-        name: 'Allt-inkluderat',
+        name: 'Strategipaket',
         // Använd den ursprungliga strategiska leasingkostnaden från STRATEGIC_LEASING_COSTS
         monthlyCost: getStrategicLeasingCost(selectedMachine) || Math.round(grundkostnad),
         hasUnlimitedCredits: true,

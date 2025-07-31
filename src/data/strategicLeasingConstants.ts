@@ -8,7 +8,7 @@ import { Machine } from './machines/types';
 
 /**
  * Strategiska leasingkostnader per maskin
- * Dessa värden inkluderar credit-kompensation och representerar "allt-inkluderat"-priset
+ * Dessa värden inkluderar credit-kompensation och representerar "strategipaket"-priset
  */
 export const STRATEGIC_LEASING_COSTS = {
   // Premium maskiner
