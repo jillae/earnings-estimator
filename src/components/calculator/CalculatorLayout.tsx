@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import CalculatorInputs from './CalculatorInputs';
 import CalculatorResults from './CalculatorResults';
 import { useCalculator } from '@/context/CalculatorContext';
+import ConsolidatedAnalysisModal from './ConsolidatedAnalysisModal';
 import { SaveConfigurationButton } from './SaveConfigurationButton';
 import { QuoteRequestButton } from './QuoteRequestButton';
 import { Button } from '@/components/ui/button';
-import { AnalysisHubModal } from './AnalysisHubModal';
 
 const CalculatorLayout: React.FC = () => {
   const { netResults } = useCalculator();
@@ -103,7 +103,7 @@ const CalculatorLayout: React.FC = () => {
         </div>
       </div>
       
-      <AnalysisHubModal 
+      <ConsolidatedAnalysisModal 
         open={showAnalysisModal}
         onOpenChange={setShowAnalysisModal}
       />

@@ -2,7 +2,7 @@ import React from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Button } from '@/components/ui/button';
 import { Download, TrendingUp, FileBarChart } from 'lucide-react';
-import DetailedAnalysisModal from './calculator/DetailedAnalysisModal';
+import ConsolidatedAnalysisModal from './calculator/ConsolidatedAnalysisModal';
 import { GrowthForecastPlug } from './GrowthForecastPlug';
 import { useCalculator } from '@/context/CalculatorContext';
 import ExportButton from '@/components/ExportButton';
@@ -82,7 +82,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
     }}>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-slate-900">Resultat</h2>
-        <DetailedAnalysisModal />
+        <ConsolidatedAnalysisModal />
       </div>
       
       <div className="table-container overflow-x-auto">
