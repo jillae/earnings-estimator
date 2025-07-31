@@ -34,6 +34,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
         {/* Hybridmodell - Primär */}
         <div 
           className={`
+            relative
             ${selectedModel === 'hybridmodell' 
               ? 'border-2 border-emerald-400 bg-emerald-50 shadow-lg scale-[1.02]' 
               : 'border border-slate-200 bg-white hover:border-emerald-300 hover:shadow-md'
@@ -42,6 +43,15 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
           `}
           onClick={(e) => handleModelChange('hybridmodell', e)}
         >
+          {/* Vald badge i övre högra hörnet */}
+          {selectedModel === 'hybridmodell' && (
+            <div className="absolute -top-2 -right-2 z-10">
+              <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs px-2 py-1 shadow-md">
+                ✓ Vald
+              </Badge>
+            </div>
+          )}
+
           <div className="flex items-center gap-3 mb-3">
             <div className="p-2 bg-emerald-100 rounded-lg group-hover:bg-emerald-200 transition-colors">
                 <span className="text-lg">{hybridmodellPackage.icon}</span>
@@ -53,12 +63,6 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
               <h4 className="font-medium text-slate-700 text-sm">
                 {hybridmodellPackage.name}
               </h4>
-              {selectedModel === 'hybridmodell' && (
-                <div className="flex items-center text-xs text-emerald-600 mt-1">
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></div>
-                  Vald
-                </div>
-              )}
             </div>
           </div>
           
@@ -83,6 +87,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
         {/* Strategimodell */}
         <div 
           className={`
+            relative
             ${selectedModel === 'strategimodell' 
               ? 'border-2 border-blue-400 bg-blue-50 shadow-lg scale-[1.02]' 
               : 'border border-slate-200 bg-white hover:border-blue-300 hover:shadow-md'
@@ -91,6 +96,15 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
           `}
           onClick={(e) => handleModelChange('strategimodell', e)}
         >
+          {/* Vald badge i övre högra hörnet */}
+          {selectedModel === 'strategimodell' && (
+            <div className="absolute -top-2 -right-2 z-10">
+              <Badge className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-2 py-1 shadow-md">
+                ✓ Vald
+              </Badge>
+            </div>
+          )}
+
           <div className="flex items-center gap-3 mb-3">
             <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
                 <span className="text-lg">{strategimodellPackage.icon}</span>
@@ -102,12 +116,6 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
               <h4 className="font-medium text-slate-700 text-sm">
                 {strategimodellPackage.name}
               </h4>
-              {selectedModel === 'strategimodell' && (
-                <div className="flex items-center text-xs text-blue-600 mt-1">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                  Vald
-                </div>
-              )}
             </div>
           </div>
           
