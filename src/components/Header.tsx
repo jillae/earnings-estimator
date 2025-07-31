@@ -26,11 +26,11 @@ const Header = () => {
           <div className="flex items-center space-x-6">
             {/* Huvudnavigation */}
             <div className="flex items-center space-x-4 border-r border-white/20 pr-6">
-              <Link to="/" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+              <Link to="/" className="flex items-center hover:text-primary-foreground/80 transition-colors cursor-pointer">
                 <Home className="h-4 w-4 mr-1" />
                 <span className="text-sm">Kalkylator</span>
               </Link>
-              <Link to="/dashboard" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+              <Link to="/dashboard" className="flex items-center hover:text-primary-foreground/80 transition-colors cursor-pointer">
                 <BarChart3 className="h-4 w-4 mr-1" />
                 <span className="text-sm">Dashboard</span>
               </Link>
@@ -61,11 +61,11 @@ const Header = () => {
 
             {/* Support & Service */}
             <div className="flex items-center space-x-4">
-              <Link to="/manual" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+              <Link to="/manual" className="flex items-center hover:text-primary-foreground/80 transition-colors cursor-pointer">
                 <FileText className="h-4 w-4 mr-1" />
                 <span className="text-sm">Manual</span>
               </Link>
-              <Link to="/contact" className="flex items-center hover:text-primary-foreground/80 transition-colors">
+              <Link to="/contact" className="flex items-center hover:text-primary-foreground/80 transition-colors cursor-pointer">
                 <Phone className="h-4 w-4 mr-1" />
                 <span className="text-sm">Kontakt</span>
               </Link>

@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calculator, FileBarChart, Smartphone, TrendingUp, Target, History, Download, Share } from 'lucide-react';
+import { Calculator, FileBarChart, Smartphone, TrendingUp, Target, History, Download, Share, BarChart3 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { CalculatorProvider, useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
+import ConsolidatedAnalysisModal from '@/components/calculator/ConsolidatedAnalysisModal';
 
 const DashboardContent = () => {
   const { 
@@ -118,19 +119,21 @@ const DashboardContent = () => {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center text-lg">
-                <FileBarChart className="h-5 w-5 mr-2 text-green-600" />
-                ROI Analys
+                <BarChart3 className="h-5 w-5 mr-2 text-green-600" />
+                Detaljerad Analys
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Avancerad lönsamhetsanalys
+                Fullständig analys med alla verktyg
               </p>
-              <Link to="/roi-analysis">
-                <Button variant="outline" className="w-full">
-                  Analysera ROI
-                </Button>
-              </Link>
+              <ConsolidatedAnalysisModal 
+                trigger={
+                  <Button variant="outline" className="w-full">
+                    Öppna Analys
+                  </Button>
+                }
+              />
             </CardContent>
           </Card>
 
@@ -138,16 +141,16 @@ const DashboardContent = () => {
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center text-lg">
                 <Target className="h-5 w-5 mr-2 text-orange-600" />
-                Break-even
+                Återgå till Kalkylator
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Beräkna break-even punkt
+                Justera inställningar och beräkna
               </p>
-              <Link to="/break-even">
+              <Link to="/">
                 <Button variant="outline" className="w-full">
-                  Break-even analys
+                  Tillbaka till kalkylator
                 </Button>
               </Link>
             </CardContent>
