@@ -14,6 +14,7 @@ import KlinikOptimeringComingSoon from './pages/KlinikOptimeringComingSoon';
 import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
+import { CalculatorProvider } from './context/CalculatorContext';
 
 import './App.css';
 
@@ -25,7 +26,11 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/calculator" element={<Index />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/growth-forecast" element={<GrowthForecast />} />
+          <Route path="/growth-forecast" element={
+            <CalculatorProvider>
+              <GrowthForecast />
+            </CalculatorProvider>
+          } />
           <Route path="/roi-analysis" element={<ROIAnalysisWithProvider />} />
           <Route path="/break-even" element={<BreakEvenAnalysisWithProvider />} />
           <Route path="/contact" element={<Contact />} />
