@@ -12,25 +12,25 @@ const CreditInfoAccordion: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="w-full mb-6">
+    <div className="w-full mb-4">
       <Accordion type="single" collapsible className="w-full" value={isOpen ? "credits-info" : ""} onValueChange={(value) => setIsOpen(!!value)}>
         <AccordionItem value="credits-info" className="border border-slate-300 rounded-lg bg-slate-50 hover:bg-slate-100 transition-all duration-300">
-          <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-slate-200/50 transition-colors duration-200 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-slate-400 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm">ℹ️</span>
+          <AccordionTrigger className="px-4 py-2 hover:no-underline hover:bg-slate-200/50 transition-colors duration-200 rounded-lg">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-slate-400 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs">ℹ️</span>
               </div>
-              <span className="text-base font-medium text-slate-700">Vad är Credits?</span>
+              <span className="text-sm font-medium text-slate-700">Vad är Credits?</span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="px-4 pb-4 bg-white rounded-b-lg text-left">
-            <div className="space-y-4">
+          <AccordionContent className="px-4 pb-3 bg-white rounded-b-lg text-left">
+            <div className="space-y-3">
               <div>
-                <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                <p className="text-sm text-slate-700 leading-relaxed mb-2">
                   Alla våra golvmaskiner använder ett digitalt kreditsystem, godkänt för medicinskt bruk.
                   Varje <strong>credit motsvarar en behandling</strong> och är själva grunden i din <strong>driftskostnad</strong>. Credits beställs i 25-pack till ditt avtalspris och fylls på direkt i maskinens display med en voucher – ingen internetuppkoppling krävs.
                 </p>
-                <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                <p className="text-sm text-slate-700 leading-relaxed mb-2">
                   Du väljer själv hur du vill betala för drift:<br />
                   👉 Antingen <strong>styckepris</strong> – betala per behandling<br />
                   👉 Eller <strong>Fastpris</strong> – obegränsat användande till fast kostnad
@@ -41,8 +41,8 @@ const CreditInfoAccordion: React.FC = () => {
               </div>
               
               <div>
-                <h5 className="font-semibold text-slate-900 mb-3 text-sm">Dina tre största fördelar</h5>
-                <div className="grid gap-3">
+                <h5 className="font-semibold text-slate-900 mb-2 text-sm">Dina tre största fördelar</h5>
+                <div className="grid gap-2">
                   <div className="flex items-start gap-2">
                     <span className="text-lg mt-0.5 flex-shrink-0">💰</span>
                     <div>
@@ -88,7 +88,7 @@ const CreditInfoAccordion: React.FC = () => {
               </div>
 
               {/* Stäng-knapp */}
-              <div className="pt-4 border-t border-slate-200 flex justify-center">
+              <div className="pt-2 border-t border-slate-200 flex justify-center">
                 <Button 
                   variant="outline" 
                   size="sm" 
