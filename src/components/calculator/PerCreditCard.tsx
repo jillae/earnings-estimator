@@ -105,7 +105,7 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
           
           {isDisabled && (
             <div className="mt-2 text-sm text-orange-600 font-medium">
-              Credits ingår redan i ditt valda paket
+              Credits ingår redan i din valda modell
             </div>
           )}
         </div>

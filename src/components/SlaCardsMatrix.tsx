@@ -208,10 +208,10 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2 flex items-center">
           <span className="w-2 h-2 bg-red-400 rounded-sm mr-2"></span>
-          Välj Service & Driftpaket
+          Välj Service & Driftmodell
         </h3>
         <p className="text-slate-600 text-sm">
-          Jämför alternativen och välj det som passar din klinik bäst.
+          Jämför modellerna och välj den som passar din klinik bäst.
         </p>
       </div>
 

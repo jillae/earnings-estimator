@@ -64,8 +64,8 @@ const Manual = () => {
                         <p className="text-gray-600 mt-1">Dra i leasingreglaget för att se hur olika leasingnivåer påverkar din lönsamhet.</p>
                       </li>
                       <li className="pl-2">
-                        <span className="font-medium">Välj driftpaket</span>
-                        <p className="text-gray-600 mt-1">Välj mellan Bas, Silver eller Guld driftpaket beroende på dina behov.</p>
+                        <span className="font-medium">Välj driftmodell</span>
+                        <p className="text-gray-600 mt-1">Välj mellan Bas, Silver eller Guld driftmodell beroende på dina behov.</p>
                       </li>
                     </ol>
                   </CardContent>
@@ -121,16 +121,16 @@ const Manual = () => {
                         </AccordionContent>
                       </AccordionItem>
                       
-                      <AccordionItem value="driftpaket">
-                        <AccordionTrigger>Driftpaket och SLA-nivåer</AccordionTrigger>
+                      <AccordionItem value="driftmodell">
+                        <AccordionTrigger>Driftmodeller och SLA-nivåer</AccordionTrigger>
                         <AccordionContent>
-                          <p className="mb-2">Välj mellan tre olika driftpaket för din utrustning:</p>
+                          <p className="mb-2">Välj mellan tre olika driftmodeller för din utrustning:</p>
                           <ul className="list-disc pl-5 space-y-2">
                             <li><strong>Bas:</strong> Grundläggande support och garanti</li>
                             <li><strong>Silver:</strong> Utökad support med snabbare responstider och flatrate-credits inkluderade</li>
                             <li><strong>Guld:</strong> Premium-support med flatrate-credits inkluderade och prioriterad service</li>
                           </ul>
-                          <p className="mt-2">För varje driftpaket kan du välja olika SLA-nivåer som påverkar svarstider och servicenivå.</p>
+                          <p className="mt-2">För varje driftmodell kan du välja olika SLA-nivåer som påverkar svarstider och servicenivå.</p>
                         </AccordionContent>
                       </AccordionItem>
                       
@@ -236,8 +236,8 @@ const Manual = () => {
                         <div className="flex items-start">
                           <CheckCircle className="h-5 w-5 text-blue-600 mt-1 mr-2" />
                           <div>
-                            <h3 className="font-medium text-blue-800 mb-1">Driftpaketval</h3>
-                            <p className="text-sm text-blue-700">Överväg Silver eller Guld-paketet om du har hög behandlingsvolym då flatrate ingår i båda.</p>
+                            <h3 className="font-medium text-blue-800 mb-1">Driftmodellval</h3>
+                            <p className="text-sm text-blue-700">Överväg Silver eller Guld-modellen om du har hög behandlingsvolym då flatrate ingår i båda.</p>
                           </div>
                         </div>
                       </div>

@@ -21,7 +21,7 @@ const FlatrateIncluded: React.FC<FlatrateIncludedProps> = ({
         <div className="flex items-center gap-2 mb-2">
           <Info className="h-5 w-5 text-blue-600" />
           <p className="text-blue-700 font-medium">
-            Flatrate Credits Ingår i ditt valda {selectedDriftpaket}-paket
+            Flatrate Credits Ingår i din valda {selectedDriftpaket}-modell
           </p>
         </div>
         <p className="text-sm text-blue-600 pl-7">
@@ -31,7 +31,7 @@ const FlatrateIncluded: React.FC<FlatrateIncludedProps> = ({
       
       {selectedDriftpaket === 'Guld' && operatingCost.slaCost > 0 && (
         <div className="flex justify-between items-center mt-4 mb-2">
-          <span className="text-sm">Extra SLA-kostnad för Guld-paket</span>
+          <span className="text-sm">Extra SLA-kostnad för Guld-modell</span>
           <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost, false, true)}</span>
         </div>
       )}

@@ -31,7 +31,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        {/* Hybridpaket - Primär */}
+        {/* Hybridmodell - Primär */}
         <Card 
           className={`cursor-pointer transition-all duration-300 h-full border-2 ${
             selectedModel === 'grundleasing' 
@@ -76,7 +76,7 @@ const LeasingModelSelector: React.FC<LeasingModelSelectorProps> = ({
           </CardContent>
         </Card>
 
-        {/* Strategipaket - Sekundär */}
+        {/* Strategimodell - Sekundär */}
         <Card 
           className={`cursor-pointer transition-all duration-300 h-full border-2 ${
             selectedModel === 'strategisk' 

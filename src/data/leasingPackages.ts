@@ -22,8 +22,8 @@ export const LEASING_PACKAGES = {
   },
   
   HYBRIDPAKET: {
-    id: 'hybridpaket', 
-    name: 'Hybridpaket',
+    id: 'hybridmodell', 
+    name: 'Hybridmodell',
     shortName: 'Hybrid',
     description: 'En flexibel investering som låter dig växa med din klinik. Du betalar en låg grundleasing för maskinen och anpassar enkelt din driftskostnad utifrån behov och volym.',
     detailedDescription: 'En smart investering som växer med din verksamhet. Full kontroll över driftskostnader med möjlighet att anpassa efter behov.',
@@ -39,10 +39,10 @@ export const LEASING_PACKAGES = {
   },
   
   ALLT_INKLUDERAT: {
-    id: 'strategipaket',
-    name: 'Strategipaket', 
+    id: 'strategimodell',
+    name: 'Strategimodell', 
     shortName: 'Strategi',
-    description: 'Den ultimata lösningen för total kostnadskontroll. Med detta paket betalar du **aldrig mer för credits** – du köper dig helt fri från all framtida debitering, oavsett användning.',
+    description: 'Den ultimata lösningen för total kostnadskontroll. Med denna modell betalar du **aldrig mer för credits** – du köper dig helt fri från all framtida debitering, oavsett användning.',
     detailedDescription: 'Alla credits inkluderade i priset. Perfekt för hög volym och förutsägbar budget.',
     sliderPosition: 2,
     icon: '🎯',
@@ -50,7 +50,7 @@ export const LEASING_PACKAGES = {
       'Noll kostnad per credit, för alltid',
       'Fullständig frihet från credit-hantering',
       'Maximal enkelhet & förutsägbarhet',
-      'Ditt paket innehåller ett exceptionellt värde som säkrar din framtida lönsamhet.',
+      'Din modell innehåller ett exceptionellt värde som säkrar din framtida lönsamhet.',
       'Unikt erbjudande på marknaden (då vi fortfarande har egen kostnad för credits)'
     ],
     bestFor: 'Hög volym och total kostnadsfrihet'

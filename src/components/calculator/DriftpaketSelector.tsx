@@ -45,7 +45,7 @@ const DriftpaketSelector: React.FC<DriftpaketSelectorProps> = ({
     >
       <h3 className="text-lg font-semibold mb-4 flex items-center">
         <span className="w-2 h-2 bg-emerald-400 rounded-sm mr-2"></span>
-        Välj Service & Driftpaket
+        Välj Service & Driftmodell
       </h3>
       
       {/* Bas-paket med integrerad kreditinformation */}
@@ -227,7 +227,7 @@ const DriftpaketSelector: React.FC<DriftpaketSelectorProps> = ({
             disabled
             title="Länk kommer snart"
           >
-            Jämför paketen / Läs fullständiga villkor (kommer snart)
+            Jämför modellerna / Läs fullständiga villkor (kommer snart)
           </button>
         </div>
         <div className="text-xs text-gray-500 text-center italic">

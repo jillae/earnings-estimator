@@ -17,7 +17,7 @@ export const premiumMachines: Machine[] = [
     flatrateAmount: 5996,
     usesCredits: true,
     leasingMin: 20666,
-    leasingMax: 33863, // Strategisk kostnad - strategipaket-pris
+    leasingMax: 33863, // Strategisk kostnad - strategimodell-pris
     creditMin: 149,     // Kreditpris vid gamla leasingMax (mitten)
     creditMax: 299,     // Kreditpris vid leasingMin
     creditsPerTreatment: 1,
@@ -40,7 +40,7 @@ export const premiumMachines: Machine[] = [
     flatrateAmount: 4356,
     usesCredits: true,
     leasingMin: 9605,
-    leasingMax: 17043, // Strategisk kostnad - strategipaket-pris
+    leasingMax: 17043, // Strategisk kostnad - strategimodell-pris
     creditMin: 99,      // Kreditpris vid gamla leasingMax (mitten)
     creditMax: 199,     // Kreditpris vid leasingMin
     creditsPerTreatment: 1,

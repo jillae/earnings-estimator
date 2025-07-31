@@ -35,12 +35,12 @@ const FlatrateNotIncluded: React.FC<FlatrateNotIncludedProps> = ({
         <div className="flex items-center gap-2 mb-2">
           <AlertTriangle className="h-5 w-5 text-amber-600" />
           <p className="text-amber-700 font-medium">
-            OBS! Flatrate ingår ej i {selectedDriftpaket}-paketet vid denna leasingnivå
+            OBS! Flatrate ingår ej i {selectedDriftpaket}-modellen vid denna leasingnivå
           </p>
         </div>
         <p className="text-sm text-amber-600 pl-7">
-          För att inkludera Flatrate (obegränsad användning) behöver du välja leasingpaket Standard eller högre.
-          Styckepris för credits tillkommer därför nu utöver paketpriset.
+          För att inkludera Flatrate (obegränsad användning) behöver du välja leasingmodell Standard eller högre.
+          Styckepris för credits tillkommer därför nu utöver modellpriset.
         </p>
       </div>
 
@@ -59,7 +59,7 @@ const FlatrateNotIncluded: React.FC<FlatrateNotIncludedProps> = ({
       
       {selectedDriftpaket === 'Guld' && operatingCost.slaCost > 0 && (
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm">Extra SLA-kostnad för Guld-paket</span>
+          <span className="text-sm">Extra SLA-kostnad för Guld-modell</span>
           <span className="text-lg font-semibold">{formatCurrency(operatingCost.slaCost, false, true)}</span>
         </div>
       )}
