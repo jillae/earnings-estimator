@@ -9,19 +9,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import GrowthAnalysisContent from './analysis/GrowthAnalysisContent';
 import ROIAnalysisContent from './analysis/ROIAnalysisContent';
 import BreakEvenAnalysisContent from './analysis/BreakEvenAnalysisContent';
+import DetailedAnalysisContent from './analysis/DetailedAnalysisContent';
 import { Button } from '@/components/ui/button';
 import { Download, Share, Printer, BookOpen, X } from 'lucide-react';
 
 interface AnalysisHubModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  defaultTab?: 'growth' | 'roi' | 'breakeven';
+  defaultTab?: 'detailed' | 'growth' | 'roi' | 'breakeven';
 }
 
 export const AnalysisHubModal: React.FC<AnalysisHubModalProps> = ({
   open,
   onOpenChange,
-  defaultTab = 'growth'
+  defaultTab = 'detailed'
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -33,7 +34,11 @@ export const AnalysisHubModal: React.FC<AnalysisHubModalProps> = ({
         </DialogHeader>
         
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="detailed" className="flex items-center gap-2">
+              <span className="text-lg">📊</span>
+              Detaljerad Analys
+            </TabsTrigger>
             <TabsTrigger value="growth" className="flex items-center gap-2">
               <span className="text-lg">📈</span>
               Tillväxtanalys
@@ -49,6 +54,10 @@ export const AnalysisHubModal: React.FC<AnalysisHubModalProps> = ({
           </TabsList>
           
           <div className="mt-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+            <TabsContent value="detailed" className="space-y-6">
+              <DetailedAnalysisContent />
+            </TabsContent>
+            
             <TabsContent value="growth" className="space-y-6">
               <GrowthAnalysisContent />
             </TabsContent>
