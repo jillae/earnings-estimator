@@ -96,7 +96,7 @@ export const SlaCardsMatrix: React.FC<SlaCardsMatrixProps> = ({
       features: [
         {
           label: 'Credit-kostnad',
-          brons: useFlatrateOption === 'flatrate' ? 'Flatrate' : `${formatCurrency(creditPrice)}/credit`,
+          brons: useFlatrateOption === 'flatrate' ? 'Ja' : `${formatCurrency(creditPrice)}/credit`,
           silver: 'Med SLA Silver: 50% rabatt',
           guld: '0 kr' // Visa 0 kr istället för text för Guld-paketet
         }
