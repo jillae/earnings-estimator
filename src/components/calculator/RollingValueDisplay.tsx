@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { formatCurrency } from '@/utils/formatUtils';
 import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
+import CreditInfoPopover from './CreditInfoPopover';
 
 interface RollingValueDisplayProps {
   value: number;
@@ -194,6 +195,12 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
           <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium border border-blue-200 shadow-sm">
             Standard
           </span>
+        </div>
+      )}
+      {/* Credits info badge i höger hörn */}
+      {label.includes('Credits') && (
+        <div className="absolute -top-1 -right-1 z-20">
+          <CreditInfoPopover />
         </div>
       )}
       <div className={`flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-sm ${className}`}>
