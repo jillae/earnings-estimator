@@ -1,11 +1,10 @@
 
-import { machineData } from '@/data/machines';
 import { CalculatorState } from '@/context/calculator/types';
 
 // Initial state values for the calculator
 export const initialState: CalculatorState = {
   clinicSize: 'medium',
-  selectedMachineId: "", // Tom sträng som default
+  selectedMachineId: "", // Tom sträng som default - kommer att sättas från databas-data
   paymentOption: "leasing", // Default till leasing
   selectedLeasingPeriodId: "60", // Default till 60 månader (KORRIGERAT)
   selectedInsuranceId: "yes", // Default to include insurance
@@ -13,7 +12,7 @@ export const initialState: CalculatorState = {
   selectedDriftpaket: "Bas", // Default till Bas (ingår)
   leaseAdjustmentFactor: 0.5, // Sätt default till 50%
   treatmentsPerDay: 4, // Default to medium clinic
-  customerPrice: machineData[0]?.defaultCustomerPrice || 1990,
+  customerPrice: 2500, // Default kundpris - kommer att uppdateras från vald maskin
   exchangeRate: 11.49260,
   machinePriceSEK: 0,
   cashPriceSEK: 0,
