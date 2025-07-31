@@ -12,8 +12,7 @@ const CreditInfoPopover: React.FC = () => {
           size="sm" 
           className="text-slate-500 hover:text-slate-700 p-1 h-auto"
         >
-          <Info className="h-4 w-4 mr-1" />
-          <span className="text-xs">Vad är Credits?</span>
+          <Info className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-4" align="start">
