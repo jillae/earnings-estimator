@@ -24,7 +24,7 @@ const whitePapers: WhitePaper[] = [{
 }, {
   title: "Kreditmodellen för Golvmaskiner",
   description: "Detaljer om kreditmodeller och betalningsalternativ.",
-  url: "https://example.com/kreditmodellen.pdf",
+  url: "https://github.com/jillae/earnings-estimator/blob/main/public/lovable-uploads/Whitepaper_Kreditmodellen%20fo%CC%88r%20Golvmaskiner.pdf",
   type: "pdf"
 }, {
   title: "Fördelarna med Leasing",

@@ -71,7 +71,9 @@ const CreditInfoPopover: React.FC = () => {
           
           <div className="pt-2 border-t border-slate-100">
             <a 
-              href="#" 
+              href="https://github.com/jillae/earnings-estimator/blob/main/public/lovable-uploads/Whitepaper_Kreditmodellen%20fo%CC%88r%20Golvmaskiner.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-primary hover:text-primary/80 text-xs font-medium transition-colors duration-200"
             >
               Läs mer om kreditmodellen här →
