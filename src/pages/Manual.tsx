@@ -101,9 +101,9 @@ const Manual = () => {
                           <p className="mb-2">För maskiner som använder credits kan du aktivera flatrate-modellen:</p>
                           <ul className="list-disc pl-5 space-y-2">
                             <li>Ger obegränsade credits mot en fast månadskostnad</li>
-                            <li>Aktiveras när leasingkostnaden når minst 80% av maxvärdet</li>
+                            <li><strong>Leasing:</strong> Kräver Standard-nivå eller högre (slider ≥50%) för alla driftpaket</li>
+                            <li><strong>Kontant:</strong> Kan aktiveras fritt för Bas-paketet, ingår automatiskt i Silver/Guld</li>
                             <li>Kräver minst 3 behandlingar per dag för att vara tillgänglig</li>
-                            <li>Ingår automatiskt i både Silver- och Guld-driftpaketet</li>
                           </ul>
                         </AccordionContent>
                       </AccordionItem>
@@ -126,9 +126,9 @@ const Manual = () => {
                         <AccordionContent>
                           <p className="mb-2">Välj mellan tre olika driftpaket för din utrustning:</p>
                           <ul className="list-disc pl-5 space-y-2">
-                            <li><strong>Bas:</strong> Grundläggande support och garanti</li>
-                            <li><strong>Silver:</strong> Utökad support med snabbare responstider och flatrate-credits inkluderade</li>
-                            <li><strong>Guld:</strong> Premium-support med flatrate-credits inkluderade och prioriterad service</li>
+                            <li><strong>Bas:</strong> Grundläggande support och garanti. Flatrate kan väljas fritt vid kontant, kräver Standard+ leasing</li>
+                            <li><strong>Silver:</strong> Utökad support med snabbare responstider. Flatrate ingår automatiskt vid kontant, kräver Standard+ leasing</li>
+                            <li><strong>Guld:</strong> Premium-support med prioriterad service. Flatrate ingår automatiskt vid kontant, kräver Standard+ leasing</li>
                           </ul>
                           <p className="mt-2">För varje driftpaket kan du välja olika SLA-nivåer som påverkar svarstider och servicenivå.</p>
                         </AccordionContent>
@@ -237,7 +237,7 @@ const Manual = () => {
                           <CheckCircle className="h-5 w-5 text-blue-600 mt-1 mr-2" />
                           <div>
                             <h3 className="font-medium text-blue-800 mb-1">Driftpaketval</h3>
-                            <p className="text-sm text-blue-700">Överväg Silver eller Guld-paketet om du har hög behandlingsvolym då flatrate ingår i båda.</p>
+                            <p className="text-sm text-blue-700">Vid kontantköp ingår flatrate automatiskt i Silver och Guld. Vid leasing krävs Standard-nivå eller högre (slider ≥50%) för att få flatrate inkluderat.</p>
                           </div>
                         </div>
                       </div>

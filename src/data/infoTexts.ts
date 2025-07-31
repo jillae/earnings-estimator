@@ -45,8 +45,8 @@ export const infoTexts: Record<InfoTextKey, InfoText | null> = {
   // Uppdaterade för Silver/Guld - skilj på Leasing och Kontant
   SILVER_PACKAGE_LEASING_FLATRATE_ACTIVE: { 
     title: "Info: Paket Silver (Leasing)", 
-    body: "Utökad service (...) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår i paketpriset vid denna högre leasingnivå (Standard+).", 
-    link: { text: "Se villkor", href: "/link-to-sla-details" } 
+    body: "Utökad service (prioritering, snabbare responstider) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår automatiskt i paketpriset vid denna högre leasingnivå (Standard+).", 
+    link: { text: "Se villkor", href: "/link-to-sla-details" }
   },
   SILVER_PACKAGE_LEASING_FLATRATE_INACTIVE: { 
     title: "Info: Paket Silver (Leasing)", 
@@ -55,13 +55,13 @@ export const infoTexts: Record<InfoTextKey, InfoText | null> = {
   },
   SILVER_PACKAGE_CASH: { 
     title: "Info: Paket Silver (Kontant)", 
-    body: "Utökad service (...) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår automatiskt i paketpriset vid kontantköp.", 
-    link: { text: "Se villkor", href: "/link-to-sla-details" } 
+    body: "Utökad service (prioritering, snabbare responstider) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår automatiskt i paketpriset vid kontantköp.", 
+    link: { text: "Se villkor", href: "/link-to-sla-details" }
   },
   GULD_PACKAGE_LEASING_FLATRATE_ACTIVE: { 
     title: "Info: Paket Guld (Leasing)", 
-    body: "Premium service (...) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår i paketpriset vid denna högre leasingnivå (Standard+).", 
-    link: { text: "Se villkor", href: "/link-to-sla-details" } 
+    body: "Premium service (premium prioritering, snabbaste responstider, utökad support) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår automatiskt i paketpriset vid denna högre leasingnivå (Standard+).", 
+    link: { text: "Se villkor", href: "/link-to-sla-details" }
   },
   GULD_PACKAGE_LEASING_FLATRATE_INACTIVE: { 
     title: "Info: Paket Guld (Leasing)", 
@@ -70,8 +70,8 @@ export const infoTexts: Record<InfoTextKey, InfoText | null> = {
   },
   GULD_PACKAGE_CASH: { 
     title: "Info: Paket Guld (Kontant)", 
-    body: "Premium service (...) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår automatiskt i paketpriset vid kontantköp.", 
-    link: { text: "Se villkor", href: "/link-to-sla-details" } 
+    body: "Premium service (premium prioritering, snabbaste responstider, utökad support) ingår. Flatrate Credits (obegr. användning, 3 mån uppsägningstid) ingår automatiskt i paketpriset vid kontantköp.", 
+    link: { text: "Se villkor", href: "/link-to-sla-details" }
   },
   // Förklarar varför Flatrate toggle/benefit kan vara inaktiv (endast Leasing-fall)
   FLATRATE_NEEDS_HIGHER_LEASE: { 

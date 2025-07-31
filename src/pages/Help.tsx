@@ -17,6 +17,18 @@ const Help = () => {
           
           <div className="space-y-6 mt-6">
             <div className="p-4 border rounded-lg">
+              <h3 className="font-medium">Hur fungerar flatrate för credits?</h3>
+              <p className="mt-2">Flatrate-tillgänglighet beror på betalmetod och driftpaket:<br/>
+              • <strong>Kontantköp:</strong> Flatrate kan väljas fritt för Bas-paket, ingår automatiskt i Silver/Guld<br/>
+              • <strong>Leasing:</strong> Kräver Standard-nivå eller högre (slider ≥50%) för alla driftpaket</p>
+            </div>
+            
+            <div className="p-4 border rounded-lg">
+              <h3 className="font-medium">Vad betyder "Standard eller högre" leasingnivå?</h3>
+              <p className="mt-2">Leasingslidern visar olika nivåer: Basic (0-49%), Standard (50-79%), Premium (80-100%). Flatrate-förmåner kräver minst Standard-nivå för att aktiveras vid leasing.</p>
+            </div>
+            
+            <div className="p-4 border rounded-lg">
               <h3 className="font-medium">Hur räknar kalkylatorn ut leasingkostnaden?</h3>
               <p className="mt-2">Leasingkostnaden beräknas baserat på maskinens pris, leasingperiod, leasingfaktor och försäkringsalternativ. Kalkylatorn tar även hänsyn till valutakurser för importerade maskiner.</p>
             </div>
@@ -24,6 +36,13 @@ const Help = () => {
             <div className="p-4 border rounded-lg">
               <h3 className="font-medium">Varför skiljer sig intäktsberäkningarna mellan olika maskiner?</h3>
               <p className="mt-2">Intäktsberäkningarna baseras på respektive maskins förmåga, behandlingstider, behandlingskostnader och kreditåtgång. Premiumutrustning kan generera högre intäkter per behandling.</p>
+            </div>
+            
+            <div className="p-4 border rounded-lg">
+              <h3 className="font-medium">Vad är skillnaden mellan de olika driftpaketen?</h3>
+              <p className="mt-2">• <strong>Bas:</strong> Grundläggande support och garanti<br/>
+              • <strong>Silver:</strong> Prioriterad support, snabbare responstider + flatrate (kontant) eller vid Standard+ leasing<br/>
+              • <strong>Guld:</strong> Premium support, snabbaste service + flatrate (kontant) eller vid Standard+ leasing</p>
             </div>
           </div>
           
