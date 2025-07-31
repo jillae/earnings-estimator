@@ -14,16 +14,16 @@ const CreditInfoAccordion: React.FC = () => {
   return (
     <div className="w-full mb-6">
       <Accordion type="single" collapsible className="w-full" value={isOpen ? "credits-info" : ""} onValueChange={(value) => setIsOpen(!!value)}>
-        <AccordionItem value="credits-info" className="border-2 border-blue-200 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 shadow-md hover:shadow-lg transition-all duration-300">
-          <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-blue-100/50 transition-colors duration-200 rounded-t-xl">
+        <AccordionItem value="credits-info" className="border border-slate-300 rounded-lg bg-slate-50 hover:bg-slate-100 transition-all duration-300">
+          <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-slate-200/50 transition-colors duration-200 rounded-lg">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-md">
-                <span className="text-white text-lg">💳</span>
+              <div className="w-8 h-8 bg-slate-400 rounded-full flex items-center justify-center">
+                <span className="text-white text-sm">ℹ️</span>
               </div>
-              <span className="text-xl font-bold text-blue-900">Vad är Credits?</span>
+              <span className="text-base font-medium text-slate-700">Vad är Credits?</span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="px-6 pb-6 bg-white rounded-b-xl">
+          <AccordionContent className="px-4 pb-4 bg-white rounded-b-lg text-left">
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-slate-700 leading-relaxed mb-3">
@@ -78,7 +78,9 @@ const CreditInfoAccordion: React.FC = () => {
               
               <div className="pt-2 border-t border-slate-100">
                 <a 
-                  href="#" 
+                  href="/path-to-your-credits-guide.pdf" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary hover:text-primary/80 text-xs font-medium transition-colors duration-200"
                 >
                   Läs mer om kreditmodellen här →
