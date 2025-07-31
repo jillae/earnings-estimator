@@ -66,8 +66,20 @@ export const useMachineData = () => {
   const { toast } = useToast();
 
   const convertToCalculatorFormat = (dbMachine: DatabaseMachine): CalculatorMachine => {
-    // Använd samma bildlogik som MachineThumbnail
-    const getPlaceholderImageForMachine = (machineId: string) => {
+    // Mappa maskinnamn från databas till rätt bildnycklar
+    const getPlaceholderImageForMachine = (machineName: string) => {
+      const nameToImageKey: {[key: string]: string} = {
+        "Emerald": "emerald",
+        "Zerona": "zerona", 
+        "FX 635": "fx-635",
+        "FX 405": "fx-405",
+        "XLR8": "xlr8",
+        "EVRL": "evrl",
+        "GVL": "gvl",
+        "Base Station": "base-station",
+        "Lunula": "lunula"
+      };
+      
       const placeholders: {[key: string]: string} = {
         "emerald": "https://i.imgur.com/IRED95Z.png",
         "zerona": "https://i.imgur.com/2LGOVPB.png", 
@@ -79,7 +91,9 @@ export const useMachineData = () => {
         "base-station": "https://i.imgur.com/lnCem77.png",
         "lunula": "https://i.imgur.com/QHbeZpX.jpg"
       };
-      return placeholders[machineId] || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=200&q=80";
+      
+      const imageKey = nameToImageKey[machineName];
+      return imageKey ? placeholders[imageKey] : "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=200&q=80";
     };
     
     return {
@@ -103,7 +117,7 @@ export const useMachineData = () => {
       maxLeaseMultiplier: 1.5,
       defaultLeaseMultiplier: 1.0,
       creditPriceMultiplier: 1.0,
-      imageUrl: getPlaceholderImageForMachine(dbMachine.name.toLowerCase()) // Använd existerande maskinbilder
+      imageUrl: getPlaceholderImageForMachine(dbMachine.name) // Använd maskinnamn för bildmappning
     };
   };
 
@@ -117,24 +131,24 @@ export const useMachineData = () => {
       // Filtrera endast aktiva maskiner för kalkylatorn
       const activeMachines = data.filter(machine => machine.is_active);
       
-      // Definiera önskad ordning (samma som i statisk data)
+      // Definiera önskad ordning baserat på maskinnamn från databas
       const machineOrder = [
-        "emerald",
-        "zerona", 
-        "fx-635",
-        "fx-405",
-        "gvl",
-        "xlr8",
-        "evrl",
-        "lunula",
-        "base-station"
+        "Emerald",
+        "Zerona", 
+        "FX 635",
+        "FX 405",
+        "GVL",
+        "XLR8",
+        "EVRL",
+        "Lunula",
+        "Base Station"
       ];
       
       // Konvertera och sortera enligt önskad ordning
       const convertedMachines = activeMachines.map(convertToCalculatorFormat);
       const sortedMachines = convertedMachines.sort((a, b) => {
-        const indexA = machineOrder.indexOf(a.name.toLowerCase());
-        const indexB = machineOrder.indexOf(b.name.toLowerCase());
+        const indexA = machineOrder.indexOf(a.name);
+        const indexB = machineOrder.indexOf(b.name);
         // Om maskin inte finns i listan, placera den i slutet
         if (indexA === -1 && indexB === -1) return 0;
         if (indexA === -1) return 1;
