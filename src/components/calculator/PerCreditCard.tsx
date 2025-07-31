@@ -28,7 +28,7 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
 
   return (
     <Card 
-      className={`transition-all duration-300 h-full border-2 ${
+      className={`relative transition-all duration-300 h-full border-2 ${
         isDisabled 
           ? 'opacity-50 cursor-not-allowed bg-slate-50 border-slate-200' 
           : isSelected 
@@ -46,10 +46,11 @@ const PerCreditCard: React.FC<PerCreditCardProps> = ({
             </h3>
           </div>
           {isSelected && (
-            <Badge variant="default" className="text-sm font-bold px-3 py-1.5 bg-blue-600 shadow-md ring-2 ring-blue-300">
-              <Check className="h-4 w-4 mr-1" />
-              VALD
-            </Badge>
+            <div className="absolute -top-2 -right-2 z-10">
+              <Badge className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-2 py-1 shadow-md">
+                ✓ Vald
+              </Badge>
+            </div>
           )}
         </div>
         

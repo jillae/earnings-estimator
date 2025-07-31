@@ -23,7 +23,7 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
 }) => {
   return (
     <Card 
-      className={`cursor-pointer transition-all duration-300 h-full border-2 ${
+      className={`relative cursor-pointer transition-all duration-300 h-full border-2 ${
         !isEnabled 
           ? 'opacity-50 cursor-not-allowed bg-slate-50 border-slate-200' 
           : isSelected 
@@ -41,10 +41,11 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
             </h3>
           </div>
           {isSelected && (
-            <Badge variant="default" className="text-sm font-bold px-3 py-1.5 bg-green-600 shadow-md ring-2 ring-green-300">
-              <Check className="h-4 w-4 mr-1" />
-              VALD
-            </Badge>
+            <div className="absolute -top-2 -right-2 z-10">
+              <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs px-2 py-1 shadow-md">
+                ✓ Vald
+              </Badge>
+            </div>
           )}
         </div>
         
