@@ -9,7 +9,7 @@ import {
 const CreditInfoAccordion: React.FC = () => {
   return (
     <div className="w-full mb-6">
-      <Accordion type="single" collapsible defaultValue="credits-info" className="w-full">
+      <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="credits-info" className="border border-slate-200 rounded-lg bg-white/50">
           <AccordionTrigger className="px-4 py-3 hover:no-underline">
             <span className="text-lg font-semibold text-slate-900">Vad är Credits?</span>
