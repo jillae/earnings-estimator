@@ -54,7 +54,17 @@ const ComparisonTable: React.FC = () => {
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
-          <Table>
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              .comparison-table .currency-cell {
+                font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+                font-variant-numeric: tabular-nums;
+                letter-spacing: -0.025em;
+                font-feature-settings: "tnum";
+              }
+            `
+          }} />
+          <Table className="comparison-table">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-12">Rang</TableHead>
@@ -81,7 +91,7 @@ const ComparisonTable: React.FC = () => {
                       <div className="text-xs text-slate-500 mt-1">{alternative.description}</div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-right font-semibold">
+                  <TableCell className="text-right font-semibold currency-cell">
                     {formatCurrency(alternative.monthlyCost)}
                   </TableCell>
                   <TableCell className="text-center">
