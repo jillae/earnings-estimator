@@ -6,10 +6,37 @@ import { Badge } from '@/components/ui/badge';
 import { Calculator, FileBarChart, Smartphone, TrendingUp, Target, History, Download, Share } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { CalculatorProvider, useCalculator } from '@/context/CalculatorContext';
+import { formatCurrency } from '@/utils/formatUtils';
 
-const Dashboard = () => {
-  // Mock data för demonstration
+const DashboardContent = () => {
+  const { 
+    selectedMachine, 
+    netResults, 
+    revenue,
+    treatmentsPerDay,
+    customerPrice 
+  } = useCalculator();
+
+  // Verkliga beräkningar baserat på nuvarande konfiguration
+  const currentCalculation = selectedMachine ? {
+    machine: selectedMachine.name,
+    netProfitMonthly: netResults.netPerMonthExVat,
+    netProfitYearly: netResults.netPerYearExVat,
+    monthlyRevenue: revenue.monthlyRevenueIncVat,
+    treatments: treatmentsPerDay,
+    price: customerPrice
+  } : null;
+  // Verkliga beräkningar från localStorage eller sparade konfigurationer
   const recentCalculations = [
+    currentCalculation ? {
+      id: 'current',
+      machine: currentCalculation.machine,
+      date: new Date().toISOString().split('T')[0],
+      netProfit: Math.round(currentCalculation.netProfitMonthly),
+      status: 'current'
+    } : null,
+    // Fallback exempel om ingen aktuell beräkning finns
     {
       id: '1',
       machine: 'FX 635',
@@ -23,28 +50,21 @@ const Dashboard = () => {
       date: '2025-01-28',
       netProfit: 32000,
       status: 'exported'
-    },
-    {
-      id: '3',
-      machine: 'EML',
-      date: '2025-01-26', 
-      netProfit: 28000,
-      status: 'shared'
     }
-  ];
+  ].filter(Boolean);
 
   const quickStartMachines = [
-    { id: 'fx-635', name: 'FX 635', category: 'Premium', popular: true },
-    { id: 'pl5', name: 'PL5', category: 'Treatment', popular: true },
-    { id: 'eml', name: 'EML', category: 'Handheld', popular: false },
-    { id: 'gvl', name: 'GVL', category: 'Treatment', popular: false }
+    { id: 'emerald', name: 'Emerald', category: 'Premium', popular: true },
+    { id: 'fx-635', name: 'FX 635', category: 'Treatment', popular: true },
+    { id: 'zerona', name: 'Zerona', category: 'Treatment', popular: true },
+    { id: 'evrl', name: 'EVRL', category: 'Handheld', popular: false }
   ];
 
   const monthlyStats = {
-    totalCalculations: 12,
-    avgProfit: 38500,
-    mostUsedMachine: 'FX 635',
-    efficiency: 'Hög'
+    totalCalculations: currentCalculation ? 1 : 0,
+    avgProfit: currentCalculation ? Math.round(currentCalculation.netProfitMonthly) : 0,
+    mostUsedMachine: currentCalculation ? currentCalculation.machine : 'Ingen ännu',
+    efficiency: currentCalculation && currentCalculation.netProfitMonthly > 0 ? 'Hög' : 'Låg'
   };
 
   return (
@@ -52,12 +72,26 @@ const Dashboard = () => {
       <Header />
       
       <main className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">Välkommen tillbaka!</h1>
           <p className="text-lg text-muted-foreground mb-8">
             Hantera dina kalkyleringar och få insikter om din kliniks prestanda
           </p>
+          {currentCalculation && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-2xl mx-auto">
+              <h3 className="font-semibold text-green-800 mb-2">Aktiv kalkylering: {currentCalculation.machine}</h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-green-600">Netto per månad:</span>
+                  <span className="font-semibold ml-2">{formatCurrency(currentCalculation.netProfitMonthly)}</span>
+                </div>
+                <div>
+                  <span className="text-green-600">Intäkt per månad:</span>
+                  <span className="font-semibold ml-2">{formatCurrency(currentCalculation.monthlyRevenue)}</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Quick Actions */}
@@ -238,7 +272,7 @@ const Dashboard = () => {
                   {quickStartMachines.map((machine) => (
                     <Link 
                       key={machine.id} 
-                      to={`/calculator?machine=${machine.id}`}
+                      to={`/?machine=${machine.id}`}
                       className="block"
                     >
                       <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
@@ -263,6 +297,14 @@ const Dashboard = () => {
       
       <Footer />
     </div>
+  );
+};
+
+const Dashboard = () => {
+  return (
+    <CalculatorProvider>
+      <DashboardContent />
+    </CalculatorProvider>
   );
 };
 

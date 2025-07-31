@@ -1,5 +1,6 @@
 
 import React, { useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import MachineGallery from './MachineGallery';
 import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
@@ -7,10 +8,24 @@ import { toast } from "sonner";
 
 const MachineGalleryContainer: React.FC = () => {
   const { selectedMachineId, setSelectedMachineId } = useCalculator();
+  const [searchParams] = useSearchParams();
   const previousMachineIdRef = useRef<string>(selectedMachineId);
   
   // Se till att vi inte visar "select-machine" i galleriet
   const filteredMachines = machineData.filter(machine => machine.id !== "select-machine");
+
+  // Hantera URL query parameter för maskinval
+  useEffect(() => {
+    const machineFromUrl = searchParams.get('machine');
+    if (machineFromUrl && machineFromUrl !== selectedMachineId) {
+      const machine = machineData.find(m => m.id === machineFromUrl);
+      if (machine) {
+        console.log(`Sätter maskin från URL: ${machineFromUrl}`);
+        setSelectedMachineId(machineFromUrl);
+        toast.success(`Laddar beräkning för ${machine.name}`);
+      }
+    }
+  }, [searchParams, selectedMachineId, setSelectedMachineId]);
 
   // Debug för att se om Context värden fungerar
   useEffect(() => {
@@ -19,7 +34,8 @@ const MachineGalleryContainer: React.FC = () => {
     // Visa toast endast när maskin-ID faktiskt ändras (inte vid initial rendering)
     if (previousMachineIdRef.current !== selectedMachineId && 
         selectedMachineId !== "select-machine" && 
-        previousMachineIdRef.current !== undefined) {
+        previousMachineIdRef.current !== undefined &&
+        !searchParams.get('machine')) { // Visa inte toast för URL-baserade val
       const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
       if (selectedMachine) {
         toast.success(`Du har valt ${selectedMachine.name}`);
