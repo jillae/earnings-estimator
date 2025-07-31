@@ -155,12 +155,12 @@ const CalculatorInputs: React.FC<{
             </div>
           </div>
           
+          
           {/* Credits-info accordion för credit-maskiner */}
           {selectedMachine?.usesCredits && (
             <CreditInfoAccordion />
           )}
-          
-          
+
           {/* Flatrate-sektion */}
           <FlatrateSection />
           
