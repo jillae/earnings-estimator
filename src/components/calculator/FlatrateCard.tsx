@@ -59,7 +59,7 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
           
           {discountText && (
             <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 text-sm px-2 py-1">
-              Med {selectedSlaLevel}: {discountText}
+              {discountText}
             </Badge>
           )}
           
