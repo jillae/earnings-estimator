@@ -68,17 +68,17 @@ const ProfitabilityCheck: React.FC = () => {
             <XCircle className="w-16 h-16 text-red-600" />
           )}
         </div>
-        <h2 className={`text-3xl font-bold mb-2 ${
+        <h2 className={`text-2xl font-bold mb-2 ${
           isProfitable ? 'text-emerald-800' : 'text-red-800'
         }`}>
-          {isProfitable ? '✅ JA, det här är lönsamt!' : '❌ NEJ, för dyrt just nu'}
+          {isProfitable ? 'Ja, det här är lönsamt! 💰' : 'Inte lönsamt ännu 📊'}
         </h2>
-        <p className={`text-lg ${
+        <p className={`text-base ${
           isProfitable ? 'text-emerald-700' : 'text-red-700'
         }`}>
           {isProfitable 
-            ? 'Din klinik kommer att tjäna pengar med denna maskin'
-            : 'Du behöver justera något för att göra det lönsamt'
+            ? 'Maskinen kommer att generera vinst för din klinik'
+            : 'Justera inställningar för att göra investeringen lönsam'
           }
         </p>
       </div>
@@ -189,13 +189,11 @@ const ProfitabilityCheck: React.FC = () => {
         <div className="relative">
           <ChartContainer config={chartConfig} className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <LineChart data={monthlyData.filter((_, index) => index % 12 === 11)} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis 
-                  dataKey="month" 
+                  dataKey="yearLabel" 
                   tick={{ fontSize: 11 }}
-                  interval={11}
-                  tickFormatter={(value) => `År ${Math.ceil(value / 12)}`}
                 />
                 <YAxis 
                   tick={{ fontSize: 11 }}
@@ -239,7 +237,7 @@ const ProfitabilityCheck: React.FC = () => {
                   stroke={chartConfig.revenue.color}
                   strokeWidth={3}
                   name="Intäkt"
-                  dot={{ fill: chartConfig.revenue.color, strokeWidth: 2, r: 4 }}
+                  dot={{ fill: chartConfig.revenue.color, strokeWidth: 2, r: 6 }}
                 />
                 <Line 
                   type="monotone" 
@@ -248,7 +246,7 @@ const ProfitabilityCheck: React.FC = () => {
                   strokeWidth={2}
                   strokeDasharray="5 5"
                   name="Kostnader"
-                  dot={{ fill: chartConfig.costs.color, strokeWidth: 2, r: 3 }}
+                  dot={{ fill: chartConfig.costs.color, strokeWidth: 2, r: 4 }}
                 />
                 <Line 
                   type="monotone" 
@@ -256,7 +254,7 @@ const ProfitabilityCheck: React.FC = () => {
                   stroke={chartConfig.profit.color}
                   strokeWidth={3}
                   name="Vinst"
-                  dot={{ fill: chartConfig.profit.color, strokeWidth: 2, r: 4 }}
+                  dot={{ fill: chartConfig.profit.color, strokeWidth: 2, r: 6 }}
                 />
                 <ReferenceLine y={0} stroke="#64748b" strokeDasharray="2 2" />
               </LineChart>
@@ -276,10 +274,10 @@ const ProfitabilityCheck: React.FC = () => {
             Vad händer om du tar en behandling mer per dag?
           </div>
           <div className="text-xl font-bold text-blue-800">
-            +{formatCurrency(additionalRevenueMoreTreatment)}/mån
+            +{formatCurrency(additionalRevenueMoreTreatment * 12)}/år
           </div>
           <div className="text-xs text-blue-600 mt-1">
-            Extra intäkt per månad
+            Extra intäkt per år
           </div>
         </div>
 
@@ -292,10 +290,10 @@ const ProfitabilityCheck: React.FC = () => {
             Vad händer om du höjer priset med 100 kr?
           </div>
           <div className="text-xl font-bold text-emerald-800">
-            +{formatCurrency(additionalRevenuePriceUp)}/mån
+            +{formatCurrency(additionalRevenuePriceUp * 12)}/år
           </div>
           <div className="text-xs text-emerald-600 mt-1">
-            Extra intäkt per månad
+            Extra intäkt per år
           </div>
         </div>
 
@@ -308,10 +306,10 @@ const ProfitabilityCheck: React.FC = () => {
             Vad händer om du sänker priset med 100 kr?
           </div>
           <div className="text-xl font-bold text-orange-800">
-            {formatCurrency(additionalRevenuePriceDown)}/mån
+            {formatCurrency(additionalRevenuePriceDown * 12)}/år
           </div>
           <div className="text-xs text-orange-600 mt-1">
-            Mindre intäkt per månad
+            Mindre intäkt per år
           </div>
         </div>
       </div>
