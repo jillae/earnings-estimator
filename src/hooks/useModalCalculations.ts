@@ -82,9 +82,10 @@ export const useModalCalculations = () => {
   const generateMonthlyData = () => {
     const monthlyData = [];
     const monthlyNet = modalNetPerMonthExVat;
+    const monthlyRevenue = modalRevenue.monthlyRevenueExVat;
     
     for (let month = 1; month <= 60; month++) {
-      const cumulativeRevenue = modalRevenue.monthlyRevenueExVat * month;
+      const cumulativeRevenue = monthlyRevenue * month;
       const cumulativeCosts = totalMonthlyCost * month;
       const cumulativeNet = monthlyNet * month;
       
@@ -92,6 +93,10 @@ export const useModalCalculations = () => {
         month: month,
         monthLabel: `Mån ${month}`,
         yearLabel: `År ${Math.ceil(month / 12)}`,
+        // Månadsdata för grafer
+        revenue: monthlyRevenue,
+        costs: totalMonthlyCost,
+        profit: monthlyNet,
         // Kumulativa data  
         intaktKumulativ: cumulativeRevenue,
         kostnadKumulativ: cumulativeCosts,

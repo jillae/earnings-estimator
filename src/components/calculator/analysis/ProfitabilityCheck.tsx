@@ -167,13 +167,13 @@ const ProfitabilityCheck: React.FC = () => {
             <Slider
               value={[modalCustomerPrice]}
               onValueChange={(value) => setModalCustomerPrice(value[0])}
-              max={3000}
-              min={200}
-              step={50}
+              max={5000}
+              min={500}
+              step={100}
               className="w-full"
             />
             <div className="text-xs text-slate-600">
-              Dagens standard: 1000-1500 kr
+              Dagens standard: 1500-3500 kr
             </div>
           </div>
         </div>

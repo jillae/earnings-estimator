@@ -147,6 +147,11 @@ const ConsolidatedAnalysisModal: React.FC<ConsolidatedAnalysisModalProps> = ({
               variant="default" 
               size="sm"
               className="bg-emerald-600 hover:bg-emerald-700"
+              onClick={() => {
+                // Öppna export-dialog från ExportButton
+                const exportEvent = new CustomEvent('openExportModal');
+                window.dispatchEvent(exportEvent);
+              }}
             >
               <Download className="w-4 h-4 mr-1" />
               Exportera

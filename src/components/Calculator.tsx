@@ -3,6 +3,7 @@ import React from 'react';
 import CalculatorLayout from './calculator/CalculatorLayout';
 import { CalculatorProvider } from '@/context/CalculatorContext';
 import MachineGalleryContainer from './MachineGalleryContainer';
+import ExportButton from './ExportButton';
 
 const Calculator: React.FC = () => {
   return (
@@ -13,6 +14,8 @@ const Calculator: React.FC = () => {
           <MachineGalleryContainer />
         </div>
         <CalculatorLayout />
+        {/* Gömd ExportButton som kan öppnas via event */}
+        <ExportButton />
       </div>
     </CalculatorProvider>
   );
