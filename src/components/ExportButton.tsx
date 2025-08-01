@@ -11,6 +11,8 @@ import { Download, FileText, Mail, Share2, Loader2 } from 'lucide-react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { useToast } from '@/hooks/use-toast';
+import jsPDF from 'jspdf';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ExportOptions {
   includeDetails: boolean;
@@ -114,17 +116,99 @@ const ExportButton = () => {
   };
 
   const generatePDFReport = async (data: any) => {
-    // I en riktig implementation skulle vi använda jsPDF eller liknande
-    const content = createReportContent(data);
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `intaktsberakning_${data.machine.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 20;
+    let yPosition = margin;
+
+    // Header
+    pdf.setFontSize(20);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Finansiell Analysrapport', margin, yPosition);
+    yPosition += 15;
+
+    // Machine and date info
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(`Maskin: ${data.machine}`, margin, yPosition);
+    yPosition += 8;
+    pdf.text(`Datum: ${new Date().toLocaleDateString('sv-SE')}`, margin, yPosition);
+    yPosition += 15;
+
+    // Executive Summary
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Sammanfattning', margin, yPosition);
+    yPosition += 10;
+
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'normal');
+    const summaryLines = [
+      `Månadskostnad: ${data.totalMonthlyCost}`,
+      `Månadsintäkt: ${data.monthlyRevenue}`,
+      `Månadsnetto: ${data.netPerMonth}`,
+      `Årsnetto: ${data.annualProfit}`,
+      `Återbetalningstid: ${data.paybackMonths} månader`
+    ];
+
+    summaryLines.forEach(line => {
+      pdf.text(line, margin, yPosition);
+      yPosition += 6;
+    });
+
+    yPosition += 10;
+
+    // Detailed Analysis
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Detaljerad Analys', margin, yPosition);
+    yPosition += 10;
+
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'normal');
+    
+    // Investment details
+    pdf.text('Investeringsdata:', margin, yPosition);
+    yPosition += 8;
+    pdf.text(`• Leasingkostnad: ${data.leasingCost}`, margin + 5, yPosition);
+    yPosition += 6;
+    pdf.text(`• Driftskostnader: ${data.operatingCost}`, margin + 5, yPosition);
+    yPosition += 6;
+    pdf.text(`• Totala kostnader: ${data.totalMonthlyCost}`, margin + 5, yPosition);
+    yPosition += 10;
+
+    // Revenue analysis
+    pdf.text('Intäktsanalys:', margin, yPosition);
+    yPosition += 8;
+    pdf.text(`• Behandlingar per dag: ${data.treatmentsPerDay}`, margin + 5, yPosition);
+    yPosition += 6;
+    pdf.text(`• Pris per behandling: ${data.customerPrice}`, margin + 5, yPosition);
+    yPosition += 6;
+    pdf.text(`• Månadsdagar: 22`, margin + 5, yPosition);
+    yPosition += 10;
+
+    // Custom notes
+    if (exportOptions.customNotes) {
+      pdf.text('Anteckningar:', margin, yPosition);
+      yPosition += 8;
+      const notes = pdf.splitTextToSize(exportOptions.customNotes, pageWidth - 2 * margin);
+      notes.forEach((line: string) => {
+        pdf.text(line, margin + 5, yPosition);
+        yPosition += 6;
+      });
+    }
+
+    // Footer
+    yPosition = pageHeight - 30;
+    pdf.setFontSize(9);
+    pdf.setFont('helvetica', 'italic');
+    pdf.text('Detta dokument är genererat automatiskt från Kalkylator systemet.', margin, yPosition);
+    pdf.text(`Genererat: ${new Date().toLocaleString('sv-SE')}`, margin, yPosition + 5);
+
+    // Save PDF
+    const fileName = `${data.machine.replace(/\s+/g, '_')}_rapport_${new Date().toISOString().split('T')[0]}.pdf`;
+    pdf.save(fileName);
   };
 
   const generateExcelReport = async (data: any) => {
@@ -156,8 +240,36 @@ const ExportButton = () => {
   };
 
   const sendReportByEmail = async (data: any, email: string) => {
-    // I en riktig implementation skulle detta skickas via en backend-service
-    console.log(`Skickar rapport till ${email}`);
+    try {
+      const { error } = await supabase.functions.invoke('send-report-email', {
+        body: {
+          reportData: {
+            machineName: data.machine,
+            monthlyCost: parseFloat(data.totalMonthlyCost.replace(/[^\d.-]/g, '')),
+            monthlyRevenue: parseFloat(data.monthlyRevenue.replace(/[^\d.-]/g, '')),
+            monthlyNet: parseFloat(data.netPerMonth.replace(/[^\d.-]/g, '')),
+            yearlyNet: parseFloat(data.annualProfit.replace(/[^\d.-]/g, '')),
+            roi: 0, // Simplified for now
+            paybackMonths: typeof data.paybackMonths === 'number' ? data.paybackMonths : 0,
+            leasingCost: parseFloat(data.leasingCost.replace(/[^\d.-]/g, '')),
+            insurance: 0, // Will be calculated from operating costs
+            slaLevel: 'Standard', // Simplified
+            treatmentsPerDay: data.treatmentsPerDay,
+            customerPrice: parseFloat(data.customerPrice.replace(/[^\d.-]/g, ''))
+          },
+          recipientEmail: email,
+          format: exportOptions.format,
+          customNotes: exportOptions.customNotes
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+      throw error;
+    }
   };
 
   const createReportContent = (data: any) => {
