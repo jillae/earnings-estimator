@@ -36,18 +36,19 @@ export function useGatedAccess() {
         }),
       });
 
-      await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/send-dealer-notification', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
-        },
-        body: JSON.stringify({
-          type: 'returning_session',
-          userData,
-          sessionId: userData.sessionId,
-        }),
-      });
+      // AVSTÄNGD - Automatiska notifikationer
+      // await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/send-dealer-notification', {
+      //   method: 'POST',
+      //   headers: { 
+      //     'Content-Type': 'application/json',
+      //     'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
+      //   },
+      //   body: JSON.stringify({
+      //     type: 'returning_session',
+      //     userData,
+      //     sessionId: userData.sessionId,
+      //   }),
+      // });
     } catch (error) {
       console.error('Error logging returning session:', error);
     }
@@ -136,19 +137,19 @@ export function useGatedAccess() {
         }),
       });
 
-      // Skicka e-postnotifikation till återförsäljaren
-      await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/send-dealer-notification', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
-        },
-        body: JSON.stringify({
-          type: 'new_session',
-          userData: newUserData,
-          sessionId,
-        }),
-      });
+      // AVSTÄNGD - Automatiska notifikationer  
+      // await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/send-dealer-notification', {
+      //   method: 'POST',
+      //   headers: { 
+      //     'Content-Type': 'application/json',
+      //     'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
+      //   },
+      //   body: JSON.stringify({
+      //     type: 'new_session',
+      //     userData: newUserData,
+      //     sessionId,
+      //   }),
+      // });
       
       toast({
         title: "Kalkylatorn är nu upplåst!",
@@ -185,23 +186,23 @@ export function useGatedAccess() {
         }),
       });
 
-      // För viktiga interaktioner, skicka också notifikation
-      if (['machine_changed', 'significant_adjustment', 'payment_option_changed'].includes(action)) {
-        await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/send-dealer-notification', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
-          },
-          body: JSON.stringify({
-            type: 'session_update',
-            userData,
-            sessionId,
-            action,
-            data,
-          }),
-        });
-      }
+      // AVSTÄNGD - Automatiska session update notifikationer
+      // if (['machine_changed', 'significant_adjustment', 'payment_option_changed'].includes(action)) {
+      //   await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/send-dealer-notification', {
+      //     method: 'POST',
+      //     headers: { 
+      //       'Content-Type': 'application/json',
+      //       'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
+      //     },
+      //     body: JSON.stringify({
+      //       type: 'session_update',
+      //       userData,
+      //       sessionId,
+      //       action,
+      //       data,
+      //     }),
+      //   });
+      // }
     } catch (error) {
       console.error('Error logging interaction:', error);
     }
