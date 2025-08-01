@@ -99,7 +99,10 @@ const CalculatorInputs: React.FC<{
               <span className="text-lg font-bold text-purple-700">Välj betalningsform</span>
             </div>
             <div className="text-sm text-purple-600">
-              Leasing eller kontant - efter dina preferenser. <a href="#" className="text-purple-800 underline hover:text-purple-900">Fördelarna med leasing - läs mer</a>
+              Leasing eller kontant - efter dina preferenser.<br />
+              <a href="/manual" target="_blank" className="text-purple-700 hover:text-purple-800 underline">
+                Fördelarna med leasing - läs mer
+              </a>
             </div>
           </div>
 
