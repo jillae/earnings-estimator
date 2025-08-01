@@ -74,15 +74,7 @@ const CalculatorInputs: React.FC<{
           </div>
 
           {/* Tips banner för steg 3 */}
-          <div className="bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-lg p-4 text-center animate-slide-in mb-4">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <span className="text-2xl">📊</span>
-              <span className="text-lg font-bold text-green-700">Ställ in behandlingsvolym</span>
-            </div>
-            <div className="text-sm text-green-600">
-              Antal behandlingar per dag och kundpris påverkar din lönsamhet
-            </div>
-          </div>
+          
 
           {/* Steg 3: Behandlingsvolym */}
           <div className="relative">
