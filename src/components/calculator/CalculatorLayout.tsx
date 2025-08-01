@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import CalculatorInputs from './CalculatorInputs';
 import CalculatorResults from './CalculatorResults';
+import MiniAnalysisPreview from './MiniAnalysisPreview';
 import { useCalculator } from '@/context/CalculatorContext';
 import ConsolidatedAnalysisModal from './ConsolidatedAnalysisModal';
 import { SaveConfigurationButton } from './SaveConfigurationButton';
@@ -23,6 +24,9 @@ const CalculatorLayout: React.FC = () => {
           <CalculatorResults hoveredInput={hoveredInput} />
         </div>
       </div>
+      
+      {/* Mini-analys preview */}
+      <MiniAnalysisPreview onOpenFullAnalysis={() => setShowAnalysisModal(true)} />
       
       {/* Flytta "Nästa steg" utanför grid för full-width */}
       <div className="mt-12">
