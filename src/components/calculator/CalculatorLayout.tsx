@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import CalculatorInputs from './CalculatorInputs';
 import CalculatorResults from './CalculatorResults';
-import MiniAnalysisPreview from './MiniAnalysisPreview';
+import BusinessMetricsSection from './BusinessMetricsSection';
 import { useCalculator } from '@/context/CalculatorContext';
 import ConsolidatedAnalysisModal from './ConsolidatedAnalysisModal';
 import { SaveConfigurationButton } from './SaveConfigurationButton';
@@ -25,8 +25,8 @@ const CalculatorLayout: React.FC = () => {
         </div>
       </div>
       
-      {/* Mini-analys preview */}
-      <MiniAnalysisPreview onOpenFullAnalysis={() => setShowAnalysisModal(true)} />
+      {/* Business metrics section */}
+      <BusinessMetricsSection />
       
       {/* Flytta "Nästa steg" utanför grid för full-width */}
       <div className="mt-12">
@@ -77,19 +77,19 @@ const CalculatorLayout: React.FC = () => {
                     <QuoteRequestButton />
                   </div>
                   
-                  <div className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6">
+                   <div className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6">
                     <div className="mb-4">
                       <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <span className="text-2xl">📊</span>
+                        <span className="text-2xl">🏦</span>
                       </div>
-                      <h4 className="font-semibold text-slate-900 mb-2">Finansiell analys</h4>
-                      <p className="text-sm text-slate-600 mb-4">Detaljerad tillväxt-, ROI- och break-even analys</p>
+                      <h4 className="font-semibold text-slate-900 mb-2">Bankrapport</h4>
+                      <p className="text-sm text-slate-600 mb-4">Professionell rapport för finansiering</p>
                     </div>
                     <Button 
                       onClick={() => setShowAnalysisModal(true)}
                       className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                     >
-                      Öppna analyser
+                      Generera rapport
                     </Button>
                   </div>
                 </div>

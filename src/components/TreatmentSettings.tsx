@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { useCalculator } from '@/context/CalculatorContext';
+import RealTimeProfitGraph from './calculator/RealTimeProfitGraph';
 
 interface TreatmentSettingsProps {
   treatmentsPerDay: number;
@@ -101,7 +102,8 @@ const TreatmentSettings: React.FC<TreatmentSettingsProps> = ({
         </div>
       </div>
       
-      {/* Nollpunkt borttaget från vänster kolumn - finns kvar i tabellen */}
+      {/* Real-time profit graf */}
+      <RealTimeProfitGraph />
     </section>
   );
 };
