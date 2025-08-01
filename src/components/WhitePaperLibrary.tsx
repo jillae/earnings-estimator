@@ -17,9 +17,9 @@ const whitePapers: WhitePaper[] = [{
   url: "https://d11n7da8rpqbjy.cloudfront.net/erchoniaemea/1113018725768__Erchonia_Product_Book_Pain_2ex_GH.pdf",
   type: "pdf"
 }, {
-  title: "Information före beställning",
-  description: "Viktig information om maskiner, priser och utbildning.",
-  url: "https://example.com/information-fore-bestallning.pdf",
+  title: "Fördelarna med Leasing",
+  description: "Hur leasing fungerar och dess fördelar för din klinik.",
+  url: "/public/Whitepaper_FÖRDELARNA MED LEASING.pdf",
   type: "pdf"
 }, {
   title: "Kreditmodellen för Golvmaskiner",
@@ -27,19 +27,24 @@ const whitePapers: WhitePaper[] = [{
   url: "/lovable-uploads/Whitepaper_Kreditmodellen%20f%C3%B6r%20Golvmaskiner.pdf",
   type: "pdf"
 }, {
-  title: "Fördelarna med Leasing",
-  description: "Hur leasing fungerar och dess fördelar för din klinik.",
-  url: "https://example.com/fordelarna-med-leasing.pdf",
+  title: "Erchonia Nordics",
+  description: "Information om Erchonia produkter för nordiska marknaden.",
+  url: "/public/Whitepaper_Erchonia Nordics.pdf",
   type: "pdf"
 }, {
-  title: "Heltäckande Utbildning",
+  title: "Choosing the Right Laser",
+  description: "Guide för att välja rätt laserbehandling - maj 2024.",
+  url: "/public/Choosing the Right Laser A4 - May 2024.pdf",
+  type: "pdf"
+}, {
+  title: "Erchonia Pricing Brochure",
+  description: "Prislista och information om Erchonia produkter (Euro).",
+  url: "/public/Erchonia Pricing Brochure (Euros).pdf",
+  type: "pdf"
+}, {
+  title: "Utbildning",
   description: "Information om certifiering och utbildning vid köp.",
-  url: "https://example.com/heltackande-utbildning.pdf",
-  type: "pdf"
-}, {
-  title: "Villkor för Fastpris",
-  description: "Villkor och fördelar med fastprisprisplaner.",
-  url: "https://example.com/villkor-fastpris.pdf",
+  url: "/public/Whitepaper_UTBILDNING.pdf",
   type: "pdf"
 }, {
   title: "ArchAcademy",

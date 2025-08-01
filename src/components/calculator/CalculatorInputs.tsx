@@ -100,7 +100,7 @@ const CalculatorInputs: React.FC<{
             </div>
             <div className="text-sm text-purple-600">
               Leasing eller kontant - efter dina preferenser.<br />
-              <a href="/manual" target="_blank" className="text-purple-700 hover:text-purple-800 underline">
+              <a href="/public/Whitepaper_FÖRDELARNA MED LEASING.pdf" target="_blank" className="text-purple-700 hover:text-purple-800 underline">
                 Fördelarna med leasing - läs mer
               </a>
             </div>
