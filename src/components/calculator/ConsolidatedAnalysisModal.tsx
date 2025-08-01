@@ -29,7 +29,7 @@ const ConsolidatedAnalysisModal: React.FC<ConsolidatedAnalysisModalProps> = ({
   const defaultTrigger = (
     <Button 
       variant="default" 
-      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
+      className="w-fit bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
     >
       <BarChart3 className="w-4 h-4 mr-2" />
       Detaljerad analys & grafik
