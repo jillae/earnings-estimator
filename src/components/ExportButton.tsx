@@ -128,18 +128,48 @@ const ExportButton = () => {
     const pageHeight = pdf.internal.pageSize.getHeight();
     const margin = 20;
     let yPosition = margin;
+    let currentPage = 1;
 
-    // Kontrollera sidbrytning
+    // Förbättrad sidbrytningskontroll
     const checkPageBreak = (neededSpace: number) => {
       if (yPosition + neededSpace > pageHeight - 30) {
+        // Lägg till sidfot innan ny sida
+        addPageFooter();
         pdf.addPage();
+        currentPage++;
         yPosition = margin;
+        // Lägg till sidans rubrik på nya sidor (förutom första)
+        if (currentPage > 1) {
+          addPageHeader();
+        }
       }
+    };
+
+    // Lägg till sidhuvud för nya sidor
+    const addPageHeader = () => {
+      pdf.setFontSize(10);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(128, 128, 128);
+      pdf.text(`${data.machine} - Fortsättning`, margin, yPosition);
+      yPosition += 15;
+      pdf.setTextColor(0, 0, 0); // Återställ till svart
+    };
+
+    // Lägg till sidfot
+    const addPageFooter = () => {
+      const footerY = pageHeight - 15;
+      pdf.setFontSize(8);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(128, 128, 128);
+      pdf.text(`Sida ${currentPage}`, margin, footerY);
+      pdf.text(`Genererad: ${new Date().toLocaleDateString('sv-SE')}`, pageWidth - margin - 40, footerY);
+      pdf.setTextColor(0, 0, 0); // Återställ till svart
     };
 
     // Header - bara på första sidan
     pdf.setFontSize(20);
     pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(0, 0, 0);
     pdf.text('Finansiell Analysrapport', margin, yPosition);
     yPosition += 15;
 
@@ -151,75 +181,135 @@ const ExportButton = () => {
     pdf.text(`Datum: ${new Date().toLocaleDateString('sv-SE')}`, margin, yPosition);
     yPosition += 15;
 
-    // Executive Summary
-    checkPageBreak(50);
-    pdf.setFontSize(16);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('Sammanfattning', margin, yPosition);
-    yPosition += 10;
+    // Executive Summary - endast om detaljering är vald
+    if (exportOptions.includeDetails) {
+      checkPageBreak(60);
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Sammanfattning', margin, yPosition);
+      yPosition += 12;
 
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'normal');
-    const summaryLines = [
-      `Månadskostnad: ${data.totalMonthlyCost}`,
-      `Månadsintäkt: ${data.monthlyRevenue}`,
-      `Månadsnetto: ${data.netPerMonth}`,
-      `Årsnetto: ${data.annualProfit}`,
-      `Återbetalningstid: ${data.paybackMonths} månader`
-    ];
+      pdf.setFontSize(11);
+      pdf.setFont('helvetica', 'normal');
+      const summaryLines = [
+        `Månadskostnad: ${data.totalMonthlyCost}`,
+        `Månadsintäkt: ${data.monthlyRevenue}`,
+        `Månadsnetto: ${data.netPerMonth}`,
+        `Årsnetto: ${data.annualProfit}`,
+        `Återbetalningstid: ${data.paybackMonths} månader`
+      ];
 
-    summaryLines.forEach(line => {
-      checkPageBreak(8);
-      pdf.text(line, margin, yPosition);
-      yPosition += 6;
-    });
+      summaryLines.forEach(line => {
+        checkPageBreak(8);
+        pdf.text(line, margin, yPosition);
+        yPosition += 7;
+      });
 
-    yPosition += 10;
+      yPosition += 15;
+    }
 
-    // Detailed Analysis
-    checkPageBreak(40);
-    pdf.setFontSize(16);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('Detaljerad Analys', margin, yPosition);
-    yPosition += 10;
+    // Detaljerad Analys - endast om detaljering är vald  
+    if (exportOptions.includeDetails) {
+      checkPageBreak(50);
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Detaljerad Analys', margin, yPosition);
+      yPosition += 12;
 
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'normal');
-    
-    // Investment details
-    checkPageBreak(30);
-    pdf.text('Investeringsdata:', margin, yPosition);
-    yPosition += 8;
-    pdf.text(`• Leasingkostnad: ${data.leasingCost}`, margin + 5, yPosition);
-    yPosition += 6;
-    pdf.text(`• Driftskostnader: ${data.operatingCost}`, margin + 5, yPosition);
-    yPosition += 6;
-    pdf.text(`• Totala kostnader: ${data.totalMonthlyCost}`, margin + 5, yPosition);
-    yPosition += 10;
-
-    // Revenue analysis
-    checkPageBreak(30);
-    pdf.text('Intäktsanalys:', margin, yPosition);
-    yPosition += 8;
-    pdf.text(`• Behandlingar per dag: ${data.treatmentsPerDay}`, margin + 5, yPosition);
-    yPosition += 6;
-    pdf.text(`• Pris per behandling: ${data.customerPrice}`, margin + 5, yPosition);
-    yPosition += 6;
-    pdf.text(`• Månadsdagar: 22`, margin + 5, yPosition);
-    yPosition += 10;
-
-    // Custom notes
-    if (exportOptions.customNotes) {
+      pdf.setFontSize(11);
+      pdf.setFont('helvetica', 'normal');
+      
+      // Investment details
       checkPageBreak(40);
-      pdf.text('Anteckningar:', margin, yPosition);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Investeringsdata:', margin, yPosition);
       yPosition += 8;
+      pdf.setFont('helvetica', 'normal');
+      
+      const investmentLines = [
+        `• Leasingkostnad: ${data.leasingCost}`,
+        `• Driftskostnader: ${data.operatingCost}`,
+        `• Totala kostnader: ${data.totalMonthlyCost}`
+      ];
+      
+      investmentLines.forEach(line => {
+        checkPageBreak(8);
+        pdf.text(line, margin + 5, yPosition);
+        yPosition += 7;
+      });
+      
+      yPosition += 12;
+
+      // Revenue analysis
+      checkPageBreak(40);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Intäktsanalys:', margin, yPosition);
+      yPosition += 8;
+      pdf.setFont('helvetica', 'normal');
+      
+      const revenueLines = [
+        `• Behandlingar per dag: ${data.treatmentsPerDay}`,
+        `• Pris per behandling: ${data.customerPrice}`,
+        `• Arbetsdagar per månad: 22`,
+        `• Månadsintäkt: ${data.monthlyRevenue}`
+      ];
+      
+      revenueLines.forEach(line => {
+        checkPageBreak(8);
+        pdf.text(line, margin + 5, yPosition);
+        yPosition += 7;
+      });
+      
+      yPosition += 12;
+    }
+
+    // Antaganden - endast om valt
+    if (exportOptions.includeAssumptions) {
+      checkPageBreak(50);
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Antaganden', margin, yPosition);
+      yPosition += 12;
+      
+      pdf.setFontSize(11);
+      pdf.setFont('helvetica', 'normal');
+      
+      const assumptionLines = [
+        `• Arbetsdagar per månad: ${data.assumptions.workDaysPerMonth}`,
+        `• Behandlingstid: ${data.assumptions.treatmentTime}`,
+        `• Kapacitetsutnyttjande: ${data.assumptions.capacityUtilization}`,
+        `• Prisinflation: ${data.assumptions.priceInflation}`
+      ];
+      
+      assumptionLines.forEach(line => {
+        checkPageBreak(8);
+        pdf.text(line, margin + 5, yPosition);
+        yPosition += 7;
+      });
+      
+      yPosition += 15;
+    }
+
+    // Custom notes - endast om det finns anteckningar
+    if (exportOptions.customNotes && exportOptions.customNotes.trim()) {
+      checkPageBreak(50);
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Anteckningar', margin, yPosition);
+      yPosition += 12;
+      
+      pdf.setFontSize(11);
+      pdf.setFont('helvetica', 'normal');
       const notes = pdf.splitTextToSize(exportOptions.customNotes, pageWidth - 2 * margin);
       notes.forEach((line: string) => {
         checkPageBreak(8);
-        pdf.text(line, margin + 5, yPosition);
-        yPosition += 6;
+        pdf.text(line, margin, yPosition);
+        yPosition += 7;
       });
     }
+
+    // Lägg till sista sidfot
+    addPageFooter();
 
     // Save PDF
     const fileName = `${data.machine.replace(/\s+/g, '_')}_rapport_${new Date().toISOString().split('T')[0]}.pdf`;
