@@ -85,15 +85,8 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
 
   return (
     <div className="mb-4">
-      <div className="mb-4">
-        <h4 className="text-lg font-semibold text-slate-900 mb-2">
-          Flexibel investering
-        </h4>
-        <p className="text-sm text-slate-600 leading-relaxed">
-          Balansera din investering och driftkostnad för optimal lönsamhet
-        </p>
-      </div>
-
+      {/* Ingen extra rubrik här - redan täckt av LeaseAdjuster */}
+      
       {showSlider && (
         <div className="slider-container relative bg-red-50/20 border-red-200 p-6 rounded-xl border shadow-sm hover:bg-red-50/30 transition-colors">
           <FlatrateIndicator 

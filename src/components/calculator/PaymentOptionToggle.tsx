@@ -21,9 +21,7 @@ const PaymentOptionToggle: React.FC<PaymentOptionToggleProps> = ({
       onMouseEnter={() => onHoveredInputChange?.('payment')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
-      <label className="block text-sm font-medium text-red-800 mb-2">
-        Betalningsalternativ
-      </label>
+      {/* Ingen label - strömlinjeformat flöde */}
       <ToggleGroup 
         type="single"
         variant="outline" 
