@@ -62,11 +62,7 @@ const handler = async (req: Request): Promise<Response> => {
       React.createElement(DealerNotificationEmail, emailData)
     );
 
-    // E-postutskick avstängt - loggar endast
-    console.log("E-post skulle ha skickats till:", ["mailtillgille@gmail.com"], "Ämne:", subject);
-    
-    // Kommenterad kod för e-postutskick:
-    /*
+    // Skicka e-post
     const { error } = await resend.emails.send({
       from: "Kalkylator <onboarding@resend.dev>",
       to: ["mailtillgille@gmail.com"],
@@ -78,7 +74,6 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("Error sending email:", error);
       throw error;
     }
-    */
 
     console.log(`Dealer notification logged for ${type}: ${sessionId}`);
 
