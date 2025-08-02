@@ -20,7 +20,7 @@ export const premiumMachines: Machine[] = [
     leasingStandard: 25806, // Standard nivå - marknadsrelevant creditkostnad (149 kr/credit) 
     leasingMax: 33863,      // Strategisk maximum - noll creditkostnad (0 kr/credit)
     creditMax: 299,         // Position 0 - Högsta creditpris
-    creditMid1: 225,        // Position 1 - Mellan
+    creditMid1: 224,        // Position 1 - Mellan
     creditMid2: 149,        // Position 2 - Standard (mitten)
     creditMid3: 75,         // Position 3 - Mellan
     // Position 4 är alltid 0
@@ -49,7 +49,7 @@ export const premiumMachines: Machine[] = [
     creditMax: 199,         // Position 0 - Högsta creditpris
     creditMid1: 149,        // Position 1 - Mellan
     creditMid2: 99,         // Position 2 - Standard (mitten)
-    creditMid3: 49,         // Position 3 - Mellan
+    creditMid3: 50,         // Position 3 - Mellan
     // Position 4 är alltid 0
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",

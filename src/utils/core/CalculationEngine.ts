@@ -45,8 +45,8 @@ export interface CalculationResults {
     max: number;
     default: number;
     flatrateThreshold?: number;
-    baseMax: number;           // Tariff-baserad max
-    strategicMax: number;      // Strategisk max från maskindata
+    baseMax?: number;           // Tariff-baserad max
+    strategicMax?: number;      // Strategisk max från maskindata
   };
   leasingStandardRef: number;     // Referensvärde för standard leasing (används för SLA-beräkningar)
   
@@ -218,7 +218,7 @@ export class CalculationEngine {
   }
   
   /**
-   * LEASING-BERÄKNINGAR (Både grund och strategisk)
+   * LEASING-BERÄKNINGAR (Strategisk 5-stegs modell)
    */
   private static calculateLeasing(inputs: CalculationInputs, machinePricing: any, exchangeRate: number) {
     if (!inputs.machine) {
@@ -226,131 +226,152 @@ export class CalculationEngine {
         leasingCostBase: 0,
         leasingCostStrategic: 0,
         leasingCost: 0,
-        leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0 },
-        leasingStandardRef: 0
+        leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0, flatrateThreshold: 0 },
+        leasingStandardRef: 0,
+        flatrateThreshold: 0
       };
     }
     
-    // GRUNDKOSTNAD: Använd tariff-baserad beräkning för alla maskiner
+    // För maskiner med strategisk prissättning, använd direkt från maskindata
+    if (inputs.machine.usesCredits && inputs.machine.leasingMin && inputs.machine.leasingStandard && inputs.machine.leasingMax) {
+      
+      // Använd värdena direkt från maskindata enligt den strategiska modellen
+      const leasingRange = {
+        min: inputs.machine.leasingMin,
+        max: inputs.machine.leasingMax,
+        default: inputs.machine.leasingStandard,
+        flatrateThreshold: inputs.machine.flatrateAmount || 0,
+        baseMax: inputs.machine.leasingStandard,
+        strategicMax: inputs.machine.leasingMax
+      };
+      
+      // Använd PiecewiseLinearCalculator för att få exakt värde för aktuell slider-position
+      const { PiecewiseLinearCalculator } = require('./PiecewiseLinearCalculator');
+      
+      const pricingData = {
+        leasingMin: inputs.machine.leasingMin,
+        leasingStandard: inputs.machine.leasingStandard,
+        leasingMax: inputs.machine.leasingMax,
+        creditMax: inputs.machine.creditMax || 299,
+        creditMid1: inputs.machine.creditMid1 || 224,
+        creditMid2: inputs.machine.creditMid2 || 149,
+        creditMid3: inputs.machine.creditMid3 || 75
+      };
+      
+      const calculator = new PiecewiseLinearCalculator(pricingData);
+      const interpolatedValues = calculator.interpolate(inputs.currentSliderStep);
+      
+      console.log(`STRATEGISK PRISSÄTTNING för ${inputs.machine.name}:
+        Slider Step: ${inputs.currentSliderStep}
+        Interpolated Leasing: ${interpolatedValues.leasingCost} SEK/mån
+        Interpolated Credit: ${interpolatedValues.creditPrice} kr/credit
+        Range: ${leasingRange.min} - ${leasingRange.max} SEK/mån
+      `);
+      
+      return { 
+        leasingCostBase: inputs.machine.leasingStandard,
+        leasingCostStrategic: inputs.machine.leasingMax, 
+        leasingCost: interpolatedValues.leasingCost, 
+        leasingRange, 
+        leasingStandardRef: inputs.machine.leasingStandard,
+        flatrateThreshold: leasingRange.flatrateThreshold || 0
+      };
+    }
+
+    // Fallback för maskiner utan strategisk prissättning (handhållna maskiner)
     const leaseDurationMonths = parseInt(inputs.selectedLeasingPeriodId);
-    let leasingCostBase = 0;
     
-    // Använd alltid tariff-baserad beräkning för grundkostnad
-    leasingCostBase = calculateTariffBasedLeasingMax(
+    let leasingCostBase = calculateTariffBasedLeasingMax(
       inputs.machine.priceEur || 0,
       leaseDurationMonths,
       inputs.machine.usesCredits,
       exchangeRate
     );
-    console.log(`Grundkostnad beräknad: ${inputs.machine.priceEur} EUR × ${exchangeRate} × tariff = ${leasingCostBase} SEK`);
     
-    
-    // FÖRSÄKRING: Lägg till försäkringskostnad om vald
+    // Lägg till försäkring om vald
     if (inputs.selectedInsuranceId === 'yes') {
       const machinePriceSEK = (inputs.machine.priceEur || 0) * exchangeRate;
       
-      // Använd korrekt försäkringssats baserat på maskinpris
       let insuranceRate: number;
       if (machinePriceSEK <= 100000) {
-        insuranceRate = 0.04; // 4% för maskiner ≤ 100,000 SEK
+        insuranceRate = 0.04;
       } else if (machinePriceSEK <= 200000) {
-        insuranceRate = 0.03; // 3% för maskiner ≤ 200,000 SEK
+        insuranceRate = 0.03;
       } else if (machinePriceSEK <= 500000) {
-        insuranceRate = 0.025; // 2.5% för maskiner ≤ 500,000 SEK
+        insuranceRate = 0.025;
       } else {
-        insuranceRate = 0.015; // 1.5% för maskiner > 500,000 SEK
+        insuranceRate = 0.015;
       }
       
       const insuranceCostPerMonth = machinePriceSEK * insuranceRate / 12;
       leasingCostBase += insuranceCostPerMonth;
-      console.log(`Försäkring tillagd: ${insuranceCostPerMonth} SEK/mån (${insuranceRate * 100}% av ${machinePriceSEK})`);
     }
     
-    // STRATEGISK KOSTNAD: Från maskindata (använd leasingMax eller fallback till leasingCostBase)
-    const leasingCostStrategic = inputs.machine.leasingMax || leasingCostBase;
+    const leasingRange = {
+      min: leasingCostBase * 0.9,
+      max: leasingCostBase * 1.1,
+      default: leasingCostBase,
+      flatrateThreshold: 0,
+      baseMax: leasingCostBase,
+      strategicMax: leasingCostBase
+    };
     
-    // AKTIV KOSTNAD: Baserat på slider-position (0 för maximal credit-kostnad, 2 för minimal credit-kostnad)
-    const useStrategicPricing = inputs.currentSliderStep >= 2;
-    
-    let leasingCost: number;
-    if (useStrategicPricing) {
-      // Strategisk: Fast pris med credits inkluderade
-      leasingCost = leasingCostStrategic;
-    } else {
-      // Grundleasing: Slider justerar inom ett snävt intervall runt grundkostnaden
-      const sliderPosition = Math.max(0, Math.min(2, inputs.currentSliderStep));
-      
-      if (sliderPosition === 1) {
-        // Position 1 (Standard) = exakt grundkostnad
-        leasingCost = leasingCostBase;
-      } else {
-        // Position 0-1 och 1-2: interpolera korrekt
-        const adjustmentRange = leasingCostBase * 0.1; // ±10% justering
-        leasingCost = leasingCostBase + (sliderPosition - 1) * adjustmentRange;
-      }
-    }
-    
-    // RANGE: Olika beroende på läge
-    let leasingRange: any;
-    if (useStrategicPricing) {
-      // Strategisk: Fast pris, ingen slider
-      leasingRange = {
-        min: leasingCostStrategic,
-        max: leasingCostStrategic,
-        default: leasingCostStrategic,
-        flatrateThreshold: 0, // Irrelevant - credits redan inkluderade
-        baseMax: leasingCostBase,
-        strategicMax: leasingCostStrategic
-      };
-    } else {
-      // Grund: Slider inom snävt intervall - säkerställ att default är exakt leasingCostBase
-      const adjustmentRange = leasingCostBase * 0.1;
-      leasingRange = {
-        min: leasingCostBase - adjustmentRange,    // Slider position 0
-        max: leasingCostBase + adjustmentRange,    // Slider position 2  
-        default: leasingCostBase,                  // Slider position 1 (exakt samma som grund)
-        flatrateThreshold: leasingCost * 0.9,
-        baseMax: leasingCostBase,
-        strategicMax: leasingCostStrategic
-      };
-    }
-    
-    console.log(`Leasing för ${inputs.machine.name}:
-      Grundkostnad (tariff): ${leasingCostBase} SEK/mån
-      Strategisk kostnad (maskindata): ${leasingCostStrategic} SEK/mån
-      ${useStrategicPricing ? 'Maximal leasing (0kr credits)' : `Slider-justerad (position ${inputs.currentSliderStep})`}: ${leasingCost} SEK/mån
-      Range: ${Math.round(leasingRange.min)} - ${Math.round(leasingRange.max)} SEK/mån
+    console.log(`FALLBACK PRISSÄTTNING för ${inputs.machine.name}:
+      Grundkostnad: ${leasingCostBase} SEK/mån
+      Range: ${leasingRange.min} - ${leasingRange.max} SEK/mån
     `);
     
     return { 
       leasingCostBase,
-      leasingCostStrategic, 
-      leasingCost, 
+      leasingCostStrategic: leasingCostBase, 
+      leasingCost: leasingCostBase, 
       leasingRange, 
-      leasingStandardRef: leasingCostBase, // Använd grundkostnad för SLA-beräkningar
-      useStrategicPricing // Lägg till detta för UI-logik
+      leasingStandardRef: leasingCostBase,
+      flatrateThreshold: 0
     };
   }
   
   /**
-   * CREDIT-PRIS baserat på slider
+   * CREDIT-PRIS baserat på strategisk 5-stegs slider
    */
   private static calculateCreditPrice(inputs: CalculationInputs, leasingCalcs: any): number {
     if (!inputs.machine || !inputs.machine.usesCredits) {
       return 0;
     }
     
+    // För maskiner med strategisk prissättning, använd PiecewiseLinearCalculator
+    if (inputs.machine.leasingMin && inputs.machine.leasingStandard && inputs.machine.leasingMax) {
+      const { PiecewiseLinearCalculator } = require('./PiecewiseLinearCalculator');
+      
+      const pricingData = {
+        leasingMin: inputs.machine.leasingMin,
+        leasingStandard: inputs.machine.leasingStandard,
+        leasingMax: inputs.machine.leasingMax,
+        creditMax: inputs.machine.creditMax || 299,
+        creditMid1: inputs.machine.creditMid1 || 224,
+        creditMid2: inputs.machine.creditMid2 || 149,
+        creditMid3: inputs.machine.creditMid3 || 75
+      };
+      
+      const calculator = new PiecewiseLinearCalculator(pricingData);
+      const interpolatedValues = calculator.interpolate(inputs.currentSliderStep);
+      
+      console.log(`STRATEGISK CREDIT-PRIS för ${inputs.machine.name}:
+        Slider Step: ${inputs.currentSliderStep}
+        Interpolated Credit: ${interpolatedValues.creditPrice} kr/credit
+      `);
+      
+      return Math.round(interpolatedValues.creditPrice);
+    }
+    
+    // Fallback för gamla maskiner
     const creditMin = inputs.machine.creditMin || 149;
     const creditMax = inputs.machine.creditMax || 299;
     
-    // Slider från 0 till 2, där:
-    // 0 = creditMax (högsta credit-pris, lägsta leasing)
-    // 1 = mellan-värde
-    // 2 = creditMin (lägsta credit-pris, högsta leasing)
-    const sliderPosition = Math.max(0, Math.min(2, inputs.currentSliderStep));
-    const creditPrice = creditMax - (sliderPosition / 2) * (creditMax - creditMin);
+    const sliderPosition = Math.max(0, Math.min(4, inputs.currentSliderStep));
+    const creditPrice = creditMax - (sliderPosition / 4) * (creditMax - creditMin);
     
-    console.log(`Credit-pris: slider=${sliderPosition}, min=${creditMin}, max=${creditMax}, resultat=${creditPrice}`);
+    console.log(`FALLBACK Credit-pris: slider=${sliderPosition}, min=${creditMin}, max=${creditMax}, resultat=${creditPrice}`);
     
     return Math.round(creditPrice);
   }
@@ -486,7 +507,7 @@ export class CalculationEngine {
       leasingCostBase: 0,
       leasingCostStrategic: 0,
       leasingCost: 0,
-      leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0 },
+      leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0, flatrateThreshold: 0 },
       leasingStandardRef: 0,
       creditPrice: 0,
       operatingCost: { costPerMonth: 0, useFlatrate: false, slaCost: 0, totalCost: 0 },

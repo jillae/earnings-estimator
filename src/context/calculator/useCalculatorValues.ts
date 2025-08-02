@@ -27,15 +27,25 @@ export function useCalculatorValues() {
 
   // Beräkna step-värden (diskreta värdepunkter för slider) - behövs fortfarande för UI
   const stepValues = useMemo(() => {
-    const creditMin = state.selectedMachine?.creditMin || 149;
-    const creditMax = state.selectedMachine?.creditMax || 299;
+    if (!state.selectedMachine) {
+      return {
+        0: { leasingCost: 0, creditPrice: 0, label: 'Min' },
+        1: { leasingCost: 0, creditPrice: 0, label: 'Låg' },
+        2: { leasingCost: 0, creditPrice: 0, label: 'Standard' },
+        3: { leasingCost: 0, creditPrice: 0, label: 'Hög' },
+        4: { leasingCost: 0, creditPrice: 0, label: 'Max' }
+      };
+    }
+    
     return calculateStepValues(
       state.selectedMachine,
       calculationResults.leasingRange.min,
       calculationResults.leasingRange.default,
       calculationResults.leasingRange.max,
-      creditMin,
-      creditMax
+      state.selectedMachine.creditMax,
+      state.selectedMachine.creditMid1,
+      state.selectedMachine.creditMid2,
+      state.selectedMachine.creditMid3
     );
   }, [state.selectedMachine, calculationResults.leasingRange, state.selectedLeasingPeriodId]);
 
