@@ -125,7 +125,7 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
                 setDisplayValue(Math.round(currentValue));
                 
                 // Förbättrad 3D-transformation med perspektiv
-                const containerElement = document.querySelector(`[data-rolling-${label.toLowerCase().replace(/\s+/g, '-')}]`);
+                const containerElement = document.querySelector(`[data-rolling="${label.toLowerCase().replace(/\s+/g, '-')}"]`);
                 if (containerElement instanceof HTMLElement) {
                   const rotationY = progress * 180; // Halvera rotationen för stabilitet  
                   const rotationX = Math.sin(progress * Math.PI) * 5; // Lägg till X-rotation för 3D-effekt
@@ -148,7 +148,7 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
                   setDisplayValue(endValue);
                   setIsAnimating(false);
                   // Mjuk återställning av transformation
-                  const containerElement = document.querySelector(`[data-rolling-${label.toLowerCase().replace(/\s+/g, '-')}]`);
+                  const containerElement = document.querySelector(`[data-rolling="${label.toLowerCase().replace(/\s+/g, '-')}"]`);
                   if (containerElement instanceof HTMLElement) {
                     containerElement.style.transition = 'transform 0.3s ease-out';
                     containerElement.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) translateZ(0px) scale(1)';
