@@ -95,28 +95,52 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
             }
             
             case 'rolodex': {
-              const duration = 600;
+              const duration = 900; // Längre animation för att dölja hoppen
               const startTime = Date.now();
               const startValue = displayValue;
               const endValue = value;
-              const steps = 12;
+              const intermediateSteps = 8; // Fler mellansteg för smidigare övergång
               
               const animate = () => {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 
-                // Lägg till rotation/spinning effekt
-                const rotationAngle = progress * 720; // 2 full rotations
-                const stepProgress = Math.floor(progress * steps) / steps;
-                const easing = 1 - Math.pow(1 - stepProgress, 2);
+                // Avancerad easing-kurva för riktigt smidig animation
+                const easeInOutQuint = (t: number) => {
+                  return t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
+                };
                 
-                const currentValue = startValue + (endValue - startValue) * easing;
+                const easedProgress = easeInOutQuint(progress);
+                
+                // Lägg till subtil "bounce" för mer realistisk känsla
+                const bounceEffect = progress > 0.7 ? Math.sin((progress - 0.7) * 40) * 0.02 * (1 - progress) : 0;
+                const finalProgress = easedProgress + bounceEffect;
+                
+                // Beräkna mellanvärden som känns naturliga
+                const currentValue = startValue + (endValue - startValue) * finalProgress;
+                
+                // Tillämpa subtle vibration under animationen
+                const vibrationX = isAnimating ? Math.sin(elapsed * 0.05) * 0.5 : 0;
+                const scaleEffect = 1 + (Math.sin(progress * Math.PI) * 0.02); // Subtil pulsation
+                
                 setDisplayValue(Math.round(currentValue));
                 
-                // Tillämpa CSS-transformation för spinning
-                const containerElement = document.querySelector('.rolodex-container');
+                // Förbättrad 3D-transformation med perspektiv
+                const containerElement = document.querySelector(`[data-rolling-${label.toLowerCase().replace(/\s+/g, '-')}]`);
                 if (containerElement instanceof HTMLElement) {
-                  containerElement.style.transform = `rotateY(${rotationAngle}deg)`;
+                  const rotationY = progress * 180; // Halvera rotationen för stabilitet  
+                  const rotationX = Math.sin(progress * Math.PI) * 5; // Lägg till X-rotation för 3D-effekt
+                  const translateZ = Math.sin(progress * Math.PI) * 10;
+                  
+                  containerElement.style.transform = `
+                    perspective(1000px) 
+                    rotateY(${rotationY}deg) 
+                    rotateX(${rotationX}deg) 
+                    translateZ(${translateZ}px) 
+                    translateX(${vibrationX}px)
+                    scale(${scaleEffect})
+                  `;
+                  containerElement.style.transformStyle = 'preserve-3d';
                 }
                 
                 if (progress < 1) {
@@ -124,10 +148,16 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
                 } else {
                   setDisplayValue(endValue);
                   setIsAnimating(false);
-                  // Återställ rotation
-                  const containerElement = document.querySelector('.rolodex-container');
+                  // Mjuk återställning av transformation
+                  const containerElement = document.querySelector(`[data-rolling-${label.toLowerCase().replace(/\s+/g, '-')}]`);
                   if (containerElement instanceof HTMLElement) {
-                    containerElement.style.transform = 'rotateY(0deg)';
+                    containerElement.style.transition = 'transform 0.3s ease-out';
+                    containerElement.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) translateZ(0px) scale(1)';
+                    
+                    // Ta bort transition efter återställning
+                    setTimeout(() => {
+                      containerElement.style.transition = '';
+                    }, 300);
                   }
                 }
               };
@@ -249,7 +279,11 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
           <CreditInfoPopover />
         </div>
       )}
-      <div className={`flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-sm rolodex-container transition-transform duration-300 ${className}`}>
+      <div 
+        data-rolling={label.toLowerCase().replace(/\s+/g, '-')}
+        className={`flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-sm transition-all duration-200 ${className} ${isAnimating ? 'shadow-lg border-blue-300' : ''}`}
+        style={{ transformOrigin: 'center' }}
+      >
         <div className="flex items-center gap-1 text-xs font-medium text-blue-700 mb-1">
           {showTrendIcon && (
             trendDirection === 'up' ? (
@@ -262,7 +296,7 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
           )}
           <span>{label}</span>
         </div>
-        <div className={`text-lg font-bold text-blue-900 transition-all duration-200 ${isAnimating ? 'scale-105' : 'scale-100'}`}>
+        <div className={`text-lg font-bold text-blue-900 transition-all duration-300 select-none ${isAnimating ? 'scale-110 text-blue-800' : 'scale-100'}`}>
           <span>{formatCurrency(displayValue)}</span>
         </div>
         <div className="text-xs text-blue-600">
