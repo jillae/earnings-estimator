@@ -11,19 +11,18 @@ const StickyEconomicGraph: React.FC = () => {
   const [opacity, setOpacity] = useState<number>(80);
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
   
-  const monthlyRevenue = revenue?.monthlyRevenueExVat || 0; // KORRIGERAT: Använd ExVat för korrekt break-even
+  // ANVÄND SAMMA VÄRDEN SOM TABELLEN - inkl VAT för intäkt för konsistens
+  const monthlyRevenue = revenue?.monthlyRevenueIncVat || 0; // SAMMA som tabellen
   const monthlyCosts = (operatingCost?.totalCost || 0) + (leasingCost || 0);
-  const monthlyNet = netResults?.netPerMonthExVat || 0;
+  const monthlyNet = netResults?.netPerMonthExVat || 0; // Netto är alltid ex VAT
 
-  // DEBUG: Logga alla värden för break-even debugging
-  console.log('🔍 StickyEconomicGraph DEBUG VALUES (KORRIGERAT):');
-  console.log('  monthlyRevenue (ex VAT):', monthlyRevenue);
-  console.log('  monthlyRevenue (inkl VAT för jämförelse):', revenue?.monthlyRevenueIncVat || 0);
+  // DEBUG: Logga alla värden för jämförelse med tabell
+  console.log('🔍 StickyEconomicGraph DEBUG VALUES (SAMMA SOM TABELL):');
+  console.log('  monthlyRevenue (inkl VAT - samma som tabell):', monthlyRevenue);
   console.log('  leasingCost:', leasingCost);
   console.log('  operatingCost.totalCost:', operatingCost?.totalCost);
   console.log('  monthlyCosts (beräknad):', monthlyCosts);
   console.log('  monthlyNet (från context):', monthlyNet);
-  console.log('  monthlyNet (manuell beräkning):', monthlyRevenue - monthlyCosts);
 
   // Använd useMemo för att memoize data-beräkningen
   const data = useMemo(() => {
