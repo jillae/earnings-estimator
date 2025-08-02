@@ -109,10 +109,10 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
             }}
           />
           
-          {/* Klickbara ikoner för varje steg - bättre alignment */}
+          {/* Klickbara ikoner för varje steg - större träffytor */}
           <div className="grid grid-cols-5 gap-0 mt-4">
             <div 
-              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity touch-manipulation p-2 -m-2 min-h-[44px] flex items-center justify-center"
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity touch-manipulation p-4 -m-4 min-h-[60px] min-w-[60px] flex items-center justify-center rounded-lg hover:bg-slate-100"
               onClick={() => handleStepClick(0)}
               onTouchEnd={(e) => {
                 e.preventDefault();
@@ -125,29 +125,45 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
               </span>
             </div>
             <div 
-              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity touch-manipulation p-4 -m-4 min-h-[60px] min-w-[60px] flex items-center justify-center rounded-lg hover:bg-slate-100"
               onClick={() => handleStepClick(1)}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                handleStepClick(1);
+              }}
             >
               {getStepIcon(1, currentStep === 1)}
               <span className="text-xs text-slate-500 text-center leading-tight">Flexibilitet</span>
             </div>
             <div 
-              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity touch-manipulation p-4 -m-4 min-h-[60px] min-w-[60px] flex items-center justify-center rounded-lg hover:bg-slate-100"
               onClick={() => handleStepClick(2)}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                handleStepClick(2);
+              }}
             >
               {getStepIcon(2, currentStep === 2)}
               <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Standard</span>
             </div>
             <div 
-              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity touch-manipulation p-4 -m-4 min-h-[60px] min-w-[60px] flex items-center justify-center rounded-lg hover:bg-slate-100"
               onClick={() => handleStepClick(3)}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                handleStepClick(3);
+              }}
             >
               {getStepIcon(3, currentStep === 3)}
               <span className="text-xs text-slate-500 text-center leading-tight">Trygghet</span>
             </div>
             <div 
-              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity touch-manipulation p-4 -m-4 min-h-[60px] min-w-[60px] flex items-center justify-center rounded-lg hover:bg-slate-100"
               onClick={() => handleStepClick(4)}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                handleStepClick(4);
+              }}
             >
               {getStepIcon(4, currentStep === 4)}
               <span className="text-xs text-slate-500 text-center leading-tight">
