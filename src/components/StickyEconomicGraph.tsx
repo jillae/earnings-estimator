@@ -1,18 +1,23 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const StickyEconomicGraph: React.FC = () => {
   const { revenue, operatingCost, leasingCost, netResults } = useCalculator();
+  const [selectedYear, setSelectedYear] = useState<'all' | '1' | '2' | '3' | '4' | '5'>('all');
+  const [opacity, setOpacity] = useState<number>(95);
   
-  const monthlyRevenue = revenue?.monthlyRevenueIncVat || 0; // Använd samma som tabellen (inkl moms)
+  const monthlyRevenue = revenue?.monthlyRevenueExVat || 0; // KORRIGERAT: Använd ExVat för korrekt break-even
   const monthlyCosts = (operatingCost?.totalCost || 0) + (leasingCost || 0);
   const monthlyNet = netResults?.netPerMonthExVat || 0;
 
   // DEBUG: Logga alla värden för break-even debugging
-  console.log('🔍 StickyEconomicGraph DEBUG VALUES:');
-  console.log('  monthlyRevenue (ex moms):', monthlyRevenue);
+  console.log('🔍 StickyEconomicGraph DEBUG VALUES (KORRIGERAT):');
+  console.log('  monthlyRevenue (ex VAT):', monthlyRevenue);
+  console.log('  monthlyRevenue (inkl VAT för jämförelse):', revenue?.monthlyRevenueIncVat || 0);
   console.log('  leasingCost:', leasingCost);
   console.log('  operatingCost.totalCost:', operatingCost?.totalCost);
   console.log('  monthlyCosts (beräknad):', monthlyCosts);
@@ -79,8 +84,17 @@ const StickyEconomicGraph: React.FC = () => {
     { year: 5, month: 60, net: data[60]?.cumulativeNet || 0 },
   ];
 
+  // Filter data baserat på valt år
+  const filteredData = useMemo(() => {
+    if (selectedYear === 'all') return data;
+    const yearNum = parseInt(selectedYear);
+    const startMonth = (yearNum - 1) * 12;
+    const endMonth = yearNum * 12;
+    return data.slice(startMonth, endMonth + 1);
+  }, [data, selectedYear]);
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-40">
+    <div className="fixed bottom-0 left-0 right-0 border-t shadow-lg z-40" style={{ backgroundColor: `rgba(255, 255, 255, ${opacity / 100})` }}>
       <div className="container max-w-7xl mx-auto p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-4 text-sm">
@@ -98,27 +112,68 @@ const StickyEconomicGraph: React.FC = () => {
             </div>
           </div>
 
-          <div className="text-center">
-            <p className="text-muted-foreground">Break-even</p>
-            <p className="font-bold">{breakEvenMonth === 60 ? '60+ mån' : `${breakEvenMonth} mån`}</p>
+          <div className="flex items-center gap-4">
+            {/* Årsväljare */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Visa:</span>
+              <Select value={selectedYear} onValueChange={(value: any) => setSelectedYear(value)}>
+                <SelectTrigger className="w-24 h-8">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Alla år</SelectItem>
+                  <SelectItem value="1">År 1</SelectItem>
+                  <SelectItem value="2">År 2</SelectItem>
+                  <SelectItem value="3">År 3</SelectItem>
+                  <SelectItem value="4">År 4</SelectItem>
+                  <SelectItem value="5">År 5</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Transparens-kontroll */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Transparens:</span>
+              <input
+                type="range"
+                min="50"
+                max="100"
+                value={opacity}
+                onChange={(e) => setOpacity(parseInt(e.target.value))}
+                className="w-16 h-2"
+              />
+              <span className="text-xs text-muted-foreground w-8">{opacity}%</span>
+            </div>
+
+            <div className="text-center">
+              <p className="text-muted-foreground text-sm">Break-even</p>
+              <p className="font-bold">{breakEvenMonth === 60 ? '60+ mån' : `${breakEvenMonth} mån`}</p>
+            </div>
           </div>
         </div>
 
         <div className="h-32 relative">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <LineChart data={filteredData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis 
                 dataKey="month"
                 axisLine={false}
                 tickLine={false}
                 tick={{ fontSize: 10, fill: '#64748b' }}
-                ticks={[0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60]}
+                ticks={selectedYear === 'all' ? 
+                  [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60] :
+                  filteredData.map((_, i) => i).filter(i => i % 2 === 0)
+                }
                 tickFormatter={(value) => {
-                  if (value === 0) return 'Start';
-                  const year = Math.floor(value / 12);
-                  const quarter = Math.floor((value % 12) / 3) + 1;
-                  return year === 0 ? `Q${quarter}` : `År${year} Q${quarter}`;
+                  if (selectedYear === 'all') {
+                    if (value === 0) return 'Start';
+                    const year = Math.floor(value / 12);
+                    const quarter = Math.floor((value % 12) / 3) + 1;
+                    return year === 0 ? `Q${quarter}` : `År${year} Q${quarter}`;
+                  } else {
+                    return `M${value + 1}`;
+                  }
                 }}
               />
               <YAxis 
@@ -134,9 +189,13 @@ const StickyEconomicGraph: React.FC = () => {
                   name === 'cumulativeCosts' ? 'Kumulativa Kostnader' : 'Kumulativt Netto'
                 ]}
                 labelFormatter={(label) => {
-                  const years = Math.floor(Number(label) / 12);
-                  const months = Number(label) % 12;
-                  return `År ${years}, Månad ${months}`;
+                  if (selectedYear === 'all') {
+                    const years = Math.floor(Number(label) / 12);
+                    const months = Number(label) % 12;
+                    return `År ${years}, Månad ${months}`;
+                  } else {
+                    return `Månad ${Number(label) + 1} (År ${selectedYear})`;
+                  }
                 }}
                 contentStyle={{ 
                   backgroundColor: 'white', 
