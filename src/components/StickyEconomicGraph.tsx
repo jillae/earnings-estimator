@@ -113,7 +113,13 @@ const StickyEconomicGraph: React.FC = () => {
                 axisLine={false}
                 tickLine={false}
                 tick={{ fontSize: 10, fill: '#64748b' }}
-                tickFormatter={(value) => `År ${Math.floor(value/12)}`}
+                ticks={[0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60]}
+                tickFormatter={(value) => {
+                  if (value === 0) return 'Start';
+                  const year = Math.floor(value / 12);
+                  const quarter = Math.floor((value % 12) / 3) + 1;
+                  return year === 0 ? `Q${quarter}` : `År${year} Q${quarter}`;
+                }}
               />
               <YAxis 
                 axisLine={false}
@@ -136,8 +142,10 @@ const StickyEconomicGraph: React.FC = () => {
                   backgroundColor: 'white', 
                   border: '1px solid #e2e8f0',
                   borderRadius: '6px',
-                  fontSize: '12px'
+                  fontSize: '12px',
+                  zIndex: 50
                 }}
+                wrapperStyle={{ zIndex: 50 }}
               />
               
               {/* Break-even linje */}
@@ -193,7 +201,7 @@ const StickyEconomicGraph: React.FC = () => {
             return (
               <div
                 key={year.year}
-                className="absolute top-1 bg-white border rounded-md shadow-sm px-2 py-1 text-xs"
+                className="absolute top-1 bg-white border rounded-md shadow-sm px-2 py-1 text-xs z-10"
                 style={{ 
                   left: `${xPosition}%`,
                   transform: 'translateX(-50%)'
