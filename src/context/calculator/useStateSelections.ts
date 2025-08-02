@@ -26,8 +26,6 @@ export function useStateSelections() {
   const [customerPrice, setCustomerPrice] = useState<number>(2500);
   const [useFlatrateOption, setUseFlatrateOption] = useState<FlatrateOption>('perCredit'); // Default till perCredit istället för flatrate
   
-  // Nytt state för leasingmodell-val
-  const [selectedLeasingModel, setSelectedLeasingModel] = useState<'hybridmodell' | 'strategimodell'>('hybridmodell');
   
   // Nollpunkt state
   const [workDaysPerMonth, setWorkDaysPerMonth] = useState<number>(22);
@@ -38,13 +36,6 @@ export function useStateSelections() {
   // Hämta maskindata från databas
   const { calculatorMachines, isLoading } = useMachineData();
 
-  // Återställ slider till standard när man byter till hybridmodell
-  useEffect(() => {
-    if (selectedLeasingModel === 'hybridmodell' && currentSliderStep !== 1) {
-      console.log('Återställer slider till standard (1) vid byte till hybridmodell');
-      setCurrentSliderStep(1);
-    }
-  }, [selectedLeasingModel]);
 
   // Sätt första maskinen som default när data laddas
   useEffect(() => {
@@ -86,7 +77,6 @@ export function useStateSelections() {
       setPaymentOption('leasing');
       setUseFlatrateOption('perCredit'); // Återställ till perCredit som standard
       setAllowBelowFlatrate(true);
-      setSelectedLeasingModel('hybridmodell');
       setWorkDaysPerMonth(22); // Återställ nollpunkt till standard
       setTreatmentsPerDay(4); // Återställ behandlingar till standard
     }
@@ -114,23 +104,6 @@ export function useStateSelections() {
     }
   }, [treatmentsPerDay]);
 
-  // Auto-switch to strategimodell vid mycket höga slider-värden
-  useEffect(() => {
-    if (currentSliderStep >= 5 && selectedLeasingModel !== 'strategimodell') {
-      console.log('Växlar automatiskt till strategimodell på höga slider-värden');
-      setSelectedLeasingModel('strategimodell');
-    }
-  }, [currentSliderStep, selectedLeasingModel]);
-
-  // Ta bort automatisk switch tillbaka - låt användaren välja manuellt
-  // Auto-switch tillbaka till hybridmodell endast vid extremt låga slider-värden
-  useEffect(() => {
-    if (currentSliderStep === 0 && selectedLeasingModel === 'strategimodell') {
-      // Endast växla tillbaka på position 0 (minimum)
-      console.log('Går tillbaka till hybridmodell endast vid minsta slider-värdet');
-      setSelectedLeasingModel('hybridmodell');
-    }
-  }, [currentSliderStep, selectedLeasingModel]);
 
   // Log för att spåra state-förändringar
   useEffect(() => {
@@ -164,8 +137,6 @@ export function useStateSelections() {
     setCustomerPrice,
     useFlatrateOption,
     setUseFlatrateOption,
-    selectedLeasingModel,
-    setSelectedLeasingModel,
     workDaysPerMonth,
     setWorkDaysPerMonth,
     currentInfoText,

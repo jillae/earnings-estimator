@@ -16,13 +16,12 @@ const FlatrateSection: React.FC = () => {
     treatmentsPerDay,
     creditPrice,
     selectedSlaLevel,
-    selectedLeasingModel
   } = useCalculator();
 
   const { useFlatrateOption, handleFlatrateChange, canEnableFlatrate } = useFlatrateHandler();
 
-  // Visa endast för maskiner som använder credits OCH inte är i strategimodell-läge
-  if (!selectedMachine?.usesCredits || selectedLeasingModel === 'strategimodell') {
+  // Visa endast för maskiner som använder credits och inte är på maxposition (där credits är 0)
+  if (!selectedMachine?.usesCredits) {
     return null;
   }
 

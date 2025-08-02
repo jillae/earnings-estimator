@@ -24,7 +24,6 @@ const OperatingCosts: React.FC = () => {
     selectedDriftpaket,
     operatingCost,
     currentSliderStep,
-    selectedLeasingModel
   } = useCalculator();
 
   const { handleFlatrateChange, canEnableFlatrate } = useFlatrateHandler();
@@ -42,8 +41,8 @@ const OperatingCosts: React.FC = () => {
     return <NoMachineSelected />;
   }
   
-  // Om strategimodell är valt, visa specialfall
-  if (selectedMachine.usesCredits && selectedLeasingModel === 'strategimodell') {
+  // Om användaren är på maxposition (steg 2), visa specialfall för 0kr credit
+  if (selectedMachine.usesCredits && currentSliderStep === 2) {
     return renderOperatingCostCard(
       <div className="space-y-4">
         <div className="flex items-center justify-center p-6 bg-primary/5 rounded-lg border border-primary/20">

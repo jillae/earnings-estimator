@@ -21,7 +21,7 @@ interface UseCalculationEngineProps {
   leaseAdjustmentFactor: number;
   useFlatrateOption: 'flatrate' | 'perCredit';
   currentSliderStep: number;
-  selectedLeasingModel: 'hybridmodell' | 'strategimodell';
+  
   exchangeRate?: number;
   workDaysPerMonth: number;
 }
@@ -45,7 +45,7 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
       leaseAdjustmentFactor: props.leaseAdjustmentFactor,
       useFlatrateOption: props.useFlatrateOption,
       currentSliderStep: props.currentSliderStep,
-      selectedLeasingModel: props.selectedLeasingModel,
+      
       exchangeRate: props.exchangeRate,
       workDaysPerMonth: props.workDaysPerMonth
     };
@@ -61,7 +61,7 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     props.leaseAdjustmentFactor,
     props.useFlatrateOption,
     props.currentSliderStep,
-    props.selectedLeasingModel,
+    
     props.exchangeRate,
     props.workDaysPerMonth
   ]);
@@ -80,7 +80,7 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     setIsCalculating(true);
     console.log(`[TRACKER] useCalculationEngine: Startar beräkning på grund av förändring i:
       currentSliderStep: ${inputs.currentSliderStep}
-      selectedLeasingModel: ${inputs.selectedLeasingModel}
+      
       treatmentsPerDay: ${inputs.treatmentsPerDay}
       customerPrice: ${inputs.customerPrice}
     `);

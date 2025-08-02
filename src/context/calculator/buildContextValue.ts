@@ -45,8 +45,6 @@ export function buildContextValue(
     // Lägg till nya egenskaper
     isFlatrateViable: isFlatrateViable,
     isLeasingFlatrateViable: isLeasingFlatrateViable,
-    selectedLeasingModel: base.selectedLeasingModel,
-    setSelectedLeasingModel: base.setSelectedLeasingModel,
     
     // Gated access funktionalitet
     isUnlocked: gatedAccess?.isUnlocked ?? true,

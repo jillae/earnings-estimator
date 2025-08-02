@@ -22,7 +22,6 @@ export function useCalculatorValues() {
     leaseAdjustmentFactor: 0.5,
     useFlatrateOption: state.useFlatrateOption,
     currentSliderStep: state.currentSliderStep,
-    selectedLeasingModel: state.selectedLeasingModel,
     workDaysPerMonth: state.workDaysPerMonth
   });
 

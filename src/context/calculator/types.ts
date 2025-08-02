@@ -130,9 +130,6 @@ export interface CalculatorContextType {
   isFlatrateViable: boolean;
   isLeasingFlatrateViable: boolean;
   
-  // Leasingmodell-val
-  selectedLeasingModel: 'hybridmodell' | 'strategimodell';
-  setSelectedLeasingModel: (model: 'hybridmodell' | 'strategimodell') => void;
   
   // Gated access funktionalitet
   isUnlocked: boolean;

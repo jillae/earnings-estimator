@@ -52,7 +52,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   creditCost = 0,
   hoveredInput = null
 }) => {
-  const { selectedMachine, selectedLeasingModel } = useCalculator();
+  const { selectedMachine } = useCalculator();
   
   // Validera värden och se till att de är giltiga nummer
   const safeDaily = isNaN(dailyRevenueIncVat) ? 0 : dailyRevenueIncVat;
@@ -71,10 +71,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const safeCreditCost = isNaN(creditCost) ? 0 : creditCost;
 
   // Calculate components for display - inkluderar nu SLA-kostnad korrekt
-  // För strategimodell: endast leasing kostnad (credits ingår)
-  const totalCostPerMonth = selectedLeasingModel === 'strategimodell'
-    ? safeLeasingCost + safeSlaOstCost
-    : safeLeasingCost + safeOperatingCost + safeSlaOstCost;
+  const totalCostPerMonth = safeLeasingCost + safeOperatingCost + safeSlaOstCost;
 
   return (
     <div className="glass-card mt-8 animate-slide-in bg-white/95 backdrop-blur-sm shadow-xl border border-slate-200" style={{
@@ -196,19 +193,17 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             {/* Credits kostnad - visa alltid, även för strategisk leasing (då 0 kr) */}
             <tr className={`border-b border-slate-200 transition-colors ${hoveredInput === 'credits' ? 'bg-red-100/50 ring-2 ring-red-300' : 'bg-red-50/10 hover:bg-red-50/20'}`}>
               <td className="py-2 px-3 text-slate-700 text-xs border-l border-red-300">
-                {selectedLeasingModel === 'strategimodell' ? (
-                  'Credits (ingår)'
-                ) : isFlatrateActive ? (
+                {isFlatrateActive ? (
                   selectedSlaLevel === 'Guld' ? 'Flatrate (ingår i Guld)' : 'Flatrate Credits'
                 ) : (
                   'Credits'
                 )}
               </td>
               <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs currency-cell">
-                {selectedLeasingModel === 'strategimodell' || selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost)}
+                {selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost)}
               </td>
               <td className="py-2 px-2 text-right text-slate-700 whitespace-nowrap text-xs currency-cell">
-                {selectedLeasingModel === 'strategimodell' || selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost * 12)}
+                {selectedSlaLevel === 'Guld' ? formatCurrency(0) : formatCurrency(safeCreditCost * 12)}
               </td>
             </tr>
             

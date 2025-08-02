@@ -25,7 +25,7 @@ export interface CalculationInputs {
   leaseAdjustmentFactor: number;
   useFlatrateOption: 'flatrate' | 'perCredit';
   currentSliderStep: number;
-  selectedLeasingModel: 'hybridmodell' | 'strategimodell';
+  
   exchangeRate?: number;
   workDaysPerMonth: number;
 }
@@ -127,7 +127,6 @@ export class CalculationEngine {
       customerPrice: ${inputs.customerPrice}
       treatmentsPerDay: ${inputs.treatmentsPerDay}
       currentSliderStep: ${inputs.currentSliderStep}
-      selectedLeasingModel: ${inputs.selectedLeasingModel}
       leasingCost: ${leasingCalcs.leasingCost}
       yearlyRevenueIncVat: ${revenue.yearlyRevenueIncVat}
       netPerYearExVat: ${netResults.netPerYearExVat}
@@ -270,8 +269,8 @@ export class CalculationEngine {
     // STRATEGISK KOSTNAD: Från maskindata (använd leasingMax eller fallback till leasingCostBase)
     const leasingCostStrategic = inputs.machine.leasingMax || leasingCostBase;
     
-    // AKTIV KOSTNAD: Beror på valt leasingpaket (grundleasing eller strategisk)
-    const useStrategicPricing = inputs.selectedLeasingModel === 'strategimodell';
+    // AKTIV KOSTNAD: Baserat på slider-position (0 för maximal credit-kostnad, 2 för minimal credit-kostnad)
+    const useStrategicPricing = inputs.currentSliderStep >= 2;
     
     let leasingCost: number;
     if (useStrategicPricing) {
@@ -317,10 +316,9 @@ export class CalculationEngine {
     }
     
     console.log(`Leasing för ${inputs.machine.name}:
-      Valt leasingmodell: ${inputs.selectedLeasingModel} 
       Grundkostnad (tariff): ${leasingCostBase} SEK/mån
       Strategisk kostnad (maskindata): ${leasingCostStrategic} SEK/mån
-      ${useStrategicPricing ? 'Fast pris (credits ingår)' : `Slider-justerad (position ${inputs.currentSliderStep})`}: ${leasingCost} SEK/mån
+      ${useStrategicPricing ? 'Maximal leasing (0kr credits)' : `Slider-justerad (position ${inputs.currentSliderStep})`}: ${leasingCost} SEK/mån
       Range: ${Math.round(leasingRange.min)} - ${Math.round(leasingRange.max)} SEK/mån
     `);
     
