@@ -1,5 +1,4 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
@@ -11,46 +10,52 @@ const StickyEconomicGraph: React.FC = () => {
   const monthlyCosts = (operatingCost?.totalCost || 0) + (leasingCost || 0);
   const monthlyNet = netResults?.netPerMonthExVat || 0;
 
-  // Skapa kumulativ data över 5 år med gradvis ökning från 0
-  const data = [];
-  let cumulativeRevenue = 0;
-  let cumulativeCosts = 0;
-  let cumulativeNet = 0;
+  // Använd useMemo för att memoize data-beräkningen
+  const data = useMemo(() => {
+    const result = [];
+    let cumulativeRevenue = 0;
+    let cumulativeCosts = 0;
+    let cumulativeNet = 0;
 
-  for (let i = 0; i <= 60; i++) {
-    if (i === 0) {
-      data.push({
-        month: 0,
-        cumulativeRevenue: 0,
-        cumulativeCosts: 0,
-        cumulativeNet: 0,
-        monthlyRevenue: 0,
-        monthlyCosts: 0,
-        monthlyNet: 0
-      });
-    } else {
-      // Gradvis ökning från månad 1 - realistisk uppbyggnad
-      const rampUpFactor = Math.min(1, (i - 1) / 6); // 6 månaders uppbyggnad
-      const currentRevenue = monthlyRevenue * rampUpFactor;
-      const currentCosts = monthlyCosts; // Kostnader är konstanta från start
-      const currentNet = currentRevenue - currentCosts;
+    // Skapa data för 61 månader (5 år + startpunkt)
+    for (let i = 0; i <= 60; i++) {
+      if (i === 0) {
+        // Startpunkt - allt är noll
+        result.push({
+          month: 0,
+          cumulativeRevenue: 0,
+          cumulativeCosts: 0,
+          cumulativeNet: 0,
+          monthlyRevenue: 0,
+          monthlyCosts: 0,
+          monthlyNet: 0
+        });
+      } else {
+        // Gradvis ökning från månad 1 - realistisk uppbyggnad över 6 månader
+        const rampUpFactor = Math.min(1, (i - 1) / 6);
+        const currentRevenue = monthlyRevenue * rampUpFactor;
+        const currentCosts = monthlyCosts; // Kostnader är konstanta från start
+        const currentNet = currentRevenue - currentCosts;
 
-      // Uppdatera kumulativa värden
-      cumulativeRevenue += currentRevenue;
-      cumulativeCosts += currentCosts;
-      cumulativeNet += currentNet;
-      
-      data.push({
-        month: i,
-        cumulativeRevenue,
-        cumulativeCosts,
-        cumulativeNet,
-        monthlyRevenue: currentRevenue,
-        monthlyCosts: currentCosts,
-        monthlyNet: currentNet
-      });
+        // Uppdatera kumulativa värden
+        cumulativeRevenue += currentRevenue;
+        cumulativeCosts += currentCosts;
+        cumulativeNet += currentNet;
+        
+        result.push({
+          month: i,
+          cumulativeRevenue,
+          cumulativeCosts,
+          cumulativeNet,
+          monthlyRevenue: currentRevenue,
+          monthlyCosts: currentCosts,
+          monthlyNet: currentNet
+        });
+      }
     }
-  }
+
+    return result;
+  }, [monthlyRevenue, monthlyCosts, monthlyNet]);
 
   const finalNet = data[data.length - 1]?.cumulativeNet || 0;
   const isPositive = finalNet > 0;
