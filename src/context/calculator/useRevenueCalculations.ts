@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { 
   calculateRevenue,
-  calculateOccupancyRevenues,
+  // ANVÄND DIREKT BERÄKNING istället för import för att undvika cirkulära beroenden
   calculateNetResults
 } from '@/utils/calculatorUtils';
 import { MONTHS_PER_YEAR } from '@/utils/constants';
@@ -69,7 +69,11 @@ export function useRevenueCalculations({
     setRevenue(calculatedRevenue);
     
     // Beräkna beläggningsgrader direkt här för att undvika timing issues
-    const calculatedOccupancyRevenues = calculateOccupancyRevenues(calculatedRevenue.yearlyRevenueIncVat);
+    const calculatedOccupancyRevenues = {
+      occupancy50: calculatedRevenue.yearlyRevenueIncVat * 0.5,
+      occupancy75: calculatedRevenue.yearlyRevenueIncVat * 0.75,
+      occupancy100: calculatedRevenue.yearlyRevenueIncVat
+    };
     
     console.log(`[TRACKER] useRevenueCalculations uppdaterar beläggningsgrader:
       årsintäkt (inkl moms): ${calculatedRevenue.yearlyRevenueIncVat}

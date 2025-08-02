@@ -35,7 +35,12 @@ export const calculateNetResults = (
 };
 
 export const calculateOccupancyRevenues = (yearlyRevenueIncVat: number) => {
-  return RevenueEngine.calculateOccupancyRevenues(yearlyRevenueIncVat);
+  // ANVÄND ALLTID CalculationEngine för konsistens
+  return {
+    occupancy50: yearlyRevenueIncVat * 0.5,
+    occupancy75: yearlyRevenueIncVat * 0.75,
+    occupancy100: yearlyRevenueIncVat
+  };
 };
 
 // Exportera de nödvändiga funktionerna från andra moduler

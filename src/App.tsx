@@ -15,6 +15,7 @@ import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import { CalculatorProvider } from './context/CalculatorContext';
+import TestAllMachines from './components/TestAllMachines';
 
 import './App.css';
 
@@ -49,6 +50,7 @@ function App() {
             }
           />
           <Route path="/klinik-optimering-coming-soon" element={<KlinikOptimeringComingSoon />} />
+          <Route path="/test-all-machines" element={<TestAllMachines />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster />
