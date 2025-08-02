@@ -48,8 +48,15 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
       return;
     }
 
-    // Om värdet har ändrats, starta animation
-    if (Math.abs(displayValue - value) > 0.01 && !isAnimating) {
+    // FORCERA UPPDATERING om värdet är olika (viktigt för korrekt synk)
+    if (Math.abs(displayValue - value) > 0.01) {
+      if (isAnimating) {
+        // Om animering pågår, avbryt och sätt direkt
+        setDisplayValue(value);
+        setIsAnimating(false);
+        return;
+      }
+      
       // Debounce för att undvika för många animationer
       timeoutRef.current = setTimeout(() => {
         setIsAnimating(true);
