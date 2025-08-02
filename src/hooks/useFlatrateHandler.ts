@@ -99,13 +99,10 @@ export function useFlatrateHandler() {
       }
     }
     
-    // SCENARIO 2: Brons-paket => ÅTERSTÄLL till perCredit (men tillåt manuell override)
+    // SCENARIO 2: Bas-paket => TILLÅT manual override (ta bort automatisk återställning)
     else if (selectedDriftpaket === 'Bas') {
-      // Automatisk återställning till perCredit för Brons
-      if (useFlatrateOption === 'flatrate') {
-        console.log('🔄 Återställer automatiskt till perCredit för Brons-paket');
-        setUseFlatrateOption('perCredit');
-      }
+      // GÖR INGENTING - låt användaren välja fritt mellan flatrate och perCredit
+      // Detta tas bort eftersom det blockerar manuellt val av flatrate i Bas-paket
     }
   }, [selectedDriftpaket, selectedMachine?.usesCredits, setUseFlatrateOption, currentSliderStep, setCurrentSliderStep, useFlatrateOption]);
 

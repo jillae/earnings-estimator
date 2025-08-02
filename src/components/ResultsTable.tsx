@@ -45,7 +45,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   occupancy75,
   occupancy100,
   isFlatrateActive = false,
-  selectedSlaLevel = 'Brons',
+  selectedSlaLevel,
   treatmentsPerDay = 0,
   customerPrice = 0,
   slaCost = 0,
