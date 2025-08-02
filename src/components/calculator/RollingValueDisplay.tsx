@@ -50,7 +50,10 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
 
     // FORCERA UPPDATERING om värdet är olika (viktigt för korrekt synk)
     if (Math.abs(displayValue - value) > 0.01 || (displayValue === 0 && value > 0)) {
+      console.log(`RollingValueDisplay [${label}]: Startar animering från ${displayValue} till ${value}, animationStyle=${animationStyle}`);
+      
       if (isAnimating) {
+        console.log(`RollingValueDisplay [${label}]: Avbryter pågående animering`);
         // Om animering pågår, avbryt och sätt direkt
         setDisplayValue(value);
         setIsAnimating(false);
@@ -98,6 +101,7 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
               const startTime = Date.now();
               const startValue = displayValue;
               const endValue = value;
+              console.log(`RollingValueDisplay [${label}]: Startar rolodex-animering från ${startValue} till ${endValue}`);
               const intermediateSteps = 8; // Fler mellansteg för smidigare övergång
               
               const animate = () => {
@@ -126,6 +130,7 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
                 
                 // Förbättrad 3D-transformation med perspektiv
                 const containerElement = document.querySelector(`[data-rolling="${label.toLowerCase().replace(/\s+/g, '-')}"]`);
+                console.log(`RollingValueDisplay [${label}]: Hittade element:`, containerElement, `data-rolling="${label.toLowerCase().replace(/\s+/g, '-')}"`);
                 if (containerElement instanceof HTMLElement) {
                   const rotationY = progress * 180; // Halvera rotationen för stabilitet  
                   const rotationX = Math.sin(progress * Math.PI) * 5; // Lägg till X-rotation för 3D-effekt
