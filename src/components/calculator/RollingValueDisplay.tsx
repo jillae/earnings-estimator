@@ -41,15 +41,15 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
       cancelAnimationFrame(animationRef.current);
     }
 
-    // Om värdet är helt nytt eller första gången, uppdatera direkt
+    // Om värdet är helt nytt eller första gången, starta animering direkt
     if (displayValue === 0 && value > 0) {
-      console.log(`RollingValueDisplay [${label}]: Första värdet, sätter direkt till ${value}`);
-      setDisplayValue(value);
-      return;
+      console.log(`RollingValueDisplay [${label}]: Första värdet, startar animering från 0 till ${value}`);
+      setIsAnimating(true);
+      // Fortsätt till animeringslogiken istället för att sätta direkt
     }
 
     // FORCERA UPPDATERING om värdet är olika (viktigt för korrekt synk)
-    if (Math.abs(displayValue - value) > 0.01) {
+    if (Math.abs(displayValue - value) > 0.01 || (displayValue === 0 && value > 0)) {
       if (isAnimating) {
         // Om animering pågår, avbryt och sätt direkt
         setDisplayValue(value);
@@ -57,11 +57,10 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
         return;
       }
       
-      // Debounce för att undvika för många animationer
-      timeoutRef.current = setTimeout(() => {
-        setIsAnimating(true);
-        
-        const animateValue = () => {
+      // Starta animering direkt utan debounce för bättre responsivitet
+      setIsAnimating(true);
+      
+      const animateValue = () => {
           switch (animationStyle) {
             case 'slotmachine': {
               const duration = 800;
@@ -250,7 +249,6 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
         };
         
         animateValue();
-      }, 100); // Ökad debounce till 100ms för mindre flimmer
     }
 
     // Cleanup

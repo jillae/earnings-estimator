@@ -83,7 +83,7 @@ export function calculateStepValues(
     const roundedStep1 = { 
       ...step1, 
       leasingCost: roundToHundredEndingSix(step1.leasingCost),
-      creditPrice: roundToEndingNine(step1.creditPrice)
+      creditPrice: 149  // FAST VÄRDE för standard - ska alltid vara 149
     };
     const roundedStep15 = { 
       ...step15, 
