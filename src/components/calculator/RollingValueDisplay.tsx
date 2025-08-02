@@ -48,9 +48,9 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
       // Fortsätt till animeringslogiken istället för att sätta direkt
     }
 
-    // FORCERA UPPDATERING om värdet är olika (viktigt för korrekt synk)
-    if (Math.abs(displayValue - value) > 0.01 || (displayValue === 0 && value > 0)) {
-      console.log(`RollingValueDisplay [${label}]: Startar animering från ${displayValue} till ${value}, animationStyle=${animationStyle}`);
+    // FORCERA UPPDATERING för alla värdeförändringar
+    if (Math.abs(displayValue - value) > 0.01) {
+      console.log(`RollingValueDisplay [${label}]: Värdeförändring detekterad från ${displayValue} till ${value}, animationStyle=${animationStyle}`);
       
       if (isAnimating) {
         console.log(`RollingValueDisplay [${label}]: Avbryter pågående animering`);
@@ -60,7 +60,8 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
         return;
       }
       
-      // Starta animering direkt utan debounce för bättre responsivitet
+      // Starta animering direkt
+      console.log(`RollingValueDisplay [${label}]: Startar ${animationStyle} animering`);
       setIsAnimating(true);
       
       const animateValue = () => {

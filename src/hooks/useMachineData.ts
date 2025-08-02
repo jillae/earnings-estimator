@@ -7,6 +7,8 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { machineApiClient } from '@/utils/machineApiClient';
+import { premiumMachines } from '@/data/machines/premium';
+import { treatmentMachines } from '@/data/machines/treatment';
 
 export interface DatabaseMachine {
   id: string;
@@ -20,6 +22,7 @@ export interface DatabaseMachine {
   default_customer_price: number;
   default_leasing_period: number;
   leasing_min: number;
+  leasing_standard?: number;  // Optional tills databasen uppdateras
   leasing_max: number;
   credits_per_treatment: number;
   description: string | null;
@@ -43,6 +46,7 @@ export interface CalculatorMachine {
   creditMin?: number;
   creditMax?: number;
   leasingMin?: number;
+  leasingStandard?: number;  // Standard nivå - nya strategiska modellen
   leasingMax?: number;
   flatrateAmount?: number;
   defaultCustomerPrice?: number;
@@ -96,6 +100,14 @@ export const useMachineData = () => {
       return imageKey ? placeholders[imageKey] : "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=200&q=80";
     };
     
+    // Hitta strategisk data från statiska filer som fallback
+    const getStrategicData = (machineName: string) => {
+      const allStaticMachines = [...premiumMachines, ...treatmentMachines];
+      return allStaticMachines.find(m => m.name === machineName);
+    };
+    
+    const strategicData = getStrategicData(dbMachine.name);
+    
     return {
       id: dbMachine.id, // Använd det riktiga UUID:t från databasen istället för konstruerat ID
       name: dbMachine.name,
@@ -105,8 +117,9 @@ export const useMachineData = () => {
       usesCredits: dbMachine.uses_credits,
       creditMin: dbMachine.credit_min,
       creditMax: dbMachine.credit_max,
-      leasingMin: dbMachine.leasing_min,
-      leasingMax: dbMachine.leasing_max,
+      leasingMin: dbMachine.leasing_min || strategicData?.leasingMin,
+      leasingStandard: dbMachine.leasing_standard || strategicData?.leasingStandard, // Använd statisk data som fallback
+      leasingMax: dbMachine.leasing_max || strategicData?.leasingMax,
       flatrateAmount: dbMachine.flatrate_amount,
       defaultCustomerPrice: dbMachine.default_customer_price,
       defaultLeasingPeriod: dbMachine.default_leasing_period.toString(),
