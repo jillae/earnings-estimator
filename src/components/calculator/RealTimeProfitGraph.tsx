@@ -33,6 +33,34 @@ const RealTimeProfitGraph: React.FC = () => {
       breakeven: 0
     };
   });
-  return;
+
+  return (
+    <div className="w-full h-64">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <XAxis 
+            dataKey="month" 
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 12 }}
+          />
+          <YAxis 
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 12 }}
+            tickFormatter={(value) => formatCurrency(value)}
+          />
+          <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" />
+          <Line 
+            type="monotone" 
+            dataKey="profit" 
+            stroke={isProfitable ? "hsl(var(--success))" : "hsl(var(--destructive))"} 
+            strokeWidth={2}
+            dot={false}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
 };
 export default RealTimeProfitGraph;
