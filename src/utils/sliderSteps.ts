@@ -95,12 +95,12 @@ export function calculateStepValues(
       leasingCost: roundToHundredEndingSix(step2.leasingCost)
     };
 
-    console.log(`STRATEGISKA stegvärden för ${machine.name}:
-      Min (0): ${roundedStep0.leasingCost} kr / ${roundedStep0.creditPrice} kr per credit
-      Låg (0.5): ${roundedStep05.leasingCost} kr / ${roundedStep05.creditPrice} kr per credit
-      Standard (1): ${roundedStep1.leasingCost} kr / ${roundedStep1.creditPrice} kr per credit
-      Hög (1.5): ${roundedStep15.leasingCost} kr / ${roundedStep15.creditPrice} kr per credit
-      Max (2): ${roundedStep2.leasingCost} kr / 0 kr per credit`);
+    console.log(`STRATEGISKA stegvärden för ${machine.name} - KORREKT SLIDER LOGIK:
+      Min (0): ${roundedStep0.leasingCost} kr leasing / ${roundedStep0.creditPrice} kr credit (VÄNSTER - HÖG CREDIT)
+      Låg (0.5): ${roundedStep05.leasingCost} kr leasing / ${roundedStep05.creditPrice} kr credit
+      Standard (1): ${roundedStep1.leasingCost} kr leasing / ${roundedStep1.creditPrice} kr credit (MITTEN - BALANSERAD)
+      Hög (1.5): ${roundedStep15.leasingCost} kr leasing / ${roundedStep15.creditPrice} kr credit
+      Max (2): ${roundedStep2.leasingCost} kr leasing / 0 kr credit (HÖGER - NOLL CREDIT)`);
 
     return {
       0: { leasingCost: roundedStep0.leasingCost, creditPrice: roundedStep0.creditPrice, label: 'Min' },
