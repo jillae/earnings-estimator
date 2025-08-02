@@ -80,22 +80,30 @@ export function useFlatrateHandler() {
     }
   }, [setUseFlatrateOption, canEnableFlatrate, paymentOption, currentSliderStep, setCurrentSliderStep, toast]);
 
-  // Automatisk aktivering av flatrate för Silver/Guld-paket
+  // Automatisk aktivering av flatrate för Silver/Guld-paket och återställning för Brons
   useEffect(() => {
-    if (selectedMachine?.usesCredits && (selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld')) {
-      if (useFlatrateOption !== 'flatrate') {
-        console.log(`Aktiverar automatisk flatrate för ${selectedDriftpaket}-paket`);
-        
-        // VIKTIG: När Silver/Guld automatiskt aktiverar flatrate, flytta slider till Standard
-        if (currentSliderStep !== 1) {
-          console.log('Flyttar slider till Standard (1) då Silver/Guld aktiverar flatrate automatiskt');
-          setCurrentSliderStep(1);
+    if (selectedMachine?.usesCredits) {
+      if (selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld') {
+        if (useFlatrateOption !== 'flatrate') {
+          console.log(`Aktiverar automatisk flatrate för ${selectedDriftpaket}-paket`);
+          
+          // VIKTIG: När Silver/Guld automatiskt aktiverar flatrate, flytta slider till Standard
+          if (currentSliderStep !== 1) {
+            console.log('Flyttar slider till Standard (1) då Silver/Guld aktiverar flatrate automatiskt');
+            setCurrentSliderStep(1);
+          }
+          
+          setUseFlatrateOption('flatrate');
         }
-        
-        setUseFlatrateOption('flatrate');
+      } else if (selectedDriftpaket === 'Bas') {
+        // Återställ till perCredit när man går tillbaka till Brons (Bas)
+        if (useFlatrateOption === 'flatrate') {
+          console.log('Återställer till perCredit för Brons-paket');
+          setUseFlatrateOption('perCredit');
+        }
       }
     }
-  }, [selectedDriftpaket, selectedMachine?.usesCredits, setUseFlatrateOption, currentSliderStep, setCurrentSliderStep]);
+  }, [selectedDriftpaket, selectedMachine?.usesCredits, setUseFlatrateOption, currentSliderStep, setCurrentSliderStep, useFlatrateOption]);
 
   return {
     handleFlatrateChange,
