@@ -80,30 +80,52 @@ export function useFlatrateHandler() {
     }
   }, [setUseFlatrateOption, canEnableFlatrate, paymentOption, currentSliderStep, setCurrentSliderStep, toast]);
 
-  // Automatisk aktivering av flatrate för Silver/Guld-paket och återställning för Brons
+  // OMFATTANDE AUTOMATISK ÅTERSTÄLLNING för alla scenarios
   useEffect(() => {
-    if (selectedMachine?.usesCredits) {
-      if (selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld') {
-        if (useFlatrateOption !== 'flatrate') {
-          console.log(`Aktiverar automatisk flatrate för ${selectedDriftpaket}-paket`);
-          
-          // VIKTIG: När Silver/Guld automatiskt aktiverar flatrate, flytta slider till Standard
-          if (currentSliderStep !== 1) {
-            console.log('Flyttar slider till Standard (1) då Silver/Guld aktiverar flatrate automatiskt');
-            setCurrentSliderStep(1);
-          }
-          
-          setUseFlatrateOption('flatrate');
+    if (!selectedMachine?.usesCredits) return;
+
+    // SCENARIO 1: Silver/Guld-paket => TVINGA flatrate
+    if (selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld') {
+      if (useFlatrateOption !== 'flatrate') {
+        console.log(`🔄 Aktiverar automatisk flatrate för ${selectedDriftpaket}-paket`);
+        
+        // VIKTIG: När Silver/Guld automatiskt aktiverar flatrate, flytta slider till Standard
+        if (currentSliderStep !== 1) {
+          console.log('📍 Flyttar slider till Standard (1) då Silver/Guld aktiverar flatrate automatiskt');
+          setCurrentSliderStep(1);
         }
-      } else if (selectedDriftpaket === 'Bas') {
-        // Återställ till perCredit när man går tillbaka till Brons (Bas)
-        if (useFlatrateOption === 'flatrate') {
-          console.log('Återställer till perCredit för Brons-paket');
-          setUseFlatrateOption('perCredit');
-        }
+        
+        setUseFlatrateOption('flatrate');
+      }
+    }
+    
+    // SCENARIO 2: Brons-paket => ÅTERSTÄLL till perCredit (men tillåt manuell override)
+    else if (selectedDriftpaket === 'Bas') {
+      // Automatisk återställning till perCredit för Brons
+      if (useFlatrateOption === 'flatrate') {
+        console.log('🔄 Återställer automatiskt till perCredit för Brons-paket');
+        setUseFlatrateOption('perCredit');
       }
     }
   }, [selectedDriftpaket, selectedMachine?.usesCredits, setUseFlatrateOption, currentSliderStep, setCurrentSliderStep, useFlatrateOption]);
+
+  // SCENARIO 3: Maskinbyte => ÅTERSTÄLL baserat på ny maskin
+  useEffect(() => {
+    if (!selectedMachine?.usesCredits && useFlatrateOption === 'flatrate') {
+      console.log('🔄 Återställer flatrate för maskin utan credits');
+      setUseFlatrateOption('perCredit');
+    }
+  }, [selectedMachine?.usesCredits, useFlatrateOption, setUseFlatrateOption]);
+
+  // SCENARIO 4: Betalningsmetod byte => SYNKA med nya villkor
+  useEffect(() => {
+    // Vid kontantköp: alltid tillåtet, ingen automatisk ändring
+    // Vid leasing: kontrollera slider-position för Bas-paketet
+    if (paymentOption === 'leasing' && selectedDriftpaket === 'Bas' && useFlatrateOption === 'flatrate' && currentSliderStep < 1) {
+      console.log('🔄 Återställer flatrate för leasing vid låg slider-position');
+      setUseFlatrateOption('perCredit');
+    }
+  }, [paymentOption, selectedDriftpaket, useFlatrateOption, currentSliderStep, setUseFlatrateOption]);
 
   return {
     handleFlatrateChange,

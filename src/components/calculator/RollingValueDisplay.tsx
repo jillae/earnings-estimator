@@ -95,27 +95,40 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
             }
             
             case 'rolodex': {
-              const duration = 50;
+              const duration = 600;
               const startTime = Date.now();
               const startValue = displayValue;
               const endValue = value;
-              const steps = 8;
+              const steps = 12;
               
               const animate = () => {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 
+                // Lägg till rotation/spinning effekt
+                const rotationAngle = progress * 720; // 2 full rotations
                 const stepProgress = Math.floor(progress * steps) / steps;
                 const easing = 1 - Math.pow(1 - stepProgress, 2);
                 
                 const currentValue = startValue + (endValue - startValue) * easing;
                 setDisplayValue(Math.round(currentValue));
                 
+                // Tillämpa CSS-transformation för spinning
+                const containerElement = document.querySelector('.rolodex-container');
+                if (containerElement instanceof HTMLElement) {
+                  containerElement.style.transform = `rotateY(${rotationAngle}deg)`;
+                }
+                
                 if (progress < 1) {
                   animationRef.current = requestAnimationFrame(animate);
                 } else {
                   setDisplayValue(endValue);
                   setIsAnimating(false);
+                  // Återställ rotation
+                  const containerElement = document.querySelector('.rolodex-container');
+                  if (containerElement instanceof HTMLElement) {
+                    containerElement.style.transform = 'rotateY(0deg)';
+                  }
                 }
               };
               
@@ -236,7 +249,7 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
           <CreditInfoPopover />
         </div>
       )}
-      <div className={`flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-sm ${className}`}>
+      <div className={`flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-sm rolodex-container transition-transform duration-300 ${className}`}>
         <div className="flex items-center gap-1 text-xs font-medium text-blue-700 mb-1">
           {showTrendIcon && (
             trendDirection === 'up' ? (

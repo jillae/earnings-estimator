@@ -84,10 +84,16 @@ const StickyEconomicGraph: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-6 text-sm">
+          <div className="flex items-center gap-4 text-sm">
             <div className="text-center">
               <p className="text-muted-foreground">Break-even</p>
               <p className="font-bold">{breakEvenMonth === 60 ? '60+ mån' : `${breakEvenMonth} mån`}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-muted-foreground">Total år 1</p>
+              <p className={`font-bold ${(data[11]?.cumulativeNet || 0) > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {formatCurrency(data[11]?.cumulativeNet || 0)}
+              </p>
             </div>
             <div className="text-center">
               <p className="text-muted-foreground">Total vinst (5 år)</p>
