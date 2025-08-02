@@ -1,361 +1,279 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { TrendingUp, Target, Calendar, Users, Zap, DollarSign } from 'lucide-react';
-import { formatCurrency } from '@/utils/formatUtils';
+import { TrendingUp, Calendar, DollarSign, Target } from 'lucide-react';
 import { useCalculator } from '@/context/CalculatorContext';
+import { formatCurrency } from '@/utils/formatUtils';
 
 const GrowthAnalysisContent: React.FC = () => {
-  const {
-    selectedMachine,
-    revenue,
-    netResults,
-    treatmentsPerDay,
-    customerPrice,
-    operatingCost,
-    workDaysPerMonth
-  } = useCalculator();
+  const { revenue, netResults, selectedMachine, treatmentsPerDay, customerPrice, workDaysPerMonth } = useCalculator();
+  
+  const [analysisSettings, setAnalysisSettings] = useState({
+    timeHorizon: 60,
+    baseRevenue: revenue?.monthlyRevenueExVat || 45000,
+    confidenceInterval: true
+  });
 
-  // Tillväxtparametrar
-  const [growthScenario, setGrowthScenario] = useState('realistic');
-  const [timeHorizon, setTimeHorizon] = useState(36); // månader
-  const [targetTreatmentsPerDay, setTargetTreatmentsPerDay] = useState([Math.min(treatmentsPerDay * 2, 15)]);
-  const [marketPenetration, setMarketPenetration] = useState([75]); // procent
-
-  // Tillväxtscenarier
-  const growthScenarios = {
-    conservative: { monthly: 0.02, description: '2% månadsvis tillväxt' },
-    realistic: { monthly: 0.05, description: '5% månadsvis tillväxt' },
-    aggressive: { monthly: 0.08, description: '8% månadsvis tillväxt' }
-  };
-
-  const currentScenario = growthScenarios[growthScenario as keyof typeof growthScenarios];
-
-  // Beräkna tillväxtprognos
-  const generateGrowthData = () => {
+  // Realistisk tillväxtdata med gradvis ramp-up från 0
+  const growthData = (() => {
     const data = [];
-    const currentMonthlyRevenue = revenue?.monthlyRevenueExVat || 0;
-    const currentMonthlyNet = netResults?.netPerMonthExVat || 0;
     
-    for (let month = 0; month <= timeHorizon; month++) {
-      const growthFactor = Math.pow(1 + currentScenario.monthly, month);
-      const adjustedTreatments = Math.min(
-        treatmentsPerDay * growthFactor,
-        targetTreatmentsPerDay[0]
-      );
+    for (let month = 0; month <= analysisSettings.timeHorizon; month++) {
+      if (month === 0) {
+        data.push({
+          month: 0,
+          conservative: 0,
+          realistic: 0,
+          optimistic: 0,
+          year: 0
+        });
+        continue;
+      }
       
-      const monthlyRevenue = adjustedTreatments * customerPrice * workDaysPerMonth;
-      const monthlyNet = monthlyRevenue - operatingCost.totalCost;
-      const cumulativeNet = monthlyNet * month;
-      
-      // Kapacitetsutnyttjande
-      const capacityUtilization = Math.min((adjustedTreatments / 16) * 100, 100); // 16 = max per dag
+      // Gradvis ramp-up första 6 månaderna
+      const rampUpFactor = Math.min(1, month / 6);
+      // Årlig tillväxt efter ramp-up perioden
+      const growthMonths = Math.max(0, month - 6);
+      const conservativeGrowth = Math.pow(1.01, growthMonths / 12); // 1% årlig
+      const realisticGrowth = Math.pow(1.03, growthMonths / 12);     // 3% årlig  
+      const optimisticGrowth = Math.pow(1.06, growthMonths / 12);    // 6% årlig
       
       data.push({
         month,
-        monthlyRevenue: Math.round(monthlyRevenue),
-        monthlyNet: Math.round(monthlyNet),
-        cumulativeNet: Math.round(cumulativeNet),
-        treatmentsPerDay: Math.round(adjustedTreatments * 10) / 10,
-        capacityUtilization: Math.round(capacityUtilization)
+        conservative: Math.round(analysisSettings.baseRevenue * 0.8 * rampUpFactor * conservativeGrowth),
+        realistic: Math.round(analysisSettings.baseRevenue * rampUpFactor * realisticGrowth),
+        optimistic: Math.round(analysisSettings.baseRevenue * 1.2 * rampUpFactor * optimisticGrowth),
+        year: Math.floor(month / 12)
       });
     }
     
     return data;
-  };
+  })();
 
-  const growthData = generateGrowthData();
-  const finalData = growthData[growthData.length - 1];
-
-  // Milstolpar
-  const milestones = [
+  // Nyckeltal för scenarion
+  const keyMetrics = [
     {
-      month: 6,
-      description: 'Etablerad kundbas',
-      target: 'Break-even uppnått'
+      name: 'Konservativ',
+      color: '#ef4444',
+      finalRevenue: growthData[growthData.length - 1]?.conservative || 0,
+      avgGrowthRate: 1,
+      confidence: 85
     },
     {
-      month: 12,
-      description: 'Stabil tillväxt',
-      target: '50% kapacitet'
+      name: 'Realistisk', 
+      color: '#3b82f6',
+      finalRevenue: growthData[growthData.length - 1]?.realistic || 0,
+      avgGrowthRate: 3,
+      confidence: 70
     },
     {
-      month: 24,
-      description: 'Marknadsposition',
-      target: '75% kapacitet'
-    },
-    {
-      month: 36,
-      description: 'Full kapacitet',
-      target: 'Expansion möjlig'
+      name: 'Optimistisk',
+      color: '#22c55e', 
+      finalRevenue: growthData[growthData.length - 1]?.optimistic || 0,
+      avgGrowthRate: 6,
+      confidence: 50
     }
-  ];
-
-  // Riskfaktorer och möjligheter
-  const riskFactors = [
-    'Konkurrens från nya aktörer',
-    'Förändrade kundpreferenser',
-    'Regulatoriska ändringar',
-    'Ekonomisk nedgång'
-  ];
-
-  const opportunities = [
-    'Utöka behandlingsutbud',
-    'Partnerships med vårdcentraler',
-    'Digital marknadsföring',
-    'Prenumerationstjänster'
   ];
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold mb-2">Interaktiv Tillväxtprognos</h3>
-        <p className="text-slate-600">
-          Modellera din kliniks tillväxt med {selectedMachine?.name || 'den valda maskinen'}
-        </p>
-      </div>
-
-      {/* Kontroller */}
-      <div className="grid lg:grid-cols-4 gap-4 mb-6">
-        <Card className="p-4">
-          <Label className="text-sm font-medium mb-2 block">Tillväxtscenario</Label>
-          <Select value={growthScenario} onValueChange={setGrowthScenario}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="conservative">Konservativ (2%/mån)</SelectItem>
-              <SelectItem value="realistic">Realistisk (5%/mån)</SelectItem>
-              <SelectItem value="aggressive">Aggressiv (8%/mån)</SelectItem>
-            </SelectContent>
-          </Select>
-        </Card>
-
-        <Card className="p-4">
-          <Label className="text-sm font-medium mb-2 block">Tidshorisontt</Label>
-          <Select value={timeHorizon.toString()} onValueChange={(value) => setTimeHorizon(Number(value))}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="12">1 år</SelectItem>
-              <SelectItem value="24">2 år</SelectItem>
-              <SelectItem value="36">3 år</SelectItem>
-              <SelectItem value="60">5 år</SelectItem>
-            </SelectContent>
-          </Select>
-        </Card>
-
-        <Card className="p-4">
-          <Label className="text-sm font-medium mb-2 block">
-            Mål: {targetTreatmentsPerDay[0]} behandl/dag
-          </Label>
-          <Slider
-            value={targetTreatmentsPerDay}
-            onValueChange={setTargetTreatmentsPerDay}
-            max={16}
-            min={treatmentsPerDay}
-            step={0.5}
-            className="mt-2"
-          />
-        </Card>
-
-        <Card className="p-4">
-          <Label className="text-sm font-medium mb-2 block">
-            Marknadspenetration: {marketPenetration[0]}%
-          </Label>
-          <Slider
-            value={marketPenetration}
-            onValueChange={setMarketPenetration}
-            max={100}
-            min={25}
-            step={5}
-            className="mt-2"
-          />
-        </Card>
-      </div>
-
-      {/* Huvudgraf */}
+      {/* Inställningar */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-emerald-600" />
-            Tillväxtprognos - {currentScenario.description}
-          </CardTitle>
+          <CardTitle>Analysparametrar</CardTitle>
           <CardDescription>
-            Månatlig intäkt och netto över {timeHorizon} månader
+            Realistisk tillväxtprojektion med gradvis ramp-up från start
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid grid-cols-3 gap-4">
+          <div>
+            <Label htmlFor="timeHorizon">Tidshorisont (månader)</Label>
+            <Input
+              id="timeHorizon"
+              type="number"
+              value={analysisSettings.timeHorizon}
+              onChange={(e) => setAnalysisSettings(prev => ({
+                ...prev,
+                timeHorizon: Number(e.target.value)
+              }))}
+              min={12}
+              max={120}
+            />
+          </div>
+          <div>
+            <Label htmlFor="baseRevenue">Basintäkt/månad (kr)</Label>
+            <Input
+              id="baseRevenue"
+              type="number"
+              value={analysisSettings.baseRevenue}
+              onChange={(e) => setAnalysisSettings(prev => ({
+                ...prev,
+                baseRevenue: Number(e.target.value)
+              }))}
+            />
+          </div>
+          <div className="flex items-end">
+            <div className="text-sm">
+              <p className="font-medium text-green-600">Synkroniserat</p>
+              <p className="text-muted-foreground">Med kalkylator</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Scenarioöversikt */}
+      <div className="grid grid-cols-3 gap-4">
+        {keyMetrics.map((scenario, index) => (
+          <Card key={index}>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-medium" style={{ color: scenario.color }}>
+                  {scenario.name}
+                </h4>
+                <div className="text-xs bg-gray-100 px-2 py-1 rounded">
+                  {scenario.confidence}% säkerhet
+                </div>
+              </div>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Årlig tillväxt:</span>
+                  <span className="font-bold">{scenario.avgGrowthRate}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Slutintäkt:</span>
+                  <span className="font-bold">{formatCurrency(scenario.finalRevenue)}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Tillväxtgraf */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Intäktsutveckling med Realistisk Ramp-up</CardTitle>
+          <CardDescription>
+            Månadsintäkter med gradvis uppbyggnad från 0 första 6 månaderna
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={growthData}>
-                <defs>
-                  <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="netGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+              <LineChart data={growthData}>
+                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="month" 
-                  tickFormatter={(value) => `Mån ${value}`}
+                  tickFormatter={(value) => `År ${Math.floor(value/12)}`}
                 />
-                <YAxis 
-                  tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
-                />
+                <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
                 <Tooltip 
-                  formatter={(value, name) => [
-                    formatCurrency(Number(value)), 
-                    name === 'monthlyRevenue' ? 'Månatlig intäkt' : 'Månatligt netto'
+                  formatter={(value: any, name) => [
+                    formatCurrency(value), 
+                    name === 'conservative' ? 'Konservativ (1%)' :
+                    name === 'realistic' ? 'Realistisk (3%)' : 'Optimistisk (6%)'
                   ]}
-                  labelFormatter={(month) => `Månad ${month}`}
+                  labelFormatter={(label) => {
+                    const years = Math.floor(Number(label) / 12);
+                    const months = Number(label) % 12;
+                    return `År ${years}, Månad ${months}`;
+                  }}
                 />
-                <Area
+                
+                <Line
                   type="monotone"
-                  dataKey="monthlyRevenue"
-                  stroke="#10b981"
+                  dataKey="conservative"
+                  stroke="#ef4444"
                   strokeWidth={2}
-                  fill="url(#revenueGradient)"
+                  strokeDasharray="5 5"
+                  dot={false}
+                  activeDot={{ r: 4, fill: '#ef4444' }}
                 />
-                <Area
+                
+                <Line
                   type="monotone"
-                  dataKey="monthlyNet"
+                  dataKey="realistic"
                   stroke="#3b82f6"
-                  strokeWidth={2}
-                  fill="url(#netGradient)"
+                  strokeWidth={3}
+                  dot={false}
+                  activeDot={{ r: 4, fill: '#3b82f6' }}
                 />
-              </AreaChart>
+                
+                <Line
+                  type="monotone"
+                  dataKey="optimistic"
+                  stroke="#22c55e"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                  activeDot={{ r: 4, fill: '#22c55e' }}
+                />
+              </LineChart>
             </ResponsiveContainer>
+          </div>
+          
+          <div className="mt-4 text-sm text-muted-foreground">
+            <p>• Alla scenarion börjar från 0 och bygger upp gradvis över 6 månader</p>
+            <p>• Efter ramp-up perioden följer konstant årlig tillväxt</p>
+            <p>• Konservativ och optimistisk visas som streckade linjer</p>
           </div>
         </CardContent>
       </Card>
 
-      {/* KPI-kort */}
-      <div className="grid md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <DollarSign className="w-4 h-4 text-emerald-600" />
-              <span className="text-sm font-medium text-emerald-900">Total Intäkt</span>
-            </div>
-            <div className="text-2xl font-bold text-emerald-700">
-              {formatCurrency(finalData?.cumulativeNet || 0)}
-            </div>
-            <p className="text-xs text-emerald-600 mt-1">
-              Under {timeHorizon} månader
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Users className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-blue-900">Behandlingar/dag</span>
-            </div>
-            <div className="text-2xl font-bold text-blue-700">
-              {finalData?.treatmentsPerDay || 0}
-            </div>
-            <p className="text-xs text-blue-600 mt-1">
-              Från {treatmentsPerDay} idag
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Target className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-medium text-purple-900">Kapacitet</span>
-            </div>
-            <div className="text-2xl font-bold text-purple-700">
-              {finalData?.capacityUtilization || 0}%
-            </div>
-            <p className="text-xs text-purple-600 mt-1">
-              Av maxkapacitet
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar className="w-4 h-4 text-orange-600" />
-              <span className="text-sm font-medium text-orange-900">ROI-tid</span>
-            </div>
-            <div className="text-2xl font-bold text-orange-700">
-              {Math.round(timeHorizon / 3)} mån
-            </div>
-            <p className="text-xs text-orange-600 mt-1">
-              Uppskattat break-even
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Milstolpar och Strategi */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      {/* Ramp-up förklaring */}
+      <div className="grid grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-blue-600" />
-              Tillväxtmilstolpar
-            </CardTitle>
+            <CardTitle>Uppstartsfas (0-6 månader)</CardTitle>
+            <CardDescription>Realistisk ramp-up period</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {milestones.map((milestone, index) => (
-              <div key={index} className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg">
-                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-bold text-sm">{milestone.month}m</span>
-                </div>
-                <div>
-                  <div className="font-medium text-slate-900">{milestone.description}</div>
-                  <div className="text-sm text-slate-600">{milestone.target}</div>
-                </div>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span>🚀 Månad 1-2</span>
+                <span className="font-medium text-orange-600">0-30% kapacitet</span>
               </div>
-            ))}
+              <div className="flex items-center justify-between text-sm">
+                <span>📈 Månad 3-4</span>
+                <span className="font-medium text-blue-600">30-70% kapacitet</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span>🎯 Månad 5-6</span>
+                <span className="font-medium text-green-600">70-100% kapacitet</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span>💪 Månad 7+</span>
+                <span className="font-medium text-green-600">100% + tillväxt</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-purple-600" />
-              Strategiska Insikter
-            </CardTitle>
+            <CardTitle>Tillväxtfaktorer</CardTitle>
+            <CardDescription>Vad påverkar utvecklingen</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <h5 className="font-medium text-green-900 mb-2">🚀 Möjligheter</h5>
-              <ul className="space-y-1">
-                {opportunities.map((opportunity, index) => (
-                  <li key={index} className="text-sm text-green-700 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                    {opportunity}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="pt-3 border-t">
-              <h5 className="font-medium text-orange-900 mb-2">⚠️ Riskfaktorer</h5>
-              <ul className="space-y-1">
-                {riskFactors.map((risk, index) => (
-                  <li key={index} className="text-sm text-orange-700 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>
-                    {risk}
-                  </li>
-                ))}
-              </ul>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span>📍 Etablering & marknadsföring</span>
+                <span className="text-muted-foreground">Månad 1-3</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span>👥 Kundbyggande & återbesök</span>
+                <span className="text-muted-foreground">Månad 3-6</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span>🔄 Återkommande kunder</span>
+                <span className="text-muted-foreground">Månad 6+</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span>📊 Optimering & expansion</span>
+                <span className="text-muted-foreground">År 2+</span>
+              </div>
             </div>
           </CardContent>
         </Card>

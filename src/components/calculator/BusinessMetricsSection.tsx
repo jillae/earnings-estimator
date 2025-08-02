@@ -14,19 +14,42 @@ const BusinessMetricsSection: React.FC = () => {
   const monthlyRevenue = revenue?.monthlyRevenueExVat || 0;
   const totalMonthlyCost = (leasingCost || 0) + (operatingCost?.totalCost || 0);
   
-  // Tillväxtprognos data (5 år)
-  const growthData = Array.from({ length: 60 }, (_, i) => {
-    const month = i + 1;
-    const yearFactor = Math.floor(i / 12) + 1;
-    const growthRate = 1 + (0.03 * yearFactor); // 3% årlig tillväxt per år
-    return {
-      month,
-      year: `År ${yearFactor}`,
-      revenue: monthlyRevenue * growthRate,
-      profit: monthlyNet * growthRate,
-      cumulative: monthlyNet * growthRate * month
-    };
-  });
+  // Realistisk tillväxtdata med gradvis ökning från 0
+  const growthData = (() => {
+    const data = [];
+    let cumulativeProfit = 0;
+    
+    for (let month = 0; month <= 60; month++) {
+      if (month === 0) {
+        data.push({
+          month: 0,
+          revenue: 0,
+          profit: 0,
+          cumulativeProfit: 0,
+          year: 0
+        });
+        continue;
+      }
+      
+      // Gradvis ramp-up första 6 månaderna, sedan konstant tillväxt
+      const rampUpFactor = Math.min(1, month / 6);
+      const growthFactor = Math.pow(1.03, Math.floor(month / 12)); // 3% årlig tillväxt
+      
+      const currentRevenue = monthlyRevenue * rampUpFactor * growthFactor;
+      const currentProfit = (monthlyRevenue - totalMonthlyCost) * rampUpFactor * growthFactor;
+      cumulativeProfit += currentProfit;
+      
+      data.push({
+        month,
+        revenue: Math.round(currentRevenue),
+        profit: Math.round(currentProfit),
+        cumulativeProfit: Math.round(cumulativeProfit),
+        year: Math.floor(month / 12)
+      });
+    }
+    
+    return data;
+  })();
 
   // ROI över tid
   const machinePrice = selectedMachine?.priceEur ? selectedMachine.priceEur * 11.5 : 500000;

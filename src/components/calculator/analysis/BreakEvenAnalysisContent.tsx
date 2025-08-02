@@ -3,10 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Target, TrendingUp, Calendar, AlertTriangle } from 'lucide-react';
-import { formatCurrency } from '@/utils/formatUtils';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { Target, TrendingUp, Calendar, AlertTriangle, Calculator } from 'lucide-react';
 import { useCalculator } from '@/context/CalculatorContext';
+import { formatCurrency } from '@/utils/formatUtils';
 
 const BreakEvenAnalysisContent: React.FC = () => {
   const {
@@ -18,31 +18,31 @@ const BreakEvenAnalysisContent: React.FC = () => {
     selectedMachine
   } = useCalculator();
 
-  // Beräkna dynamiska startvärden från kalkylatorn
   const [analysisData, setAnalysisData] = useState({
-    fixedCosts: operatingCost.totalCost || 25000,
-    variableCostPerTreatment: selectedMachine?.usesCredits ? (operatingCost.costPerMonth / (treatmentsPerDay * workDaysPerMonth) || 45) : 45,
+    fixedCosts: operatingCost?.totalCost || 25000,
+    variableCostPerTreatment: selectedMachine?.usesCredits ? 
+      (operatingCost?.costPerMonth ? operatingCost.costPerMonth / (treatmentsPerDay * workDaysPerMonth) : 45) : 45,
     pricePerTreatment: customerPrice || 1200,
     workDaysPerMonth: workDaysPerMonth || 22,
     currentTreatmentsPerDay: treatmentsPerDay || 6,
     maxTreatmentsPerDay: 15
   });
 
-  // Uppdatera värden när kalkylatorn ändras
+  // Uppdatera när kalkylatorn ändras
   React.useEffect(() => {
     setAnalysisData(prev => ({
       ...prev,
-      fixedCosts: operatingCost.totalCost || prev.fixedCosts,
+      fixedCosts: operatingCost?.totalCost || prev.fixedCosts,
       variableCostPerTreatment: selectedMachine?.usesCredits ? 
-        (operatingCost.costPerMonth / (treatmentsPerDay * workDaysPerMonth) || prev.variableCostPerTreatment) : 
+        (operatingCost?.costPerMonth ? operatingCost.costPerMonth / (treatmentsPerDay * workDaysPerMonth) : prev.variableCostPerTreatment) : 
         prev.variableCostPerTreatment,
       pricePerTreatment: customerPrice || prev.pricePerTreatment,
       workDaysPerMonth: workDaysPerMonth || prev.workDaysPerMonth,
       currentTreatmentsPerDay: treatmentsPerDay || prev.currentTreatmentsPerDay,
     }));
-  }, [operatingCost.totalCost, operatingCost.costPerMonth, customerPrice, treatmentsPerDay, workDaysPerMonth, selectedMachine]);
+  }, [operatingCost, customerPrice, treatmentsPerDay, workDaysPerMonth, selectedMachine]);
 
-  // Beräkna break-even punkt
+  // Break-even beräkningar
   const contributionMargin = analysisData.pricePerTreatment - analysisData.variableCostPerTreatment;
   const breakEvenTreatmentsPerMonth = analysisData.fixedCosts / contributionMargin;
   const breakEvenTreatmentsPerDay = breakEvenTreatmentsPerMonth / analysisData.workDaysPerMonth;
@@ -52,61 +52,90 @@ const BreakEvenAnalysisContent: React.FC = () => {
   const currentVariableCosts = currentTreatmentsPerMonth * analysisData.variableCostPerTreatment;
   const currentProfit = currentMonthlyRevenue - currentVariableCosts - analysisData.fixedCosts;
 
-  // Skapa data för grafen
-  const createChartData = () => {
-    const data = [];
-    const maxTreatments = analysisData.maxTreatmentsPerDay * analysisData.workDaysPerMonth;
+  // Realistisk break-even utveckling över tid med gradvis ramp-up
+  const generateBreakEvenProgress = () => {
+    const targetTreatments = breakEvenTreatmentsPerDay;
+    const currentTreatments = analysisData.currentTreatmentsPerDay;
     
-    for (let treatments = 0; treatments <= maxTreatments; treatments += 10) {
-      const revenue = treatments * analysisData.pricePerTreatment;
-      const variableCosts = treatments * analysisData.variableCostPerTreatment;
-      const totalCosts = variableCosts + analysisData.fixedCosts;
-      const profit = revenue - totalCosts;
-      const treatmentsPerDay = treatments / analysisData.workDaysPerMonth;
+    return Array.from({ length: 25 }, (_, month) => {
+      if (month === 0) {
+        return {
+          month: 0,
+          treatmentsPerDay: 0,
+          profit: -analysisData.fixedCosts,
+          achieved: false
+        };
+      }
       
-      data.push({
-        treatments,
+      // Gradvis ramp-up första 6 månaderna
+      const rampUpFactor = Math.min(1, month / 6);
+      // Efter ramp-up, gradvis tillväxt mot mål
+      const progressFactor = month > 6 ? 
+        Math.min(1, 0.5 + ((month - 6) * 0.05)) : // 5% ökning per månad efter ramp-up
+        rampUpFactor;
+      
+      const treatmentsPerDay = Math.min(
+        currentTreatments * progressFactor,
+        analysisData.maxTreatmentsPerDay
+      );
+      
+      const monthlyTreatments = treatmentsPerDay * analysisData.workDaysPerMonth;
+      const monthlyRevenue = monthlyTreatments * analysisData.pricePerTreatment;
+      const monthlyVariableCosts = monthlyTreatments * analysisData.variableCostPerTreatment;
+      const profit = monthlyRevenue - monthlyVariableCosts - analysisData.fixedCosts;
+      
+      return {
+        month,
         treatmentsPerDay: Math.round(treatmentsPerDay * 10) / 10,
-        revenue,
-        totalCosts,
-        profit,
-        isBreakEven: Math.abs(profit) < 1000,
-        isProfit: profit > 0
-      });
-    }
-    
-    return data;
+        profit: Math.round(profit),
+        achieved: treatmentsPerDay >= targetTreatments
+      };
+    });
   };
 
-  const chartData = createChartData();
+  const progressData = generateBreakEvenProgress();
+  const monthsToBreakEven = progressData.find(d => d.achieved)?.month || 24;
 
-  // Sensitivity analysis
-  const sensitivityData = [
-    { scenario: 'Pris -10%', breakEven: Math.round(analysisData.fixedCosts / ((analysisData.pricePerTreatment * 0.9) - analysisData.variableCostPerTreatment) / analysisData.workDaysPerMonth * 10) / 10 },
-    { scenario: 'Nuvarande', breakEven: Math.round(breakEvenTreatmentsPerDay * 10) / 10 },
-    { scenario: 'Pris +10%', breakEven: Math.round(analysisData.fixedCosts / ((analysisData.pricePerTreatment * 1.1) - analysisData.variableCostPerTreatment) / analysisData.workDaysPerMonth * 10) / 10 },
+  // Känslighetsanalys
+  const sensitivityScenarios = [
+    { name: 'Pris -10%', priceMultiplier: 0.9, costMultiplier: 1.0 },
+    { name: 'Pris -5%', priceMultiplier: 0.95, costMultiplier: 1.0 },
+    { name: 'Nuvarande', priceMultiplier: 1.0, costMultiplier: 1.0 },
+    { name: 'Kostnad +10%', priceMultiplier: 1.0, costMultiplier: 1.1 },
+    { name: 'Pris +5%', priceMultiplier: 1.05, costMultiplier: 1.0 },
   ];
 
+  const sensitivityData = sensitivityScenarios.map(scenario => {
+    const adjustedPrice = analysisData.pricePerTreatment * scenario.priceMultiplier;
+    const adjustedCost = analysisData.variableCostPerTreatment * scenario.costMultiplier;
+    const margin = adjustedPrice - adjustedCost;
+    const breakEven = analysisData.fixedCosts / margin;
+    const breakEvenPerDay = breakEven / analysisData.workDaysPerMonth;
+    
+    return {
+      ...scenario,
+      breakEvenTreatments: Math.round(breakEven),
+      breakEvenPerDay: Math.round(breakEvenPerDay * 10) / 10,
+      margin: Math.round(margin)
+    };
+  });
+
   return (
-    <div className="grid lg:grid-cols-3 gap-6">
-      {/* Input Panel */}
-      <div className="lg:col-span-1">
+    <div className="space-y-6">
+      {/* Parametrar */}
+      <div className="grid grid-cols-2 gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Kostnadsstruktur</CardTitle>
-            <CardDescription>Justera för scenarioanalys</CardDescription>
-            {selectedMachine && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                Baserat på {selectedMachine.name}
-              </div>
-            )}
+            <CardDescription>
+              Synkroniserat med kalkylatorn
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="fixed">Fasta kostnader/månad (kr)</Label>
+              <Label htmlFor="fixedCosts">Fasta kostnader/månad (kr)</Label>
               <Input
-                id="fixed"
+                id="fixedCosts"
                 type="number"
                 value={analysisData.fixedCosts}
                 onChange={(e) => setAnalysisData(prev => ({
@@ -114,12 +143,15 @@ const BreakEvenAnalysisContent: React.FC = () => {
                   fixedCosts: Number(e.target.value)
                 }))}
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                Leasing, försäkring, SLA, lokalhyra
+              </p>
             </div>
 
             <div>
-              <Label htmlFor="variable">Rörlig kostnad/behandling (kr)</Label>
+              <Label htmlFor="variableCost">Rörlig kostnad/behandling (kr)</Label>
               <Input
-                id="variable"
+                id="variableCost"
                 type="number"
                 value={analysisData.variableCostPerTreatment}
                 onChange={(e) => setAnalysisData(prev => ({
@@ -130,7 +162,7 @@ const BreakEvenAnalysisContent: React.FC = () => {
             </div>
 
             <div>
-              <Label htmlFor="price">Pris per behandling (kr)</Label>
+              <Label htmlFor="price">Pris/behandling (kr)</Label>
               <Input
                 id="price"
                 type="number"
@@ -141,11 +173,36 @@ const BreakEvenAnalysisContent: React.FC = () => {
                 }))}
               />
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Kapacitet & Volym</CardTitle>
+            <CardDescription>
+              Nuvarande och målvolymer
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label>Nuvarande behandlingar/dag: {analysisData.currentTreatmentsPerDay}</Label>
+              <Slider
+                value={[analysisData.currentTreatmentsPerDay]}
+                onValueChange={([value]) => setAnalysisData(prev => ({
+                  ...prev, 
+                  currentTreatmentsPerDay: value
+                }))}
+                max={analysisData.maxTreatmentsPerDay}
+                min={1}
+                step={1}
+                className="mt-2"
+              />
+            </div>
 
             <div>
-              <Label htmlFor="workdays">Arbetsdagar/månad</Label>
+              <Label htmlFor="workDays">Arbetsdagar/månad</Label>
               <Input
-                id="workdays"
+                id="workDays"
                 type="number"
                 value={analysisData.workDaysPerMonth}
                 onChange={(e) => setAnalysisData(prev => ({
@@ -156,155 +213,230 @@ const BreakEvenAnalysisContent: React.FC = () => {
             </div>
 
             <div>
-              <Label>Nuvarande behandlingar/dag: {analysisData.currentTreatmentsPerDay}</Label>
-              <Slider
-                value={[analysisData.currentTreatmentsPerDay]}
-                onValueChange={(value) => setAnalysisData(prev => ({
+              <Label htmlFor="maxTreatments">Max kapacitet/dag</Label>
+              <Input
+                id="maxTreatments"
+                type="number"
+                value={analysisData.maxTreatmentsPerDay}
+                onChange={(e) => setAnalysisData(prev => ({
                   ...prev, 
-                  currentTreatmentsPerDay: value[0]
+                  maxTreatmentsPerDay: Number(e.target.value)
                 }))}
-                max={analysisData.maxTreatmentsPerDay}
-                step={1}
-                className="mt-2"
               />
             </div>
           </CardContent>
         </Card>
+      </div>
 
-        {/* Key Metrics */}
-        <Card className="mt-4">
-          <CardHeader>
-            <CardTitle>Nyckeltal</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-4">
-              <div className="text-center p-3 bg-orange-50 rounded-lg">
-                <Target className="h-5 w-5 mx-auto mb-1 text-orange-600" />
-                <p className="text-lg font-bold text-orange-700">
-                  {Math.round(breakEvenTreatmentsPerDay * 10) / 10}
-                </p>
-                <p className="text-xs text-orange-600">Behandlingar/dag för break-even</p>
-              </div>
-              
-              <div className="text-center p-3 bg-blue-50 rounded-lg">
-                <TrendingUp className="h-5 w-5 mx-auto mb-1 text-blue-600" />
-                <p className="text-lg font-bold text-blue-700">
-                  {formatCurrency(contributionMargin)}
-                </p>
-                <p className="text-xs text-blue-600">Täckningsgrad per behandling</p>
+      {/* Nyckeltal */}
+      <div className="grid grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Target className="h-5 w-5 text-red-600" />
+              <div>
+                <p className="text-sm font-medium text-red-600">Break-even</p>
+                <p className="text-lg font-bold">{Math.ceil(breakEvenTreatmentsPerDay)}</p>
+                <p className="text-xs text-muted-foreground">behandl/dag</p>
               </div>
             </div>
-            
-            <div className="pt-4 border-t">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Nuvarande resultat:</span>
-                <span className={`font-bold ${currentProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {formatCurrency(currentProfit)}/mån
-                </span>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Calculator className="h-5 w-5 text-blue-600" />
+              <div>
+                <p className="text-sm font-medium text-blue-600">Täckningsbidrag</p>
+                <p className="text-lg font-bold">{formatCurrency(contributionMargin)}</p>
+                <p className="text-xs text-muted-foreground">per behandling</p>
               </div>
-              
-              {currentProfit < 0 && (
-                <div className="flex items-start gap-2 p-2 bg-red-50 rounded-lg">
-                  <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
-                  <div className="text-xs text-red-700">
-                    <p className="font-medium">Under break-even</p>
-                    <p>Behöver {Math.round((breakEvenTreatmentsPerDay - analysisData.currentTreatmentsPerDay) * 10) / 10} fler behandlingar/dag</p>
-                  </div>
-                </div>
-              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <TrendingUp className={`h-5 w-5 ${currentProfit >= 0 ? 'text-green-600' : 'text-red-600'}`} />
+              <div>
+                <p className={`text-sm font-medium ${currentProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  Nuvarande resultat
+                </p>
+                <p className="text-lg font-bold">{formatCurrency(currentProfit)}</p>
+                <p className="text-xs text-muted-foreground">per månad</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Calendar className="h-5 w-5 text-orange-600" />
+              <div>
+                <p className="text-sm font-medium text-orange-600">Till break-even</p>
+                <p className="text-lg font-bold">
+                  {monthsToBreakEven === 24 ? '24+' : `${monthsToBreakEven}`}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {monthsToBreakEven === 0 ? 'Lönsam nu' : 'månader'}
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Analysis Results */}
-      <div className="lg:col-span-2 space-y-4">
-        {/* Break-even Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Break-Even Analys</CardTitle>
-            <CardDescription>
-              Intäkter vs kostnader vid olika volymer
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="treatmentsPerDay" 
-                    tickFormatter={(value) => `${value}/dag`}
-                  />
-                  <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
-                  <Tooltip 
-                    formatter={(value: any, name) => [
-                      formatCurrency(value), 
-                      name === 'revenue' ? 'Intäkter' : 
-                      name === 'totalCosts' ? 'Totala kostnader' : 'Resultat'
-                    ]}
-                    labelFormatter={(label) => `${label} behandlingar/dag`}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="revenue" 
-                    stroke="#22c55e" 
-                    strokeWidth={3}
-                    name="Intäkter"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="totalCosts" 
-                    stroke="#ef4444" 
-                    strokeWidth={3}
-                    name="Totala kostnader"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="profit" 
-                    stroke="#3b82f6" 
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    name="Resultat"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Break-even utveckling */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Realistisk Väg till Break-Even</CardTitle>
+          <CardDescription>
+            Förväntad utveckling med gradvis ramp-up från 0
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={progressData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="month" 
+                  tickFormatter={(value) => `${value}m`}
+                />
+                <YAxis 
+                  yAxisId="treatments"
+                  orientation="left"
+                  tickFormatter={(value) => `${value}/dag`} 
+                />
+                <YAxis 
+                  yAxisId="profit"
+                  orientation="right"
+                  tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} 
+                />
+                <Tooltip 
+                  formatter={(value: any, name) => [
+                    name === 'treatmentsPerDay' ? `${value}/dag` : formatCurrency(value), 
+                    name === 'treatmentsPerDay' ? 'Behandlingar per dag' : 'Månatligt resultat'
+                  ]}
+                  labelFormatter={(label) => `Månad ${label}`}
+                />
+                
+                {/* Break-even linje för behandlingar */}
+                <ReferenceLine
+                  yAxisId="treatments"
+                  y={breakEvenTreatmentsPerDay}
+                  stroke="#ef4444"
+                  strokeDasharray="3 3"
+                  strokeWidth={1}
+                />
+                
+                {/* Break-even linje för vinst */}
+                <ReferenceLine
+                  yAxisId="profit"
+                  y={0}
+                  stroke="#ef4444"
+                  strokeDasharray="3 3"
+                  strokeWidth={1}
+                />
+                
+                {/* Ramp-up markering */}
+                <ReferenceLine
+                  x={6}
+                  stroke="#fbbf24"
+                  strokeDasharray="2 2"
+                  strokeWidth={1}
+                />
+                
+                {/* Behandlingsvolym */}
+                <Line
+                  yAxisId="treatments"
+                  type="monotone"
+                  dataKey="treatmentsPerDay"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4, fill: '#3b82f6' }}
+                />
+                
+                {/* Resultat */}
+                <Line
+                  yAxisId="profit"
+                  type="monotone"
+                  dataKey="profit"
+                  stroke="#22c55e"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                  activeDot={{ r: 4, fill: '#22c55e' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-4 text-sm text-muted-foreground">
+            <p>• Blå linje: Utveckling av behandlingsvolym (vänster skala)</p>
+            <p>• Grön streckad linje: Månatligt resultat (höger skala)</p>
+            <p>• Röda linjer: Break-even nivåer</p>
+            <p>• Gul linje: Slutet av ramp-up period (månad 6)</p>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Sensitivity Analysis */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Känslighetsanalys</CardTitle>
-            <CardDescription>
-              Hur break-even påverkas av prisförändringar
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {sensitivityData.map((item, index) => (
-                <div key={index} className="flex justify-between items-center p-3 border rounded-lg">
-                  <span className="font-medium">{item.scenario}</span>
-                  <span className="text-right">
-                    <span className="font-bold">{item.breakEven}</span>
-                    <span className="text-sm text-muted-foreground ml-1">behandlingar/dag</span>
-                  </span>
+      {/* Känslighetsanalys */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Känslighetsanalys</CardTitle>
+          <CardDescription>
+            Hur förändringar påverkar break-even
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {sensitivityData.map((scenario, index) => (
+              <div 
+                key={index} 
+                className={`flex items-center justify-between p-3 rounded-lg border ${
+                  scenario.name === 'Nuvarande' ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'
+                }`}
+              >
+                <div>
+                  <h4 className="font-medium">{scenario.name}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Täckningsbidrag: {formatCurrency(scenario.margin)}
+                  </p>
                 </div>
-              ))}
-            </div>
-            
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <h4 className="font-medium mb-2">Insikter</h4>
-              <ul className="text-sm text-blue-700 space-y-1">
-                <li>• Täckningsgrad: {Math.round((contributionMargin / analysisData.pricePerTreatment) * 100)}% av priset</li>
-                <li>• En 10% prisökning minskar break-even med ~{Math.round((breakEvenTreatmentsPerDay - sensitivityData[2].breakEven) * 10) / 10} behandlingar/dag</li>
-                <li>• Månatlig break-even volym: {Math.round(breakEvenTreatmentsPerMonth)} behandlingar</li>
-              </ul>
+                <div className="text-right">
+                  <p className="font-bold">{scenario.breakEvenPerDay}/dag</p>
+                  <p className="text-sm text-muted-foreground">
+                    {scenario.breakEvenTreatments}/månad
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {currentProfit < 0 && (
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="p-4">
+            <div className="flex items-start space-x-2">
+              <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-red-800">
+                  För att nå break-even behöver du öka från {analysisData.currentTreatmentsPerDay} till{' '}
+                  {Math.ceil(breakEvenTreatmentsPerDay)} behandlingar per dag.
+                </p>
+                <p className="text-xs text-red-600 mt-1">
+                  Med gradvis ramp-up från 0 och realistisk tillväxt tar det ca {monthsToBreakEven} månader.
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
-      </div>
+      )}
     </div>
   );
 };
