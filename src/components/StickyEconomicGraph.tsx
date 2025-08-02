@@ -3,12 +3,11 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const StickyEconomicGraph: React.FC = () => {
   const { revenue, operatingCost, leasingCost, netResults } = useCalculator();
   const [selectedYear, setSelectedYear] = useState<'all' | '1' | '2' | '3' | '4' | '5'>('all');
-  const [opacity, setOpacity] = useState<number>(95);
+  const [opacity, setOpacity] = useState<number>(80);
   
   const monthlyRevenue = revenue?.monthlyRevenueExVat || 0; // KORRIGERAT: Använd ExVat för korrekt break-even
   const monthlyCosts = (operatingCost?.totalCost || 0) + (leasingCost || 0);
@@ -120,22 +119,24 @@ const StickyEconomicGraph: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Årsväljare */}
+            {/* Årsväljare med knappar */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Visa:</span>
-              <Select value={selectedYear} onValueChange={(value: any) => setSelectedYear(value)}>
-                <SelectTrigger className="w-24 h-8">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Alla år</SelectItem>
-                  <SelectItem value="1">År 1</SelectItem>
-                  <SelectItem value="2">År 2</SelectItem>
-                  <SelectItem value="3">År 3</SelectItem>
-                  <SelectItem value="4">År 4</SelectItem>
-                  <SelectItem value="5">År 5</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex rounded-md border border-input bg-background">
+                {(['all', '1', '2', '3', '4', '5'] as const).map((year) => (
+                  <button
+                    key={year}
+                    onClick={() => setSelectedYear(year)}
+                    className={`px-3 py-1 text-xs font-medium transition-colors ${
+                      selectedYear === year
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    } ${year === 'all' ? 'rounded-l-md' : ''} ${year === '5' ? 'rounded-r-md' : ''}`}
+                  >
+                    {year === 'all' ? 'Alla' : `År ${year}`}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Transparens-kontroll */}
