@@ -21,7 +21,7 @@ const SlaSelector: React.FC<SlaSelectorProps> = ({
     setSlaLevel, 
     slaCosts,
     selectedMachine,
-    leasingMax60mRef
+    leasingStandardRef
   } = useCalculator();
 
 const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {

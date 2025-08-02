@@ -48,7 +48,7 @@ export interface CalculationResults {
     baseMax: number;           // Tariff-baserad max
     strategicMax: number;      // Strategisk max från maskindata
   };
-  leasingMax60mRef: number;
+  leasingStandardRef: number;     // Referensvärde för standard leasing (används för SLA-beräkningar)
   
   // Credits och drift
   creditPrice: number;
@@ -142,7 +142,7 @@ export class CalculationEngine {
       leasingCostStrategic: leasingCalcs.leasingCostStrategic,
       leasingCost: leasingCalcs.leasingCost,
       leasingRange: leasingCalcs.leasingRange,
-      leasingMax60mRef: leasingCalcs.leasingMax60mRef,
+      leasingStandardRef: leasingCalcs.leasingStandardRef,
       creditPrice,
       operatingCost,
       revenue,
@@ -227,7 +227,7 @@ export class CalculationEngine {
         leasingCostStrategic: 0,
         leasingCost: 0,
         leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0 },
-        leasingMax60mRef: 0
+        leasingStandardRef: 0
       };
     }
     
@@ -327,7 +327,7 @@ export class CalculationEngine {
       leasingCostStrategic, 
       leasingCost, 
       leasingRange, 
-      leasingMax60mRef: leasingCostBase, // Använd grundkostnad för SLA-beräkningar
+      leasingStandardRef: leasingCostBase, // Använd grundkostnad för SLA-beräkningar
       useStrategicPricing // Lägg till detta för UI-logik
     };
   }
@@ -487,7 +487,7 @@ export class CalculationEngine {
       leasingCostStrategic: 0,
       leasingCost: 0,
       leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0 },
-      leasingMax60mRef: 0,
+      leasingStandardRef: 0,
       creditPrice: 0,
       operatingCost: { costPerMonth: 0, useFlatrate: false, slaCost: 0, totalCost: 0 },
       revenue: {

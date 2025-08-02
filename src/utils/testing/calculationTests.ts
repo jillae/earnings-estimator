@@ -59,7 +59,7 @@ export async function testCalculations() {
     console.log(`📈 Strategisk kostnad (maskindata): ${Math.round(results.leasingCostStrategic).toLocaleString('sv-SE')} kr/mån`);
     console.log(`📈 Kompensationspåslag: ${Math.round(results.leasingCostStrategic - results.leasingCostBase).toLocaleString('sv-SE')} kr (${((results.leasingCostStrategic/results.leasingCostBase-1)*100).toFixed(1)}%)`);
     console.log(`📈 Leasing range: ${Math.round(results.leasingRange.min)}-${Math.round(results.leasingRange.max)} kr/mån`);
-    console.log(`📈 Leasing 60m ref: ${Math.round(results.leasingMax60mRef).toLocaleString('sv-SE')} kr/mån`);
+    console.log(`📈 Leasing standard ref: ${Math.round(results.leasingStandardRef).toLocaleString('sv-SE')} kr/mån`);
     
     // Credits
     console.log(`🎫 Kreditpris: ${results.creditPrice} kr/credit`);

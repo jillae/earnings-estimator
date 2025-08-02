@@ -20,9 +20,9 @@ export type PaymentOption = 'leasing' | 'cash';
 // Typer för SLA-nivåer
 export type SlaLevel = 'Brons' | 'Silver' | 'Guld';
 
-// SLA procentsatser (i förhållande till leasingMax_60m_ref)
-export const SLA_PERCENT_SILVER = 0.25;  // 25% av leasingMax60mRef
-export const SLA_PERCENT_GULD = 0.50;     // 50% av leasingMax60mRef
+// SLA procentsatser (i förhållande till leasingStandardRef)
+export const SLA_PERCENT_SILVER = 0.25;  // 25% av leasingStandardRef
+export const SLA_PERCENT_GULD = 0.50;     // 50% av leasingStandardRef
 
 // Flatrate konstanter
 export const FLATRATE_THRESHOLD = 4; // Antal behandlingar per dag där flatrate aktiveras

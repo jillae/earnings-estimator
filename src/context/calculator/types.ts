@@ -124,7 +124,7 @@ export interface CalculatorContextType {
     Silver: number;
     Guld: number;
   };
-  leasingMax60mRef: number;
+  leasingStandardRef: number; // Referensvärde för standard leasing (tidigare kallat leasingMax60mRef)
   
   // Nya egenskaper
   isFlatrateViable: boolean;

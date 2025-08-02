@@ -17,7 +17,7 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   // Få ut alla kärnvärden (det mesta av gamla logiken från tidigare fil)
   const base = useCalculatorValues();
   // SLA-värden
-  const slaCosts = useSlaCosts(base.selectedMachine, base.leasingMax60mRef);
+  const slaCosts = useSlaCosts(base.selectedMachine, base.leasingStandardRef);
   // Flatrate-guard (uppdaterar flatrateOption baserat på villkor)
   useFlatrateGuard({
     treatmentsPerDay: base.treatmentsPerDay,

@@ -108,7 +108,7 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
         leasingCostStrategic: 0,
         leasingCost: 0,
         leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0 },
-        leasingMax60mRef: 0,
+        leasingStandardRef: 0,
         creditPrice: 0,
         operatingCost: { costPerMonth: 0, useFlatrate: false, slaCost: 0, totalCost: 0 },
         revenue: {
@@ -152,7 +152,7 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     leasingCostStrategic: 0,
     leasingCost: 0,
     leasingRange: { min: 0, max: 0, default: 0, baseMax: 0, strategicMax: 0 },
-    leasingMax60mRef: 0,
+    leasingStandardRef: 0,
     creditPrice: 0,
     operatingCost: { costPerMonth: 0, useFlatrate: false, slaCost: 0, totalCost: 0 },
     revenue: {
@@ -196,6 +196,6 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     occupancyRevenues: safeResults.occupancyRevenues,
     flatrateThreshold: safeResults.leasingRange.flatrateThreshold || 0,
     cashPriceSEK: safeResults.cashPriceSEK,
-    leasingMax60mRef: safeResults.leasingMax60mRef
+    leasingStandardRef: safeResults.leasingStandardRef
   };
 }

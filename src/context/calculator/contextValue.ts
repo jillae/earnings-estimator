@@ -6,6 +6,6 @@ export function buildContextValue(base: any, slaCosts: any): CalculatorContextTy
     currentInfoText: base.currentInfoText,
     setCurrentInfoText: base.setCurrentInfoText,
     slaCosts,
-    leasingMax60mRef: base.leasingMax60mRef
+    leasingStandardRef: base.leasingStandardRef
   };
 }

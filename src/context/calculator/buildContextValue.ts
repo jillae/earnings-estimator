@@ -41,7 +41,7 @@ export function buildContextValue(
     currentInfoText: base.currentInfoText,
     setCurrentInfoText: base.setCurrentInfoText,
     slaCosts,
-    leasingMax60mRef: base.leasingMax60mRef,
+    leasingStandardRef: base.leasingStandardRef,
     // Lägg till nya egenskaper
     isFlatrateViable: isFlatrateViable,
     isLeasingFlatrateViable: isLeasingFlatrateViable,

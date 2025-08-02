@@ -64,7 +64,7 @@ export function useCalculatorValues() {
     revenue: calculationResults.revenue,
     occupancyRevenues: calculationResults.occupancyRevenues,
     netResults: calculationResults.netResults,
-    leasingMax60mRef: calculationResults.leasingMax60mRef,
+    leasingStandardRef: calculationResults.leasingStandardRef,
     cashPriceSEK: calculationResults.cashPriceSEK,
     
     // UI-specifika värden (behövs fortfarande)
@@ -75,8 +75,8 @@ export function useCalculatorValues() {
     useFlatrateOption: state.useFlatrateOption,
     
     // SLA-kostnader - beräknas nu internt i motorn
-    calculatedSlaCostSilver: calculationResults.leasingMax60mRef * 0.25,
-    calculatedSlaCostGuld: calculationResults.leasingMax60mRef * 0.50,
+    calculatedSlaCostSilver: calculationResults.leasingStandardRef * 0.25, // 25% av standard referensvärde
+    calculatedSlaCostGuld: calculationResults.leasingStandardRef * 0.50,   // 50% av standard referensvärde
     
     // Metadata för debugging
     isCalculating: calculationResults.isCalculating,

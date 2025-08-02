@@ -20,7 +20,7 @@ export function useOperatingCosts({
   selectedSlaLevel = 'Brons',
   selectedDriftpaket = 'Bas',
   paymentOption = 'leasing',
-  leasingMax60mRef = 0,
+  leasingStandardRef = 0,
   creditPrice = 0,
   currentSliderStep = 1
 }: {
@@ -35,7 +35,7 @@ export function useOperatingCosts({
   selectedSlaLevel?: SlaLevel;
   selectedDriftpaket?: DriftpaketType;
   paymentOption?: 'leasing' | 'cash';
-  leasingMax60mRef?: number;
+  leasingStandardRef?: number;
   creditPrice?: number;
   currentSliderStep?: SliderStep;
 }) {
@@ -72,9 +72,9 @@ export function useOperatingCosts({
     }
 
     // Beräkna SLA-kostnad för alla nivåer
-    const bronsCost = calculateSlaCost(selectedMachine, 'Brons', leasingMax60mRef);
-    const silverCost = calculateSlaCost(selectedMachine, 'Silver', leasingMax60mRef);
-    const guldCost = calculateSlaCost(selectedMachine, 'Guld', leasingMax60mRef);
+    const bronsCost = calculateSlaCost(selectedMachine, 'Brons', leasingStandardRef);
+    const silverCost = calculateSlaCost(selectedMachine, 'Silver', leasingStandardRef);
+    const guldCost = calculateSlaCost(selectedMachine, 'Guld', leasingStandardRef);
     
     setCalculatedSlaCostSilver(silverCost);
     setCalculatedSlaCostGuld(guldCost);
@@ -201,7 +201,7 @@ export function useOperatingCosts({
     selectedDriftpaket,
     paymentOption, 
     allowBelowFlatrate, 
-    leasingMax60mRef,
+    leasingStandardRef,
     machinePriceSEK,
     creditPrice,
     currentSliderStep

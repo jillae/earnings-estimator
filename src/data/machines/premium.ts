@@ -16,11 +16,11 @@ export const premiumMachines: Machine[] = [
     creditPriceMultiplier: 0.00045,
     flatrateAmount: 5996,
     usesCredits: true,
-    leasingMin: 23303,      // Strategisk minimum - högsta creditkostnad
-    leasingStandard: 25806, // Standard nivå - marknadsrelevant creditkostnad
-    leasingMax: 33863,      // Strategisk maximum - noll creditkostnad
-    creditMin: 149,         // Marknadsrelevant creditpris (standard nivå)
-    creditMax: 299,         // Högsta creditpris (minimum leasing)
+    leasingMin: 23303,      // Strategisk minimum - högsta creditkostnad (299 kr/credit)
+    leasingStandard: 25806, // Standard nivå - marknadsrelevant creditkostnad (149 kr/credit) 
+    leasingMax: 33863,      // Strategisk maximum - noll creditkostnad (0 kr/credit)
+    creditMin: 149,         // Marknadsrelevant creditpris (standard nivå - position 1.0)
+    creditMax: 299,         // Högsta creditpris (minimum leasing - position 0.0)
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 3500,

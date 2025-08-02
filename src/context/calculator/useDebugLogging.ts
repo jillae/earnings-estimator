@@ -7,14 +7,14 @@ export function useDebugLogging({
   leaseAdjustmentFactor,
   allowBelowFlatrate,
   slaCosts,
-  leasingMax60mRef
+  leasingStandardRef
 }: {
   leasingRange: { min: number; max: number; default: number; flatrateThreshold?: number };
   leasingCost: number;
   leaseAdjustmentFactor: number;
   allowBelowFlatrate?: boolean;
   slaCosts?: { Brons: number; Silver: number; Guld: number };
-  leasingMax60mRef?: number;
+  leasingStandardRef?: number;
 }) {
   useEffect(() => {
     // Logga nuvarande inställningar för lättare debugging
@@ -31,7 +31,7 @@ export function useDebugLogging({
     if (slaCosts) {
       console.log(`
         ----- SLA COSTS -----
-        Reference value (leasingMax60mRef): ${leasingMax60mRef}
+        Reference value (leasingStandardRef): ${leasingStandardRef}
         Brons: ${slaCosts.Brons}
         Silver: ${slaCosts.Silver}
         Guld: ${slaCosts.Guld}
@@ -39,5 +39,5 @@ export function useDebugLogging({
       `);
     }
 
-  }, [leasingRange, leasingCost, leaseAdjustmentFactor, allowBelowFlatrate, slaCosts, leasingMax60mRef]);
+  }, [leasingRange, leasingCost, leaseAdjustmentFactor, allowBelowFlatrate, slaCosts, leasingStandardRef]);
 }

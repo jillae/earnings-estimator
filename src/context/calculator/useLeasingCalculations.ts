@@ -32,14 +32,14 @@ export function useLeasingCalculations({
   const [leasingCost, setLeasingCost] = useState<number>(0);
   const [flatrateThreshold, setFlatrateThreshold] = useState<number>(0);
   const [cashPriceSEK, setCashPriceSEK] = useState<number>(0);
-  const [leasingMax60mRef, setLeasingMax60mRef] = useState<number>(0);
+  const [leasingStandardRef, setLeasingStandardRef] = useState<number>(0);
   
   const selectedMachine = machineData.find(machine => machine.id === selectedMachineId);
   
   // Logga i konsolen vilket id som söks och vilken maskin som hittas
   console.log(`Looking for machine with id: ${selectedMachineId}, Found: ${selectedMachine ? selectedMachine.name : 'none'}`);
   
-  // Beräkna leasingMax60mRef-referensvärdet när maskinen ändras
+  // Beräkna leasingStandardRef-referensvärdet när maskinen ändras
   useEffect(() => {
     async function calcValue() {
       if (selectedMachine?.priceEur) {
@@ -50,8 +50,8 @@ export function useLeasingCalculations({
           selectedMachine.usesCredits,
           exchangeRate
         );
-        setLeasingMax60mRef(refValue);
-        console.log(`Beräknat leasingMax60mRef för ${selectedMachine.name}: ${refValue} SEK (direkt beräkning)`);
+        setLeasingStandardRef(refValue);
+        console.log(`Beräknat leasingStandardRef för ${selectedMachine.name}: ${refValue} SEK (direkt beräkning)`);
         
         // FELSÖKNING: Extra loggning för handheld machines
         if (['gvl', 'evrl', 'xlr8'].includes(selectedMachine.id)) {
@@ -59,12 +59,12 @@ export function useLeasingCalculations({
             priceEur: ${selectedMachine.priceEur}
             usesCredits: ${selectedMachine.usesCredits}
             exchangeRate: ${exchangeRate}
-            Calculated leasingMax60mRef: ${refValue}
+            Calculated leasingStandardRef: ${refValue}
             Raw value before rounding: ${selectedMachine.priceEur * exchangeRate * 0.02095}
           `);
         }
       } else {
-        setLeasingMax60mRef(0);
+        setLeasingStandardRef(0);
       }
     }
     
@@ -190,7 +190,7 @@ export function useLeasingCalculations({
       Adjustment factor: ${leaseAdjustmentFactor}
       Range: ${leasingRange.min} - ${leasingRange.max} (default: ${leasingRange.default})
       Calculated cost: ${leasingCost}
-      LeasingMax60mRef: ${leasingMax60mRef}
+      LeasingStandardRef: ${leasingStandardRef}
     `);
   }, [
     selectedMachine,
@@ -198,7 +198,7 @@ export function useLeasingCalculations({
     selectedLeasingPeriodId,
     selectedInsuranceId,
     leaseAdjustmentFactor,
-    leasingMax60mRef,
+    leasingStandardRef,
     exchangeRate
   ]);
 
@@ -207,6 +207,6 @@ export function useLeasingCalculations({
     leasingCost,
     flatrateThreshold,
     cashPriceSEK,
-    leasingMax60mRef
+    leasingStandardRef
   };
 }

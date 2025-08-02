@@ -20,7 +20,7 @@ export const useAlternativesComparison = () => {
     leasingCost,
     operatingCost,
     slaCosts,
-    leasingMax60mRef
+    leasingStandardRef
   } = useCalculator();
 
   const alternatives = useMemo((): AlternativeOption[] => {
