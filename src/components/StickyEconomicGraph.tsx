@@ -76,13 +76,20 @@ const StickyEconomicGraph: React.FC = () => {
   const breakEvenMonth = data.find(d => d.cumulativeNet >= 0)?.month || 60;
 
   // Årliga resultat för tickets
-  const yearlyResults = [
+  const allYearlyResults = [
     { year: 1, month: 12, net: data[12]?.cumulativeNet || 0 },
     { year: 2, month: 24, net: data[24]?.cumulativeNet || 0 },
     { year: 3, month: 36, net: data[36]?.cumulativeNet || 0 },
     { year: 4, month: 48, net: data[48]?.cumulativeNet || 0 },
     { year: 5, month: 60, net: data[60]?.cumulativeNet || 0 },
   ];
+
+  // Filtrera tickets baserat på valt år
+  const yearlyResults = useMemo(() => {
+    if (selectedYear === 'all') return allYearlyResults;
+    const yearNum = parseInt(selectedYear);
+    return allYearlyResults.filter(year => year.year === yearNum);
+  }, [allYearlyResults, selectedYear]);
 
   // Filter data baserat på valt år
   const filteredData = useMemo(() => {
@@ -252,9 +259,12 @@ const StickyEconomicGraph: React.FC = () => {
             </LineChart>
           </ResponsiveContainer>
           
-          {/* Årliga summerings-tickets */}
+          {/* Årliga summerings-tickets - filtreras baserat på valt år */}
           {yearlyResults.map((year, index) => {
-            const xPosition = ((year.month / 60) * 100) - 2; // Ungefärlig position baserat på procentandel
+            // Justera position baserat på om vi visar alla år eller ett specifikt år
+            const xPosition = selectedYear === 'all' 
+              ? ((year.month / 60) * 100) - 2  // Original logik för alla år
+              : 85; // Fast position för enskilt år
             const isPositive = year.net > 0;
             
             return (
