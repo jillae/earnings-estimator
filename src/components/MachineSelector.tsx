@@ -50,7 +50,7 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
         <div className="flex justify-center">
           <div className="w-full max-w-md">
             <Select 
-              value={selectedMachineId || undefined} 
+              value={selectedMachineId || ""} 
               onValueChange={handleMachineChange}
               onOpenChange={(open) => {
                 if (open) {
@@ -59,7 +59,12 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
               }}
             >
               <SelectTrigger className="w-full h-auto py-3 min-h-[50px] text-center bg-background border-2" id="machine-select">
-                <SelectValue placeholder="Välj en maskin" />
+                <SelectValue 
+                  placeholder="Välj en maskin"
+                  className={!selectedMachineId ? "text-muted-foreground" : ""}
+                >
+                  {selectedMachineId && machines.find(m => m.id === selectedMachineId)?.name}
+                </SelectValue>
               </SelectTrigger>
               
               <SelectContent className="w-full max-h-[400px] bg-background border shadow-lg z-[9999]" sideOffset={5}>

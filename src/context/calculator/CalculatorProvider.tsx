@@ -35,7 +35,8 @@ export const CalculatorProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     currentSliderStep: base.currentSliderStep,
     treatmentsPerDay: base.treatmentsPerDay,
     useFlatrateOption: base.useFlatrateOption,
-    setCurrentInfoText: base.setCurrentInfoText
+    setCurrentInfoText: base.setCurrentInfoText,
+    setCurrentSliderStep: base.setCurrentSliderStep
   });
 
   // Bygg det färdiga context-värdet (samma struktur som förut)

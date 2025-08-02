@@ -19,7 +19,7 @@ export function useFlatrateGuard({
   setUseFlatrateOption: (option: FlatrateOption) => void;
   paymentOption: 'leasing' | 'cash';
 }) {
-  // När slider-steget ändras, säkerställ korrekt flatrate-option
+  // FIX 6: När man väljer flatrate ska slidern gå till standard (steg 2), inte steg 1
   useEffect(() => {
     // NYTT VILLKOR:
     // Bara vid leasing och step < 1 ska vi tvinga per-credit

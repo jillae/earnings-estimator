@@ -14,6 +14,7 @@ interface UseContextualInfoProps {
   treatmentsPerDay: number;
   useFlatrateOption: FlatrateOption;
   setCurrentInfoText: (infoText: InfoText | null) => void;
+  setCurrentSliderStep: (step: SliderStep) => void;
 }
 
 export function useContextualInfo({
@@ -23,8 +24,21 @@ export function useContextualInfo({
   currentSliderStep,
   treatmentsPerDay,
   useFlatrateOption,
-  setCurrentInfoText
+  setCurrentInfoText,
+  setCurrentSliderStep
 }: UseContextualInfoProps) {
+  
+  // FIX 6: När användaren väljer flatrate, sätt slider till standard (steg 2)
+  useEffect(() => {
+    if (useFlatrateOption === 'flatrate' && selectedMachine?.usesCredits && currentSliderStep !== 2) {
+      console.log('🎯 useContextualInfo: Flatrate vald, sätter slider till standard (steg 2)');
+      setCurrentSliderStep(2);
+      setCurrentInfoText({
+        title: "Slidern har justerats till Standard",
+        body: "Flatrate kräver och fungerar bäst med standardnivå."
+      });
+    }
+  }, [useFlatrateOption, selectedMachine, currentSliderStep, setCurrentSliderStep, setCurrentInfoText]);
   
   // Uppdatera info-texten när relevanta states ändras
   useEffect(() => {

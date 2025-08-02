@@ -37,14 +37,15 @@ export function useStateSelections() {
   const { calculatorMachines, isLoading } = useMachineData();
 
 
-  // Sätt första maskinen som default när data laddas
-  useEffect(() => {
-    if (!isLoading && calculatorMachines.length > 0 && !selectedMachineId) {
-      const firstMachine = calculatorMachines[0];
-      console.log(`Sätter första maskinen som standard: ${firstMachine.name} (${firstMachine.id})`);
-      setSelectedMachineId(firstMachine.id);
-    }
-  }, [calculatorMachines, isLoading, selectedMachineId]);
+  // FIX 1: Vid sidladdning ska ingen maskin vara vald
+  // Kommenterar bort auto-selection för att hålla selectedMachineId tom
+  // useEffect(() => {
+  //   if (!isLoading && calculatorMachines.length > 0 && !selectedMachineId) {
+  //     const firstMachine = calculatorMachines[0];
+  //     console.log(`Sätter första maskinen som standard: ${firstMachine.name} (${firstMachine.id})`);
+  //     setSelectedMachineId(firstMachine.id);
+  //   }
+  // }, [calculatorMachines, isLoading, selectedMachineId]);
 
   // Härled den valda maskinen från maskin-ID  
   const selectedMachine = useMemo(() => {
@@ -81,6 +82,17 @@ export function useStateSelections() {
       setTreatmentsPerDay(4); // Återställ behandlingar till standard
     }
   }, [selectedMachine]);
+
+  // FIX 8: Synkronisera SLA-nivå med driftpaket
+  useEffect(() => {
+    if (selectedDriftpaket === 'Silver') {
+      setSlaLevel('Silver');
+    } else if (selectedDriftpaket === 'Guld') {
+      setSlaLevel('Guld');
+    } else if (selectedDriftpaket === 'Bas') {
+      setSlaLevel('Brons');
+    }
+  }, [selectedDriftpaket]);
 
   // När klinikstorlek ändras, uppdatera behandlingar per dag
   useEffect(() => {

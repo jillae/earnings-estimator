@@ -30,8 +30,9 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Debug logging
-    console.log(`RollingValueDisplay [${label}]: value=${value}, displayValue=${displayValue}`);
+    // FIX 5: Credits rolodex ska visa korrekta värden, t.ex. 0 vid slider max höger
+    const actualValue = label.includes('Credits') && value === 0 ? 0 : value;
+    console.log(`RollingValueDisplay [${label}]: value=${actualValue}, displayValue=${displayValue}`);
     
     // Rensa tidigare timeout och animation
     if (timeoutRef.current) {
@@ -42,15 +43,15 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
     }
 
     // Om värdet är helt nytt eller första gången, starta animering direkt
-    if (displayValue === 0 && value > 0) {
-      console.log(`RollingValueDisplay [${label}]: Första värdet, startar animering från 0 till ${value}`);
+    if (displayValue === 0 && actualValue > 0) {
+      console.log(`RollingValueDisplay [${label}]: Första värdet, startar animering från 0 till ${actualValue}`);
       setIsAnimating(true);
       // Fortsätt till animeringslogiken istället för att sätta direkt
     }
 
     // FORCERA UPPDATERING för alla värdeförändringar
-    if (Math.abs(displayValue - value) > 0.01) {
-      console.log(`RollingValueDisplay [${label}]: Värdeförändring detekterad från ${displayValue} till ${value}, animationStyle=${animationStyle}`);
+    if (Math.abs(displayValue - actualValue) > 0.01) {
+      console.log(`RollingValueDisplay [${label}]: Värdeförändring detekterad från ${displayValue} till ${actualValue}, animationStyle=${animationStyle}`);
       
       if (isAnimating) {
         console.log(`RollingValueDisplay [${label}]: Avbryter pågående animering`);
