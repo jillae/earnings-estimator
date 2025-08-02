@@ -12,6 +12,7 @@ export interface Machine {
   creditMin?: number;
   creditMax?: number;
   leasingMin?: number;
+  leasingStandard?: number;  // Ny egenskap för strategisk prissättning
   leasingMax?: number;
   flatrateAmount?: number;
   defaultCustomerPrice?: number;

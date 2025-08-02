@@ -1,5 +1,6 @@
 import { Machine } from '@/data/machines/types';
 import { roundToHundredEndingSix } from './formatUtils';
+import { PiecewiseLinearCalculator, MachinePricingData } from './core/PiecewiseLinearCalculator';
 
 export type SliderStep = 0 | 0.5 | 1 | 1.5 | 2;
 
@@ -20,6 +21,7 @@ function roundToEndingNine(value: number): number {
 
 /**
  * Beräknar värdepar för de 5 fasta stegen på slidern för en given maskin
+ * Använder strategisk prissättningsmodell med styckvis linjär interpolering
  */
 export function calculateStepValues(
   machine: Machine | undefined,
@@ -39,18 +41,80 @@ export function calculateStepValues(
       2: { leasingCost: 0, creditPrice: 0, label: 'Max' }
     };
   }
-  
-  console.log(`calculateStepValues för ${machine.name} (${machine.id}):
-    leasingMin: ${leasingMin}
-    leasingDefault: ${leasingDefault}
-    leasingMax: ${leasingMax}
-    creditMin: ${creditMin}
-    creditMax: ${creditMax}
-    usesCredits: ${machine.usesCredits}
-  `);
 
+  console.log(`calculateStepValues för ${machine.name} (${machine.id}) - STRATEGISK MODELL:`);
+
+  // För maskiner som använder credits, använd strategisk prissättningsmodell
+  if (machine.usesCredits && machine.leasingMin && machine.leasingStandard && machine.leasingMax) {
+    const pricingData: MachinePricingData = {
+      leasingMin: machine.leasingMin,
+      leasingStandard: machine.leasingStandard,
+      leasingMax: machine.leasingMax,
+      creditMin: machine.creditMin || 149,
+      creditMax: machine.creditMax || 299
+    };
+
+    const calculator = new PiecewiseLinearCalculator(pricingData);
+    
+    // Validera prissättningsmodellen
+    const validation = calculator.validate();
+    if (!validation.isValid) {
+      console.warn(`Valideringsfel för ${machine.name}:`, validation.errors);
+    }
+
+    // Beräkna alla steg med styckvis linjär interpolering
+    const step0 = calculator.interpolate(0);    // Min
+    const step05 = calculator.interpolate(0.5); // Låg
+    const step1 = calculator.interpolate(1);    // Standard
+    const step15 = calculator.interpolate(1.5); // Hög
+    const step2 = calculator.interpolate(2);    // Max
+
+    // Avrunda leasingkostnader till hundra slutande på 6
+    const roundedStep0 = { 
+      ...step0, 
+      leasingCost: roundToHundredEndingSix(step0.leasingCost),
+      creditPrice: roundToEndingNine(step0.creditPrice)
+    };
+    const roundedStep05 = { 
+      ...step05, 
+      leasingCost: roundToHundredEndingSix(step05.leasingCost),
+      creditPrice: roundToEndingNine(step05.creditPrice)
+    };
+    const roundedStep1 = { 
+      ...step1, 
+      leasingCost: roundToHundredEndingSix(step1.leasingCost),
+      creditPrice: roundToEndingNine(step1.creditPrice)
+    };
+    const roundedStep15 = { 
+      ...step15, 
+      leasingCost: roundToHundredEndingSix(step15.leasingCost),
+      creditPrice: roundToEndingNine(step15.creditPrice)
+    };
+    const roundedStep2 = { 
+      ...step2, 
+      leasingCost: roundToHundredEndingSix(step2.leasingCost)
+    };
+
+    console.log(`STRATEGISKA stegvärden för ${machine.name}:
+      Min (0): ${roundedStep0.leasingCost} kr / ${roundedStep0.creditPrice} kr per credit
+      Låg (0.5): ${roundedStep05.leasingCost} kr / ${roundedStep05.creditPrice} kr per credit
+      Standard (1): ${roundedStep1.leasingCost} kr / ${roundedStep1.creditPrice} kr per credit
+      Hög (1.5): ${roundedStep15.leasingCost} kr / ${roundedStep15.creditPrice} kr per credit
+      Max (2): ${roundedStep2.leasingCost} kr / 0 kr per credit`);
+
+    return {
+      0: { leasingCost: roundedStep0.leasingCost, creditPrice: roundedStep0.creditPrice, label: 'Min' },
+      0.5: { leasingCost: roundedStep05.leasingCost, creditPrice: roundedStep05.creditPrice, label: 'Låg' },
+      1: { leasingCost: roundedStep1.leasingCost, creditPrice: roundedStep1.creditPrice, label: 'Standard' },
+      1.5: { leasingCost: roundedStep15.leasingCost, creditPrice: roundedStep15.creditPrice, label: 'Hög' },
+      2: { leasingCost: roundedStep2.leasingCost, creditPrice: 0, label: 'Max' }
+    };
+  }
+
+  // Fallback för gamla maskiner utan strategisk prissättning
+  console.log(`Använder fallback-logik för ${machine.name} (saknar strategisk prissättning)`);
+  
   // Hämta kreditvärden från maskinen eller använd standardvärden
-  // VIKTIGT: Använd exakt de värden som definierats i maskindatat
   let machineMinCredit = machine.creditMin || creditMin;
   let machineMaxCredit = machine.creditMax || creditMax;
 
@@ -68,14 +132,10 @@ export function calculateStepValues(
   const leasing75Percent = safeDefault + (safeMax - safeDefault) * 0.5;
 
   // Beräkna mellanliggande kreditvärden med korrekt interpolation
-  // VIKTIGT: Avrunda alla krediter till att sluta på 9
   let credit25Percent = machineMaxCredit - (machineMaxCredit - machineMinCredit) * 0.5;
   credit25Percent = roundToEndingNine(credit25Percent);
   
-  // Beräkna credit75Percent som halvvägs mellan min och 0
   let credit75Percent = machineMinCredit * 0.5;
-  
-  // Avrunda credit75Percent ("Hög" nivå) så att det slutar på 9
   credit75Percent = roundToEndingNine(credit75Percent);
 
   // Avrunda leasingvärden till närmaste hundra slutande på 6
@@ -84,22 +144,6 @@ export function calculateStepValues(
   const roundedStandard = roundToHundredEndingSix(safeDefault);
   const roundedHigh = roundToHundredEndingSix(leasing75Percent);
   const roundedMax = roundToHundredEndingSix(safeMax);
-
-  // VIKTIGT: Lägg till en tydlig logg för att visa exakt vilka kreditsvärdena blir för varje steg
-  console.log(`Beräknade stegvärden för ${machine.name} (${machine.id}):
-    Min (0): ${roundedMin} kr / ${machineMaxCredit} kr per credit (avrundat till att sluta på 9)
-    Låg (0.5): ${roundedLow} kr / ${credit25Percent} kr per credit (avrundat till att sluta på 9)
-    Standard (1): ${roundedStandard} kr / ${machineMinCredit} kr per credit (avrundat till att sluta på 9)
-    Hög (1.5): ${roundedHigh} kr / ${credit75Percent} kr per credit (avrundat till att sluta på 9)
-    Max (2): ${roundedMax} kr / 0 kr per credit
-    
-    Detaljer:
-    - leasingMin from input: ${leasingMin}
-    - leasingDefault from input: ${leasingDefault}
-    - leasingMax from input: ${leasingMax}
-    - creditMin for machine (original): ${machine.creditMin || creditMin}, avrundat: ${machineMinCredit}
-    - creditMax for machine (original): ${machine.creditMax || creditMax}, avrundat: ${machineMaxCredit}
-  `);
 
   return {
     0: { leasingCost: roundedMin, creditPrice: machineMaxCredit, label: 'Min' },

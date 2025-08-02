@@ -16,10 +16,11 @@ export const premiumMachines: Machine[] = [
     creditPriceMultiplier: 0.00045,
     flatrateAmount: 5996,
     usesCredits: true,
-    leasingMin: 20666,
-    leasingMax: 33863, // Strategisk kostnad - strategimodell-pris
-    creditMin: 149,     // Kreditpris vid gamla leasingMax (mitten)
-    creditMax: 299,     // Kreditpris vid leasingMin
+    leasingMin: 23303,      // Strategisk minimum - högsta creditkostnad
+    leasingStandard: 25806, // Standard nivå - marknadsrelevant creditkostnad
+    leasingMax: 33863,      // Strategisk maximum - noll creditkostnad
+    creditMin: 149,         // Marknadsrelevant creditpris (standard nivå)
+    creditMax: 299,         // Högsta creditpris (minimum leasing)
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 3500,
@@ -39,10 +40,11 @@ export const premiumMachines: Machine[] = [
     creditPriceMultiplier: 0.00038,
     flatrateAmount: 4356,
     usesCredits: true,
-    leasingMin: 9605,
-    leasingMax: 17043, // Strategisk kostnad - strategimodell-pris
-    creditMin: 99,      // Kreditpris vid gamla leasingMax (mitten)
-    creditMax: 199,     // Kreditpris vid leasingMin
+    leasingMin: 10736,      // Strategisk minimum (46% av Emerald)
+    leasingStandard: 11892, // Standard nivå (46% av Emerald)
+    leasingMax: 15600,      // Strategisk maximum (46% av Emerald)
+    creditMin: 149,         // Samma marknadsrelevanta creditpris som Emerald
+    creditMax: 199,         // Lägre än Emerald pga lägre maskinpris
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1800,
