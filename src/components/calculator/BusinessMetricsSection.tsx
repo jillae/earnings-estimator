@@ -1,8 +1,9 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, AreaChart, Area, CartesianGrid, Tooltip } from 'recharts';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
+import { generateRealisticGrowthData } from '@/utils/realisticDataGeneration';
 import { TrendingUp, Target, DollarSign } from 'lucide-react';
 
 const BusinessMetricsSection: React.FC = () => {

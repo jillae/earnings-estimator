@@ -2,6 +2,7 @@ import React from 'react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
+import { generateRealisticGrowthData } from '@/utils/realisticDataGeneration';
 
 const RealTimeProfitGraph: React.FC = () => {
   const { netResults, leasingCost, operatingCost } = useCalculator();
@@ -9,11 +10,13 @@ const RealTimeProfitGraph: React.FC = () => {
   const monthlyNet = netResults?.netPerMonthExVat || 0;
   const isProfitable = monthlyNet > 0;
   
-  // Skapa enkel data för grafen - 12 månader med konstant resultat
-  const data = Array.from({ length: 12 }, (_, i) => ({
-    month: i + 1,
-    profit: monthlyNet,
-    breakeven: 0
+  // Skapa realistisk data med fluktuationer
+  const realisticData = generateRealisticGrowthData(monthlyNet, 2, 12, 0.12);
+  const data = realisticData.map((point) => ({
+    month: point.month,
+    profit: point.value,
+    breakeven: 0,
+    confidence: point.confidence
   }));
 
   return (

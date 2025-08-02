@@ -85,12 +85,12 @@ const CalculatorLayout: React.FC = () => {
                       <h4 className="font-semibold text-slate-900 mb-2">Bankrapport</h4>
                       <p className="text-sm text-slate-600 mb-4">Professionell rapport för finansiering</p>
                     </div>
-                    <Button 
-                      onClick={() => setShowAnalysisModal(true)}
-                      className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                    >
-                      Generera rapport
-                    </Button>
+                     <Button 
+                       onClick={() => setShowAnalysisModal(true)}
+                       className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                     >
+                       Öppna avancerad analys
+                     </Button>
                   </div>
                 </div>
                 
