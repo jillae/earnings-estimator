@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Check, Phone, Headphones, Crown } from 'lucide-react';
+import LeasingAlternativesModal from '../LeasingAlternativesModal';
 
 interface SlaSelectorProps {
   hoveredInput?: 'treatments' | 'price' | 'workdays' | 'leasing' | 'payment' | 'sla' | 'credits' | 'clinic' | null;
@@ -294,6 +295,12 @@ const handleSlaChange = (value: 'Brons' | 'Silver' | 'Guld') => {
         </div>
       </div>
       
+      {/* Leasingalternativ modal */}
+      <div className="mt-6">
+        <LeasingAlternativesModal />
+      </div>
+
+      {/* Flatrate info om det är valt */}
       {selectedMachine?.usesCredits && (selectedSlaLevel === 'Silver' || selectedSlaLevel === 'Guld') && (
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-700">

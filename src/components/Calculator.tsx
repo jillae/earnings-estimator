@@ -4,11 +4,12 @@ import CalculatorLayout from './calculator/CalculatorLayout';
 import { CalculatorProvider } from '@/context/CalculatorContext';
 import MachineGalleryContainer from './MachineGalleryContainer';
 import ExportButton from './ExportButton';
+import StickyEconomicGraph from './StickyEconomicGraph';
 
 const Calculator: React.FC = () => {
   return (
     <CalculatorProvider>
-      <div className="container max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 pb-40">
         {/* Maskinval */}
         <div className="glass-card animate-slide-in mb-8">
           <MachineGalleryContainer />
@@ -17,6 +18,9 @@ const Calculator: React.FC = () => {
         {/* Gömd ExportButton som kan öppnas via event */}
         <ExportButton />
       </div>
+      
+      {/* Sticky kumulativ graf */}
+      <StickyEconomicGraph />
     </CalculatorProvider>
   );
 };
