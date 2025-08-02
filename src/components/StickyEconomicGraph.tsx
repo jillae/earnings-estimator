@@ -6,7 +6,7 @@ import { formatCurrency } from '@/utils/formatUtils';
 const StickyEconomicGraph: React.FC = () => {
   const { revenue, operatingCost, leasingCost, netResults } = useCalculator();
   
-  const monthlyRevenue = revenue?.monthlyRevenueExVat || 0;
+  const monthlyRevenue = revenue?.monthlyRevenueIncVat || 0; // Använd samma som tabellen (inkl moms)
   const monthlyCosts = (operatingCost?.totalCost || 0) + (leasingCost || 0);
   const monthlyNet = netResults?.netPerMonthExVat || 0;
 
