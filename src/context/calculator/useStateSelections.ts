@@ -122,11 +122,12 @@ export function useStateSelections() {
     }
   }, [currentSliderStep, selectedLeasingModel]);
 
-  // Auto-switch tillbaka till hybridmodell vid låga slider-värden (om inte användaren manuellt valt strategimodell)
+  // Ta bort automatisk switch tillbaka - låt användaren välja manuellt
+  // Auto-switch tillbaka till hybridmodell endast vid extremt låga slider-värden
   useEffect(() => {
-    if (currentSliderStep <= 2 && selectedLeasingModel === 'strategimodell') {
-      // Endast växla tillbaka om det inte var ett manuellt val
-      console.log('Går tillbaka till hybridmodell vid låga slider-värden');
+    if (currentSliderStep === 0 && selectedLeasingModel === 'strategimodell') {
+      // Endast växla tillbaka på position 0 (minimum)
+      console.log('Går tillbaka till hybridmodell endast vid minsta slider-värdet');
       setSelectedLeasingModel('hybridmodell');
     }
   }, [currentSliderStep, selectedLeasingModel]);
