@@ -12,35 +12,45 @@ const StickyEconomicGraph: React.FC = () => {
   const monthlyNet = netResults?.netPerMonthExVat || 0;
 
   // Skapa kumulativ data över 5 år med gradvis ökning från 0
-  const data = Array.from({ length: 61 }, (_, i) => {
+  const data = [];
+  let cumulativeRevenue = 0;
+  let cumulativeCosts = 0;
+  let cumulativeNet = 0;
+
+  for (let i = 0; i <= 60; i++) {
     if (i === 0) {
-      return {
+      data.push({
         month: 0,
         cumulativeRevenue: 0,
         cumulativeCosts: 0,
-        cumulativeNet: 0
-      };
+        cumulativeNet: 0,
+        monthlyRevenue: 0,
+        monthlyCosts: 0,
+        monthlyNet: 0
+      });
+    } else {
+      // Gradvis ökning från månad 1 - realistisk uppbyggnad
+      const rampUpFactor = Math.min(1, (i - 1) / 6); // 6 månaders uppbyggnad
+      const currentRevenue = monthlyRevenue * rampUpFactor;
+      const currentCosts = monthlyCosts; // Kostnader är konstanta från start
+      const currentNet = currentRevenue - currentCosts;
+
+      // Uppdatera kumulativa värden
+      cumulativeRevenue += currentRevenue;
+      cumulativeCosts += currentCosts;
+      cumulativeNet += currentNet;
+      
+      data.push({
+        month: i,
+        cumulativeRevenue,
+        cumulativeCosts,
+        cumulativeNet,
+        monthlyRevenue: currentRevenue,
+        monthlyCosts: currentCosts,
+        monthlyNet: currentNet
+      });
     }
-
-    // Gradvis ökning från månad 1 - realistisk uppbyggnad
-    const rampUpFactor = Math.min(1, (i - 1) / 6); // 6 månaders uppbyggnad
-    const currentRevenue = monthlyRevenue * rampUpFactor;
-    const currentCosts = monthlyCosts; // Kostnader är konstanta från start
-    const currentNet = currentRevenue - currentCosts;
-
-    // Beräkna kumulativa värden
-    const prevData = i > 0 ? data[i - 1] : { cumulativeRevenue: 0, cumulativeCosts: 0, cumulativeNet: 0 };
-    
-    return {
-      month: i,
-      cumulativeRevenue: prevData.cumulativeRevenue + currentRevenue,
-      cumulativeCosts: prevData.cumulativeCosts + currentCosts,
-      cumulativeNet: prevData.cumulativeNet + currentNet,
-      monthlyRevenue: currentRevenue,
-      monthlyCosts: currentCosts,
-      monthlyNet: currentNet
-    };
-  });
+  }
 
   const finalNet = data[data.length - 1]?.cumulativeNet || 0;
   const isPositive = finalNet > 0;
