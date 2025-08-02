@@ -5,9 +5,7 @@ import { formatCurrency } from '@/utils/formatUtils';
 import { generateRealisticGrowthData } from '@/utils/realisticDataGeneration';
 const RealTimeProfitGraph: React.FC = () => {
   const {
-    netResults,
-    leasingCost,
-    operatingCost
+    netResults
   } = useCalculator();
   const monthlyNet = netResults?.netPerMonthExVat || 0;
   const isProfitable = monthlyNet > 0;

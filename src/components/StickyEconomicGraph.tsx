@@ -11,10 +11,13 @@ const StickyEconomicGraph: React.FC = () => {
   const [opacity, setOpacity] = useState<number>(80);
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
   
-  // ANVÄND SAMMA VÄRDEN SOM TABELLEN - inkl VAT för intäkt för konsistens
-  const monthlyRevenue = revenue?.monthlyRevenueIncVat || 0; // SAMMA som tabellen
-  const monthlyCosts = (operatingCost?.totalCost || 0) + (leasingCost || 0);
-  const monthlyNet = netResults?.netPerMonthExVat || 0; // Netto är alltid ex VAT
+  // ANVÄND EXAKT SAMMA VÄRDEN SOM TABELLEN
+  const monthlyRevenue = revenue?.monthlyRevenueIncVat || 0; // Bruttointäkt inkl VAT (visas i tabell)
+  const monthlyNet = netResults?.netPerMonthExVat || 0; // Netto ex VAT (samma som tabell)
+  
+  // Beräkna kostnader bakvänt från netto och intäkt för att säkerställa konsistens
+  const monthlyRevenueExVat = monthlyRevenue / 1.25; // Konvertera till ex VAT
+  const monthlyCosts = monthlyRevenueExVat - monthlyNet; // Bakvänd beräkning för exakt samma resultat
 
   // DEBUG: Logga alla värden för jämförelse med tabell
   console.log('🔍 StickyEconomicGraph DEBUG VALUES (SAMMA SOM TABELL):');
@@ -303,7 +306,7 @@ const StickyEconomicGraph: React.FC = () => {
                 <div className="text-center">
                   <div className="text-muted-foreground">År {year.year}</div>
                   <div className={`font-bold ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
-                    {formatCurrency(year.net)}
+                    {formatCurrency(Math.round(year.net))}
                   </div>
                 </div>
               </div>
