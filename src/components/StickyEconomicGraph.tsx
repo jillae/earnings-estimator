@@ -3,11 +3,13 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useCalculator } from '@/context/CalculatorContext';
 import { formatCurrency } from '@/utils/formatUtils';
 import { Button } from '@/components/ui/button';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
 const StickyEconomicGraph: React.FC = () => {
   const { revenue, operatingCost, leasingCost, netResults } = useCalculator();
   const [selectedYear, setSelectedYear] = useState<'all' | '1' | '2' | '3' | '4' | '5'>('all');
   const [opacity, setOpacity] = useState<number>(80);
+  const [isExpanded, setIsExpanded] = useState<boolean>(true);
   
   const monthlyRevenue = revenue?.monthlyRevenueExVat || 0; // KORRIGERAT: Använd ExVat för korrekt break-even
   const monthlyCosts = (operatingCost?.totalCost || 0) + (leasingCost || 0);
@@ -100,7 +102,29 @@ const StickyEconomicGraph: React.FC = () => {
   }, [data, selectedYear]);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 border-t shadow-lg z-40" style={{ backgroundColor: `rgba(255, 255, 255, ${opacity / 100})` }}>
+    <div className={`fixed bottom-0 left-0 right-0 border-t shadow-lg z-40 transition-all duration-300 ${
+      isExpanded ? 'transform translate-y-0' : 'transform translate-y-full'
+    }`} style={{ backgroundColor: `rgba(255, 255, 255, ${opacity / 100})` }}>
+      
+      {/* Toggle knapp */}
+      <Button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="absolute -top-10 left-1/2 transform -translate-x-1/2 rounded-t-md rounded-b-none px-3 py-2 h-10 bg-background border border-b-0 shadow-md hover:bg-muted"
+        variant="outline"
+      >
+        {isExpanded ? (
+          <>
+            <ChevronDown className="h-4 w-4 mr-1" />
+            <span className="text-xs">Dölj Graf</span>
+          </>
+        ) : (
+          <>
+            <ChevronUp className="h-4 w-4 mr-1" />
+            <span className="text-xs">Visa Graf</span>
+          </>
+        )}
+      </Button>
+
       <div className="container max-w-7xl mx-auto p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-4 text-sm">
