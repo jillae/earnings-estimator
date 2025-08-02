@@ -19,8 +19,11 @@ export const treatmentMachines: Machine[] = [
     leasingMin: 8784,       // Strategisk minimum (38% av Emerald)
     leasingStandard: 9806,  // Standard nivå (38% av Emerald)
     leasingMax: 12886,      // Strategisk maximum (38% av Emerald)
-    creditMin: 149,         // MITTPUNKT för slider - Standard nivå
-    creditMax: 159,         // VÄNSTER ände av slider - Lägre än Emerald pga lägre maskinpris
+    creditMax: 159,         // Position 0 - Högsta creditpris
+    creditMid1: 119,        // Position 1 - Mellan
+    creditMid2: 79,         // Position 2 - Standard (mitten)
+    creditMid3: 39,         // Position 3 - Mellan
+    // Position 4 är alltid 0
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 900,
@@ -43,8 +46,11 @@ export const treatmentMachines: Machine[] = [
     leasingMin: 10426,      // Strategisk minimum (45% av Emerald)
     leasingStandard: 11613, // Standard nivå (45% av Emerald)
     leasingMax: 15238,      // Strategisk maximum (45% av Emerald)
-    creditMin: 149,         // MITTPUNKT för slider - Standard nivå
-    creditMax: 199,         // VÄNSTER ände av slider - Lägre än Emerald pga lägre maskinpris
+    creditMax: 199,         // Position 0 - Högsta creditpris
+    creditMid1: 149,        // Position 1 - Mellan
+    creditMid2: 99,         // Position 2 - Standard (mitten)
+    creditMid3: 49,         // Position 3 - Mellan
+    // Position 4 är alltid 0
     creditsPerTreatment: 1,
     defaultLeasingPeriod: "60",
     defaultCustomerPrice: 1200,

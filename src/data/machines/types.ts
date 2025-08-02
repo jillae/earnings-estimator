@@ -9,10 +9,14 @@ export interface Machine {
   shortName?: string;
   modelCode?: string;
   usesCredits: boolean;
-  creditMin?: number;
-  creditMax?: number;
+  creditMin?: number;     // Bakåtkompatibilitet
+  creditMax?: number;     // Position 0 - Högsta creditpris
+  creditMid1?: number;    // Position 1 - Mellan
+  creditMid2?: number;    // Position 2 - Standard (mitten)
+  creditMid3?: number;    // Position 3 - Mellan
+  // Position 4 är alltid 0
   leasingMin?: number;
-  leasingStandard?: number;  // Ny egenskap för strategisk prissättning
+  leasingStandard?: number;  // Standard nivå - nya strategiska modellen
   leasingMax?: number;
   flatrateAmount?: number;
   defaultCustomerPrice?: number;

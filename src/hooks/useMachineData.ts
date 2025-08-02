@@ -43,8 +43,11 @@ export interface CalculatorMachine {
   shortName?: string;
   modelCode?: string;
   usesCredits: boolean;
-  creditMin?: number;
-  creditMax?: number;
+  creditMin?: number;     // Bakåtkompatibilitet
+  creditMax?: number;     // Position 0
+  creditMid1?: number;    // Position 1
+  creditMid2?: number;    // Position 2
+  creditMid3?: number;    // Position 3
   leasingMin?: number;
   leasingStandard?: number;  // Standard nivå - nya strategiska modellen
   leasingMax?: number;
@@ -116,7 +119,10 @@ export const useMachineData = () => {
       priceEur: dbMachine.price_eur,
       usesCredits: dbMachine.uses_credits,
       creditMin: dbMachine.credit_min,
-      creditMax: dbMachine.credit_max,
+      creditMax: dbMachine.credit_max || strategicData?.creditMax,
+      creditMid1: strategicData?.creditMid1,  // Lägg till från statisk data
+      creditMid2: strategicData?.creditMid2,  // Lägg till från statisk data  
+      creditMid3: strategicData?.creditMid3,  // Lägg till från statisk data
       leasingMin: dbMachine.leasing_min || strategicData?.leasingMin,
       leasingStandard: dbMachine.leasing_standard || strategicData?.leasingStandard, // Använd statisk data som fallback
       leasingMax: dbMachine.leasing_max || strategicData?.leasingMax,

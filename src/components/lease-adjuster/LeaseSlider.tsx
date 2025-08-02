@@ -60,13 +60,13 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
     switch (step) {
       case 0:
         return <Target size={iconSize} className={`${activeClass} fill-none`} />; // Målsymbol - högsta creditkostnad
-      case 0.5:
-        return <MoreHorizontal size={iconSize} className={activeClass} />; // Partiell kompensation
       case 1:
-        return <Activity size={iconSize} className={activeClass} />; // Balans/Standard
-      case 1.5:
-        return <Shield size={iconSize} className={activeClass} />; // Mer säkerhet/kompensation
+        return <MoreHorizontal size={iconSize} className={activeClass} />; // Låg nivå
       case 2:
+        return <Activity size={iconSize} className={activeClass} />; // Balans/Standard
+      case 3:
+        return <Shield size={iconSize} className={activeClass} />; // Hög nivå
+      case 4:
         return <Zap size={iconSize} className={`${activeClass} fill-current`} />; // Full optimering - lägsta creditkostnad
       default:
         return <Activity size={iconSize} className={activeClass} />;
@@ -98,8 +98,8 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
           <Slider
             value={[currentStep]}
             min={0}
-            max={2}
-            step={0.5}
+            max={4}
+            step={1}
             onValueChange={handleSliderChange}
             className="mt-6 slider-refined touch-manipulation"
             style={{
@@ -126,30 +126,30 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
             </div>
             <div 
               className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => handleStepClick(0.5)}
-            >
-              {getStepIcon(0.5, currentStep === 0.5)}
-              <span className="text-xs text-slate-500 text-center leading-tight">Flexibilitet</span>
-            </div>
-            <div 
-              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => handleStepClick(1)}
             >
               {getStepIcon(1, currentStep === 1)}
-              <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Standard</span>
-            </div>
-            <div 
-              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => handleStepClick(1.5)}
-            >
-              {getStepIcon(1.5, currentStep === 1.5)}
-              <span className="text-xs text-slate-500 text-center leading-tight">Trygghet</span>
+              <span className="text-xs text-slate-500 text-center leading-tight">Flexibilitet</span>
             </div>
             <div 
               className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => handleStepClick(2)}
             >
               {getStepIcon(2, currentStep === 2)}
+              <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Standard</span>
+            </div>
+            <div 
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => handleStepClick(3)}
+            >
+              {getStepIcon(3, currentStep === 3)}
+              <span className="text-xs text-slate-500 text-center leading-tight">Trygghet</span>
+            </div>
+            <div 
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => handleStepClick(4)}
+            >
+              {getStepIcon(4, currentStep === 4)}
               <span className="text-xs text-slate-500 text-center leading-tight">
                 Låg<br/>driftkostnad
               </span>
