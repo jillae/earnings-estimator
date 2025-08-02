@@ -10,6 +10,15 @@ const StickyEconomicGraph: React.FC = () => {
   const monthlyCosts = (operatingCost?.totalCost || 0) + (leasingCost || 0);
   const monthlyNet = netResults?.netPerMonthExVat || 0;
 
+  // DEBUG: Logga alla värden för break-even debugging
+  console.log('🔍 StickyEconomicGraph DEBUG VALUES:');
+  console.log('  monthlyRevenue (ex moms):', monthlyRevenue);
+  console.log('  leasingCost:', leasingCost);
+  console.log('  operatingCost.totalCost:', operatingCost?.totalCost);
+  console.log('  monthlyCosts (beräknad):', monthlyCosts);
+  console.log('  monthlyNet (från context):', monthlyNet);
+  console.log('  monthlyNet (manuell beräkning):', monthlyRevenue - monthlyCosts);
+
   // Använd useMemo för att memoize data-beräkningen
   const data = useMemo(() => {
     const result = [];
