@@ -48,19 +48,35 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
     return productUrls[machineId];
   };
   
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(`MachineThumbnail: Klickade på maskin med ID: ${machine.id}`);
+    try {
+      onClick();
+    } catch (error) {
+      console.error('Fel vid maskinval:', error);
+    }
+  };
+
   return (
     <div 
       className={cn(
-        "flex flex-col items-center p-2 rounded-lg transition-all cursor-pointer border",
+        "flex flex-col items-center p-2 rounded-lg transition-all cursor-pointer border select-none",
         isSelected ? "border-2 border-primary bg-slate-50 shadow-md" : "border-slate-200 hover:bg-slate-100"
       )}
-      onClick={() => {
-        console.log(`Klickade på maskin med ID: ${machine.id}`);
-        onClick();
-      }}
+      onClick={handleClick}
+      onMouseDown={(e) => e.preventDefault()}
       data-machine-id={machine.id}
       role="button"
+      tabIndex={0}
       aria-pressed={isSelected}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick(e as any);
+        }
+      }}
     >
       <div className="relative w-full h-24 mb-2 rounded overflow-hidden bg-slate-100 flex items-center justify-center">
         {imageError ? (

@@ -53,16 +53,11 @@ const MachineGalleryContainer: React.FC = () => {
 
   const handleMachineSelection = (machineId: string) => {
     console.log(`MachineGalleryContainer: Användaren valde maskin: ${machineId}`);
-    // Uppdatera den globala staten direkt, även om samma maskin väljs igen
-    if (machineId !== selectedMachineId) {
+    try {
+      // Uppdatera den globala staten direkt
       setSelectedMachineId(machineId);
-    } else {
-      // Forcera en uppdatering även om samma maskin väljs igen
-      // Detta hjälper till att synkronisera UI när samma val görs
-      const forceUpdate = setTimeout(() => {
-        setSelectedMachineId(machineId);
-      }, 0);
-      return () => clearTimeout(forceUpdate);
+    } catch (error) {
+      console.error('Fel vid uppdatering av maskinval:', error);
     }
   };
 
