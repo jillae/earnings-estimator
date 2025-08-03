@@ -14,10 +14,6 @@ const MachineGalleryContainer: React.FC = () => {
   // Hämta maskindata från databas istället för statisk data
   const { calculatorMachines, isLoading, error } = useMachineData();
   
-  console.log('🔥 MachineGalleryContainer: calculatorMachines:', calculatorMachines);
-  console.log('🔥 MachineGalleryContainer: isLoading:', isLoading);
-  console.log('🔥 MachineGalleryContainer: error:', error);
-  
   // Filtrera bort eventuell "select-machine" (endast visa alla maskiner)
   const filteredMachines = calculatorMachines.filter(machine => 
     machine.id !== "select-machine"
@@ -53,16 +49,7 @@ const MachineGalleryContainer: React.FC = () => {
   }, [selectedMachineId, filteredMachines]);
 
   const handleMachineSelection = (machineId: string) => {
-    console.log('🔥 MachineGalleryContainer: handleMachineSelection anropad med:', machineId);
-    console.log('🔥 MachineGalleryContainer: Nuvarande selectedMachineId:', selectedMachineId);
-    console.log('🔥 MachineGalleryContainer: setSelectedMachineId funktion:', typeof setSelectedMachineId);
-    
-    try {
-      setSelectedMachineId(machineId);
-      console.log('🔥 MachineGalleryContainer: setSelectedMachineId anropad framgångsrikt');
-    } catch (error) {
-      console.error('🔥 MachineGalleryContainer: FEL i setSelectedMachineId:', error);
-    }
+    setSelectedMachineId(machineId);
   };
 
   // Visa laddningsindikator medan data hämtas

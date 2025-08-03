@@ -51,15 +51,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('🔥 MachineThumbnail: handleClick anropad för maskin:', machine.name);
-    console.log('🔥 MachineThumbnail: onClick funktion:', typeof onClick);
-    
-    try {
-      onClick();
-      console.log('🔥 MachineThumbnail: onClick anropad framgångsrikt');
-    } catch (error) {
-      console.error('🔥 MachineThumbnail: FEL i onClick:', error);
-    }
+    onClick();
   };
 
   return (
@@ -92,32 +84,16 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
           <img 
             src={machine.imageUrl || getPlaceholderImageForMachine(machine.id)} 
             alt={machine.name}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain pointer-events-none"
             loading="lazy"
             onError={() => setImageError(true)}
           />
         )}
       </div>
-      <div className="text-center w-full">
+      <div className="text-center w-full pointer-events-none">
         <h3 className="font-medium text-sm truncate">{machine.name}</h3>
         {machine.modelCode && (
           <p className="text-xs text-slate-500">({machine.modelCode})</p>
-        )}
-        {/* Debug produktURL */ (console.log('🔥 getProductUrl för', machine.id, ':', getProductUrl(machine.id)), null)}
-        {getProductUrl(machine.id) && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-2 h-7 text-xs"
-            onClick={(e) => {
-              console.log('🔥 MachineThumbnail: "Läs mer"-knapp klickad');
-              e.stopPropagation();
-              window.open(getProductUrl(machine.id), '_blank');
-            }}
-          >
-            <ExternalLink className="h-3 w-3 mr-1" />
-            Läs mer
-          </Button>
         )}
       </div>
     </div>

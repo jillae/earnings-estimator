@@ -8,14 +8,6 @@ import { useMachineData } from '@/hooks/useMachineData';
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [selectedMachineId, setSelectedMachineId] = useState<string>('');
-  
-  // Debug: Wrappe setSelectedMachineId för att logga alla ändringar
-  const wrappedSetSelectedMachineId = (newId: string) => {
-    console.log('🔥 useStateSelections: setSelectedMachineId anropad med:', newId);
-    console.log('🔥 useStateSelections: Nuvarande selectedMachineId:', selectedMachineId);
-    setSelectedMachineId(newId);
-    console.log('🔥 useStateSelections: setSelectedMachineId slutförd');
-  };
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60'); // Default till 60 månader
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
@@ -117,7 +109,7 @@ export function useStateSelections() {
     clinicSize,
     setClinicSize,
     selectedMachineId,
-    setSelectedMachineId: wrappedSetSelectedMachineId,
+    setSelectedMachineId,
     selectedMachine,
     paymentOption,
     setPaymentOption,

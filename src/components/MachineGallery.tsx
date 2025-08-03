@@ -23,19 +23,9 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
   onChange
 }) => {
   const handleMachineClick = (machineId: string) => {
-    console.log('🔥 MachineGallery: handleMachineClick anropad med:', machineId);
-    console.log('🔥 MachineGallery: onChange funktion:', typeof onChange);
-    
-    try {
-      onChange(machineId);
-      console.log('🔥 MachineGallery: onChange anropad framgångsrikt');
-    } catch (error) {
-      console.error('🔥 MachineGallery: FEL i onChange:', error);
-    }
+    onChange(machineId);
   };
 
-  // Debug: Logga maskindata
-  console.log('🔥 MachineGallery: Renderar med maskiner:', machines.length);
   
   return (
     <div className="w-full py-4">
