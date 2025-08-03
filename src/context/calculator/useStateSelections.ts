@@ -44,12 +44,6 @@ export function useStateSelections() {
 
   // Härled den valda maskinen från maskin-ID  
   const selectedMachine = useMemo(() => {
-    console.log('SELECTED MACHINE DEBUG:', {
-      selectedMachineId,
-      calculatorMachinesLength: calculatorMachines.length,
-      machineFound: calculatorMachines.find(machine => machine.id === selectedMachineId)
-    });
-    
     if (!selectedMachineId || calculatorMachines.length === 0) return null; // Ingen maskin vald eller data inte laddad
     const machine = calculatorMachines.find(machine => machine.id === selectedMachineId);
     return machine || null; // Ingen fallback
