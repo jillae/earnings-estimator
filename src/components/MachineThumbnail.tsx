@@ -17,7 +17,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
   const [imageError, setImageError] = useState(false);
 
   const handleClick = () => {
-    alert(`Du klickade på ${machine.name}!`);
+    console.log('MachineThumbnail: klick på', machine.name, machine.id);
     onClick();
   };
 
