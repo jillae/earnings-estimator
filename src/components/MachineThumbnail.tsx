@@ -49,9 +49,11 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
   };
   
   const handleClick = (e: React.MouseEvent) => {
+    console.log('MachineThumbnail CLICKED:', machine.name, machine.id);
     e.preventDefault();
     e.stopPropagation();
     onClick();
+    console.log('MachineThumbnail onClick called for:', machine.name);
   };
 
   return (
