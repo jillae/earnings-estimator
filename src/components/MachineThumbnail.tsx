@@ -17,7 +17,6 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
   const [imageError, setImageError] = useState(false);
 
   const handleClick = () => {
-    console.log('MachineThumbnail: klick på', machine.name, machine.id);
     onClick();
   };
 

@@ -109,11 +109,7 @@ export function useStateSelections() {
     clinicSize,
     setClinicSize,
     selectedMachineId,
-    setSelectedMachineId: (id: string) => {
-      console.log('useStateSelections: setSelectedMachineId called with:', id);
-      console.log('Current selectedMachineId before update:', selectedMachineId);
-      setSelectedMachineId(id);
-    },
+    setSelectedMachineId,
     selectedMachine,
     paymentOption,
     setPaymentOption,

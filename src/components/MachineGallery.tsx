@@ -23,7 +23,6 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
   onChange
 }) => {
   const handleMachineClick = (machineId: string) => {
-    console.log('MachineGallery: handleMachineClick', machineId);
     onChange(machineId);
   };
 
