@@ -49,8 +49,11 @@ const MachineGalleryContainer: React.FC = () => {
   }, [selectedMachineId, filteredMachines]);
 
   const handleMachineSelection = (machineId: string) => {
-    console.log('🎯 Maskin vald:', machineId);
+    console.log('🎯 MachineGalleryContainer - Maskin vald:', machineId);
+    console.log('🎯 Antal tillgängliga maskiner:', filteredMachines.length);
+    console.log('🎯 Nuvarande selectedMachineId:', selectedMachineId);
     setSelectedMachineId(machineId);
+    console.log('🎯 setSelectedMachineId anropad med:', machineId);
   };
 
   // Visa laddningsindikator medan data hämtas
