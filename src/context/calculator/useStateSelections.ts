@@ -33,14 +33,13 @@ export function useStateSelections() {
   const { calculatorMachines, isLoading } = useMachineData();
 
 
-  // Ingen auto-selection - användaren ska välja maskin manuellt
-  // useEffect(() => {
-  //   if (!isLoading && calculatorMachines.length > 0 && !selectedMachineId) {
-  //     const firstMachine = calculatorMachines[0];
-  //     console.log(`🎯 Sätter första maskinen som standard: ${firstMachine.name} (${firstMachine.id})`);
-  //     setSelectedMachineId(firstMachine.id);
-  //   }
-  // }, [calculatorMachines, isLoading, selectedMachineId]);
+  // TILLFÄLLIG LÖSNING: Auto-välj första maskinen så att något alltid är valt
+  useEffect(() => {
+    if (!isLoading && calculatorMachines.length > 0 && !selectedMachineId) {
+      const firstMachine = calculatorMachines[0];
+      setSelectedMachineId(firstMachine.id);
+    }
+  }, [calculatorMachines, isLoading, selectedMachineId]);
 
   // Härled den valda maskinen från maskin-ID  
   const selectedMachine = useMemo(() => {

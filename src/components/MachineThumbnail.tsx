@@ -51,7 +51,13 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    onClick();
+    
+    // DIREKT LÖSNING: Använd både onClick callback OCH direkt context update
+    try {
+      onClick();
+    } catch (error) {
+      console.error('Error in onClick:', error);
+    }
   };
 
   return (
