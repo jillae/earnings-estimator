@@ -44,7 +44,7 @@ export function calculateStepValues(
     };
   }
 
-  console.log(`calculateStepValues för ${machine.name} (${machine.id}) - STRATEGISK MODELL:`);
+  
 
   // För maskiner som använder credits, använd strategisk prissättningsmodell
   if (machine.usesCredits && machine.leasingMin && machine.leasingStandard && machine.leasingMax && 
@@ -100,12 +100,6 @@ export function calculateStepValues(
       leasingCost: roundToHundredEndingSix(step4.leasingCost)
     };
 
-    console.log(`STRATEGISKA stegvärden för ${machine.name} - SLUTGILTIG 5-STEGS SLIDER:
-      Min (0): ${roundedStep0.leasingCost} kr leasing / ${roundedStep0.creditPrice} kr credit
-      Låg (1): ${roundedStep1.leasingCost} kr leasing / ${roundedStep1.creditPrice} kr credit  
-      Standard (2): ${roundedStep2.leasingCost} kr leasing / ${roundedStep2.creditPrice} kr credit (MITTEN)
-      Hög (3): ${roundedStep3.leasingCost} kr leasing / ${roundedStep3.creditPrice} kr credit
-      Max (4): ${roundedStep4.leasingCost} kr leasing / 0 kr credit (NOLL CREDIT)`);
 
     return {
       0: { leasingCost: roundedStep0.leasingCost, creditPrice: roundedStep0.creditPrice, label: 'Min' },
@@ -117,7 +111,7 @@ export function calculateStepValues(
   }
 
   // Fallback för gamla maskiner utan strategisk prissättning
-  console.log(`Använder fallback-logik för ${machine.name} (saknar strategisk prissättning)`);
+  
   
   // Hämta kreditvärden från maskinen eller använd standardvärden
   let machineMaxCredit = machine.creditMax || creditMax;
