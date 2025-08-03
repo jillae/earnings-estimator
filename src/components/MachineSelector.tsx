@@ -25,13 +25,8 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
   
 
   const handleMachineChange = (newMachineId: string) => {
-    console.log('🎯 MachineSelector - Machine changed to:', newMachineId);
-    // Logga signifikant interaktion för gated access
     logSignificantInteraction('machine_changed');
-    
-    // Alltid trigga onChange för att säkerställa konsekvent uppdatering
     onChange(newMachineId);
-    console.log('🎯 MachineSelector - onChange called with:', newMachineId);
   };
 
   // Visa alltid dropdown-väljaren, oavsett vald maskin

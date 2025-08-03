@@ -70,6 +70,13 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
   const calculate = useCallback(async () => {
     const inputs = createInputs();
     
+    // KRITISKT: Kör inte beräkningar om ingen maskin är vald
+    if (!inputs.machine) {
+      setResults(null);
+      setIsCalculating(false);
+      return;
+    }
+    
     // Undvik dubbelberäkningar genom att kolla om inputs har ändrats
     const inputHash = JSON.stringify(inputs);
     if (inputHash === lastCalculation && results) {
