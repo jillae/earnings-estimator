@@ -103,6 +103,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
         {machine.modelCode && (
           <p className="text-xs text-slate-500">({machine.modelCode})</p>
         )}
+        {/* Debug produktURL */ (console.log('🔥 getProductUrl för', machine.id, ':', getProductUrl(machine.id)), null)}
         {getProductUrl(machine.id) && (
           <Button
             variant="outline"
