@@ -17,13 +17,16 @@ export const GatedWrapper: React.FC<GatedWrapperProps> = ({
   const { logInteraction } = useCalculator();
 
   const handleClick = (e: React.MouseEvent) => {
-    // Logga interaktionen
+    // Logga interaktionen men låt klick-event fortsätta
     logInteraction(action, data);
+    // VIKTIGT: Stoppa inte propagation - låt andra click handlers fungera
   };
 
   return (
-    <div onClick={handleClick}>
-      {children}
+    <div onClick={handleClick} style={{ pointerEvents: 'none' }}>
+      <div style={{ pointerEvents: 'auto' }}>
+        {children}
+      </div>
     </div>
   );
 };

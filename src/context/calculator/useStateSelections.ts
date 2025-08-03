@@ -33,13 +33,7 @@ export function useStateSelections() {
   const { calculatorMachines, isLoading } = useMachineData();
 
 
-  // TILLFÄLLIG LÖSNING: Auto-välj första maskinen så att något alltid är valt
-  useEffect(() => {
-    if (!isLoading && calculatorMachines.length > 0 && !selectedMachineId) {
-      const firstMachine = calculatorMachines[0];
-      setSelectedMachineId(firstMachine.id);
-    }
-  }, [calculatorMachines, isLoading, selectedMachineId]);
+  // Ingen auto-selection - användaren ska välja maskin manuellt
 
   // Härled den valda maskinen från maskin-ID  
   const selectedMachine = useMemo(() => {
