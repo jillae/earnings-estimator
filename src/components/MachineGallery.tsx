@@ -34,6 +34,9 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
     }
   };
 
+  // Debug: Logga maskindata
+  console.log('🔥 MachineGallery: Renderar med maskiner:', machines.length);
+  
   return (
     <div className="w-full py-4">
       <Carousel className="mx-auto w-full">

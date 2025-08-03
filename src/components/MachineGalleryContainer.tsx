@@ -14,6 +14,10 @@ const MachineGalleryContainer: React.FC = () => {
   // Hämta maskindata från databas istället för statisk data
   const { calculatorMachines, isLoading, error } = useMachineData();
   
+  console.log('🔥 MachineGalleryContainer: calculatorMachines:', calculatorMachines);
+  console.log('🔥 MachineGalleryContainer: isLoading:', isLoading);
+  console.log('🔥 MachineGalleryContainer: error:', error);
+  
   // Filtrera bort eventuell "select-machine" (endast visa alla maskiner)
   const filteredMachines = calculatorMachines.filter(machine => 
     machine.id !== "select-machine"
