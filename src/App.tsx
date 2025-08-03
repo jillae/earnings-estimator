@@ -9,11 +9,9 @@ import BreakEvenAnalysisWithProvider from './pages/BreakEvenAnalysisWithProvider
 import ROIAnalysisWithProvider from './pages/ROIAnalysisWithProvider';
 import Contact from './pages/Contact';
 import Manual from './pages/Manual';
-import AdminLogin from './pages/AdminLogin';
 import KlinikOptimeringComingSoon from './pages/KlinikOptimeringComingSoon';
 import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
-import AdminProtectedRoute from './components/AdminProtectedRoute';
 import { CalculatorProvider } from './context/CalculatorContext';
 import TestAllMachines from './components/TestAllMachines';
 
@@ -39,16 +37,8 @@ function App() {
           } />
           <Route path="/break-even" element={<BreakEvenAnalysisWithProvider />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/manual" element={<Manual />} />
-          <Route
-            path="/admin"
-            element={
-              <AdminProtectedRoute>
-                <Admin />
-              </AdminProtectedRoute>
-            }
-          />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/klinik-optimering-coming-soon" element={<KlinikOptimeringComingSoon />} />
           <Route path="/test-all-machines" element={<TestAllMachines />} />
           <Route path="*" element={<NotFound />} />
