@@ -49,6 +49,11 @@ const MachineGalleryContainer: React.FC = () => {
   }, [selectedMachineId, filteredMachines]);
 
   const handleMachineSelection = (machineId: string) => {
+    console.log('MACHINE SELECTION DEBUG:', {
+      selectedMachineId: machineId,
+      availableMachines: filteredMachines.map(m => m.id),
+      machineExists: filteredMachines.find(m => m.id === machineId)
+    });
     setSelectedMachineId(machineId);
   };
 
