@@ -33,6 +33,7 @@ export function buildContextValue(
     ...safeValues,
     currentInfoText: base.currentInfoText,
     setCurrentInfoText: base.setCurrentInfoText,
+    setSelectedMachineId: base.setSelectedMachineId, // Viktigt: se till att setter-funktionen kommer med!
     slaCosts,
     leasingStandardRef: base.leasingStandardRef,
     // Lägg till nya egenskaper
