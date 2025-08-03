@@ -51,16 +51,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    console.log('MachineThumbnail: Klickar på', machine.name);
-    console.log('MachineThumbnail: Anropar onClick...');
-    
-    try {
-      onClick();
-      console.log('MachineThumbnail: onClick slutförd');
-    } catch (error) {
-      console.error('MachineThumbnail: Fel i onClick:', error);
-    }
+    onClick();
   };
 
   return (
@@ -83,9 +74,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
       }}
       style={{ 
         userSelect: 'none',
-        WebkitUserSelect: 'none',
-        pointerEvents: 'auto',
-        zIndex: 10
+        WebkitUserSelect: 'none'
       }}
     >
       <div className="relative w-full h-24 mb-2 rounded overflow-hidden bg-slate-100 flex items-center justify-center">
