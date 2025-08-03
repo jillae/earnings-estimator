@@ -62,13 +62,13 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   }
   
   // Debug log för att se värdena
-  // console.log('LeaseAdjuster debug:', {
-  //   displayLeaseCost,
-  //   calculatedCreditPrice,
-  //   currentSliderStep,
-  //   noMachineSelected,
-  //   stepValues: stepValues[currentSliderStep]
-  // });
+  console.log('LeaseAdjuster debug:', {
+    displayLeaseCost,
+    calculatedCreditPrice,
+    currentSliderStep,
+    noMachineSelected,
+    stepValues: stepValues[currentSliderStep]
+  });
   
   // Beräkna defaultCost korrekt baserat på tillgänglig data
   const defaultCost = noMachineSelected 

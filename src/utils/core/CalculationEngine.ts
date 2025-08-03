@@ -95,7 +95,7 @@ export class CalculationEngine {
    * HUVUDFUNKTION - Beräknar alla värden från input
    */
   static async calculate(inputs: CalculationInputs): Promise<CalculationResults> {
-    // console.log('🔢 CalculationEngine: Beräknar för', inputs.machine?.name || 'ingen maskin');
+    console.log('🔢 CalculationEngine: Beräknar för', inputs.machine?.name || 'ingen maskin');
     
     // Steg 1: Validera input
     const validation = this.validateInputs(inputs);
