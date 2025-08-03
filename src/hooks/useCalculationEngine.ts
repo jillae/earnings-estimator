@@ -81,6 +81,9 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     try {
       const newResults = await CalculationEngine.calculate(inputs);
       
+      if (!newResults.isValid) {
+        console.error('❌ Beräkningsfel:', newResults.errors);
+      }
       setResults(newResults);
       setLastCalculation(inputHash);
     } catch (error) {
