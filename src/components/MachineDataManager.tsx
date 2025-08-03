@@ -156,7 +156,7 @@ const MachineDataManager: React.FC = () => {
 
   const handleUpdate = async (id: string, updates: Partial<Machine>) => {
     try {
-      console.log('Updating machine:', id, updates); // Debug log
+      
       await machineApiClient.updateMachine(id, updates);
       await fetchMachines();
       setEditingId(null);

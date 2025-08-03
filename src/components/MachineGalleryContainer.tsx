@@ -25,16 +25,13 @@ const MachineGalleryContainer: React.FC = () => {
     if (machineFromUrl && machineFromUrl !== selectedMachineId && filteredMachines.length > 0) {
       const machine = filteredMachines.find(m => m.id === machineFromUrl);
       if (machine) {
-        console.log(`Sätter maskin från URL: ${machineFromUrl}`);
         setSelectedMachineId(machineFromUrl);
         toast.success(`Laddar beräkning för ${machine.name}`);
       }
     }
   }, [searchParams, selectedMachineId, setSelectedMachineId, filteredMachines]);
 
-  // Debug för att se om Context värden fungerar
   useEffect(() => {
-    console.log("MachineGalleryContainer: Nuvarande vald maskin ID från context:", selectedMachineId);
     
     // Visa toast endast när maskin-ID faktiskt ändras (inte vid initial rendering)
     if (previousMachineIdRef.current !== selectedMachineId && 
@@ -52,13 +49,7 @@ const MachineGalleryContainer: React.FC = () => {
   }, [selectedMachineId, filteredMachines]);
 
   const handleMachineSelection = (machineId: string) => {
-    console.log(`MachineGalleryContainer: Användaren valde maskin: ${machineId}`);
-    try {
-      // Uppdatera den globala staten direkt
-      setSelectedMachineId(machineId);
-    } catch (error) {
-      console.error('Fel vid uppdatering av maskinval:', error);
-    }
+    setSelectedMachineId(machineId);
   };
 
   // Visa laddningsindikator medan data hämtas

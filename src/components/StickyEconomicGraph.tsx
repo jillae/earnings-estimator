@@ -19,13 +19,6 @@ const StickyEconomicGraph: React.FC = () => {
   const monthlyRevenueExVat = monthlyRevenue / 1.25; // Konvertera till ex VAT
   const monthlyCosts = monthlyRevenueExVat - monthlyNet; // Bakvänd beräkning för exakt samma resultat
 
-  // DEBUG: Logga alla värden för jämförelse med tabell
-  console.log('🔍 StickyEconomicGraph DEBUG VALUES (SAMMA SOM TABELL):');
-  console.log('  monthlyRevenue (inkl VAT - samma som tabell):', monthlyRevenue);
-  console.log('  leasingCost:', leasingCost);
-  console.log('  operatingCost.totalCost:', operatingCost?.totalCost);
-  console.log('  monthlyCosts (beräknad):', monthlyCosts);
-  console.log('  monthlyNet (från context):', monthlyNet);
 
   // Använd useMemo för att memoize data-beräkningen
   const data = useMemo(() => {

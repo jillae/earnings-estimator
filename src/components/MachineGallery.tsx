@@ -22,13 +22,7 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
   selectedMachineId,
   onChange
 }) => {
-  // Förbättrad loggning för att verifiera att val av maskin fungerar korrekt
-  useEffect(() => {
-    console.log(`MachineGallery: Aktuell vald maskin i carousel: ${selectedMachineId}`);
-  }, [selectedMachineId]);
-
   const handleMachineClick = (machineId: string) => {
-    console.log(`MachineGallery: Klickade på maskin med ID: ${machineId}`);
     onChange(machineId);
   };
 

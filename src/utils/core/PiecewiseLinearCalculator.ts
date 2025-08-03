@@ -99,7 +99,7 @@ export class PiecewiseLinearCalculator {
   }
 
   /**
-   * Hämtar alla brytpunkter för debugging och validering
+   * Hämtar alla brytpunkter för validering
    */
   getBreakpoints(): PricingBreakpoint[] {
     return [...this.breakpoints];

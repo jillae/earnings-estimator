@@ -95,8 +95,6 @@ export class CalculationEngine {
    * HUVUDFUNKTION - Beräknar alla värden från input
    */
   static async calculate(inputs: CalculationInputs): Promise<CalculationResults> {
-    console.log('🔢 CalculationEngine.calculate() startar med inputs:', inputs);
-    console.log(`BERÄKNAR FÖR MASKIN: ${inputs.machine?.name}, Period: ${inputs.selectedLeasingPeriodId}, SLA: ${inputs.selectedSlaLevel}`);
     
     // Steg 1: Validera input
     const validation = this.validateInputs(inputs);
@@ -123,14 +121,6 @@ export class CalculationEngine {
     // Steg 7: Beräkna nettoresultat
     const netResults = this.calculateNetResults(revenue, operatingCost, leasingCalcs.leasingCost, inputs.paymentOption, machinePricing.cashPriceSEK);
     
-    console.log(`[TRACKER] CalculationEngine - Key values for occupancy:
-      customerPrice: ${inputs.customerPrice}
-      treatmentsPerDay: ${inputs.treatmentsPerDay}
-      currentSliderStep: ${inputs.currentSliderStep}
-      leasingCost: ${leasingCalcs.leasingCost}
-      yearlyRevenueIncVat: ${revenue.yearlyRevenueIncVat}
-      netPerYearExVat: ${netResults.netPerYearExVat}
-    `);
     
     // Steg 8: Beräkna beläggningsgrader - BRUTTOINTÄKTER vid olika kapaciteter
     const occupancyRevenues = this.calculateOccupancyRevenues(revenue.yearlyRevenueIncVat);
@@ -153,7 +143,7 @@ export class CalculationEngine {
       warnings: validation.warnings
     };
     
-    console.log('✅ CalculationEngine.calculate() slutförd, resultat:', result);
+    
     return result;
   }
   
@@ -196,7 +186,7 @@ export class CalculationEngine {
     try {
       return await getExchangeRate('EUR', 'SEK');
     } catch (error) {
-      console.warn('Växelkurs-fel, använder fallback:', error);
+      
       return 11.4926; // Fallback
     }
   }
@@ -212,7 +202,7 @@ export class CalculationEngine {
     const machinePriceSEK = machine.priceEur * exchangeRate;
     const cashPriceSEK = roundToHundredEndingSix(machinePriceSEK); // Avrunda till hundra slutande på 6
     
-    console.log(`Maskinpriser - ${machine.name}: EUR ${machine.priceEur} × ${exchangeRate} = SEK ${Math.round(machinePriceSEK)} (kontant: ${cashPriceSEK})`);
+    
     
     return { machinePriceSEK, cashPriceSEK };
   }
@@ -261,12 +251,6 @@ export class CalculationEngine {
       const calculator = new PiecewiseLinearCalculator(pricingData);
       const interpolatedValues = calculator.interpolate(inputs.currentSliderStep);
       
-      console.log(`STRATEGISK PRISSÄTTNING för ${inputs.machine.name}:
-        Slider Step: ${inputs.currentSliderStep}
-        Interpolated Leasing: ${interpolatedValues.leasingCost} SEK/mån
-        Interpolated Credit: ${interpolatedValues.creditPrice} kr/credit
-        Range: ${leasingRange.min} - ${leasingRange.max} SEK/mån
-      `);
       
       return { 
         leasingCostBase: inputs.machine.leasingStandard,
@@ -316,10 +300,6 @@ export class CalculationEngine {
       strategicMax: leasingCostBase
     };
     
-    console.log(`FALLBACK PRISSÄTTNING för ${inputs.machine.name}:
-      Grundkostnad: ${leasingCostBase} SEK/mån
-      Range: ${leasingRange.min} - ${leasingRange.max} SEK/mån
-    `);
     
     return { 
       leasingCostBase,
@@ -356,10 +336,6 @@ export class CalculationEngine {
       const calculator = new PiecewiseLinearCalculator(pricingData);
       const interpolatedValues = calculator.interpolate(inputs.currentSliderStep);
       
-      console.log(`STRATEGISK CREDIT-PRIS för ${inputs.machine.name}:
-        Slider Step: ${inputs.currentSliderStep}
-        Interpolated Credit: ${interpolatedValues.creditPrice} kr/credit
-      `);
       
       return Math.round(interpolatedValues.creditPrice);
     }
@@ -371,7 +347,7 @@ export class CalculationEngine {
     const sliderPosition = Math.max(0, Math.min(4, inputs.currentSliderStep));
     const creditPrice = creditMax - (sliderPosition / 4) * (creditMax - creditMin);
     
-    console.log(`FALLBACK Credit-pris: slider=${sliderPosition}, min=${creditMin}, max=${creditMax}, resultat=${creditPrice}`);
+    
     
     return Math.round(creditPrice);
   }
@@ -417,11 +393,6 @@ export class CalculationEngine {
      
      const totalCost = costPerMonth + slaCost;
      
-     console.log(`Driftskostnader för ${inputs.machine.name}:
-       Credit/Flatrate (med SLA-rabatt): ${costPerMonth}
-       SLA (${inputs.selectedSlaLevel}): ${slaCost}
-       Total: ${totalCost}
-     `);
      
      return { costPerMonth, useFlatrate, slaCost, totalCost };
    }
@@ -439,7 +410,7 @@ export class CalculationEngine {
     const monthlyRevenueExVat = monthlyRevenueIncVat / (1 + VAT_RATE);
     const yearlyRevenueExVat = monthlyRevenueExVat * MONTHS_PER_YEAR;
     
-    console.log(`Intäktsberäkning: ${treatmentsPerDay} beh/dag × ${customerPrice} kr = ${monthlyRevenueExVat} kr/mån (ex moms)`);
+    
     
     return {
       revenuePerTreatmentExVat,
@@ -469,7 +440,7 @@ export class CalculationEngine {
     const netPerMonthExVat = revenue.monthlyRevenueExVat - totalMonthlyCostExVat;
     const netPerYearExVat = revenue.yearlyRevenueExVat - (totalMonthlyCostExVat * MONTHS_PER_YEAR);
     
-    console.log(`Nettoresultat: ${revenue.monthlyRevenueExVat} - ${totalMonthlyCostExVat} = ${netPerMonthExVat} kr/mån`);
+    
     
     return { netPerMonthExVat, netPerYearExVat };
   }
@@ -478,23 +449,11 @@ export class CalculationEngine {
    * BELÄGGNINGSGRADER - BRUTTOINTÄKTER vid olika kapacitetsgrader
    */
   private static calculateOccupancyRevenues(yearlyRevenueIncVat: number) {
-    console.log(`[TRACKER] calculateOccupancyRevenues called with:
-      yearlyRevenueIncVat: ${yearlyRevenueIncVat}
-    `);
-    
-    const result = {
+    return {
       occupancy50: yearlyRevenueIncVat * 0.5,
       occupancy75: yearlyRevenueIncVat * 0.75,
       occupancy100: yearlyRevenueIncVat
     };
-    
-    console.log(`[TRACKER] Calculated occupancy values (gross revenue):
-      50%: ${result.occupancy50}
-      75%: ${result.occupancy75}  
-      100%: ${result.occupancy100}
-    `);
-    
-    return result;
   }
   
   /**

@@ -21,13 +21,6 @@ export function buildContextValue(
     ((base.paymentOption === 'cash') || // Vid kontant: alltid tillgängligt
     (base.paymentOption === 'leasing' && isLeasingFlatrateViable)); // Vid leasing: kräver steg >= 1
   
-  console.log(`buildContextValue:
-    usesCredits: ${usesCredits}
-    paymentOption: ${base.paymentOption}
-    currentSliderStep: ${base.currentSliderStep}
-    isLeasingFlatrateViable: ${isLeasingFlatrateViable}
-    isFlatrateViable: ${isFlatrateViable}
-  `);
   
   // Säkerställ att alla värden är 0 när ingen maskin är vald
   const safeValues = {

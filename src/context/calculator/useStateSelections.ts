@@ -7,11 +7,7 @@ import { useMachineData } from '@/hooks/useMachineData';
 
 export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
-  // DEBUGGING: Explicit tom start för selectedMachineId
-  const [selectedMachineId, setSelectedMachineId] = useState<string>(() => {
-    console.log('useStateSelections: Initialiserar selectedMachineId till tom sträng');
-    return '';
-  });
+  const [selectedMachineId, setSelectedMachineId] = useState<string>('');
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60'); // Default till 60 månader
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
@@ -57,8 +53,6 @@ export function useStateSelections() {
   // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen
   useEffect(() => {
     if (selectedMachine) {
-      console.log(`Maskin valdes: ${selectedMachine.name}, återställer standardvärden`);
-      
       // Sätt standard-leasingperiod från maskinen om den är definierad
       if (selectedMachine.defaultLeasingPeriod) {
         setSelectedLeasingPeriodId(String(selectedMachine.defaultLeasingPeriod));
@@ -117,10 +111,6 @@ export function useStateSelections() {
   }, [treatmentsPerDay]);
 
 
-  // Log för att spåra state-förändringar
-  useEffect(() => {
-    console.log('useStateSelections: selectedMachineId ändrat till:', selectedMachineId);
-  }, [selectedMachineId]);
 
   return {
     // States

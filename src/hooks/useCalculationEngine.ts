@@ -73,32 +73,17 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     // Undvik dubbelberäkningar genom att kolla om inputs har ändrats
     const inputHash = JSON.stringify(inputs);
     if (inputHash === lastCalculation && results) {
-      console.log('⚡ useCalculationEngine: Hoppar över beräkning, ingen förändring');
       return;
     }
 
     setIsCalculating(true);
-    console.log(`[TRACKER] useCalculationEngine: Startar beräkning på grund av förändring i:
-      currentSliderStep: ${inputs.currentSliderStep}
-      
-      treatmentsPerDay: ${inputs.treatmentsPerDay}
-      customerPrice: ${inputs.customerPrice}
-    `);
-    console.log('🔢 useCalculationEngine: Alla inputs:', inputs);
 
     try {
       const newResults = await CalculationEngine.calculate(inputs);
       
-      if (newResults.isValid) {
-        setResults(newResults);
-        setLastCalculation(inputHash);
-        console.log('✅ useCalculationEngine: Beräkning slutförd framgångsrikt');
-      } else {
-        console.error('❌ useCalculationEngine: Beräkningsfel:', newResults.errors);
-        setResults(newResults); // Sätt ändå för att visa fel
-      }
+      setResults(newResults);
+      setLastCalculation(inputHash);
     } catch (error) {
-      console.error('💥 useCalculationEngine: Kritiskt fel vid beräkning:', error);
       
       // Skapa ett felresultat
       const errorResult: CalculationResults = {

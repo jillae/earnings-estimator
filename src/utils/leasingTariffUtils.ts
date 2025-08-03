@@ -21,8 +21,6 @@ let currentTariffs = LEASING_TARIFFS;
  */
 export function setActiveTariffYear(use2025: boolean) {
   currentTariffs = use2025 ? LEASING_TARIFFS_2025 : LEASING_TARIFFS_2024;
-  console.log(`Aktiverade ${use2025 ? '2025' : '2024'} års leasingtariffer:`, 
-    currentTariffs.map(t => `${t.id} månader: ${t.rate}`).join(', '));
 }
 
 /**
@@ -32,8 +30,6 @@ export function getLeasingFactor(leaseDurationMonths: number): number | undefine
   // Kontrollera först exakt match på id eller Löptid
   const tariffEntry = currentTariffs.find(entry => entry.id === leaseDurationMonths.toString() || entry.Löptid === leaseDurationMonths);
   
-  // Säkerställ att vi loggar vad vi hittar för debugging
-  console.log(`Leasing factor för ${leaseDurationMonths} månader: ${tariffEntry?.rate || 'HITTADES INTE!'}`);
   
   return tariffEntry?.rate;
 }

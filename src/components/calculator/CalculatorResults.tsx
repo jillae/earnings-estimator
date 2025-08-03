@@ -19,14 +19,6 @@ const CalculatorResults: React.FC<{ hoveredInput?: 'treatments' | 'price' | 'wor
     selectedMachine
   } = useCalculator();
 
-  // Debug logging för nettoresultat
-  console.log(`Calculator Results Debug:
-    Leasing cost: ${leasingCost}
-    Operating cost: ${operatingCost.totalCost}
-    Monthly revenue (incl VAT): ${revenue.monthlyRevenueIncVat}
-    Net per month: ${netResults.netPerMonthExVat}
-    Payment option: ${paymentOption}
-  `);
 
   return (
     <div className="h-full">

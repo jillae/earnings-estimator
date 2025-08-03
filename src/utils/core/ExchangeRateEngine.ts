@@ -52,8 +52,7 @@ export class ExchangeRateEngine {
    * Hämtar valutakurs från API
    */
   private static async fetchFromAPI(): Promise<number> {
-    // TODO: Implementera riktig API-anrop
-    // För nu returnerar vi bara default-värdet
+    // Returnerar default-värdet
     return DEFAULT_EXCHANGE_RATE;
   }
 

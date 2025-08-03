@@ -55,10 +55,6 @@ export function useCalculatorValues() {
     [stepValues, state.currentSliderStep]
   );
 
-  // För debug - visa om beräkningsresultaten är giltiga
-  if (!calculationResults.hasValidResults && calculationResults.errors.length > 0) {
-    console.warn('⚠️ useCalculatorValues: Beräkningsfel:', calculationResults.errors);
-  }
 
   return {
     ...state,
@@ -88,7 +84,7 @@ export function useCalculatorValues() {
     calculatedSlaCostSilver: calculationResults.leasingStandardRef * 0.25, // 25% av standard referensvärde
     calculatedSlaCostGuld: calculationResults.leasingStandardRef * 0.50,   // 50% av standard referensvärde
     
-    // Metadata för debugging
+    // Metadata
     isCalculating: calculationResults.isCalculating,
     hasValidResults: calculationResults.hasValidResults,
     calculationErrors: calculationResults.errors,

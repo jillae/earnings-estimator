@@ -23,14 +23,8 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
 }) => {
   const { logSignificantInteraction } = useCalculator();
   
-  // Debug-loggning för att se vilken maskin som är vald
-  useEffect(() => {
-    console.log(`MachineSelector: Rendering med machineId: ${selectedMachineId}`);
-  }, [selectedMachineId]);
 
   const handleMachineChange = (newMachineId: string) => {
-    console.log(`MachineSelector: Användaren valde maskin i dropdown: ${newMachineId}`);
-    
     // Logga signifikant interaktion för gated access
     logSignificantInteraction('machine_changed');
     
@@ -52,11 +46,6 @@ const MachineSelector: React.FC<MachineSelectorProps> = ({
             <Select 
               value={selectedMachineId || ""} 
               onValueChange={handleMachineChange}
-              onOpenChange={(open) => {
-                if (open) {
-                  console.log("MachineSelector: Dropdown öppnades");
-                }
-              }}
             >
               <SelectTrigger className="w-full h-auto py-3 min-h-[50px] text-center bg-background border-2" id="machine-select">
                 <SelectValue 

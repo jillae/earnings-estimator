@@ -51,12 +51,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log(`MachineThumbnail: Klickade på maskin med ID: ${machine.id}`);
-    try {
-      onClick();
-    } catch (error) {
-      console.error('Fel vid maskinval:', error);
-    }
+    onClick();
   };
 
   return (
