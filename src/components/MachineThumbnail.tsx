@@ -52,12 +52,10 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
     e.preventDefault();
     e.stopPropagation();
     
-    // DIREKT LÖSNING: Använd både onClick callback OCH direkt context update
-    try {
-      onClick();
-    } catch (error) {
-      console.error('Error in onClick:', error);
-    }
+    // ENKEL TEST - Lägg till alert för att se om klick registreras
+    alert(`Klickade på ${machine.name}`);
+    
+    onClick();
   };
 
   return (
@@ -77,6 +75,12 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
           e.preventDefault();
           handleClick(e as any);
         }
+      }}
+      style={{ 
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        pointerEvents: 'auto',
+        zIndex: 10
       }}
     >
       <div className="relative w-full h-24 mb-2 rounded overflow-hidden bg-slate-100 flex items-center justify-center">
