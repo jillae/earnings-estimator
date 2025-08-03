@@ -16,6 +16,11 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
 
+  const handleClick = () => {
+    alert(`Du klickade på ${machine.name}!`);
+    onClick();
+  };
+
   const getPlaceholderImageForMachine = (machineId: string) => {
     const placeholders: {[key: string]: string} = {
       "emerald": "https://i.imgur.com/IRED95Z.png",
@@ -41,7 +46,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
           ? "border-blue-500 bg-blue-50 shadow-md"
           : "border-slate-200 hover:border-blue-300 bg-white"
       )}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <div className="relative w-full h-24 mb-2 rounded overflow-hidden bg-slate-100 flex items-center justify-center">
         {imageError ? (
