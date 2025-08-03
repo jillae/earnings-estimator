@@ -51,7 +51,15 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    onClick();
+    console.log('🔥 MachineThumbnail: handleClick anropad för maskin:', machine.name);
+    console.log('🔥 MachineThumbnail: onClick funktion:', typeof onClick);
+    
+    try {
+      onClick();
+      console.log('🔥 MachineThumbnail: onClick anropad framgångsrikt');
+    } catch (error) {
+      console.error('🔥 MachineThumbnail: FEL i onClick:', error);
+    }
   };
 
   return (

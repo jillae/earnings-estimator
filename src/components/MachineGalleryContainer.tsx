@@ -49,7 +49,16 @@ const MachineGalleryContainer: React.FC = () => {
   }, [selectedMachineId, filteredMachines]);
 
   const handleMachineSelection = (machineId: string) => {
-    setSelectedMachineId(machineId);
+    console.log('🔥 MachineGalleryContainer: handleMachineSelection anropad med:', machineId);
+    console.log('🔥 MachineGalleryContainer: Nuvarande selectedMachineId:', selectedMachineId);
+    console.log('🔥 MachineGalleryContainer: setSelectedMachineId funktion:', typeof setSelectedMachineId);
+    
+    try {
+      setSelectedMachineId(machineId);
+      console.log('🔥 MachineGalleryContainer: setSelectedMachineId anropad framgångsrikt');
+    } catch (error) {
+      console.error('🔥 MachineGalleryContainer: FEL i setSelectedMachineId:', error);
+    }
   };
 
   // Visa laddningsindikator medan data hämtas
