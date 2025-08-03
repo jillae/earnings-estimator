@@ -109,6 +109,7 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
             size="sm"
             className="mt-2 h-7 text-xs"
             onClick={(e) => {
+              console.log('🔥 MachineThumbnail: "Läs mer"-knapp klickad');
               e.stopPropagation();
               window.open(getProductUrl(machine.id), '_blank');
             }}
