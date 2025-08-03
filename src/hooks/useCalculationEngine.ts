@@ -79,7 +79,7 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     
     // Undvik dubbelberäkningar genom att kolla om inputs har ändrats
     const inputHash = JSON.stringify(inputs);
-    if (inputHash === lastCalculation && results) {
+    if (inputHash === lastCalculation) {
       return;
     }
 
@@ -126,7 +126,7 @@ export function useCalculationEngine(props: UseCalculationEngineProps) {
     } finally {
       setIsCalculating(false);
     }
-  }, [createInputs, lastCalculation, results]);
+  }, [createInputs, lastCalculation]);
 
   // Kör beräkning när inputs ändras
   useEffect(() => {
