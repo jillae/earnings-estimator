@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
 const CreditInfoAccordion: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true); // Öppen som standard - vital del av appen
 
   return (
     <div className="w-full mb-4">
