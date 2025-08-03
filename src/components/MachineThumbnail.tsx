@@ -52,10 +52,15 @@ const MachineThumbnail: React.FC<MachineThumbnailProps> = ({
     e.preventDefault();
     e.stopPropagation();
     
-    // ENKEL TEST - Lägg till alert för att se om klick registreras
-    alert(`Klickade på ${machine.name}`);
+    console.log('MachineThumbnail: Klickar på', machine.name);
+    console.log('MachineThumbnail: Anropar onClick...');
     
-    onClick();
+    try {
+      onClick();
+      console.log('MachineThumbnail: onClick slutförd');
+    } catch (error) {
+      console.error('MachineThumbnail: Fel i onClick:', error);
+    }
   };
 
   return (

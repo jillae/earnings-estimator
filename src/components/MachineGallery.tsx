@@ -23,7 +23,15 @@ const MachineGallery: React.FC<MachineGalleryProps> = ({
   onChange
 }) => {
   const handleMachineClick = (machineId: string) => {
-    onChange(machineId);
+    console.log('MachineGallery: handleMachineClick anropad med', machineId);
+    console.log('MachineGallery: Anropar onChange...');
+    
+    try {
+      onChange(machineId);
+      console.log('MachineGallery: onChange slutförd');
+    } catch (error) {
+      console.error('MachineGallery: Fel i onChange:', error);
+    }
   };
 
   return (
