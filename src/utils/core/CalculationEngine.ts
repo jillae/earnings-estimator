@@ -11,6 +11,7 @@ import { getExchangeRate } from '../exchangeRateUtils';
 import { calculateTariffBasedLeasingMax } from '../leasingTariffUtils';
 import { roundToHundredEndingSix } from '../formatUtils';
 import { VAT_RATE, WORKING_DAYS_PER_MONTH, MONTHS_PER_YEAR } from '../constants';
+import { PiecewiseLinearCalculator } from './PiecewiseLinearCalculator';
 
 // Input-interface för alla beräkningar
 export interface CalculationInputs {
@@ -237,7 +238,6 @@ export class CalculationEngine {
       };
       
       // Använd PiecewiseLinearCalculator för att få exakt värde för aktuell slider-position
-      const { PiecewiseLinearCalculator } = require('./PiecewiseLinearCalculator');
       
       const pricingData = {
         leasingMin: inputs.machine.leasingMin,
@@ -322,7 +322,6 @@ export class CalculationEngine {
     
     // För maskiner med strategisk prissättning, använd PiecewiseLinearCalculator
     if (inputs.machine.leasingMin && inputs.machine.leasingStandard && inputs.machine.leasingMax) {
-      const { PiecewiseLinearCalculator } = require('./PiecewiseLinearCalculator');
       
       const pricingData = {
         leasingMin: inputs.machine.leasingMin,
