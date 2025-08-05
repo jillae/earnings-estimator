@@ -51,15 +51,15 @@ const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({
       onMouseEnter={() => onHoveredInputChange?.('clinic')}
       onMouseLeave={() => onHoveredInputChange?.(null)}
     >
-      <h3 className="text-lg font-semibold mb-6">
+      <h3 className="text-base font-semibold mb-4">
         Klinikstorlek
       </h3>
       
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm text-slate-500">Liten</span>
-          <span className="text-sm text-slate-500">Mellan</span>
-          <span className="text-sm text-slate-500">Stor</span>
+      <div className="mb-4">
+        <div className="flex justify-between items-center mb-1">
+          <span className="text-xs text-slate-500">Liten</span>
+          <span className="text-xs text-slate-500">Mellan</span>
+          <span className="text-xs text-slate-500">Stor</span>
         </div>
         
         <Slider
@@ -68,11 +68,11 @@ const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({
           max={3}
           step={1}
           onValueChange={handleSliderChange}
-          className="my-4"
+          className="my-3"
         />
       </div>
       
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center">
         <div>
           <span className="text-sm font-medium text-slate-700">{getSizeLabel()}</span>
           <div className="text-xs text-slate-500">{getTreatmentsText()}</div>
@@ -80,7 +80,7 @@ const ClinicSizeSelector: React.FC<ClinicSizeSelectorProps> = ({
         
         <div className="text-right">
           <div className="text-xs text-slate-500">Nettoresultat per år (ex moms)</div>
-          <div className="text-lg font-semibold text-emerald-600">
+          <div className="text-base font-semibold text-emerald-600">
             {formatCurrency(netYearlyResult)}
           </div>
         </div>
