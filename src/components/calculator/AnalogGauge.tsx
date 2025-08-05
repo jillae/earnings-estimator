@@ -150,21 +150,28 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
             strokeWidth="1"
           />
           
-          {/* Nål */}
-          <g transform={`translate(64, 64) rotate(${angle})`}>
-            <line
-              x1="0"
-              y1="0"
-              x2="40"
-              y2="0"
-              stroke={needleColor}
-              strokeWidth="3"
-              strokeLinecap="round"
-              style={{
-                filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))',
-                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-              }}
-            />
+          {/* Nål-grupp med animation */}
+          <g 
+            transform={`translate(64, 64)`}
+            style={{
+              transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            }}
+          >
+            <g transform={`rotate(${angle})`}>
+              <line
+                x1="0"
+                y1="0"
+                x2="40"
+                y2="0"
+                stroke={needleColor}
+                strokeWidth="3"
+                strokeLinecap="round"
+                style={{
+                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))',
+                  transition: 'stroke 0.3s ease-out'
+                }}
+              />
+            </g>
           </g>
           
           {/* Centrum punkt */}
