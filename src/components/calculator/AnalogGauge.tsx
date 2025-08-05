@@ -76,14 +76,25 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
 
   // Skapa gradient för bakgrund baserat på steg
   const createGradient = () => {
-    const gradientStops = [
-      { angle: -180, color: reversed ? 'hsl(0, 80%, 55%)' : 'hsl(120, 80%, 55%)' }, // Steg 0
-      { angle: -135, color: 'hsl(50, 70%, 60%)' }, // Steg 1 - gul
-      { angle: -90,  color: 'hsl(50, 70%, 60%)' }, // Steg 2 - gul
-      { angle: -45,  color: 'hsl(50, 70%, 60%)' }, // Steg 3 - gul
-      { angle: 0,    color: reversed ? 'hsl(120, 80%, 55%)' : 'hsl(0, 80%, 55%)' }  // Steg 4
-    ];
-    return gradientStops;
+    if (reversed) {
+      // Credits-mätare: omvänd mappning
+      return [
+        { angle: -180, color: 'hsl(120, 80%, 55%)' }, // Steg 4 = lågt pris = bra = grön
+        { angle: -135, color: 'hsl(50, 70%, 60%)' },  // Steg 3 - gul
+        { angle: -90,  color: 'hsl(50, 70%, 60%)' },  // Steg 2 - gul
+        { angle: -45,  color: 'hsl(50, 70%, 60%)' },  // Steg 1 - gul
+        { angle: 0,    color: 'hsl(0, 80%, 55%)' }    // Steg 0 = högt pris = dåligt = röd
+      ];
+    } else {
+      // Leasing-mätare: normal mappning
+      return [
+        { angle: -180, color: 'hsl(120, 80%, 55%)' }, // Steg 0 = lågt pris = bra = grön
+        { angle: -135, color: 'hsl(50, 70%, 60%)' },  // Steg 1 - gul
+        { angle: -90,  color: 'hsl(50, 70%, 60%)' },  // Steg 2 - gul
+        { angle: -45,  color: 'hsl(50, 70%, 60%)' },  // Steg 3 - gul
+        { angle: 0,    color: 'hsl(0, 80%, 55%)' }    // Steg 4 = högt pris = dåligt = röd
+      ];
+    }
   };
 
   const gradientStops = createGradient();
