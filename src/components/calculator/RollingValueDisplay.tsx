@@ -8,7 +8,7 @@ interface RollingValueDisplayProps {
   label: string;
   className?: string;
   showTrendIcon?: boolean;
-  trendDirection?: 'up' | 'down' | 'neutral';
+  trendDirection?: 'up' | 'down' | 'neutral' | 'down-steep' | 'down-mild' | 'up-mild' | 'up-steep';
   showStandardBadge?: boolean;
   isStandardPosition?: boolean;
   animationStyle?: 'rolling' | 'slotmachine' | 'rolodex' | 'digitalflip' | 'typewriter';
@@ -293,10 +293,16 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
           {showTrendIcon && (
             isStandardPosition || trendDirection === 'neutral' ? (
               <ArrowRight className="w-4 h-4 text-blue-600 shrink-0" />
-            ) : trendDirection === 'up' ? (
-              <TrendingUp className="w-4 h-4 text-green-600 shrink-0" />
+            ) : trendDirection === 'up' || trendDirection === 'up-steep' ? (
+              <TrendingUp className={`w-4 h-4 text-green-600 shrink-0 ${trendDirection === 'up-steep' ? 'rotate-12' : ''}`} />
+            ) : trendDirection === 'up-mild' ? (
+              <TrendingUp className="w-4 h-4 text-green-600 shrink-0 rotate-6" />
+            ) : trendDirection === 'down' || trendDirection === 'down-steep' ? (
+              <TrendingDown className={`w-4 h-4 text-emerald-600 shrink-0 ${trendDirection === 'down-steep' ? '-rotate-12' : ''}`} />
+            ) : trendDirection === 'down-mild' ? (
+              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0 -rotate-6" />
             ) : (
-              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0" />
+              <ArrowRight className="w-4 h-4 text-blue-600 shrink-0" />
             )
           )}
           <span>{label}</span>
