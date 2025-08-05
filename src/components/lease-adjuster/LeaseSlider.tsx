@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Target, MoreHorizontal, Activity, Shield, Zap } from 'lucide-react';
+import { ArrowDownCircle, Shuffle, Activity, Shield, Zap } from 'lucide-react';
 import FlatrateIndicator from './FlatrateIndicator';
 import { SliderStep } from '@/utils/sliderSteps';
 import { useCalculator } from '@/context/CalculatorContext';
@@ -59,15 +59,15 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
     
     switch (step) {
       case 0:
-        return <Target size={iconSize} className={`${activeClass} fill-none`} />; // Målsymbol - högsta creditkostnad
+        return <ArrowDownCircle size={iconSize} className={`${activeClass} fill-none`} />; // Låg investering - pil nedåt i cirkel
       case 1:
-        return <MoreHorizontal size={iconSize} className={activeClass} />; // Låg nivå
+        return <Shuffle size={iconSize} className={activeClass} />; // Flexibilitet - shuffle/växla ikon
       case 2:
         return <Activity size={iconSize} className={activeClass} />; // Balans/Standard
       case 3:
-        return <Shield size={iconSize} className={activeClass} />; // Hög nivå
+        return <Shield size={iconSize} className={activeClass} />; // Trygghet
       case 4:
-        return <Zap size={iconSize} className={`${activeClass} fill-current`} />; // Full optimering - lägsta creditkostnad
+        return <Zap size={iconSize} className={`${activeClass} fill-current`} />; // Låg driftkostnad - blixt för effektivitet
       default:
         return <Activity size={iconSize} className={activeClass} />;
     }
