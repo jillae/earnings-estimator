@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { ArrowDownCircle, Shuffle, Activity, Shield, Zap } from 'lucide-react';
+import { ArrowDownCircle, Shuffle, Activity, Shield, Target } from 'lucide-react';
 import FlatrateIndicator from './FlatrateIndicator';
 import { SliderStep } from '@/utils/sliderSteps';
 import { useCalculator } from '@/context/CalculatorContext';
@@ -67,7 +67,7 @@ const LeaseSlider: React.FC<LeaseSliderProps> = ({
       case 3:
         return <Shield size={iconSize} className={activeClass} />; // Trygghet
       case 4:
-        return <Zap size={iconSize} className={`${activeClass} fill-current`} />; // Låg driftkostnad - blixt för effektivitet
+        return <Target size={iconSize} className={`${activeClass} fill-none`} />; // Låg driftkostnad - målpunkt/bullseye
       default:
         return <Activity size={iconSize} className={activeClass} />;
     }
