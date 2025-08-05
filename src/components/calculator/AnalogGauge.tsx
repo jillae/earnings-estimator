@@ -45,8 +45,8 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
     const standardPos = normalizedStandard;
     const distanceFromStandard = Math.abs(normalized - standardPos);
     
-    // Bredare gult område - täcker ungefär 40% av skalan (motsvarar slider pos 1-3)
-    const yellowZoneWidth = 0.2; // 20% åt varje håll från standard = 40% totalt
+    // Bredare gult område - täcker exakt slider steg 1, 2 och 3
+    const yellowZoneWidth = 0.25; // 25% åt varje håll från standard = 50% totalt (täcker steg 1-3)
     
     if (distanceFromStandard <= yellowZoneWidth) {
       // Inom gul zon = standard/neutral område
