@@ -9,11 +9,11 @@ import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
 const CreditInfoAccordion: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true); // Öppen som standard - vital del av appen
+  const [isOpen, setIsOpen] = useState(false); // Stängd som standard
 
   return (
     <div className="w-full mb-4">
-      <Accordion type="single" collapsible className="w-full" defaultValue="credits-info" value={isOpen ? "credits-info" : ""} onValueChange={(value) => setIsOpen(!!value)}>
+      <Accordion type="single" collapsible className="w-full" value={isOpen ? "credits-info" : ""} onValueChange={(value) => setIsOpen(!!value)}>
         <AccordionItem value="credits-info" className="border border-slate-300 rounded-lg bg-slate-50 hover:bg-slate-100 transition-all duration-300">
           <AccordionTrigger className="px-4 py-2 hover:no-underline hover:bg-slate-200/50 transition-colors duration-200 rounded-lg">
             <div className="flex items-center gap-2">
