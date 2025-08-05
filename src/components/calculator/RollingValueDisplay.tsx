@@ -8,7 +8,7 @@ interface RollingValueDisplayProps {
   label: string;
   className?: string;
   showTrendIcon?: boolean;
-  trendDirection?: 'up' | 'down' | 'neutral' | 'down-steep' | 'down-mild' | 'up-mild' | 'up-steep';
+  trendDirection?: 'up' | 'down' | 'neutral' | 'down-steep' | 'down-mild' | 'up-mild' | 'up-steep' | 'up-extreme' | 'down-extreme';
   showStandardBadge?: boolean;
   isStandardPosition?: boolean;
   animationStyle?: 'rolling' | 'slotmachine' | 'rolodex' | 'digitalflip' | 'typewriter';
@@ -293,14 +293,22 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
           {showTrendIcon && (
             isStandardPosition || trendDirection === 'neutral' ? (
               <ArrowRight className="w-4 h-4 text-blue-600 shrink-0 transition-transform duration-300 ease-out" />
-            ) : trendDirection === 'up' || trendDirection === 'up-steep' ? (
-              <TrendingUp className={`w-4 h-4 text-green-600 shrink-0 transition-transform duration-300 ease-out ${trendDirection === 'up-steep' ? 'rotate-12' : ''}`} />
+            ) : trendDirection === 'up' ? (
+              <TrendingUp className="w-4 h-4 text-green-600 shrink-0 transition-transform duration-300 ease-out" />
             ) : trendDirection === 'up-mild' ? (
-              <TrendingUp className="w-4 h-4 text-green-600 shrink-0 rotate-6 transition-transform duration-300 ease-out" />
-            ) : trendDirection === 'down' || trendDirection === 'down-steep' ? (
-              <TrendingDown className={`w-4 h-4 text-emerald-600 shrink-0 transition-transform duration-300 ease-out ${trendDirection === 'down-steep' ? '-rotate-12' : ''}`} />
+              <TrendingUp className="w-4 h-4 text-green-600 shrink-0 rotate-12 transition-transform duration-300 ease-out" />
+            ) : trendDirection === 'up-steep' ? (
+              <TrendingUp className="w-4 h-4 text-green-600 shrink-0 rotate-24 transition-transform duration-300 ease-out" />
+            ) : trendDirection === 'up-extreme' ? (
+              <TrendingUp className="w-4 h-4 text-green-600 shrink-0 rotate-45 transition-transform duration-300 ease-out" />
+            ) : trendDirection === 'down' ? (
+              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0 transition-transform duration-300 ease-out" />
             ) : trendDirection === 'down-mild' ? (
-              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0 -rotate-6 transition-transform duration-300 ease-out" />
+              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0 -rotate-12 transition-transform duration-300 ease-out" />
+            ) : trendDirection === 'down-steep' ? (
+              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0 -rotate-24 transition-transform duration-300 ease-out" />
+            ) : trendDirection === 'down-extreme' ? (
+              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0 -rotate-45 transition-transform duration-300 ease-out" />
             ) : (
               <ArrowRight className="w-4 h-4 text-blue-600 shrink-0 transition-transform duration-300 ease-out" />
             )
