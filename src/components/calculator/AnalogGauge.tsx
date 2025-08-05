@@ -22,37 +22,13 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   className = "",
   reversed = false
 }) => {
-  // Debug log
-  console.log(`AnalogGauge [${label}]:`, { 
-    value, 
-    minValue, 
-    maxValue, 
-    standardValue,
-    isStandard: Math.abs(value - standardValue) < 1
-  });
-
-  // För korrekt position: om värdet är standardvärdet, sätt nålen på kl 12
-  const isAtStandard = Math.abs(value - standardValue) < 1;
+  // Använd de faktiska min/max-värdena direkt
+  const normalizedValue = Math.max(0, Math.min(1, (value - minValue) / (maxValue - minValue)));
+  const normalizedStandard = (standardValue - minValue) / (maxValue - minValue);
   
-  if (isAtStandard) {
-    // Standard position = kl 12 (0°)
-    var angle = 0;
-    var normalizedValue = 0.5;
-  } else {
-    // Skapa symmetriskt intervall runt standardvärdet
-    const range = Math.max(Math.abs(maxValue - standardValue), Math.abs(standardValue - minValue));
-    const adjustedMinValue = standardValue - range;
-    const adjustedMaxValue = standardValue + range;
-    
-    // Normalisera värdet till 0-1 skala med symmetriskt intervall
-    normalizedValue = Math.max(0, Math.min(1, (value - adjustedMinValue) / (adjustedMaxValue - adjustedMinValue)));
-    
-    // Konvertera till grader: kl 9 (-90°) till kl 3 (+90°)
-    angle = -90 + (normalizedValue * 180);
-  }
-  
-  const normalizedStandard = 0.5; // Standard är alltid i mitten
-  const standardAngle = 0; // Standard är alltid kl 12 (0°)
+  // Konvertera till grader: kl 9 (-90°) till kl 3 (+90°)
+  const angle = -90 + (normalizedValue * 180);
+  const standardAngle = -90 + (normalizedStandard * 180);
   
   // Beräkna färg baserat på position relativt standard med bredare gult område
   const getColor = (normalized: number) => {
@@ -141,10 +117,10 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
             strokeLinecap="round"
           />
           
-          {/* Standard markering på kl 12 */}
+          {/* Standard markering */}
           <circle
-            cx={64}
-            cy={64 - 49}
+            cx={64 + 49 * Math.cos((standardAngle * Math.PI) / 180)}
+            cy={64 + 49 * Math.sin((standardAngle * Math.PI) / 180)}
             r="3"
             fill="#fbbf24"
             stroke="#ffffff"
