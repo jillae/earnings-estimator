@@ -187,13 +187,14 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           
           <div className="flex-1">
             <AnalogGauge
-              value={calculatedCreditPrice}
-              minValue={0}
-              maxValue={Math.max(calculatedCreditPrice * 2, 200)}
-              standardValue={calculatedCreditPrice}
+              value={stepValues[currentSliderStep]?.creditPrice || calculatedCreditPrice}
+              minValue={stepValues[4]?.creditPrice || calculatedCreditPrice * 1.3}
+              maxValue={stepValues[0]?.creditPrice || calculatedCreditPrice * 0.7}
+              standardValue={stepValues[2]?.creditPrice || calculatedCreditPrice}
               label="Credits"
               unit="/styck"
               className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 rounded-lg"
+              reversed={true}
             />
           </div>
         </div>

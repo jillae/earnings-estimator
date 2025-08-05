@@ -9,6 +9,7 @@ interface AnalogGaugeProps {
   label: string;
   unit?: string;
   className?: string;
+  reversed?: boolean; // true om låga värden är bra (som för Credits)
 }
 
 const AnalogGauge: React.FC<AnalogGaugeProps> = ({
@@ -18,7 +19,8 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   standardValue,
   label,
   unit = '/månad',
-  className = ""
+  className = "",
+  reversed = false
 }) => {
   // Normalisera värdet till 0-1 skala
   const normalizedValue = Math.max(0, Math.min(1, (value - minValue) / (maxValue - minValue)));
@@ -31,17 +33,26 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   // Beräkna färg baserat på position relativt standard
   const getColor = (normalized: number) => {
     const standardPos = normalizedStandard;
-    if (normalized < standardPos) {
-      // Grönt område (under standard)
-      const intensity = (standardPos - normalized) / standardPos;
-      return `hsl(${120 - intensity * 20}, 70%, ${50 + intensity * 10}%)`;
-    } else if (normalized > standardPos) {
-      // Rött område (över standard)
-      const intensity = (normalized - standardPos) / (1 - standardPos);
-      return `hsl(${60 - intensity * 60}, 70%, ${50 + intensity * 10}%)`;
-    } else {
-      // Gul för standard
+    const distanceFromStandard = Math.abs(normalized - standardPos);
+    
+    if (Math.abs(normalized - standardPos) < 0.05) {
+      // Nära standard = gul
       return 'hsl(50, 70%, 60%)';
+    }
+    
+    // Bestäm om vi är på "bra" eller "dålig" sida baserat på reversed flag
+    const isOnGoodSide = reversed ? 
+      (normalized < standardPos) : // För Credits: lägre än standard = bra
+      (normalized < standardPos);  // För Leasing: lägre än standard = bra
+    
+    if (isOnGoodSide) {
+      // Grön skala för bra sida
+      const intensity = distanceFromStandard / Math.max(standardPos, 1 - standardPos);
+      return `hsl(${120}, ${70 + intensity * 20}%, ${50 + intensity * 15}%)`;
+    } else {
+      // Röd skala för dålig sida  
+      const intensity = distanceFromStandard / Math.max(standardPos, 1 - standardPos);
+      return `hsl(${0 + intensity * 10}, ${70 + intensity * 20}%, ${50 + intensity * 15}%)`;
     }
   };
 
