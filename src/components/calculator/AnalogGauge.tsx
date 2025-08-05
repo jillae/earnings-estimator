@@ -121,10 +121,10 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
             strokeLinecap="round"
           />
           
-          {/* Standard markering baserat på normalizedStandard */}
+          {/* Standard markering alltid på 12-positionen (-90°) */}
           <circle
-            cx={64 + 49 * Math.cos(((-180 + (normalizedStandard * 180)) * Math.PI) / 180)}
-            cy={64 + 49 * Math.sin(((-180 + (normalizedStandard * 180)) * Math.PI) / 180)}
+            cx={64 + 49 * Math.cos((-90 * Math.PI) / 180)}
+            cy={64 + 49 * Math.sin((-90 * Math.PI) / 180)}
             r="3"
             fill="#fbbf24"
             stroke="#ffffff"
