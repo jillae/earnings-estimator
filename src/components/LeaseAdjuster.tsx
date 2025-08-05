@@ -172,7 +172,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
               label="Leasing"
               className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
               showTrendIcon={true}
-              trendDirection={currentSliderStep === 2 ? 'neutral' : (currentSliderStep < 2 ? 'down' : 'up')}
+              trendDirection={currentSliderStep >= 1 && currentSliderStep <= 3 ? 'neutral' : (currentSliderStep < 1 ? 'down' : 'up')}
               showStandardBadge={true}
               isStandardPosition={currentSliderStep === 2}
               animationStyle="rolodex"
@@ -192,7 +192,7 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
               label="Credits"
               className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
               showTrendIcon={true}
-              trendDirection={currentSliderStep === 2 ? 'neutral' : (currentSliderStep < 2 ? 'up' : 'down')}
+              trendDirection={currentSliderStep >= 1 && currentSliderStep <= 3 ? 'neutral' : (currentSliderStep < 1 ? 'up' : 'down')}
               animationStyle="rolodex"
             />
           </div>
