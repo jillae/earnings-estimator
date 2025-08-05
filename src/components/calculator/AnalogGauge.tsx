@@ -40,6 +40,9 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   const angle = -180 + (normalizedValue * 180);
   const standardAngle = -90; // Standard är alltid kl 12 (-90°)
   
+  // Debug för att se normalisering
+  console.log(`${label} mätare:`, { value, minValue, maxValue, standardValue, normalizedValue, angle });
+  
   // Beräkna färg baserat på position relativt standard med bredare gult område
   const getColor = (normalized: number) => {
     const standardPos = normalizedStandard;
