@@ -75,6 +75,11 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
     ? 0 
     : (stepValues[1]?.leasingCost || ((exactMinCost + exactMaxCost) / 2));
 
+  // Beräkna credit-värden dynamiskt från stepValues
+  const minCreditPrice = noMachineSelected ? 0 : Math.min(...Object.values(stepValues).map(v => v?.creditPrice || 0));
+  const maxCreditPrice = noMachineSelected ? 0 : Math.max(...Object.values(stepValues).map(v => v?.creditPrice || 0));
+  const standardCreditPrice = noMachineSelected ? 0 : (stepValues[1]?.creditPrice || calculatedCreditPrice);
+
   // Kontrollera om maskinen använder credits (för att visa/dölja slider och anpassningskontroll)
   const usesCredits = selectedMachine?.usesCredits || false;
   
@@ -169,9 +174,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           <div className="flex-1">
             <AnalogGauge
               value={displayLeaseCost}
-              minValue={18000}  
-              maxValue={36000}
-              standardValue={25806}
+              minValue={exactMinCost}  
+              maxValue={exactMaxCost}
+              standardValue={defaultCost}
               label="Leasing"
               unit="/månad"
               className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg"
@@ -188,9 +193,9 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           <div className="flex-1">
             <AnalogGauge
               value={stepValues[currentSliderStep]?.creditPrice || calculatedCreditPrice}
-              minValue={-151}
-              maxValue={449}
-              standardValue={149}
+              minValue={minCreditPrice}
+              maxValue={maxCreditPrice}
+              standardValue={standardCreditPrice}
               label="Credits"
               unit="/styck"
               className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 rounded-lg"
