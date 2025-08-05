@@ -26,13 +26,26 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
 }) => {
   // Enkel mappning från slider steg till vinkel
   const stepToAngle = (step: number): number => {
-    switch (step) {
-      case 0: return -180; // 9 o'clock
-      case 1: return -135; // 10:30
-      case 2: return -90;  // 12 o'clock (Standard)
-      case 3: return -45;  // 1:30
-      case 4: return 0;    // 3 o'clock
-      default: return -90; // Default till standard
+    if (reversed) {
+      // Omvänd rörelse för credits-mätare
+      switch (step) {
+        case 0: return 0;    // 3 o'clock
+        case 1: return -45;  // 1:30
+        case 2: return -90;  // 12 o'clock (Standard)
+        case 3: return -135; // 10:30
+        case 4: return -180; // 9 o'clock
+        default: return -90; // Default till standard
+      }
+    } else {
+      // Normal rörelse för leasing-mätare
+      switch (step) {
+        case 0: return -180; // 9 o'clock
+        case 1: return -135; // 10:30
+        case 2: return -90;  // 12 o'clock (Standard)
+        case 3: return -45;  // 1:30
+        case 4: return 0;    // 3 o'clock
+        default: return -90; // Default till standard
+      }
     }
   };
   
@@ -42,47 +55,34 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   const normalizedValue = (value - minValue) / (maxValue - minValue);
   const normalizedStandard = (standardValue - minValue) / (maxValue - minValue);
   
-  // Beräkna färg baserat på position relativt standard med bredare gult område
-  const getColor = (normalized: number) => {
-    const standardPos = normalizedStandard;
-    const distanceFromStandard = Math.abs(normalized - standardPos);
-    
-    // Bredare gult område - täcker exakt slider steg 1, 2 och 3
-    const yellowZoneWidth = 0.25; // 25% åt varje håll från standard = 50% totalt (täcker steg 1-3)
-    
-    if (distanceFromStandard <= yellowZoneWidth) {
-      // Inom gul zon = standard/neutral område
+  // Beräkna färg baserat på slider steg
+  const getColor = (step: number) => {
+    if (step === 2) {
+      // Steg 2 = Standard = gul
       return 'hsl(50, 70%, 60%)';
-    }
-    
-    // Bestäm om vi är på "bra" eller "dålig" sida baserat på reversed flag
-    const isOnGoodSide = reversed ? 
-      (normalized < standardPos - yellowZoneWidth) : // För Credits: lägre än gul zon = bra
-      (normalized < standardPos - yellowZoneWidth);  // För Leasing: lägre än gul zon = bra
-    
-    if (isOnGoodSide) {
-      // Grön skala för bra sida
-      const intensity = (distanceFromStandard - yellowZoneWidth) / (0.5 - yellowZoneWidth);
-      return `hsl(${120}, ${70 + intensity * 20}%, ${50 + intensity * 15}%)`;
+    } else if (step === 1 || step === 3) {
+      // Steg 1 och 3 = gul zon
+      return 'hsl(50, 70%, 60%)';
     } else {
-      // Röd skala för dålig sida  
-      const intensity = (distanceFromStandard - yellowZoneWidth) / (0.5 - yellowZoneWidth);
-      return `hsl(${0 + intensity * 10}, ${70 + intensity * 20}%, ${50 + intensity * 15}%)`;
+      // Steg 0 och 4 = röd/grön beroende på reversed
+      const isGoodSide = reversed ? (step === 4) : (step === 0);
+      return isGoodSide ? 
+        'hsl(120, 80%, 55%)' : // Grön för bra sida
+        'hsl(0, 80%, 55%)';    // Röd för dålig sida
     }
   };
 
-  const needleColor = getColor(normalizedValue);
+  const needleColor = getColor(currentStep);
 
-  // Skapa gradient för bakgrund
+  // Skapa gradient för bakgrund baserat på steg
   const createGradient = () => {
-    const steps = 20;
-    const gradientStops = [];
-    for (let i = 0; i <= steps; i++) {
-      const pos = i / steps;
-      const color = getColor(pos);
-      const angle = -90 + (pos * 180);
-      gradientStops.push({ angle, color });
-    }
+    const gradientStops = [
+      { angle: -180, color: reversed ? 'hsl(0, 80%, 55%)' : 'hsl(120, 80%, 55%)' }, // Steg 0
+      { angle: -135, color: 'hsl(50, 70%, 60%)' }, // Steg 1 - gul
+      { angle: -90,  color: 'hsl(50, 70%, 60%)' }, // Steg 2 - gul
+      { angle: -45,  color: 'hsl(50, 70%, 60%)' }, // Steg 3 - gul
+      { angle: 0,    color: reversed ? 'hsl(120, 80%, 55%)' : 'hsl(0, 80%, 55%)' }  // Steg 4
+    ];
     return gradientStops;
   };
 
