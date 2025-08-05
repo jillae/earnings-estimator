@@ -79,12 +79,6 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
   const minCreditPrice = noMachineSelected ? 0 : Math.min(...Object.values(stepValues).map(v => v?.creditPrice || 0));
   const maxCreditPrice = noMachineSelected ? 0 : Math.max(...Object.values(stepValues).map(v => v?.creditPrice || 0));
   const standardCreditPrice = noMachineSelected ? 0 : (minCreditPrice + maxCreditPrice) / 2;
-  
-  // Debug-loggar för mätarvärden
-  console.log('Mätarvärden:', {
-    leasing: { value: displayLeaseCost, min: exactMinCost, max: exactMaxCost, standard: defaultCost },
-    credits: { value: stepValues[currentSliderStep]?.creditPrice || calculatedCreditPrice, min: minCreditPrice, max: maxCreditPrice, standard: standardCreditPrice }
-  });
   // Kontrollera om maskinen använder credits (för att visa/dölja slider och anpassningskontroll)
   const usesCredits = selectedMachine?.usesCredits || false;
   
