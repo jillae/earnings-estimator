@@ -190,7 +190,7 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
       {/* Värde display */}
       <div className="text-center">
         <div className="text-xs font-medium text-slate-600 mb-1">{label}</div>
-        <div className="text-lg font-bold text-slate-800" style={{ color: needleColor }}>
+        <div className="text-lg font-bold text-slate-800">
           {formatCurrency(value)}
         </div>
         <div className="text-xs text-slate-500">{unit}</div>
