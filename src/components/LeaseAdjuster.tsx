@@ -11,7 +11,7 @@ import { formatCurrency } from '@/utils/formatUtils';
 import { useCalculator } from '@/context/CalculatorContext';
 import { SliderStep } from '@/utils/sliderSteps';
 import CreditInfoPopover from './calculator/CreditInfoPopover';
-import RollingValueDisplay from './calculator/RollingValueDisplay';
+import AnalogGauge from './calculator/AnalogGauge';
 
 interface LeaseAdjusterProps {
   minLeaseCost: number;
@@ -165,17 +165,16 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
 
       {/* Rullande visare EFTER slidern */}
       {usesCredits && (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-8 justify-center">
           <div className="flex-1">
-            <RollingValueDisplay 
+            <AnalogGauge
               value={displayLeaseCost}
+              minValue={minLeaseCost}
+              maxValue={maxLeaseCost}
+              standardValue={defaultCost}
               label="Leasing"
-              className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
-              showTrendIcon={true}
-              trendDirection={currentSliderStep === 2 ? 'neutral' : currentSliderStep === 0 ? 'up-mild' : currentSliderStep === 1 ? 'up-steep' : currentSliderStep === 3 ? 'up-steep' : currentSliderStep === 4 ? 'up-extreme' : 'up'}
-              showStandardBadge={true}
-              isStandardPosition={currentSliderStep === 2}
-              animationStyle="rolodex"
+              unit="/månad"
+              className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg"
             />
           </div>
           
@@ -187,13 +186,14 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           </div>
           
           <div className="flex-1">
-            <RollingValueDisplay 
+            <AnalogGauge
               value={calculatedCreditPrice}
+              minValue={0}
+              maxValue={Math.max(calculatedCreditPrice * 2, 200)}
+              standardValue={calculatedCreditPrice}
               label="Credits"
-              className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50"
-              showTrendIcon={true}
-              trendDirection={currentSliderStep === 2 ? 'neutral' : currentSliderStep === 0 ? 'down-mild' : currentSliderStep === 1 ? 'down-steep' : currentSliderStep === 3 ? 'down-steep' : currentSliderStep === 4 ? 'down-extreme' : 'down'}
-              animationStyle="rolodex"
+              unit="/styck"
+              className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 rounded-lg"
             />
           </div>
         </div>
