@@ -28,26 +28,24 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   
   // Beräkna vinkel så att standardValue alltid pekar på kl 12 (-90°)
   let angle: number;
-  if (value === standardValue) {
+  if (Math.abs(value - standardValue) < 0.01) {
     angle = -90; // Standard är alltid kl 12
   } else {
-    // Beräkna relativt standardValue som mittpunkt
-    const rangeFromStandard = value > standardValue ? 
-      (effectiveMax - standardValue) : (standardValue - effectiveMin);
-    const valueDistanceFromStandard = Math.abs(value - standardValue);
-    const normalizedDistance = valueDistanceFromStandard / rangeFromStandard;
-    
-    // Mappa till 90° åt varje håll från standard (-90°)
+    // Mappa värden så att standard är i mitten av skalan visuellt
     if (value > standardValue) {
-      angle = -90 + (normalizedDistance * 90); // Från -90° till 0° (kl 12 till kl 3)
+      // Värden över standard mappar från -90° till 0° (kl 12 till kl 3)
+      const distanceRatio = (value - standardValue) / (effectiveMax - standardValue);
+      angle = -90 + (distanceRatio * 90);
     } else {
-      angle = -90 - (normalizedDistance * 90); // Från -90° till -180° (kl 12 till kl 9)
+      // Värden under standard mappar från -90° till -180° (kl 12 till kl 9)  
+      const distanceRatio = (standardValue - value) / (standardValue - effectiveMin);
+      angle = -90 - (distanceRatio * 90);
     }
   }
   
-  const normalizedStandard = (standardValue - effectiveMin) / (effectiveMax - effectiveMin);
+  // Beräkna normaliserade värden för färgfunktionen
   const normalizedValue = (value - effectiveMin) / (effectiveMax - effectiveMin);
-  const standardAngle = -90; // Standard är alltid kl 12 (-90°)
+  const normalizedStandard = (standardValue - effectiveMin) / (effectiveMax - effectiveMin);
   
   // Beräkna färg baserat på position relativt standard med bredare gult område
   const getColor = (normalized: number) => {
