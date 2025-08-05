@@ -6,6 +6,7 @@ interface AnalogGaugeProps {
   minValue: number;
   maxValue: number;
   standardValue: number;
+  currentStep: number;
   label: string;
   unit?: string;
   className?: string;
@@ -17,35 +18,29 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   minValue,
   maxValue,
   standardValue,
+  currentStep,
   label,
   unit = '/månad',
   className = "",
   reversed = false
 }) => {
-  // Använd faktiska min/max-värden direkt istället för symmetrisk logik
-  const effectiveMin = minValue;
-  const effectiveMax = maxValue;
-  
-  // Beräkna vinkel så att standardValue alltid pekar på kl 12 (-90°)
-  let angle: number;
-  if (Math.abs(value - standardValue) < 0.01) {
-    angle = -90; // Standard är alltid kl 12
-  } else {
-    // Mappa värden så att standard är i mitten av skalan visuellt
-    if (value > standardValue) {
-      // Värden över standard mappar från -90° till 0° (kl 12 till kl 3)
-      const distanceRatio = (value - standardValue) / (effectiveMax - standardValue);
-      angle = -90 + (distanceRatio * 90);
-    } else {
-      // Värden under standard mappar från -90° till -180° (kl 12 till kl 9)  
-      const distanceRatio = (standardValue - value) / (standardValue - effectiveMin);
-      angle = -90 - (distanceRatio * 90);
+  // Enkel mappning från slider steg till vinkel
+  const stepToAngle = (step: number): number => {
+    switch (step) {
+      case 0: return -180; // 9 o'clock
+      case 1: return -135; // 10:30
+      case 2: return -90;  // 12 o'clock (Standard)
+      case 3: return -45;  // 1:30
+      case 4: return 0;    // 3 o'clock
+      default: return -90; // Default till standard
     }
-  }
+  };
+  
+  const angle = stepToAngle(currentStep);
   
   // Beräkna normaliserade värden för färgfunktionen
-  const normalizedValue = (value - effectiveMin) / (effectiveMax - effectiveMin);
-  const normalizedStandard = (standardValue - effectiveMin) / (effectiveMax - effectiveMin);
+  const normalizedValue = (value - minValue) / (maxValue - minValue);
+  const normalizedStandard = (standardValue - minValue) / (maxValue - minValue);
   
   // Beräkna färg baserat på position relativt standard med bredare gult område
   const getColor = (normalized: number) => {
