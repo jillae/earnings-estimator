@@ -22,19 +22,13 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   className = "",
   reversed = false
 }) => {
-  // Beräkna skillnad från standardvärdet för korrekt mätarlogik
-  const rangeFromStandard = Math.max(
-    Math.abs(maxValue - standardValue),
-    Math.abs(standardValue - minValue)
-  );
+  // Använd faktiska min/max-värden direkt istället för symmetrisk logik
+  const effectiveMin = minValue;
+  const effectiveMax = maxValue;
   
-  // Skapa symmetriskt intervall runt standard så standard hamnar på kl 12
-  const effectiveMin = standardValue - rangeFromStandard;
-  const effectiveMax = standardValue + rangeFromStandard;
-  
-  // Normalisera värdet till 0-1 där 0.5 = standard (kl 12)
+  // Normalisera värdet till 0-1 baserat på faktiska intervall
   const normalizedValue = (value - effectiveMin) / (effectiveMax - effectiveMin);
-  const normalizedStandard = 0.5; // Standard är alltid kl 12
+  const normalizedStandard = (standardValue - effectiveMin) / (effectiveMax - effectiveMin);
   
   // Konvertera till grader: kl 9 (-180°) till kl 3 (0°), kl 12 (-90°) = standard
   const angle = -180 + (normalizedValue * 180);
@@ -130,10 +124,10 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
             strokeLinecap="round"
           />
           
-          {/* Standard markering alltid på kl 12 */}
+          {/* Standard markering baserat på normalizedStandard */}
           <circle
-            cx={64}
-            cy={64 - 49}
+            cx={64 + 49 * Math.cos(((-180 + (normalizedStandard * 180)) * Math.PI) / 180)}
+            cy={64 + 49 * Math.sin(((-180 + (normalizedStandard * 180)) * Math.PI) / 180)}
             r="3"
             fill="#fbbf24"
             stroke="#ffffff"
