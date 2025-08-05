@@ -9,6 +9,14 @@ export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [selectedMachineId, setSelectedMachineId] = useState<string>('');
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
+  
+  // Lägg till useEffect för att hantera kontant-växling
+  useEffect(() => {
+    if (paymentOption === 'cash') {
+      setCurrentSliderStep(2); // Sätt till standard (mitten)
+      setTreatmentsPerDay(149); // Fallback till 149 credits för kontant
+    }
+  }, [paymentOption]);
   const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60'); // Default till 60 månader
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
   const [selectedSlaLevel, setSlaLevel] = useState<SlaLevel>('Brons');

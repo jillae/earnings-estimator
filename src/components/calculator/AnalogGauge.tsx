@@ -154,7 +154,7 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
           <g 
             transform={`translate(64, 64)`}
             style={{
-              transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+              transition: 'transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
             }}
           >
             <g transform={`rotate(${angle})`}>
