@@ -169,8 +169,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           <div className="flex-1">
             <AnalogGauge
               value={displayLeaseCost}
-              minValue={minLeaseCost}
-              maxValue={maxLeaseCost}
+              minValue={defaultCost * 0.7} 
+              maxValue={defaultCost * 1.3}
               standardValue={defaultCost}
               label="Leasing"
               unit="/månad"
@@ -188,8 +188,8 @@ const LeaseAdjuster: React.FC<LeaseAdjusterProps> = ({
           <div className="flex-1">
             <AnalogGauge
               value={stepValues[currentSliderStep]?.creditPrice || calculatedCreditPrice}
-              minValue={stepValues[4]?.creditPrice || calculatedCreditPrice * 1.3}
-              maxValue={stepValues[0]?.creditPrice || calculatedCreditPrice * 0.7}
+              minValue={(stepValues[2]?.creditPrice || calculatedCreditPrice) * 0.7}
+              maxValue={(stepValues[2]?.creditPrice || calculatedCreditPrice) * 1.3}
               standardValue={stepValues[2]?.creditPrice || calculatedCreditPrice}
               label="Credits"
               unit="/styck"

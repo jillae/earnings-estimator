@@ -26,8 +26,9 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   const normalizedValue = Math.max(0, Math.min(1, (value - minValue) / (maxValue - minValue)));
   const normalizedStandard = (standardValue - minValue) / (maxValue - minValue);
   
-  // Konvertera till grader (180° total span, från -90° till +90°)
-  const angle = -90 + (normalizedValue * 180);
+  // Konvertera till grader: kl 9 (-90°) till kl 3 (+90°), med kl 12 (0°) som standard
+  // Standard ska alltid vara på kl 12 (0°)
+  const angle = -90 + (normalizedValue * 180); // -90° till +90°
   const standardAngle = -90 + (normalizedStandard * 180);
   
   // Beräkna färg baserat på position relativt standard
@@ -114,7 +115,7 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
             strokeLinecap="round"
           />
           
-          {/* Standard markering */}
+          {/* Standard markering på kl 12 */}
           <circle
             cx={64 + 49 * Math.cos((standardAngle * Math.PI) / 180)}
             cy={64 + 49 * Math.sin((standardAngle * Math.PI) / 180)}
