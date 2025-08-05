@@ -74,7 +74,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   const totalCostPerMonth = safeLeasingCost + safeOperatingCost + safeSlaOstCost;
 
   return (
-    <div className="glass-card mt-8 animate-slide-in bg-white/95 backdrop-blur-sm shadow-xl border border-slate-200 overflow-y-auto table-hover-scroll" style={{
+    <div className="glass-card mt-8 animate-slide-in bg-white/95 backdrop-blur-sm shadow-xl border border-slate-200 max-h-[calc(100vh-200px)] overflow-y-auto table-hover-scroll" style={{
       animationDelay: '600ms'
     }}>
       <div className="flex items-center justify-between mb-6">
