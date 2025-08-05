@@ -296,7 +296,7 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
             ) : trendDirection === 'down' ? (
               <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0" />
             ) : (
-              <ArrowRight className="w-4 h-4 text-blue-600 shrink-0" />
+              <ArrowRight className={`w-4 h-4 text-blue-600 shrink-0 ${isStandardPosition ? 'rotate-90' : ''}`} />
             )
           )}
           <span>{label}</span>
