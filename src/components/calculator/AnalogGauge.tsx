@@ -54,28 +54,31 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   const normalizedStandard = 0.5; // Standard är alltid i mitten
   const standardAngle = 0; // Standard är alltid kl 12 (0°)
   
-  // Beräkna färg baserat på position relativt standard
+  // Beräkna färg baserat på position relativt standard med bredare gult område
   const getColor = (normalized: number) => {
     const standardPos = normalizedStandard;
     const distanceFromStandard = Math.abs(normalized - standardPos);
     
-    if (Math.abs(normalized - standardPos) < 0.05) {
-      // Nära standard = gul
+    // Bredare gult område - täcker ungefär 40% av skalan (motsvarar slider pos 1-3)
+    const yellowZoneWidth = 0.2; // 20% åt varje håll från standard = 40% totalt
+    
+    if (distanceFromStandard <= yellowZoneWidth) {
+      // Inom gul zon = standard/neutral område
       return 'hsl(50, 70%, 60%)';
     }
     
     // Bestäm om vi är på "bra" eller "dålig" sida baserat på reversed flag
     const isOnGoodSide = reversed ? 
-      (normalized < standardPos) : // För Credits: lägre än standard = bra
-      (normalized < standardPos);  // För Leasing: lägre än standard = bra
+      (normalized < standardPos - yellowZoneWidth) : // För Credits: lägre än gul zon = bra
+      (normalized < standardPos - yellowZoneWidth);  // För Leasing: lägre än gul zon = bra
     
     if (isOnGoodSide) {
       // Grön skala för bra sida
-      const intensity = distanceFromStandard / Math.max(standardPos, 1 - standardPos);
+      const intensity = (distanceFromStandard - yellowZoneWidth) / (0.5 - yellowZoneWidth);
       return `hsl(${120}, ${70 + intensity * 20}%, ${50 + intensity * 15}%)`;
     } else {
       // Röd skala för dålig sida  
-      const intensity = distanceFromStandard / Math.max(standardPos, 1 - standardPos);
+      const intensity = (distanceFromStandard - yellowZoneWidth) / (0.5 - yellowZoneWidth);
       return `hsl(${0 + intensity * 10}, ${70 + intensity * 20}%, ${50 + intensity * 15}%)`;
     }
   };
