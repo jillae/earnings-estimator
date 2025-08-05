@@ -292,17 +292,17 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
         <div className="flex items-center gap-1 text-xs font-medium text-blue-700 mb-1">
           {showTrendIcon && (
             isStandardPosition || trendDirection === 'neutral' ? (
-              <ArrowRight className="w-4 h-4 text-blue-600 shrink-0" />
+              <ArrowRight className="w-4 h-4 text-blue-600 shrink-0 transition-transform duration-300 ease-out" />
             ) : trendDirection === 'up' || trendDirection === 'up-steep' ? (
-              <TrendingUp className={`w-4 h-4 text-green-600 shrink-0 ${trendDirection === 'up-steep' ? 'rotate-12' : ''}`} />
+              <TrendingUp className={`w-4 h-4 text-green-600 shrink-0 transition-transform duration-300 ease-out ${trendDirection === 'up-steep' ? 'rotate-12' : ''}`} />
             ) : trendDirection === 'up-mild' ? (
-              <TrendingUp className="w-4 h-4 text-green-600 shrink-0 rotate-6" />
+              <TrendingUp className="w-4 h-4 text-green-600 shrink-0 rotate-6 transition-transform duration-300 ease-out" />
             ) : trendDirection === 'down' || trendDirection === 'down-steep' ? (
-              <TrendingDown className={`w-4 h-4 text-emerald-600 shrink-0 ${trendDirection === 'down-steep' ? '-rotate-12' : ''}`} />
+              <TrendingDown className={`w-4 h-4 text-emerald-600 shrink-0 transition-transform duration-300 ease-out ${trendDirection === 'down-steep' ? '-rotate-12' : ''}`} />
             ) : trendDirection === 'down-mild' ? (
-              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0 -rotate-6" />
+              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0 -rotate-6 transition-transform duration-300 ease-out" />
             ) : (
-              <ArrowRight className="w-4 h-4 text-blue-600 shrink-0" />
+              <ArrowRight className="w-4 h-4 text-blue-600 shrink-0 transition-transform duration-300 ease-out" />
             )
           )}
           <span>{label}</span>
