@@ -22,18 +22,36 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   className = "",
   reversed = false
 }) => {
-  // Säkerställ att standardvärdet är exakt i mitten (kl 12)
-  // Skapa symmetriskt intervall runt standardvärdet
-  const range = Math.max(Math.abs(maxValue - standardValue), Math.abs(standardValue - minValue));
-  const adjustedMinValue = standardValue - range;
-  const adjustedMaxValue = standardValue + range;
+  // Debug log
+  console.log(`AnalogGauge [${label}]:`, { 
+    value, 
+    minValue, 
+    maxValue, 
+    standardValue,
+    isStandard: Math.abs(value - standardValue) < 1
+  });
+
+  // För korrekt position: om värdet är standardvärdet, sätt nålen på kl 12
+  const isAtStandard = Math.abs(value - standardValue) < 1;
   
-  // Normalisera värdet till 0-1 skala med symmetriskt intervall
-  const normalizedValue = Math.max(0, Math.min(1, (value - adjustedMinValue) / (adjustedMaxValue - adjustedMinValue)));
+  if (isAtStandard) {
+    // Standard position = kl 12 (0°)
+    var angle = 0;
+    var normalizedValue = 0.5;
+  } else {
+    // Skapa symmetriskt intervall runt standardvärdet
+    const range = Math.max(Math.abs(maxValue - standardValue), Math.abs(standardValue - minValue));
+    const adjustedMinValue = standardValue - range;
+    const adjustedMaxValue = standardValue + range;
+    
+    // Normalisera värdet till 0-1 skala med symmetriskt intervall
+    normalizedValue = Math.max(0, Math.min(1, (value - adjustedMinValue) / (adjustedMaxValue - adjustedMinValue)));
+    
+    // Konvertera till grader: kl 9 (-90°) till kl 3 (+90°)
+    angle = -90 + (normalizedValue * 180);
+  }
+  
   const normalizedStandard = 0.5; // Standard är alltid i mitten
-  
-  // Konvertera till grader: kl 9 (-90°) till kl 3 (+90°), med kl 12 (0°) som standard
-  const angle = -90 + (normalizedValue * 180); // -90° till +90°
   const standardAngle = 0; // Standard är alltid kl 12 (0°)
   
   // Beräkna färg baserat på position relativt standard
