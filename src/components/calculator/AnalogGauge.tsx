@@ -22,14 +22,19 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
   className = "",
   reversed = false
 }) => {
-  // Normalisera värdet till 0-1 skala
-  const normalizedValue = Math.max(0, Math.min(1, (value - minValue) / (maxValue - minValue)));
-  const normalizedStandard = (standardValue - minValue) / (maxValue - minValue);
+  // Säkerställ att standardvärdet är exakt i mitten (kl 12)
+  // Skapa symmetriskt intervall runt standardvärdet
+  const range = Math.max(Math.abs(maxValue - standardValue), Math.abs(standardValue - minValue));
+  const adjustedMinValue = standardValue - range;
+  const adjustedMaxValue = standardValue + range;
+  
+  // Normalisera värdet till 0-1 skala med symmetriskt intervall
+  const normalizedValue = Math.max(0, Math.min(1, (value - adjustedMinValue) / (adjustedMaxValue - adjustedMinValue)));
+  const normalizedStandard = 0.5; // Standard är alltid i mitten
   
   // Konvertera till grader: kl 9 (-90°) till kl 3 (+90°), med kl 12 (0°) som standard
-  // Standard ska alltid vara på kl 12 (0°)
   const angle = -90 + (normalizedValue * 180); // -90° till +90°
-  const standardAngle = -90 + (normalizedStandard * 180);
+  const standardAngle = 0; // Standard är alltid kl 12 (0°)
   
   // Beräkna färg baserat på position relativt standard
   const getColor = (normalized: number) => {
@@ -117,8 +122,8 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
           
           {/* Standard markering på kl 12 */}
           <circle
-            cx={64 + 49 * Math.cos((standardAngle * Math.PI) / 180)}
-            cy={64 + 49 * Math.sin((standardAngle * Math.PI) / 180)}
+            cx={64}
+            cy={64 - 49}
             r="3"
             fill="#fbbf24"
             stroke="#ffffff"
