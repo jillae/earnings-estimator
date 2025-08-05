@@ -166,7 +166,7 @@ const AnalogGauge: React.FC<AnalogGaugeProps> = ({
           
           {/* Skala markeringar */}
           {[0, 0.25, 0.5, 0.75, 1].map((pos, index) => {
-            const tickAngle = -90 + (pos * 180);
+            const tickAngle = -180 + (pos * 180);
             const tickX1 = 64 + 45 * Math.cos((tickAngle * Math.PI) / 180);
             const tickY1 = 64 + 45 * Math.sin((tickAngle * Math.PI) / 180);
             const tickX2 = 64 + 49 * Math.cos((tickAngle * Math.PI) / 180);
