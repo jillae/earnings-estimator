@@ -291,7 +291,13 @@ const RollingValueDisplay: React.FC<RollingValueDisplayProps> = ({
       >
         <div className="flex items-center gap-1 text-xs font-medium text-blue-700 mb-1">
           {showTrendIcon && (
-            <ArrowRight className="w-4 h-4 text-blue-600 shrink-0 rotate-90" />
+            isStandardPosition ? (
+              <ArrowRight className="w-4 h-4 text-blue-600 shrink-0 rotate-90" />
+            ) : trendDirection === 'up' ? (
+              <TrendingUp className="w-4 h-4 text-green-600 shrink-0" />
+            ) : (
+              <TrendingDown className="w-4 h-4 text-emerald-600 shrink-0" />
+            )
           )}
           <span>{label}</span>
         </div>
