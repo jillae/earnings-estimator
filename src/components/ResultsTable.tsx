@@ -82,7 +82,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
         <ConsolidatedAnalysisModal />
       </div>
       
-      <div className="table-container overflow-x-auto table-hover-scroll max-h-[500px]">
+      <div className="table-container overflow-x-auto table-hover-scroll max-h-[300px]">
         <table className="w-full border-collapse text-sm min-w-[500px] md:min-w-full table-fixed">
           <style dangerouslySetInnerHTML={{
             __html: `
