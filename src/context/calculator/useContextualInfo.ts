@@ -88,11 +88,13 @@ export function useContextualInfo({
         if (paymentOption === 'leasing') {
           setCurrentInfoText(infoTexts.BAS_PACKAGE_CREDITS_LEASING);
           
-          // Visa info om flatrate endast vid leasing + slider < 1
+          // KRITISK VARNING: Visa info om flatrate endast vid leasing + slider < 1
           if (currentSliderStep < 1) {
+            console.log('⚠️ ANVÄNDARVARNING: Slider för låg för flatrate - visar förklaring');
             setCurrentInfoText(infoTexts.FLATRATE_NEEDS_HIGHER_LEASE);
           }
         } else {
+          // Kontant: Alltid tillgängligt med flatrate
           setCurrentInfoText(infoTexts.BAS_PACKAGE_CREDITS_CASH);
         }
       }

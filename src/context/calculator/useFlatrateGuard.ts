@@ -21,11 +21,11 @@ export function useFlatrateGuard({
 }) {
   // FIX 6: När man väljer flatrate ska slidern gå till standard (steg 2), inte steg 1
   useEffect(() => {
-    // NYTT VILLKOR:
-    // Bara vid leasing och step < 1 ska vi tvinga per-credit
+    // KRITISK REGEL: Vid leasing och slider < 1 (under Standard) kan användaren INTE välja flatrate
     if (paymentOption === 'leasing' && currentSliderStep < 1 && useFlatrateOption === 'flatrate') {
-      console.log('🔄 useFlatrateGuard: Återställer flatrate-val till perCredit då slider < 1 och leasing');
+      console.log('🚫 FLATRATE GUARD: Återställer till styckpris - slider för låg för flatrate vid leasing');
+      console.log(`   Slider position: ${currentSliderStep} (behöver vara >= 1 för flatrate)`);
       setUseFlatrateOption('perCredit');
     }
-  }, [currentSliderStep, setUseFlatrateOption, paymentOption, useFlatrateOption]); // Nu inkluderar useFlatrateOption för korrekt guard-logik
+  }, [currentSliderStep, setUseFlatrateOption, paymentOption, useFlatrateOption]);
 }

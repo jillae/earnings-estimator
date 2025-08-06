@@ -9,6 +9,7 @@ import OperatingCosts from '../OperatingCosts';
 import LeaseAdjuster from '../LeaseAdjuster';
 import LeasingOptions from '../LeasingOptions';
 import FlatrateSection from './FlatrateSection';
+import { FlatrateRulesInfo } from './FlatrateRulesInfo';
 import PaymentOptionToggle from './PaymentOptionToggle';
 import DriftpaketSelector from './DriftpaketSelector';
 import { SlaCardsMatrix } from '../SlaCardsMatrix';
@@ -159,6 +160,13 @@ const CalculatorInputs: React.FC<{
               <SlaCardsMatrix hoveredInput={hoveredInput} onHoveredInputChange={onHoveredInputChange} />
               
               <OperatingCosts />
+              
+              {/* Flatrate-regler info (visas när användaren behöver förstå reglerna) */}
+              {selectedMachine?.usesCredits && (
+                <div className="mt-4">
+                  <FlatrateRulesInfo />
+                </div>
+              )}
             </div>
           </div>
 
