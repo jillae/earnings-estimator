@@ -57,8 +57,8 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
         
         <p className="text-base text-slate-700 mb-6 leading-relaxed min-h-[3rem] flex items-center">
           {isEconomicallyViable 
-            ? "Obegränsad användning till fast månadskostnad - rekommenderas för din volym"
-            : "Obegränsad användning till fast månadskostnad - kontrollera lönsamhet"}
+            ? "Obegränsad användning till fast månadskostnad - ekonomiskt fördelaktigt för din volym (fler än 2 behandlingar/dag)"
+            : "Obegränsad användning till fast månadskostnad - blir lönsamt när du gör fler än 2 behandlingar per dag"}
         </p>
         
         {/* Pris sektion - förenklad design */}
@@ -95,8 +95,8 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
           <div className="text-sm text-slate-700 mb-3 min-h-[2.5rem] flex items-center">
             <span className="font-semibold">
               {isEconomicallyViable 
-                ? "Passar dig som gör fler än 2 behandlingar per dag – och vill slippa tänka på saldo, inköp eller variation."
-                : "Passar dig med hög eller varierande volym – men kontrollera om det är kostnadseffektivt för din användning."}
+                ? "✅ Optimal för dig som gör fler än 2 behandlingar per dag – slipp tänka på saldo, inköp eller variation."
+                : "⚠️ För dig med hög volym – men kontrollera lönsamheten: Flatrate blir ekonomiskt fördelaktigt vid fler än 2 behandlingar per dag."}
             </span>
           </div>
           

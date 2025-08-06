@@ -74,6 +74,9 @@ const FlatrateSection: React.FC = () => {
     <div className="glass-card mt-4 animate-slide-in" style={{ animationDelay: '350ms' }}>
       <div className="flex items-center justify-center mb-4">
         <h3 className="text-lg font-semibold">Betalningsmodell för Credits</h3>
+        <div className="ml-3 text-sm text-slate-600">
+          (Flatrate blir ekonomiskt fördelaktigt vid fler än 2 behandlingar/dag)
+        </div>
       </div>
       
       {/* Kort-baserad val */}

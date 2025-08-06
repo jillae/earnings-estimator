@@ -83,10 +83,10 @@ export function FlatrateRulesInfo() {
             )}
             {(selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld') && (
               <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>{selectedDriftpaket}: Flatrate ingår automatiskt när tillgängligt</span>
-                </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-600" />
+                <span><strong>{selectedDriftpaket}-paket:</strong> Flatrate ingår automatiskt och aktiveras när villkoren uppfylls (≥Standard leasing)</span>
+              </div>
                 {isLeasing && !sliderAboveStandard && (
                   <div className="flex items-center gap-2 text-orange-600">
                     <XCircle className="h-4 w-4" />
