@@ -198,13 +198,21 @@ export class CalculationEngine {
    */
   private static calculateMachinePricing(machine: Machine | null, exchangeRate: number) {
     if (!machine || !machine.priceEur) {
+      console.log('⚠️ CalculationEngine: Ingen maskin eller priceEur saknas');
       return { machinePriceSEK: 0, cashPriceSEK: 0 };
     }
     
     const machinePriceSEK = machine.priceEur * exchangeRate;
+    console.log(`💰 CalculationEngine maskinpriser:
+      Maskin: ${machine.name}
+      Pris EUR: ${machine.priceEur}
+      Växelkurs: ${exchangeRate}
+      Pris SEK (före avrundning): ${machinePriceSEK}
+    `);
+    
     const cashPriceSEK = roundToHundredEndingSix(machinePriceSEK); // Avrunda till hundra slutande på 6
     
-    
+    console.log(`💰 Slutligt kontantpris: ${cashPriceSEK} kr`);
     
     return { machinePriceSEK, cashPriceSEK };
   }

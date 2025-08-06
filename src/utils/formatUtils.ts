@@ -43,12 +43,28 @@ export function formatCurrency(amount: number | undefined, addVAT: boolean = fal
 export function roundToHundredEndingSix(value: number): number {
   // Kontrollera att value är ett giltigt värde
   if (value === undefined || value === null || isNaN(value)) {
+    console.log('⚠️ roundToHundredEndingSix: Ogiltigt värde:', value);
     return 0;
   }
   
-  // Avrunda till närmaste hundratal först
-  const roundedToHundred = Math.round(value / 100) * 100;
+  console.log('🔢 roundToHundredEndingSix input:', value);
   
-  // Lägg till 6 för att säkerställa att det slutar med 6
-  return roundedToHundred - roundedToHundred % 10 + 6;
+  // Avrunda till närmaste hundratal
+  const roundedToHundred = Math.round(value / 100) * 100;
+  console.log('🔢 Avrundat till hundratal:', roundedToHundred);
+  
+  // Säkerställ att det slutar med 06 (inte bara 6)
+  const lastTwoDigits = roundedToHundred % 100;
+  let result: number;
+  
+  if (lastTwoDigits === 6) {
+    // Redan slutar med 06
+    result = roundedToHundred;
+  } else {
+    // Lägg till eller ändra till 06
+    result = roundedToHundred - lastTwoDigits + 6;
+  }
+  
+  console.log('🔢 roundToHundredEndingSix result:', result);
+  return result;
 }
