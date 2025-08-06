@@ -87,11 +87,6 @@ const MachineQuickSwitch: React.FC<MachineQuickSwitchProps> = ({
                   <div className="flex items-center gap-2">
                     {getCategoryIcon((machine as any).category)}
                     <span className="font-medium">{machine.name}</span>
-                    {machine.usesCredits && (
-                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
-                        Credits
-                      </span>
-                    )}
                   </div>
                 </SelectItem>
               ))}
