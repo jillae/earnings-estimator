@@ -122,7 +122,9 @@ const CalculatorInputs: React.FC<{
             
             <PaymentOptionToggle hoveredInput={hoveredInput} onHoveredInputChange={onHoveredInputChange} />
             {paymentOption === 'leasing' ? <div className="mt-4 space-y-4">
-                <LeaseAdjuster minLeaseCost={leasingRange.min} maxLeaseCost={leasingRange.max} leaseCost={leasingCost} currentSliderStep={currentSliderStep} flatrateThreshold={flatrateThreshold} showFlatrateIndicator={selectedMachine?.usesCredits} treatmentsPerDay={treatmentsPerDay} onSliderStepChange={setCurrentSliderStep} allowBelowFlatrate={allowBelowFlatrate} onAllowBelowFlatrateChange={setAllowBelowFlatrate} hoveredInput={hoveredInput} onHoveredInputChange={onHoveredInputChange} />
+                {selectedMachine?.usesCredits && (
+                  <LeaseAdjuster minLeaseCost={leasingRange.min} maxLeaseCost={leasingRange.max} leaseCost={leasingCost} currentSliderStep={currentSliderStep} flatrateThreshold={flatrateThreshold} showFlatrateIndicator={selectedMachine?.usesCredits} treatmentsPerDay={treatmentsPerDay} onSliderStepChange={setCurrentSliderStep} allowBelowFlatrate={allowBelowFlatrate} onAllowBelowFlatrateChange={setAllowBelowFlatrate} hoveredInput={hoveredInput} onHoveredInputChange={onHoveredInputChange} />
+                )}
                 
                 
                 <LeasingOptions leasingPeriods={leasingPeriods} insuranceOptions={insuranceOptions} selectedLeasingPeriodId={selectedLeasingPeriodId} selectedInsuranceId={selectedInsuranceId} onLeasingPeriodChange={setSelectedLeasingPeriodId} onInsuranceChange={setSelectedInsuranceId} />
