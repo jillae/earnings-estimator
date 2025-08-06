@@ -15,7 +15,7 @@ export function useStateSelections() {
   const [selectedDriftpaket, setSelectedDriftpaket] = useState<'Bas' | 'Silver' | 'Guld'>('Bas');
   
   // Ersätt kontinuerliga leaseAdjustmentFactor med diskreta steg
-  const [currentSliderStep, setCurrentSliderStep] = useState<SliderStep>(2); // Standard är 2 (mitten av 5-stegs slider)
+  const [currentSliderStep, setCurrentSliderStep] = useState<SliderStep>(2); // Standard är ALLTID 2 (mitten av 5-stegs slider)
   
   const [allowBelowFlatrate, setAllowBelowFlatrate] = useState<boolean>(true);
   const [treatmentsPerDay, setTreatmentsPerDay] = useState<number>(4);
@@ -79,7 +79,7 @@ export function useStateSelections() {
       }
       
       // Återställ ALLTID till standard värden för en ny maskin
-      setCurrentSliderStep(2); // Standard steg (mitten av 5-stegs slider)
+      setCurrentSliderStep(2); // Standard steg (mitten av 5-stegs slider) - ALLTID position 2
       setSlaLevel('Brons');
       setSelectedDriftpaket('Bas');
       setPaymentOption('leasing');
