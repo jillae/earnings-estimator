@@ -161,7 +161,7 @@ export class CalculationEngine {
       errors.push('Ingen maskin vald');
     }
     
-    if (inputs.treatmentsPerDay < 0 || inputs.treatmentsPerDay > 50) {
+    if (inputs.treatmentsPerDay < 0 || inputs.treatmentsPerDay > 200) {
       errors.push(`Ogiltigt antal behandlingar per dag: ${inputs.treatmentsPerDay}`);
     }
     
@@ -320,6 +320,13 @@ export class CalculationEngine {
       return 0;
     }
     
+    // KRITISKT: För kontantbetalning, returnera alltid creditMin/creditMid2
+    if (inputs.paymentOption === 'cash') {
+      const cashCreditPrice = inputs.machine.creditMid2 || inputs.machine.creditMin || 149;
+      console.log(`💰 CASH PAYMENT: Returnerar credit-pris för kontant: ${cashCreditPrice}`);
+      return cashCreditPrice;
+    }
+    
     // För maskiner med strategisk prissättning, använd PiecewiseLinearCalculator
     if (inputs.machine.leasingMin && inputs.machine.leasingStandard && inputs.machine.leasingMax) {
       
@@ -336,7 +343,7 @@ export class CalculationEngine {
       const calculator = new PiecewiseLinearCalculator(pricingData);
       const interpolatedValues = calculator.interpolate(inputs.currentSliderStep);
       
-      
+      console.log(`⚙️ LEASING PAYMENT: Beräknad credit-pris från slider (step ${inputs.currentSliderStep}): ${interpolatedValues.creditPrice}`);
       return Math.round(interpolatedValues.creditPrice);
     }
     
@@ -347,7 +354,7 @@ export class CalculationEngine {
     const sliderPosition = Math.max(0, Math.min(4, inputs.currentSliderStep));
     const creditPrice = creditMax - (sliderPosition / 4) * (creditMax - creditMin);
     
-    
+    console.log(`📊 FALLBACK CALCULATION: slider ${sliderPosition}, credit-pris: ${creditPrice}`);
     
     return Math.round(creditPrice);
   }

@@ -50,8 +50,18 @@ export function useStateSelections() {
       if (selectedMachine?.usesCredits) {
         setTreatmentsPerDay(149); // Fallback till 149 credits för kontant
       }
+    } else if (paymentOption === 'leasing') {
+      // Vid växling tillbaka till leasing, återställ till standardvärden baserat på klinikstorlek
+      if (clinicSize === 'small') {
+        setTreatmentsPerDay(2);
+      } else if (clinicSize === 'medium') {
+        setTreatmentsPerDay(4);
+      } else if (clinicSize === 'large') {
+        setTreatmentsPerDay(6);
+      }
+      // Behåll nuvarande slider-position vid växling tillbaka till leasing
     }
-  }, [paymentOption, selectedMachine?.usesCredits]);
+  }, [paymentOption, selectedMachine?.usesCredits, clinicSize]);
 
   // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen
   useEffect(() => {
