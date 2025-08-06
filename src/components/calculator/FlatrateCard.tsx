@@ -11,6 +11,9 @@ interface FlatrateCardProps {
   flatrateCost: number;
   discountText?: string;
   selectedSlaLevel: string;
+  isEconomicallyViable: boolean;     // NYTT: Baserat på >2 behandlingar per dag
+  recommendationText: string;        // NYTT: Dynamisk rekommendationstext
+  recommendationType: 'positive' | 'negative' | 'neutral'; // NYTT: Typ av rekommendation
 }
 
 const FlatrateCard: React.FC<FlatrateCardProps> = ({
@@ -19,7 +22,10 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
   onSelect,
   flatrateCost,
   discountText,
-  selectedSlaLevel
+  selectedSlaLevel,
+  isEconomicallyViable,
+  recommendationText,
+  recommendationType
 }) => {
   return (
     <Card 
@@ -50,7 +56,9 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
         </div>
         
         <p className="text-base text-slate-700 mb-6 leading-relaxed min-h-[3rem] flex items-center">
-          Obegränsad användning till fast månadskostnad
+          {isEconomicallyViable 
+            ? "Obegränsad användning till fast månadskostnad - rekommenderas för din volym"
+            : "Obegränsad användning till fast månadskostnad - kontrollera lönsamhet"}
         </p>
         
         {/* Pris sektion - förenklad design */}
@@ -82,17 +90,45 @@ const FlatrateCard: React.FC<FlatrateCardProps> = ({
           </div>
         </div>
         
-        {/* Bottom sektion - samma struktur */}
+        {/* Bottom sektion - dynamisk rekommendation */}
         <div className="mt-auto pt-3 border-t border-slate-100">
           <div className="text-sm text-slate-700 mb-3 min-h-[2.5rem] flex items-center">
-            <span className="font-semibold">Passar dig som gör fler än 2 behandlingar per dag – och vill slippa tänka på saldo, inköp eller variation.</span>
+            <span className="font-semibold">
+              {isEconomicallyViable 
+                ? "Passar dig som gör fler än 2 behandlingar per dag – och vill slippa tänka på saldo, inköp eller variation."
+                : "Passar dig med hög eller varierande volym – men kontrollera om det är kostnadseffektivt för din användning."}
+            </span>
           </div>
           
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
+          {/* KRITISK EKONOMISK REKOMMENDATION */}
+          <div className={`border rounded-lg p-3 text-sm ${
+            recommendationType === 'positive' 
+              ? 'bg-green-50 border-green-200' 
+              : recommendationType === 'negative'
+              ? 'bg-orange-50 border-orange-200'
+              : 'bg-blue-50 border-blue-200'
+          }`}>
             <div className="flex items-start gap-2">
-              <span className="text-blue-600 font-bold">💡</span>
-              <div className="text-blue-700">
-                <span className="font-medium">Tips:</span> En trygg lösning som skyddar mot ökade kostnader när verksamheten växer.
+              <span className={
+                recommendationType === 'positive' 
+                  ? 'text-green-600 font-bold' 
+                  : recommendationType === 'negative'
+                  ? 'text-orange-600 font-bold'
+                  : 'text-blue-600 font-bold'
+              }>
+                {recommendationType === 'positive' ? '💰' : recommendationType === 'negative' ? '⚠️' : '💡'}
+              </span>
+              <div className={
+                recommendationType === 'positive' 
+                  ? 'text-green-700' 
+                  : recommendationType === 'negative'
+                  ? 'text-orange-700'
+                  : 'text-blue-700'
+              }>
+                <span className="font-medium">
+                  {recommendationType === 'positive' ? 'Ekonomiskt fördelaktigt:' : 
+                   recommendationType === 'negative' ? 'Ekonomisk varning:' : 'Tips:'}
+                </span> {recommendationText}
               </div>
             </div>
           </div>

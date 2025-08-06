@@ -96,7 +96,7 @@ const ComparisonTable: React.FC = () => {
                   </TableCell>
                   <TableCell className="text-center">
                     <Badge variant="outline" className="text-xs">
-                      {alternative.hasUnlimitedCredits ? 'Strategimodell' : 'Hybridmodell'}
+                      {alternative.hasUnlimitedCredits ? 'Strategimodell' : 'Grundmodell'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-center">
@@ -124,7 +124,7 @@ const ComparisonTable: React.FC = () => {
         <div className="mt-4 space-y-2">
           <h4 className="text-sm font-medium text-slate-800">Förklaring:</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-slate-600">
-            <div><strong>Leasingmodell (Typ):</strong> Hybridmodell / Strategimodell</div>
+            <div><strong>Leasingmodell (Typ):</strong> Grundmodell / Strategimodell</div>
             <div><strong>Betalningsmodell (Typ):</strong> Styckepris / Flatrate</div>
             <div><strong>Servicenivå (Typ):</strong> SLA Brons / Silver / Guld</div>
             <div><strong>Årlig Service:</strong> Inkluderar årlig service med resa och arbete</div>

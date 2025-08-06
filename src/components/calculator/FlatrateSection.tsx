@@ -7,6 +7,7 @@ import { Info, CheckCircle2, XCircle } from 'lucide-react';
 import { WORKING_DAYS_PER_MONTH } from '@/utils/constants';
 import FlatrateCard from './FlatrateCard';
 import PerCreditCard from './PerCreditCard';
+import { calculateFlatrateEconomics, getFlatrateRecommendationText } from '@/utils/credits/flatrateEconomics';
 
 const FlatrateSection: React.FC = () => {
   const {
@@ -25,7 +26,17 @@ const FlatrateSection: React.FC = () => {
     return null;
   }
 
-  // Beräkna kostnader för jämförelse
+  // KRITISK EKONOMISK ANALYS - Gränsvärde: fler än 2 behandlingar per dag
+  const flatrateEconomics = calculateFlatrateEconomics(
+    treatmentsPerDay,
+    selectedMachine,
+    creditPrice || 0,
+    selectedSlaLevel
+  );
+  
+  const recommendation = getFlatrateRecommendationText(flatrateEconomics);
+  
+  // Beräkna kostnader för jämförelse (gamla logiken behålls för bakåtkompatibilitet)
   const creditsPerTreatment = selectedMachine.creditsPerTreatment || 1;
   const treatmentsPerMonth = treatmentsPerDay * WORKING_DAYS_PER_MONTH;
   const totalCreditsPerMonth = treatmentsPerMonth * creditsPerTreatment;
@@ -40,6 +51,7 @@ const FlatrateSection: React.FC = () => {
   }
 
   const savings = creditsCostPerMonth - flatrateCost;
+
   const isFlatrateAdvantage = savings > 0;
 
   // Hämta rabattinformation
@@ -77,7 +89,7 @@ const FlatrateSection: React.FC = () => {
             isDisabled={selectedDriftpaket === 'Silver' || selectedDriftpaket === 'Guld'}
           />
 
-          {/* Flatrate Card */}
+          {/* Flatrate Card - med ekonomisk analys */}
           <FlatrateCard
             isSelected={useFlatrateOption === 'flatrate'}
             isEnabled={canEnableFlatrate}
@@ -85,25 +97,52 @@ const FlatrateSection: React.FC = () => {
             flatrateCost={flatrateCost}
             discountText={getFlatrateDiscount()}
             selectedSlaLevel={selectedSlaLevel}
+            isEconomicallyViable={flatrateEconomics.isEconomicallyViable}
+            recommendationText={recommendation.description}
+            recommendationType={recommendation.type}
           />
         </div>
 
-        {/* Besparingsindikator */}
+        {/* KRITISK BESPARINGSINDIKATOR MED EKONOMISK ANALYS */}
         {treatmentsPerDay > 0 && (
-          <div className={`p-3 rounded-lg ${isFlatrateAdvantage ? 'bg-green-50 border border-green-200' : 'bg-orange-50 border border-orange-200'}`}>
-            <div className="flex items-center gap-2">
-              {isFlatrateAdvantage ? (
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
-              ) : (
-                <XCircle className="h-4 w-4 text-orange-600" />
-              )}
-              <div className="text-sm">
-                <span className={isFlatrateAdvantage ? 'text-green-700' : 'text-orange-700'}>
-                  {isFlatrateAdvantage 
-                    ? `Flatrate sparar ${formatCurrency(Math.abs(savings))}/mån vid ${treatmentsPerDay} behandlingar/dag`
-                    : `Per credit är ${formatCurrency(Math.abs(savings))} billigare/mån vid ${treatmentsPerDay} behandlingar/dag`
-                  }
-                </span>
+          <div className={`p-4 rounded-lg border-2 ${
+            flatrateEconomics.isEconomicallyViable && isFlatrateAdvantage 
+              ? 'bg-green-50 border-green-300' 
+              : !flatrateEconomics.isEconomicallyViable
+              ? 'bg-orange-50 border-orange-300'
+              : 'bg-blue-50 border-blue-300'
+          }`}>
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">
+                {flatrateEconomics.isEconomicallyViable && isFlatrateAdvantage 
+                  ? '💰' 
+                  : !flatrateEconomics.isEconomicallyViable 
+                  ? '⚠️' 
+                  : '💡'}
+              </span>
+              <div>
+                <div className={`font-bold text-lg mb-2 ${
+                  flatrateEconomics.isEconomicallyViable && isFlatrateAdvantage 
+                    ? 'text-green-700' 
+                    : !flatrateEconomics.isEconomicallyViable
+                    ? 'text-orange-700'
+                    : 'text-blue-700'
+                }`}>
+                  {recommendation.title}
+                </div>
+                <div className={`text-sm ${
+                  flatrateEconomics.isEconomicallyViable && isFlatrateAdvantage 
+                    ? 'text-green-600' 
+                    : !flatrateEconomics.isEconomicallyViable
+                    ? 'text-orange-600'
+                    : 'text-blue-600'
+                }`}>
+                  {recommendation.description}
+                </div>
+                {/* Extra detaljer */}
+                <div className="text-xs text-slate-500 mt-2">
+                  Brytpunkt för lönsamhet: {flatrateEconomics.breakEvenPoint.toFixed(1)} behandlingar per dag
+                </div>
               </div>
             </div>
           </div>
