@@ -3,6 +3,7 @@ import { useCalculator } from '@/context/CalculatorContext';
 import { machineData } from '@/data/machines';
 import ClinicSizeSelector from '../ClinicSizeSelector';
 import TreatmentSettings from '../TreatmentSettings';
+import MachineQuickSwitch from './MachineQuickSwitch';
 
 import OperatingCosts from '../OperatingCosts';
 import LeaseAdjuster from '../LeaseAdjuster';
@@ -89,6 +90,11 @@ const CalculatorInputs: React.FC<{
             </div>
           </div>
 
+          {/* Maskinväxlare mellan steg 3 och 4 */}
+          <MachineQuickSwitch 
+            hoveredInput={hoveredInput} 
+            onHoveredInputChange={onHoveredInputChange} 
+          />
 
           {/* Tips banner för steg 4 */}
           <div className="bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4 text-center animate-slide-in mb-4">
