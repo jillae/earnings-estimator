@@ -67,6 +67,50 @@ const StickyEconomicGraph: React.FC = () => {
     return result;
   }, [monthlyRevenue, monthlyCosts, monthlyNet]);
 
+  // KRITISK FIX: Beräkna rimliga Y-axel gränser för att visa verkliga skillnader
+  const calculateYAxisDomain = useMemo(() => {
+    if (data.length === 0) return [-1000000, 5000000]; // Default range
+    
+    // Hitta min/max värden i datan
+    const allValues = data.flatMap(d => [d.cumulativeRevenue, d.cumulativeCosts, d.cumulativeNet]);
+    const minValue = Math.min(...allValues);
+    const maxValue = Math.max(...allValues);
+    
+    // AGGRESIV RANGE för att visa skillnader tydligt
+    // Använd mindre padding så att skillnader verkligen syns
+    const range = maxValue - minValue;
+    const padding = Math.min(range * 0.08, 300000); // Max 300k padding, 8% av range
+    
+    // Sätt aggressiva gränser som gör att användaren SER skillnaderna
+    let domainMin = minValue - padding;
+    let domainMax = maxValue + padding;
+    
+    // KRITISK: Om range är liten (< 1M), tvinga en större spread
+    if (range < 1000000) {
+      const center = (minValue + maxValue) / 2;
+      domainMin = center - 800000; // 1.6M total range minimum
+      domainMax = center + 800000;
+    }
+    
+    // EXTRA: Om användaren justerar extremt, låt det "slå i taket" för att visa skillnaden
+    // Detta gör att 100kr skillnad i kundpris verkligen syns dramatiskt
+    if (range > 8000000) {
+      // Vid stor range, minska padding till 5% för maximal effekt
+      const tightPadding = range * 0.05;
+      domainMin = minValue - tightPadding;
+      domainMax = maxValue + tightPadding;
+    }
+    
+    // Sätt absoluta gränser bara för extremfall
+    domainMin = Math.max(domainMin, -5000000); // Max 5M förlust
+    domainMax = Math.min(domainMax, 20000000); // Max 20M vinst
+    
+    console.log(`📊 AGGRESSIV Y-AXEL: Min: ${(domainMin/1000000).toFixed(1)}M, Max: ${(domainMax/1000000).toFixed(1)}M`);
+    console.log(`📊 RANGE: ${(range/1000000).toFixed(1)}M, Tight: ${range > 8000000}, Small: ${range < 1000000}`);
+    
+    return [domainMin, domainMax];
+  }, [data]);
+
   const finalNet = data[data.length - 1]?.cumulativeNet || 0;
   const isPositive = finalNet > 0;
   const breakEvenMonth = data.find(d => d.cumulativeNet >= 0)?.month || 60;
@@ -208,6 +252,8 @@ const StickyEconomicGraph: React.FC = () => {
                 tickLine={false}
                 tick={{ fontSize: 10, fill: '#64748b' }}
                 tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
+                domain={calculateYAxisDomain}
+                allowDataOverflow={false}
               />
               <Tooltip 
                 formatter={(value: any, name) => [
