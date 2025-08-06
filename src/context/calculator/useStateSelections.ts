@@ -9,15 +9,7 @@ export function useStateSelections() {
   const [clinicSize, setClinicSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [selectedMachineId, setSelectedMachineId] = useState<string>('');
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('leasing');
-  
-  // Lägg till useEffect för att hantera kontant-växling
-  useEffect(() => {
-    if (paymentOption === 'cash') {
-      setCurrentSliderStep(2); // Sätt till standard (mitten)
-      setTreatmentsPerDay(149); // Fallback till 149 credits för kontant
-    }
-  }, [paymentOption]);
-  const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60'); // Default till 60 månader
+  const [selectedLeasingPeriodId, setSelectedLeasingPeriodId] = useState<string>('60');
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string>('yes');
   const [selectedSlaLevel, setSlaLevel] = useState<SlaLevel>('Brons');
   const [selectedDriftpaket, setSelectedDriftpaket] = useState<'Bas' | 'Silver' | 'Guld'>('Bas');
@@ -49,6 +41,17 @@ export function useStateSelections() {
     const machine = calculatorMachines.find(machine => machine.id === selectedMachineId);
     return machine || null; // Ingen fallback
   }, [selectedMachineId, calculatorMachines]);
+
+  // Lägg till useEffect för att hantera kontant-växling
+  useEffect(() => {
+    if (paymentOption === 'cash') {
+      setCurrentSliderStep(2); // Sätt till standard (mitten)
+      // Endast sätt 149 för credit-maskiner, annars behåll nuvarande värde
+      if (selectedMachine?.usesCredits) {
+        setTreatmentsPerDay(149); // Fallback till 149 credits för kontant
+      }
+    }
+  }, [paymentOption, selectedMachine?.usesCredits]);
 
   // När maskinvalet ändras, återställ vissa värden till standardvärden för den maskinen
   useEffect(() => {

@@ -104,8 +104,8 @@ export function validateUserInput(context: ValidationContext): ValidationResult 
   if (context.treatmentsPerDay !== undefined) {
     if (context.treatmentsPerDay < 0) {
       errors.push('Behandlingar per dag kan inte vara negativt');
-    } else if (context.treatmentsPerDay > 50) {
-      warnings.push('Mycket hög behandlingsvolym (>50/dag) - kontrollera att detta är korrekt');
+    } else if (context.treatmentsPerDay > 200) {
+      warnings.push('Mycket hög behandlingsvolym (>200/dag) - kontrollera att detta är korrekt');
     } else if (context.treatmentsPerDay === 0) {
       warnings.push('Noll behandlingar per dag kommer resultera i noll intäkter');
     }
