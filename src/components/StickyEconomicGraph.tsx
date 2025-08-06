@@ -19,7 +19,6 @@ const StickyEconomicGraph: React.FC = () => {
   const monthlyRevenueExVat = monthlyRevenue / 1.25; // Konvertera till ex VAT
   const monthlyCosts = monthlyRevenueExVat - monthlyNet; // Bakvänd beräkning för exakt samma resultat
 
-
   // Använd useMemo för att memoize data-beräkningen
   const data = useMemo(() => {
     const result = [];
@@ -67,34 +66,59 @@ const StickyEconomicGraph: React.FC = () => {
     return result;
   }, [monthlyRevenue, monthlyCosts, monthlyNet]);
 
-  // ULTRA-STATISK Y-AXEL: Fasta gränser så skillnader VERKLIGEN syns!
+  // Filter data baserat på valt år - MÅSTE vara FÖRE calculateYAxisDomain
+  const filteredData = useMemo(() => {
+    if (selectedYear === 'all') return data;
+    const yearNum = parseInt(selectedYear);
+    const startMonth = (yearNum - 1) * 12;
+    const endMonth = yearNum * 12;
+    return data.slice(startMonth, endMonth + 1);
+  }, [data, selectedYear]);
+
+  // SMART DYNAMIK: Statisk för "alla år", detaljerad för specifika år
   const calculateYAxisDomain = useMemo(() => {
-    // HELT FASTA GRÄNSER - ändras nästan aldrig
-    const FIXED_MIN = -2000000;  // Fast minimum: -2M
-    const FIXED_MAX = 12000000;  // Fast maximum: 12M
-    
-    // Endast i extremfall justeras gränserna
     const allValues = data.flatMap(d => [d.cumulativeRevenue, d.cumulativeCosts, d.cumulativeNet]);
     const dataMin = Math.min(...allValues);
     const dataMax = Math.max(...allValues);
     
-    // Bara om datan verkligen går utanför de fasta gränserna
-    let domainMin = FIXED_MIN;
-    let domainMax = FIXED_MAX;
-    
-    // Endast vid EXTREMA värden, utöka minimalt
-    if (dataMin < FIXED_MIN) {
-      domainMin = Math.max(dataMin - 500000, -5000000); // Max till -5M
+    if (selectedYear === 'all') {
+      // ÖVERSIKT: Helt fasta gränser för att se stora skillnader
+      const FIXED_MIN = -2000000;  // Fast minimum: -2M
+      const FIXED_MAX = 12000000;  // Fast maximum: 12M
+      
+      let domainMin = FIXED_MIN;
+      let domainMax = FIXED_MAX;
+      
+      // Endast vid EXTREMA värden, utöka minimalt
+      if (dataMin < FIXED_MIN) {
+        domainMin = Math.max(dataMin - 500000, -5000000);
+      }
+      if (dataMax > FIXED_MAX) {
+        domainMax = Math.min(dataMax + 500000, 20000000);
+      }
+      
+      console.log(`📊 ÖVERSIKT (alla år): ${(domainMin/1000000).toFixed(1)}M till ${(domainMax/1000000).toFixed(1)}M`);
+      return [domainMin, domainMax];
+      
+    } else {
+      // DETALJVY: Dynamisk och tight för specifikt år
+      const filteredValues = filteredData.flatMap(d => [d.cumulativeRevenue, d.cumulativeCosts, d.cumulativeNet]);
+      const yearMin = Math.min(...filteredValues);
+      const yearMax = Math.max(...filteredValues);
+      const yearRange = yearMax - yearMin;
+      
+      // Mycket tight padding för detaljerad vy
+      const detailPadding = Math.max(yearRange * 0.12, 100000); // Minst 100k padding
+      
+      const domainMin = yearMin - detailPadding;
+      const domainMax = yearMax + detailPadding;
+      
+      console.log(`📊 DETALJVY (år ${selectedYear}): ${(domainMin/1000000).toFixed(1)}M till ${(domainMax/1000000).toFixed(1)}M`);
+      console.log(`📊 År-range: ${(yearRange/1000000).toFixed(2)}M - MYCKET detaljerad!`);
+      
+      return [domainMin, domainMax];
     }
-    if (dataMax > FIXED_MAX) {
-      domainMax = Math.min(dataMax + 500000, 20000000); // Max till 20M
-    }
-    
-    console.log(`📊 ULTRA-STATISK Y-AXEL: ${(domainMin/1000000).toFixed(1)}M till ${(domainMax/1000000).toFixed(1)}M`);
-    console.log(`📊 FAST RANGE: 14M total span - nu syns ALLA skillnader tydligt!`);
-    
-    return [domainMin, domainMax];
-  }, [data]);
+  }, [data, selectedYear, filteredData]);
 
   const finalNet = data[data.length - 1]?.cumulativeNet || 0;
   const isPositive = finalNet > 0;
@@ -115,15 +139,6 @@ const StickyEconomicGraph: React.FC = () => {
     const yearNum = parseInt(selectedYear);
     return allYearlyResults.filter(year => year.year === yearNum);
   }, [allYearlyResults, selectedYear]);
-
-  // Filter data baserat på valt år
-  const filteredData = useMemo(() => {
-    if (selectedYear === 'all') return data;
-    const yearNum = parseInt(selectedYear);
-    const startMonth = (yearNum - 1) * 12;
-    const endMonth = yearNum * 12;
-    return data.slice(startMonth, endMonth + 1);
-  }, [data, selectedYear]);
 
   return (
     <div className={`fixed bottom-0 left-0 right-0 border-t shadow-lg z-40 transition-all duration-300 ${
