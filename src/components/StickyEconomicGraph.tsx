@@ -169,15 +169,15 @@ const StickyEconomicGraph: React.FC = () => {
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span>Kumulativ Intäkt</span>
+              <span>Intäkt totalt</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <span>Kumulativa Kostnader</span>
+              <span>Kostnader totalt</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span>Kumulativt Netto</span>
+              <span>Netto totalt</span>
             </div>
           </div>
 
@@ -258,8 +258,8 @@ const StickyEconomicGraph: React.FC = () => {
               <Tooltip 
                 formatter={(value: any, name) => [
                   formatCurrency(value), 
-                  name === 'cumulativeRevenue' ? 'Kumulativ Intäkt' :
-                  name === 'cumulativeCosts' ? 'Kumulativa Kostnader' : 'Kumulativt Netto'
+                  name === 'cumulativeRevenue' ? 'Intäkt totalt' :
+                  name === 'cumulativeCosts' ? 'Kostnader totalt' : 'Netto totalt'
                 ]}
                 labelFormatter={(label) => {
                   if (selectedYear === 'all') {
