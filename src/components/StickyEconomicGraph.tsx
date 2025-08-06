@@ -67,46 +67,31 @@ const StickyEconomicGraph: React.FC = () => {
     return result;
   }, [monthlyRevenue, monthlyCosts, monthlyNet]);
 
-  // KRITISK FIX: Beräkna rimliga Y-axel gränser för att visa verkliga skillnader
+  // ULTRA-STATISK Y-AXEL: Fasta gränser så skillnader VERKLIGEN syns!
   const calculateYAxisDomain = useMemo(() => {
-    if (data.length === 0) return [-1000000, 5000000]; // Default range
+    // HELT FASTA GRÄNSER - ändras nästan aldrig
+    const FIXED_MIN = -2000000;  // Fast minimum: -2M
+    const FIXED_MAX = 12000000;  // Fast maximum: 12M
     
-    // Hitta min/max värden i datan
+    // Endast i extremfall justeras gränserna
     const allValues = data.flatMap(d => [d.cumulativeRevenue, d.cumulativeCosts, d.cumulativeNet]);
-    const minValue = Math.min(...allValues);
-    const maxValue = Math.max(...allValues);
+    const dataMin = Math.min(...allValues);
+    const dataMax = Math.max(...allValues);
     
-    // AGGRESIV RANGE för att visa skillnader tydligt
-    // Använd mindre padding så att skillnader verkligen syns
-    const range = maxValue - minValue;
-    const padding = Math.min(range * 0.08, 300000); // Max 300k padding, 8% av range
+    // Bara om datan verkligen går utanför de fasta gränserna
+    let domainMin = FIXED_MIN;
+    let domainMax = FIXED_MAX;
     
-    // Sätt aggressiva gränser som gör att användaren SER skillnaderna
-    let domainMin = minValue - padding;
-    let domainMax = maxValue + padding;
-    
-    // KRITISK: Om range är liten (< 1M), tvinga en större spread
-    if (range < 1000000) {
-      const center = (minValue + maxValue) / 2;
-      domainMin = center - 800000; // 1.6M total range minimum
-      domainMax = center + 800000;
+    // Endast vid EXTREMA värden, utöka minimalt
+    if (dataMin < FIXED_MIN) {
+      domainMin = Math.max(dataMin - 500000, -5000000); // Max till -5M
+    }
+    if (dataMax > FIXED_MAX) {
+      domainMax = Math.min(dataMax + 500000, 20000000); // Max till 20M
     }
     
-    // EXTRA: Om användaren justerar extremt, låt det "slå i taket" för att visa skillnaden
-    // Detta gör att 100kr skillnad i kundpris verkligen syns dramatiskt
-    if (range > 8000000) {
-      // Vid stor range, minska padding till 5% för maximal effekt
-      const tightPadding = range * 0.05;
-      domainMin = minValue - tightPadding;
-      domainMax = maxValue + tightPadding;
-    }
-    
-    // Sätt absoluta gränser bara för extremfall
-    domainMin = Math.max(domainMin, -5000000); // Max 5M förlust
-    domainMax = Math.min(domainMax, 20000000); // Max 20M vinst
-    
-    console.log(`📊 AGGRESSIV Y-AXEL: Min: ${(domainMin/1000000).toFixed(1)}M, Max: ${(domainMax/1000000).toFixed(1)}M`);
-    console.log(`📊 RANGE: ${(range/1000000).toFixed(1)}M, Tight: ${range > 8000000}, Small: ${range < 1000000}`);
+    console.log(`📊 ULTRA-STATISK Y-AXEL: ${(domainMin/1000000).toFixed(1)}M till ${(domainMax/1000000).toFixed(1)}M`);
+    console.log(`📊 FAST RANGE: 14M total span - nu syns ALLA skillnader tydligt!`);
     
     return [domainMin, domainMax];
   }, [data]);
