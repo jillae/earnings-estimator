@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { X } from 'lucide-react';
+import { validateAndSanitizeRegistration, formSubmissionLimiter, handleSecureError } from '@/utils/security/inputSecurity';
 
 interface RegistrationModalProps {
   isOpen: boolean;
@@ -26,13 +27,22 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name.trim() || !email.trim()) {
-      setError('Vänligen fyll i alla fält');
+    // Rate limiting check
+    if (!formSubmissionLimiter.isAllowed('registration')) {
+      const remainingTime = Math.ceil(formSubmissionLimiter.getRemainingTime('registration') / 1000 / 60);
+      setError(`För många försök. Försök igen om ${remainingTime} minuter.`);
       return;
     }
 
-    if (!gdprConsent) {
-      setError('Du måste godkänna behandling av personuppgifter');
+    // Validate and sanitize input
+    const validation = validateAndSanitizeRegistration({
+      name,
+      email,
+      gdprConsent
+    });
+
+    if (!validation.success) {
+      setError(validation.errors[0] || 'Ogiltiga data');
       return;
     }
 
@@ -43,14 +53,15 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
       // Simulera kort delay för användarupplevelse
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      onSuccess(name, email);
+      // Use sanitized data
+      onSuccess(validation.data!.name, validation.data!.email);
       
       // Rensa formuläret
       setName('');
       setEmail('');
       setGdprConsent(false);
     } catch (error) {
-      setError('Ett fel uppstod. Försök igen.');
+      setError(handleSecureError(error));
     } finally {
       setIsSubmitting(false);
     }

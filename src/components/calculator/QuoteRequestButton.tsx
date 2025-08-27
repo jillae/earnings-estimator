@@ -8,6 +8,7 @@ import { Mail, Send } from 'lucide-react';
 import { useCalculator } from '@/context/CalculatorContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { validateAndSanitizeQuoteRequest, formSubmissionLimiter, handleSecureError } from '@/utils/security/inputSecurity';
 
 interface UserInfo {
   name: string;
@@ -47,10 +48,24 @@ export const QuoteRequestButton: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!userInfo.name || !userInfo.email) {
+    // Rate limiting check
+    if (!formSubmissionLimiter.isAllowed('quote-request')) {
+      const remainingTime = Math.ceil(formSubmissionLimiter.getRemainingTime('quote-request') / 1000 / 60);
       toast({
-        title: "Obligatoriska fält saknas",
-        description: "Namn och e-post är obligatoriska.",
+        title: "För många försök",
+        description: `Försök igen om ${remainingTime} minuter.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate and sanitize input
+    const validation = validateAndSanitizeQuoteRequest(userInfo);
+
+    if (!validation.success) {
+      toast({
+        title: "Ogiltiga data",
+        description: validation.errors[0] || "Kontrollera dina inmatningar.",
         variant: "destructive",
       });
       return;
@@ -61,12 +76,7 @@ export const QuoteRequestButton: React.FC = () => {
     try {
       const { error } = await supabase.functions.invoke('send-quote-request', {
         body: {
-          userInfo: {
-            name: userInfo.name,
-            email: userInfo.email,
-            phone: userInfo.phone || undefined,
-            company: userInfo.company || undefined,
-          },
+          userInfo: validation.data,
           configuration: {
             selectedMachine: selectedMachine?.name || '',
             clinicSize,
@@ -104,7 +114,7 @@ export const QuoteRequestButton: React.FC = () => {
       console.error('Error sending quote request:', error);
       toast({
         title: "Fel vid skickande",
-        description: "Kunde inte skicka offertförfrågan. Försök igen.",
+        description: handleSecureError(error),
         variant: "destructive",
       });
     } finally {

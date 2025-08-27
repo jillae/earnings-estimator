@@ -1,5 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { setSecureItem, getSecureItem } from '@/utils/security/secureStorage';
+import { getSecurityHeaders, apiRequestLimiter, handleSecureError } from '@/utils/security/inputSecurity';
 
 export interface UserData {
   name: string;
@@ -21,13 +23,16 @@ export function useGatedAccess() {
 
   // Hjälpfunktion för att logga ny session
   const logNewSessionStart = useCallback(async (userData: UserData) => {
+    // Rate limiting check
+    if (!apiRequestLimiter.isAllowed('session-start')) {
+      console.warn('Session start rate limited');
+      return;
+    }
+
     try {
       await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/calculator-log', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
-        },
+        headers: getSecurityHeaders(),
         body: JSON.stringify({
           action: 'session_start',
           sessionId: userData.sessionId,
@@ -54,14 +59,13 @@ export function useGatedAccess() {
     }
   }, []);
 
-  // Check if user has already done opt-in (permanent until they clear browser data)
+  // Check if user has already done opt-in (with secure storage and expiry)
   useEffect(() => {
-    const storedUserData = localStorage.getItem('calculator_user_data');
+    const storedUserData = getSecureItem<UserData>('calculator_user_data');
     
     if (storedUserData) {
-      const userData = JSON.parse(storedUserData);
       // Skapa ny session men använd sparad användardata
-      const newUserData = { ...userData, sessionId };
+      const newUserData = { ...storedUserData, sessionId };
       setUserData(newUserData);
       setIsUnlocked(true);
       
@@ -119,23 +123,22 @@ export function useGatedAccess() {
       setIsUnlocked(true);
       setShowOptIn(false);
       
-      // Spara i localStorage så användaren inte behöver göra opt-in igen
-      localStorage.setItem('calculator_user_data', JSON.stringify(newUserData));
+      // Spara säkert med automatisk expiry (30 dagar)
+      setSecureItem('calculator_user_data', newUserData, 30);
       
-      // Logga session start
-      await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/calculator-log', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
-        },
-        body: JSON.stringify({
-          action: 'session_start',
-          sessionId,
-          userData: newUserData,
-          timestamp: new Date().toISOString(),
-        }),
-      });
+      // Logga session start med säkerhetskontroller
+      if (apiRequestLimiter.isAllowed('session-start')) {
+        await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/calculator-log', {
+          method: 'POST',
+          headers: getSecurityHeaders(),
+          body: JSON.stringify({
+            action: 'session_start',
+            sessionId,
+            userData: newUserData,
+            timestamp: new Date().toISOString(),
+          }),
+        });
+      }
 
       // AVSTÄNGD - Automatiska notifikationer  
       // await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/send-dealer-notification', {
@@ -157,7 +160,7 @@ export function useGatedAccess() {
       });
       
     } catch (error) {
-      console.error('Error logging session start:', error);
+      console.error('Error logging session start:', handleSecureError(error));
       // Låt användaren fortsätta även om loggning misslyckas
     }
   }, [sessionId, toast]);
@@ -169,14 +172,16 @@ export function useGatedAccess() {
     
     if (!userData || !isUnlocked) return;
 
+    // Rate limiting check
+    if (!apiRequestLimiter.isAllowed('interaction-log')) {
+      console.warn('Interaction logging rate limited');
+      return;
+    }
     
     try {
       await fetch('https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/calculator-log', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqd2Jodnpta211aW1mcWxpc2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwODU0NzEsImV4cCI6MjA1ODY2MTQ3MX0.IoF29f8q4G1hOMmU7bP6QqV_rCWPtXcJi9d6Wx0WHEo`
-        },
+        headers: getSecurityHeaders(),
         body: JSON.stringify({
           action,
           sessionId,
@@ -204,7 +209,7 @@ export function useGatedAccess() {
       //   });
       // }
     } catch (error) {
-      console.error('Error logging interaction:', error);
+      console.error('Error logging interaction:', handleSecureError(error));
     }
   }, [userData, sessionId, isUnlocked, logSignificantInteraction]);
 
