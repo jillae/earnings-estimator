@@ -19,22 +19,22 @@ const whitePapers: WhitePaper[] = [{
 }, {
   title: "Fördelarna med Leasing",
   description: "Hur leasing fungerar och dess fördelar för din klinik.",
-  url: "/public/Whitepaper_FÖRDELARNA MED LEASING.pdf",
+  url: "https://ejwbhvzmkmuimfqlishm.supabase.co/storage/v1/object/sign/Files%20EEN%20Calc/Whitepaper_LEASING.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82YTBkMWJmNC1hZGI5LTQwNTctODI5ZS1lZDg2ZDgyM2IyZTEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJGaWxlcyBFRU4gQ2FsYy9XaGl0ZXBhcGVyX0xFQVNJTkcucGRmIiwiaWF0IjoxNzU2MzAxMTE0LCJleHAiOjE4NDI2MTQ3MTR9.WiFxJGAbJ2fKfhegmEK5Ft7EPkZB3kmDnAeGqWD0Do8",
   type: "pdf"
 }, {
   title: "Kreditmodellen för Golvmaskiner",
   description: "Detaljer om kreditmodeller och betalningsalternativ.",
-  url: "/lovable-uploads/Whitepaper_Kreditmodellen%20f%C3%B6r%20Golvmaskiner.pdf",
+  url: "https://ejwbhvzmkmuimfqlishm.supabase.co/storage/v1/object/sign/Files%20EEN%20Calc/Whitepaper_credid%20model.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82YTBkMWJmNC1hZGI5LTQwNTctODI5ZS1lZDg2ZDgyM2IyZTEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJGaWxlcyBFRU4gQ2FsYy9XaGl0ZXBhcGVyX2NyZWRpZCBtb2RlbC5wZGYiLCJpYXQiOjE3NTYzMDEwODUsImV4cCI6MjYyMDIxNDY4NX0.7oPfNKCskYAVRBKA4h0eRtHrIMaBfj8HoJB-0vUfGPc",
   type: "pdf"
 }, {
   title: "Erchonia Nordics",
   description: "Information om Erchonia produkter för nordiska marknaden.",
-  url: "/public/Whitepaper_Erchonia Nordics.pdf",
+  url: "https://ejwbhvzmkmuimfqlishm.supabase.co/storage/v1/object/sign/Files%20EEN%20Calc/Whitepaper_Erchonia%20Nordics.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82YTBkMWJmNC1hZGI5LTQwNTctODI5ZS1lZDg2ZDgyM2IyZTEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJGaWxlcyBFRU4gQ2FsYy9XaGl0ZXBhcGVyX0VyY2hvbmlhIE5vcmRpY3MucGRmIiwiaWF0IjoxNzU2MzAxMTA2LCJleHAiOjI2MjAyMTQ3MDZ9.vi5jpo0UbSgX6NeeKd1tseJGkIC86aCQTWmr414VbU0",
   type: "pdf"
 }, {
   title: "Choosing the Right Laser",
   description: "Guide för att välja rätt laserbehandling - maj 2024.",
-  url: "/public/Choosing the Right Laser A4 - May 2024.pdf",
+  url: "https://ejwbhvzmkmuimfqlishm.supabase.co/storage/v1/object/sign/Files%20EEN%20Calc/Choosing%20the%20Right%20Laser%20A4%20-%20May%202024.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82YTBkMWJmNC1hZGI5LTQwNTctODI5ZS1lZDg2ZDgyM2IyZTEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJGaWxlcyBFRU4gQ2FsYy9DaG9vc2luZyB0aGUgUmlnaHQgTGFzZXIgQTQgLSBNYXkgMjAyNC5wZGYiLCJpYXQiOjE3NTYzMDExNDYsImV4cCI6MTg0MjYxNDc0Nn0.YP4Ls6DdcnSTaeFQX5ddszlByoi_9MmXUwMIBcizlHU",
   type: "pdf"
 }, {
   title: "Erchonia Pricing Brochure",
@@ -44,7 +44,7 @@ const whitePapers: WhitePaper[] = [{
 }, {
   title: "Utbildning",
   description: "Information om certifiering och utbildning vid köp.",
-  url: "/public/Whitepaper_UTBILDNING.pdf",
+  url: "https://ejwbhvzmkmuimfqlishm.supabase.co/storage/v1/object/sign/Files%20EEN%20Calc/Whitepaper_UTBILDNING.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82YTBkMWJmNC1hZGI5LTQwNTctODI5ZS1lZDg2ZDgyM2IyZTEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJGaWxlcyBFRU4gQ2FsYy9XaGl0ZXBhcGVyX1VUQklMRE5JTkcucGRmIiwiaWF0IjoxNzU2MzAxMTI1LCJleHAiOjI2MjAyMTQ3MjV9.ypG8PShxYUyx0ImP0cGe-dGjUzD78dZ2sjz5LIhoSIo",
   type: "pdf"
 }, {
   title: "ArchAcademy",

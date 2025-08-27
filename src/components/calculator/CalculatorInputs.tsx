@@ -105,7 +105,7 @@ const CalculatorInputs: React.FC<{
             </div>
             <div className="text-sm text-purple-600">
               Leasing eller kontant - efter dina preferenser.<br />
-              <a href="/public/Whitepaper_FÖRDELARNA MED LEASING.pdf" target="_blank" className="text-purple-700 hover:text-purple-800 underline">
+              <a href="https://ejwbhvzmkmuimfqlishm.supabase.co/storage/v1/object/sign/Files%20EEN%20Calc/Whitepaper_LEASING.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82YTBkMWJmNC1hZGI5LTQwNTctODI5ZS1lZDg2ZDgyM2IyZTEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJGaWxlcyBFRU4gQ2FsYy9XaGl0ZXBhcGVyX0xFQVNJTkcucGRmIiwiaWF0IjoxNzU2MzAxMTE0LCJleHAiOjE4NDI2MTQ3MTR9.WiFxJGAbJ2fKfhegmEK5Ft7EPkZB3kmDnAeGqWD0Do8" target="_blank" className="text-purple-700 hover:text-purple-800 underline">
                 Fördelarna med leasing - läs mer
               </a>
             </div>
