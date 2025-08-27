@@ -26,7 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const supabase = createClient(
       "https://ejwbhvzmkmuimfqlishm.supabase.co",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
     const { action, sessionId, userData, data, timestamp }: LogRequest = await req.json();
@@ -37,8 +37,9 @@ const handler = async (req: Request): Promise<Response> => {
       .insert({
         session_id: sessionId,
         action,
-        user_name: userData?.name || null,
-        user_email: userData?.email || null,
+        // Redact PII: do not store names or emails in logs
+        user_name: null,
+        user_email: null,
         data: data || null,
         timestamp: new Date(timestamp).toISOString(),
       });
