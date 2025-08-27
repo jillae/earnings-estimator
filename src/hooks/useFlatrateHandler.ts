@@ -40,45 +40,27 @@ export function useFlatrateHandler() {
     const newOption = checked ? 'flatrate' : 'perCredit';
     console.log(`Ändrar Flatrate-option till: ${newOption} (${checked ? 'enabled' : 'disabled'})`);
     
-    // VIKTIG REGEL: När flatrate aktiveras, hoppa ALLTID till Standard (position 1)
     if (checked) {
-      // Om vi aktiverar flatrate och slider inte redan är på Standard
-      if (currentSliderStep !== 1) {
-        console.log('Flyttar slider till Standard (1) då flatrate aktiveras');
-        setCurrentSliderStep(1);
+      // När flatrate aktiveras - flytta slider till Standard (steg 2) för bästa resultat
+      if (currentSliderStep !== 2) {
+        console.log('Flyttar slider till Standard (steg 2) då flatrate aktiveras');
+        setCurrentSliderStep(2);
         
-        // Visa ett meddelande till användaren
         toast({
-          title: "Slidern har justerats till Standard",
-          description: "Flatrate kräver och fungerar bäst med standardnivå.",
+          title: "Slidern har justerats till Standard+",
+          description: "Flatrate fungerar bäst med förhöjd standardnivå.",
           variant: "default"
         });
       }
       
-      // Aktivera flatrate (med eventuell fördröjning om slider flyttades)
-      const delay = currentSliderStep !== 1 ? 300 : 0;
-      setTimeout(() => {
-        setUseFlatrateOption(newOption);
-      }, delay);
+      // Aktivera flatrate DIREKT utan fördröjning
+      setUseFlatrateOption(newOption);
       
-    } else if (!checked && !canEnableFlatrate && paymentOption === 'leasing' && currentSliderStep < 1) {
-      // Om försöker deaktivera flatrate men slider är för låg för leasing
-      setCurrentSliderStep(1);
-      
-      toast({
-        title: "Slidern har justerats till Standard", 
-        description: "Minst standardnivå krävs för denna leasingkonfiguration.",
-        variant: "default"
-      });
-      
-      setTimeout(() => {
-        setUseFlatrateOption(newOption);
-      }, 300);
     } else {
-      // Annars byt direkt
+      // Deaktivera flatrate direkt - inga villkor
       setUseFlatrateOption(newOption);
     }
-  }, [setUseFlatrateOption, canEnableFlatrate, paymentOption, currentSliderStep, setCurrentSliderStep, toast]);
+  }, [setUseFlatrateOption, currentSliderStep, setCurrentSliderStep, toast]);
 
   // OMFATTANDE AUTOMATISK ÅTERSTÄLLNING för alla scenarios
   useEffect(() => {
@@ -89,10 +71,10 @@ export function useFlatrateHandler() {
       if (useFlatrateOption !== 'flatrate') {
         console.log(`🔄 Aktiverar automatisk flatrate för ${selectedDriftpaket}-paket`);
         
-        // VIKTIG: När Silver/Guld automatiskt aktiverar flatrate, flytta slider till Standard
-        if (currentSliderStep !== 1) {
-          console.log('📍 Flyttar slider till Standard (1) då Silver/Guld aktiverar flatrate automatiskt');
-          setCurrentSliderStep(1);
+        // Flytta slider till Standard+ (steg 2) för optimalt flatrate-läge
+        if (currentSliderStep !== 2) {
+          console.log('📍 Flyttar slider till Standard+ (steg 2) då Silver/Guld aktiverar flatrate automatiskt');
+          setCurrentSliderStep(2);
         }
         
         setUseFlatrateOption('flatrate');

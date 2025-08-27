@@ -19,12 +19,12 @@ export function useFlatrateGuard({
   setUseFlatrateOption: (option: FlatrateOption) => void;
   paymentOption: 'leasing' | 'cash';
 }) {
-  // FIX 6: När man väljer flatrate ska slidern gå till standard (steg 2), inte steg 1
   useEffect(() => {
     // KRITISK REGEL: Vid leasing och slider < 1 (under Standard) kan användaren INTE välja flatrate
+    // Växla OMEDELBART till perCredit utan fördröjning
     if (paymentOption === 'leasing' && currentSliderStep < 1 && useFlatrateOption === 'flatrate') {
-      console.log('🚫 FLATRATE GUARD: Återställer till styckpris - slider för låg för flatrate vid leasing');
-      console.log(`   Slider position: ${currentSliderStep} (behöver vara >= 1 för flatrate)`);
+      console.log('🚫 FLATRATE GUARD: Slider flyttad under Standard - växlar DIREKT till styckpris');
+      console.log(`   Slider position: ${currentSliderStep} (kräver >= 1 för flatrate vid leasing)`);
       setUseFlatrateOption('perCredit');
     }
   }, [currentSliderStep, setUseFlatrateOption, paymentOption, useFlatrateOption]);
