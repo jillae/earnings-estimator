@@ -148,18 +148,18 @@ const StickyEconomicGraph: React.FC = () => {
       {/* Toggle knapp */}
       <Button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="absolute -top-10 left-1/2 transform -translate-x-1/2 rounded-t-md rounded-b-none px-3 py-2 h-10 bg-background border border-b-0 shadow-md hover:bg-muted"
-        variant="outline"
+        className="absolute -top-12 left-1/2 transform -translate-x-1/2 rounded-lg px-4 py-2 h-12 bg-primary text-primary-foreground border-2 border-primary shadow-lg hover:bg-primary/90 hover:shadow-xl font-medium"
+        variant="default"
       >
         {isExpanded ? (
           <>
-            <ChevronDown className="h-4 w-4 mr-1" />
-            <span className="text-xs">Dölj Graf</span>
+            <ChevronDown className="h-5 w-5 mr-2" />
+            <span className="text-sm font-semibold">Dölj Graf</span>
           </>
         ) : (
           <>
-            <ChevronUp className="h-4 w-4 mr-1" />
-            <span className="text-xs">Visa Graf</span>
+            <ChevronUp className="h-5 w-5 mr-2" />
+            <span className="text-sm font-semibold">Visa Graf</span>
           </>
         )}
       </Button>
@@ -181,7 +181,7 @@ const StickyEconomicGraph: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             {/* Årsväljare med knappar */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Visa:</span>
@@ -190,7 +190,7 @@ const StickyEconomicGraph: React.FC = () => {
                   <button
                     key={year}
                     onClick={() => setSelectedYear(year)}
-                    className={`px-3 py-1 text-xs font-medium transition-colors ${
+                    className={`px-2 sm:px-3 py-1 text-xs font-medium transition-colors ${
                       selectedYear === year
                         ? 'bg-primary text-primary-foreground'
                         : 'text-muted-foreground hover:text-foreground hover:bg-muted'
@@ -202,23 +202,25 @@ const StickyEconomicGraph: React.FC = () => {
               </div>
             </div>
 
-            {/* Transparens-kontroll */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Transparens:</span>
-              <input
-                type="range"
-                min="50"
-                max="100"
-                value={opacity}
-                onChange={(e) => setOpacity(parseInt(e.target.value))}
-                className="w-16 h-2"
-              />
-              <span className="text-xs text-muted-foreground w-8">{opacity}%</span>
-            </div>
+            <div className="flex items-center gap-4 ml-auto">
+              {/* Transparens-kontroll */}
+              <div className="hidden sm:flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Transparens:</span>
+                <input
+                  type="range"
+                  min="50"
+                  max="100"
+                  value={opacity}
+                  onChange={(e) => setOpacity(parseInt(e.target.value))}
+                  className="w-16 h-2"
+                />
+                <span className="text-xs text-muted-foreground w-8">{opacity}%</span>
+              </div>
 
-            <div className="text-center">
-              <p className="text-muted-foreground text-sm">Break-even</p>
-              <p className="font-bold">{breakEvenMonth === 60 ? '60+ mån' : `${breakEvenMonth} mån`}</p>
+              <div className="text-center">
+                <p className="text-muted-foreground text-sm">Break-even</p>
+                <p className="font-bold">{breakEvenMonth === 60 ? '60+ mån' : `${breakEvenMonth} mån`}</p>
+              </div>
             </div>
           </div>
         </div>

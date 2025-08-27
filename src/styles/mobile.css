@@ -34,16 +34,27 @@
 @media (max-width: 768px) {
   .glass-card {
     margin: 1rem 0.5rem;
-    padding: 1rem;
+    padding: 0.75rem;
   }
   
   .glass-card table {
-    font-size: 12px;
+    font-size: 11px;
   }
   
   .glass-card th,
   .glass-card td {
-    padding: 8px 4px;
+    padding: 6px 2px;
+  }
+  
+  /* Smaller padding for mobile table cells */
+  .glass-card th:first-child,
+  .glass-card td:first-child {
+    padding-left: 8px;
+  }
+  
+  .glass-card th:last-child,
+  .glass-card td:last-child {
+    padding-right: 8px;
   }
   
   /* Stack cards on mobile */
@@ -59,14 +70,65 @@
   }
 }
 
-/* Horizontal scroll for tables on small screens */
+/* Enhanced mobile table handling */
 @media (max-width: 640px) {
   .table-container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
   }
   
   .table-container table {
-    min-width: 500px;
+    min-width: 480px;
+    font-size: 10px;
+  }
+  
+  /* Smaller column widths on mobile */
+  .table-container .w-\[45\%\] {
+    width: 40% !important;
+  }
+  
+  .table-container .w-\[27\.5\%\] {
+    width: 30% !important;
+  }
+  
+  /* Truncate long text on mobile */
+  .table-container td:first-child {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Smaller currency amounts on mobile */
+  .table-container .currency-cell {
+    font-size: 10px;
+  }
+  
+  /* Hide section icons on very small screens */
+  .table-container td[colspan] {
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+}
+
+/* Extra small screens - stack layout */
+@media (max-width: 480px) {
+  .calculator-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .glass-card {
+    margin: 0.5rem 0.25rem;
+    padding: 0.5rem;
+  }
+  
+  .table-container table {
+    min-width: 320px;
+  }
+  
+  .table-container td:first-child {
+    max-width: 120px;
   }
 }
