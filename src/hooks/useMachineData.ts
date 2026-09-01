@@ -5,10 +5,11 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useToast } from '@/hooks/use-toast';
 import { machineApiClient } from '@/utils/machineApiClient';
 import { premiumMachines } from '@/data/machines/premium';
 import { treatmentMachines } from '@/data/machines/treatment';
+import { handheldMachines } from '@/data/machines/handheld';
+import { specialMachines } from '@/data/machines/special';
 
 export interface DatabaseMachine {
   id: string;
@@ -61,16 +62,29 @@ export interface CalculatorMachine {
   creditPriceMultiplier?: number;
   creditsPerTreatment?: number;
   leasingTariffs?: {[key: string]: number};
+  category?: string;
 }
 
 const API_BASE_URL = `https://ejwbhvzmkmuimfqlishm.supabase.co/functions/v1/machines-api`;
+
+/**
+ * Inbyggd maskinkatalog som används när machines-api inte svarar.
+ * Samma prisunderlag som databasen seedades från (src/data/machines),
+ * så kalkylatorn räknar rätt även utan API-kontakt.
+ */
+const FALLBACK_MACHINES: CalculatorMachine[] = [
+  ...premiumMachines.map(m => ({ ...m, category: 'premium' })),
+  ...treatmentMachines.map(m => ({ ...m, category: 'treatment' })),
+  ...handheldMachines.map(m => ({ ...m, category: 'handheld' })),
+  ...specialMachines.map(m => ({ ...m, category: 'special' })),
+];
 
 export const useMachineData = () => {
   const [machines, setMachines] = useState<DatabaseMachine[]>([]);
   const [calculatorMachines, setCalculatorMachines] = useState<CalculatorMachine[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { toast } = useToast();
+  const [isUsingFallback, setIsUsingFallback] = useState(false);
 
   const convertToCalculatorFormat = (dbMachine: DatabaseMachine): CalculatorMachine => {
     // Mappa maskinnamn från databas till rätt bildnycklar
@@ -140,57 +154,57 @@ export const useMachineData = () => {
     };
   };
 
+  // Önskad visningsordning baserat på maskinnamn
+  const machineOrder = [
+    "Emerald",
+    "Zerona",
+    "FX 635",
+    "FX 405",
+    "GVL",
+    "XLR8",
+    "EVRL",
+    "Lunula",
+    "Base Station"
+  ];
+
+  const sortByMachineOrder = (list: CalculatorMachine[]): CalculatorMachine[] =>
+    [...list].sort((a, b) => {
+      const indexA = machineOrder.indexOf(a.name);
+      const indexB = machineOrder.indexOf(b.name);
+      // Om maskin inte finns i listan, placera den i slutet
+      if (indexA === -1 && indexB === -1) return 0;
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+
   const fetchMachines = async () => {
     try {
       setIsLoading(true);
       setError(null);
 
       const data: DatabaseMachine[] = await machineApiClient.fetchMachines();
-      
+
       // Filtrera endast aktiva maskiner för kalkylatorn
       const activeMachines = data.filter(machine => machine.is_active);
-      
-      // Definiera önskad ordning baserat på maskinnamn från databas
-      const machineOrder = [
-        "Emerald",
-        "Zerona", 
-        "FX 635",
-        "FX 405",
-        "GVL",
-        "XLR8",
-        "EVRL",
-        "Lunula",
-        "Base Station"
-      ];
-      
+
       // Konvertera och sortera enligt önskad ordning
-      const convertedMachines = activeMachines.map(convertToCalculatorFormat);
-      const sortedMachines = convertedMachines.sort((a, b) => {
-        const indexA = machineOrder.indexOf(a.name);
-        const indexB = machineOrder.indexOf(b.name);
-        // Om maskin inte finns i listan, placera den i slutet
-        if (indexA === -1 && indexB === -1) return 0;
-        if (indexA === -1) return 1;
-        if (indexB === -1) return -1;
-        return indexA - indexB;
-      });
-      
+      const sortedMachines = sortByMachineOrder(activeMachines.map(convertToCalculatorFormat));
+
       setMachines(data);
       setCalculatorMachines(sortedMachines);
-      
+      setIsUsingFallback(false);
+
     } catch (error) {
+      // API:et är inte nåbart. Kalkylatorn ska ändå fungera: fall tillbaka på
+      // den inbyggda maskinkatalogen i stället för att visa ett dött felläge.
       console.error('Error fetching machines:', error);
-      const errorMessage = `Kunde inte hämta maskindata: ${error instanceof Error ? error.message : 'Okänt fel'}`;
-      setError(errorMessage);
-      
-      console.warn('API failed, no database machines available');
-      setCalculatorMachines([]);
-      
-      toast({
-        title: "Varning",
-        description: "Kunde inte hämta maskindata från databasen",
-        variant: "destructive",
-      });
+      console.warn('machines-api svarade inte – använder inbyggd maskinkatalog');
+
+      setMachines([]);
+      setCalculatorMachines(sortByMachineOrder(FALLBACK_MACHINES));
+      setIsUsingFallback(true);
+      setError(null);
     } finally {
       setIsLoading(false);
     }
@@ -205,6 +219,7 @@ export const useMachineData = () => {
     calculatorMachines, // Konverterade maskiner för kalkylatorn
     isLoading,
     error,
+    isUsingFallback,    // true = API otillgängligt, inbyggd katalog används
     refetch: fetchMachines
   };
 };
