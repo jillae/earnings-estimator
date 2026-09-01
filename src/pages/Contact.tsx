@@ -38,8 +38,8 @@ const Contact = () => {
                     <h3 className="text-xl font-semibold mb-3 text-slate-800">Besöksadress</h3>
                     <div className="text-slate-600 leading-relaxed">
                       <p className="font-medium">Arch Academy AB</p>
-                      <p>Kopparv 28</p>
-                      <p>791 41 FALUN</p>
+                      <p>Slaggatan 37</p>
+                      <p>791 70 FALUN</p>
                       <p>SWEDEN</p>
                     </div>
                   </div>
@@ -56,6 +56,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-3 text-slate-800">Telefon</h3>
+                    <p className="text-sm text-slate-500 mb-1">Vardagar 12:00-15:00</p>
                     <a href="tel:020-104050" className="text-lg text-slate-600 hover:text-green-600 transition-colors">
                       020-104050
                     </a>
@@ -73,7 +74,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-3 text-slate-800">Teknisk support</h3>
-                    <a href="tel:08-773 33 99" className="text-lg text-slate-600 hover:text-green-600 transition-colors">
+                    <a href="tel:0877333399" className="text-lg text-slate-600 hover:text-green-600 transition-colors">
                       08-773 33 99
                     </a>
                   </div>
@@ -90,8 +91,9 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-3 text-slate-800">E-post</h3>
-                    <a href="mailto:gholmgren@erchonia-emea.com" className="text-lg text-slate-600 hover:text-green-600 transition-colors break-all">
-                      gholmgren@erchonia-emea.com
+                    <p className="text-sm text-slate-500 mb-1">Svar inom 24 timmar</p>
+                    <a href="mailto:gilbert@archacademy.se" className="text-lg text-slate-600 hover:text-green-600 transition-colors break-all">
+                      gilbert@archacademy.se
                     </a>
                   </div>
                 </div>

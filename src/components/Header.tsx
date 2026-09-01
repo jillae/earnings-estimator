@@ -46,8 +46,8 @@ const Header = () => {
             {/* Produkter & Information */}
             <div className="flex items-center space-x-4 border-r border-white/20 pr-6">
               <a 
-                href="https://bit.ly/erchoniaeenallmodels" 
-                target="_blank" 
+                href="https://klinikfokus.lovable.app/all-models"
+                target="_blank"
                 rel="noopener noreferrer" 
                 className="flex items-center hover:text-primary-foreground/80 transition-colors"
               >

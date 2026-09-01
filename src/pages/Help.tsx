@@ -66,12 +66,13 @@ const Help = () => {
             
             <div className="mt-4 text-sm text-blue-700">
               <p>Arch Academy AB</p>
-              <p>Kopparv 28</p>
-              <p>791 41 FALUN</p>
+              <p>Slaggatan 37</p>
+              <p>791 70 FALUN</p>
               <p>SWEDEN</p>
-              <p>020-104050</p>
+              <p>020-104050 (vardagar 12:00-15:00)</p>
+              <p>Teknisk support: 08-773 33 99</p>
               <p>Erchonia official distributor - Nordics</p>
-              <p>gholmgren@erchonia-emea.com</p>
+              <p>gilbert@archacademy.se</p>
             </div>
           </div>
         </div>
